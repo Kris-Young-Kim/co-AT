@@ -325,12 +325,15 @@
 - [x] `components/layout/portal-header.tsx` (포털 헤더) ✅
 - [x] `components/layout/mobile-bottom-nav.tsx` (모바일 하단 탭) ✅
 
-### 1.6 공통 컴포넌트
+### 1.6 공통 컴포넌트 ✅
 
-- [ ] `components/common/logo.tsx` (GWATC 로고)
-- [ ] `components/common/loading-spinner.tsx`
-- [ ] `components/common/status-badge.tsx` (접수/완료 등 상태 뱃지)
-- [ ] `components/common/file-uploader.tsx` (이미지 업로드)
+- [x] `components/common/logo.tsx` (GWATC 로고) ✅
+- [x] `components/common/loading-spinner.tsx` ✅
+- [x] `components/common/status-badge.tsx` (접수/완료 등 상태 뱃지) ✅
+  - [x] 다크 모드 대비 개선 완료 ✅
+- [x] `components/common/file-uploader.tsx` (이미지 업로드) ✅
+  - [x] 반응형 디자인 개선 완료 ✅
+  - [x] 다크 모드 대비 개선 완료 ✅
 
 ---
 
