@@ -575,10 +575,35 @@ useEffect(() => {
   - [x] `getMyApplications()` Server Action - 사용자 신청 이력 조회 ✅
   - [x] `getMyRentals()` Server Action - 사용자 대여 중인 기기 조회 ✅
 
-### 2.4 공지사항
+### 2.4 공지사항 ✅
 
-- [ ] `app/(public)/notices/page.tsx` (목록)
-- [ ] `app/(public)/notices/[id]/page.tsx` (상세)
+- [x] `app/(public)/notices/page.tsx` (목록) ✅
+  - [x] 전체/지원사업/행사-이벤트 탭으로 분류 ✅
+  - [x] 고정 공지사항 표시 ✅
+  - [x] 카테고리별 필터링 ✅
+- [x] `app/(public)/notices/[id]/page.tsx` (상세) ✅
+  - [x] 공지사항 상세 내용 표시 ✅
+  - [x] 목록으로 돌아가기 버튼 ✅
+  - [x] 공유 기능 (사용자 권한) ✅
+- [x] 공지사항 권한 시스템 ✅
+  - [x] `lib/utils/permissions.ts` - 권한 체크 유틸리티 ✅
+  - [x] 사용자: 열람, 공유 권한 ✅
+  - [x] 관리자/직원: CRUD 모든 기능 ✅
+- [x] `app/(admin)/notices/page.tsx` (관리자용 공지사항 관리) ✅
+- [x] `components/features/admin/notices/NoticeList.tsx` ✅
+  - [x] 공지사항 목록 표시 ✅
+  - [x] 수정/삭제 기능 ✅
+- [x] `components/features/admin/notices/NoticeCreateDialog.tsx` ✅
+  - [x] 공지사항 작성 폼 ✅
+- [x] `components/features/admin/notices/NoticeEditDialog.tsx` ✅
+  - [x] 공지사항 수정 폼 ✅
+- [x] `components/features/notices/NoticeShareButton.tsx` ✅
+  - [x] 공유 기능 (Web Share API, 링크 복사) ✅
+- [x] `actions/notice-actions.ts` 확장 ✅
+  - [x] `createNotice()` Server Action ✅
+  - [x] `updateNotice()` Server Action ✅
+  - [x] `deleteNotice()` Server Action ✅
+  - [x] `getAllNotices()` Server Action (관리자용) ✅
 
 ---
 

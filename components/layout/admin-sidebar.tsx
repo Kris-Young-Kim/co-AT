@@ -10,10 +10,12 @@ import {
   Package,
   Calendar,
   Settings,
+  FileText,
 } from "lucide-react";
 
 const menuItems = [
   { href: "/admin/dashboard", label: "대시보드", icon: LayoutDashboard },
+  { href: "/admin/notices-management", label: "공지사항 관리", icon: FileText },
   { href: "/admin/clients", label: "대상자 관리", icon: Users },
   { href: "/admin/inventory", label: "재고 관리", icon: Package },
   { href: "/admin/schedule", label: "일정 관리", icon: Calendar },
