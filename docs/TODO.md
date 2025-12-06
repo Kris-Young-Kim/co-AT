@@ -7,6 +7,184 @@
 
 ---
 
+## ♿ 접근성 (Accessibility) 가이드
+
+### 접근성 원칙
+
+본 프로젝트는 **WCAG 2.1 AA 수준**의 접근성을 목표로 합니다. 모든 사용자가 동등하게 서비스를 이용할 수 있도록 다음 원칙을 준수합니다:
+
+1. **인지 가능성 (Perceivable)**: 모든 정보와 UI 요소를 사용자가 인지할 수 있어야 함
+2. **조작 가능성 (Operable)**: 모든 기능을 키보드만으로도 사용할 수 있어야 함
+3. **이해 가능성 (Understandable)**: 정보와 UI 조작 방법이 명확해야 함
+4. **견고성 (Robust)**: 다양한 보조 기술과 호환되어야 함
+
+### 구현된 접근성 기능
+
+#### 1. 시각 장애인 지원 기능
+
+**화면 확대/축소**
+
+- 범위: 50% ~ 200% (기본 100%)
+- 단축키: `Alt + +` (확대), `Alt + -` (축소), `Alt + 0` (리셋)
+- 설정 저장: 로컬 스토리지에 저장되어 페이지 새로고침 후에도 유지
+- 컴포넌트: `components/accessibility/accessibility-toolbar.tsx`
+
+**고대비 모드**
+
+- 단축키: `Alt + H`
+- 기능: 배경과 텍스트의 대비를 극대화하여 가독성 향상
+- 설정 저장: 로컬 스토리지에 저장
+- CSS: `app/globals.css`의 `.high-contrast` 클래스
+
+**음성 출력 (TTS)**
+
+- 단축키: `Alt + S`
+- 기능: 페이지 전체 텍스트를 음성으로 읽어줌
+- 언어: 한국어 (ko-KR)
+- 속도: 0.9배속 (조정 가능)
+- 기술: Web Speech API (`window.speechSynthesis`)
+
+#### 2. 지체 장애인 지원 기능
+
+**키보드 스캔 모드**
+
+- 단축키: `Alt + K` (활성화/비활성화)
+- 기능: Tab 키로 모든 포커스 가능한 요소를 순차적으로 탐색
+- 탐색: `Tab` (다음), `Shift + Tab` (이전), `Esc` (종료)
+- 자동 스크롤: 포커스된 요소가 화면 중앙에 오도록 자동 스크롤
+- 컴포넌트: `components/accessibility/keyboard-navigator.tsx`
+
+**키보드 네비게이션**
+
+- 모든 인터랙티브 요소는 키보드로 접근 가능
+- 포커스 표시 강화: 3px 두께의 primary 색상 outline
+- 논리적 탭 순서: 시각적 순서와 동일하게 구성
+- CSS: `app/globals.css`의 `*:focus-visible` 스타일
+
+#### 3. 접근성 툴바
+
+- 위치: 화면 우측 하단 고정
+- 열기/닫기: `Alt + A` 또는 버튼 클릭
+- 기능: 화면 확대/축소, 고대비 모드, 음성 출력을 한 곳에서 제어
+- 컴포넌트: `components/accessibility/accessibility-toolbar.tsx`
+
+### 개발 가이드라인
+
+#### HTML 시맨틱 태그 사용
+
+```tsx
+// ✅ 좋은 예
+<nav aria-label="주요 메뉴">
+  <ul>
+    <li><a href="/services">주요사업</a></li>
+  </ul>
+</nav>
+
+// ❌ 나쁜 예
+<div onClick={...}>주요사업</div>
+```
+
+#### ARIA 레이블 추가
+
+```tsx
+// ✅ 좋은 예
+<button aria-label="메뉴 열기">
+  <MenuIcon />
+</button>
+
+// ✅ 아이콘만 있는 버튼은 반드시 aria-label 필요
+<button aria-label="검색">
+  <SearchIcon />
+</button>
+```
+
+#### 이미지 alt 텍스트
+
+```tsx
+// ✅ 좋은 예
+<img src="..." alt="보조기기센터 건물 외관" />
+
+// ❌ 장식용 이미지는 빈 alt
+<img src="..." alt="" role="presentation" />
+```
+
+#### 폼 접근성
+
+```tsx
+// ✅ 좋은 예
+<label htmlFor="name">이름</label>
+<input id="name" aria-describedby="name-error" />
+{error && <span id="name-error" role="alert">{error}</span>}
+```
+
+#### 키보드 이벤트 처리
+
+```tsx
+// ✅ 좋은 예
+<button
+  onClick={handleClick}
+  onKeyDown={(e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  }}
+>
+  클릭
+</button>
+```
+
+#### 색상 대비
+
+- 일반 텍스트: 최소 4.5:1 대비율
+- 큰 텍스트 (18pt 이상): 최소 3:1 대비율
+- 인터랙티브 요소: 최소 3:1 대비율
+
+#### 포커스 관리
+
+```tsx
+// ✅ 포커스 트랩 (모달 등)
+useEffect(() => {
+  const firstFocusable = modalRef.current?.querySelector(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+  ) as HTMLElement;
+  firstFocusable?.focus();
+}, []);
+```
+
+### 테스트 체크리스트
+
+#### 키보드 테스트
+
+- [ ] Tab 키로 모든 인터랙티브 요소 접근 가능
+- [ ] Shift + Tab으로 역방향 탐색 가능
+- [ ] Enter/Space로 버튼 클릭 가능
+- [ ] Esc로 모달/드롭다운 닫기 가능
+- [ ] 화살표 키로 메뉴/리스트 탐색 가능
+
+#### 스크린 리더 테스트
+
+- [ ] NVDA (Windows) 또는 VoiceOver (Mac)로 테스트
+- [ ] 모든 이미지에 적절한 alt 텍스트
+- [ ] 폼 요소에 레이블 연결
+- [ ] 에러 메시지가 스크린 리더로 읽힘
+- [ ] 페이지 구조가 논리적으로 읽힘
+
+#### 시각 테스트
+
+- [ ] 고대비 모드에서 모든 요소가 명확히 보임
+- [ ] 화면 확대 200%에서도 모든 기능 사용 가능
+- [ ] 색상만으로 정보를 전달하지 않음 (아이콘/텍스트 병행)
+
+### 참고 자료
+
+- [WCAG 2.1 가이드라인](https://www.w3.org/WAI/WCAG21/quickref/)
+- [WebAIM 접근성 체크리스트](https://webaim.org/standards/wcag/checklist)
+- [MDN 접근성 가이드](https://developer.mozilla.org/ko/docs/Web/Accessibility)
+- [한국형 웹 콘텐츠 접근성 지침 2.1](https://www.wah.or.kr/)
+
+---
+
 ## 📊 문서 분석 요약
 
 ### 1. 프로젝트 핵심 목표
@@ -568,11 +746,27 @@
 - [ ] 터치 제스처 최적화
 - [ ] 모바일 하단 네비게이션 적용
 
-### 8.2 접근성 (A11y)
+### 8.2 접근성 (A11y) ✅
 
-- [ ] 키보드 네비게이션 지원
-- [ ] 스크린 리더 대응 (aria-label)
-- [ ] 색상 대비 검증
+- [x] 접근성 툴바 컴포넌트 생성 (`components/accessibility/accessibility-toolbar.tsx`) ✅
+  - [x] 화면 확대/축소 기능 (50% ~ 200%, 기본 100%) ✅
+  - [x] 고대비 모드 전환 기능 ✅
+  - [x] 음성 출력 기능 (TTS, Web Speech API) ✅
+  - [x] 키보드 단축키 지원 (Alt + A: 열기/닫기, Alt + +/-: 확대/축소, Alt + 0: 리셋, Alt + H: 고대비, Alt + S: 음성) ✅
+  - [x] 설정 로컬 스토리지 저장 ✅
+- [x] 키보드 네비게이션 컴포넌트 생성 (`components/accessibility/keyboard-navigator.tsx`) ✅
+  - [x] 스캔 모드 기능 (Alt + K: 활성화/비활성화) ✅
+  - [x] Tab 키로 모든 포커스 가능한 요소 순차 탐색 ✅
+  - [x] Shift + Tab으로 역방향 탐색 ✅
+  - [x] 포커스된 요소 자동 스크롤 ✅
+- [x] 고대비 모드 CSS 추가 (`app/globals.css`) ✅
+- [x] 키보드 포커스 강화 스타일 추가 ✅
+- [x] 스크린 리더 전용 클래스 추가 (`.sr-only`) ✅
+- [ ] 모든 인터랙티브 요소에 aria-label 추가
+- [ ] 모든 이미지에 alt 텍스트 추가
+- [ ] 폼 요소에 aria-describedby 연결
+- [ ] 색상 대비 검증 (WCAG AA 기준)
+- [ ] 스크린 리더 테스트 (NVDA, JAWS)
 
 ---
 
