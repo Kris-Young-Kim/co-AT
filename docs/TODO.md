@@ -1,0 +1,861 @@
+# 📋 Co-AT 프로젝트 개발 TODO
+
+> **프로젝트**: GWATC 통합 케어 플랫폼 (Co-AT)  
+> **비전**: "행정은 AI에게, 사람은 클라이언트에게"  
+> **기술 스택**: Next.js 15, Clerk, Supabase, Gemini Flash  
+> **작성일**: 2025. 12. 06
+
+---
+
+## 📊 문서 분석 요약
+
+### 1. 프로젝트 핵심 목표
+
+- **5대 핵심 사업 디지털화**: 상담, 체험, 맞춤형, 사후관리, 교육홍보
+- **O2O 플랫폼**: 온라인 신청 → 오프라인 서비스 → 온라인 결과 관리
+- **AI 업무 자동화**: Gemini를 활용한 상담기록 자동 생성, 상담 챗봇 자동 응대대
+- **데이터 기반 운영**: 재고 관리, 실적 통계, 대상자 이력 통합 관리
+
+### 2. 데이터베이스 스키마 분석 (co-AT.sql 기준)
+
+#### 🔗 Supabase MCP 연동 정보
+
+- **MCP 서버**: `supabase-co-AT`
+- **Project Ref**: `uyjbndiwyddjyjkdfuyi`
+- **접근 토큰**: `sbp_31e2d9d8e62851f8b5b15e9fe62e11e42acacdec`
+- **모드**: Read-only (스키마 조회용)
+- **타입 생성 명령어**: `npm run gen:types` (project-ref 사용)
+
+#### ✅ 현재 구현된 테이블 (7개)
+
+1. **profiles** - 직원/사용자 프로필 (Clerk 연동)
+
+   - `id` (PK, UUID)
+   - `clerk_user_id` (UK, text): ✅ UNIQUE 제약조건 설정됨
+   - `email` (text, nullable)
+   - `full_name` (text, nullable)
+   - `role` (text, default 'staff', CHECK): ✅ user | staff | manager
+   - `team` (text, nullable): 소속 팀
+   - `created_at` (timestamptz, default now())
+   - `updated_at` (timestamptz, default now()): ✅ 추가됨
+
+2. **clients** - 대상자 정보
+
+   - `id` (PK, UUID)
+   - `name` (text, NOT NULL)
+   - `registration_number` (text, nullable): 등록번호
+   - `birth_date` (date, nullable)
+   - `gender` (text, nullable, CHECK): ✅ '남' | '여'
+   - `contact` (text, nullable): 본인 연락처
+   - `guardian_contact` (text, nullable): 보호자 연락처
+   - `address` (text, nullable)
+   - `housing_type` (text, nullable): 주거형태
+   - `has_elevator` (boolean, default false): ✅ 기본값 설정됨
+   - `obstacles` (text, nullable): 장애물
+   - `economic_status` (text, nullable): 경제상황
+   - `disability_type` (text, nullable): 장애유형
+   - `disability_grade` (text, nullable): 장애정도
+   - `disability_cause` (text, nullable): 장애발생원인
+   - `disability_onset_date` (date, nullable): 장애발생시기
+   - `created_at` (timestamptz, default now())
+   - `updated_at` (timestamptz, default now()): ✅ 추가됨
+
+3. **inventory** - 재고/자산 관리
+
+   - `id` (PK, UUID)
+   - `name` (text, NOT NULL): 기기명
+   - `asset_code` (text, nullable): 자산번호
+   - `category` (text, nullable): 기기 카테고리
+   - `status` (text, default '보관', CHECK): ✅ 보관 | 대여중 | 수리중 | 소독중 | 폐기
+   - `created_at` (timestamptz, default now())
+   - `updated_at` (timestamptz, default now()): ✅ 추가됨
+
+4. **applications** - 통합 신청서 (5대 사업 중심)
+
+   - `id` (PK, UUID)
+   - `client_id` (uuid, NOT NULL, FK → clients.id): ✅ 올바르게 설정됨
+   - `status` (text, default '접수', CHECK): 접수 | 배정 | 진행 | 완료 | 반려
+   - `service_year` (integer, nullable): 서비스 연도
+   - `created_at` (timestamptz, default now())
+   - `updated_at` (timestamptz, default now()): ✅ 추가됨
+
+5. **intake_records** - 상담 기록지 (첨부 19)
+
+   - `id` (PK, UUID)
+   - `application_id` (uuid, NOT NULL, FK → applications.id): ✅ 올바르게 설정됨
+   - `consultant_id` (uuid, nullable, FK → profiles.id): 상담자
+   - `consult_date` (date, default CURRENT_DATE): 상담일
+   - `body_function_data` (jsonb, nullable): 신체 기능 체크 (관절가동범위 등)
+   - `cognitive_sensory_check` (text[], nullable): ✅ ARRAY 타입으로 개선됨
+   - `consultation_content` (text, nullable): 상담 내용 및 이용자욕구
+   - `current_devices` (jsonb, nullable): 보유 보조기기 목록
+   - `main_activity_place` (text, nullable): 주요 활동 장소
+   - `activity_posture` (text, nullable): 활동 시 자세
+   - `main_supporter` (text, nullable): 활동 주지원자
+   - `environment_limitations` (text, nullable): 환경 제한 사항
+   - `created_at` (timestamptz, default now())
+   - `updated_at` (timestamptz, default now()): ✅ 추가됨
+
+6. **process_logs** - 서비스 진행 기록지 (첨부 20)
+
+   - `id` (PK, UUID)
+   - `application_id` (uuid, NOT NULL, FK → applications.id): ✅ 올바르게 설정됨
+   - `staff_id` (uuid, nullable, FK → profiles.id): ✅ 올바르게 설정됨
+   - `log_date` (date, default CURRENT_DATE): 기록일
+   - `service_area` (text, nullable): 서비스 영역
+   - `funding_source` (text, nullable): 지원 구분 (공적급여 | 민간급여 | 센터지원)
+   - `process_step` (text, nullable): 과정 (상담·평가 | 시험적용 | 대여 | 제작 등)
+   - `item_name` (text, nullable): 품목명
+   - `content` (text, nullable): 내용
+   - `remarks` (text, nullable): 비고
+   - `created_at` (timestamptz, default now())
+   - `updated_at` (timestamptz, default now()): ✅ 추가됨
+
+7. **domain_assessments** - 보조기기 서비스 평가지 (첨부 21)
+   - `id` (PK, UUID)
+   - `application_id` (uuid, NOT NULL, FK → applications.id): ✅ 올바르게 설정됨
+   - `evaluator_id` (uuid, nullable, FK → profiles.id): ✅ 올바르게 설정됨
+   - `evaluation_date` (date, default CURRENT_DATE): 평가일
+   - `domain_type` (text, NOT NULL): WC(휠체어) | ADL | S(감각) | SP(자세) | EC(환경개조) | CA(컴퓨터) | L(레저) | AAC | AM(자동차)
+   - `evaluation_data` (jsonb, nullable): 영역별 평가 데이터
+   - `measurements` (jsonb, nullable): 신체 치수 측정 데이터
+   - `evaluator_opinion` (text, nullable): 평가자의견
+   - `recommended_device` (text, nullable): 추천 보조기기
+   - `future_plan` (text, nullable): 향후 계획
+   - `created_at` (timestamptz, default now())
+   - `updated_at` (timestamptz, default now()): ✅ 추가됨
+
+#### ⚠️ 스키마 개선 필요사항 (우선순위)
+
+**✅ 이미 완료된 개선 사항** (Supabase MCP 확인 결과)
+
+1. **Foreign Key 컬럼명 정리** ✅
+
+   - ✅ `applications.client_id` - 올바르게 설정됨 (`id2` 제거됨)
+   - ✅ `intake_records.application_id` - 올바르게 설정됨 (`id2` 제거됨)
+   - ✅ `process_logs.application_id` - 올바르게 설정됨 (`id2` 제거됨)
+   - ✅ `process_logs.staff_id` - 올바르게 설정됨 (`id3` 제거됨)
+   - ✅ `domain_assessments.application_id` - 올바르게 설정됨 (`id2` 제거됨)
+   - ✅ `domain_assessments.evaluator_id` - 올바르게 설정됨 (`id3` 제거됨)
+
+2. **타임스탬프 필드** ✅
+
+   - ✅ 모든 테이블에 `updated_at` 필드 추가됨
+   - ✅ `created_at` 기본값 `now()` 설정됨
+
+3. **데이터 무결성 강화** ✅
+
+   - ✅ `profiles.clerk_user_id` UNIQUE 제약조건 추가
+   - ✅ `profiles.role` CHECK 제약조건 (`'user' | 'staff' | 'manager'`)
+   - ✅ `clients.gender` CHECK 제약조건 (`'남' | '여'`)
+   - ✅ `inventory.status` CHECK 제약조건 (`'보관' | '대여중' | '수리중' | '소독중' | '폐기'`)
+   - ✅ `applications.status` CHECK 제약조건 (`'접수' | '배정' | '진행' | '완료' | '반려'`)
+
+4. **타입 개선** ✅
+   - ✅ `intake_records.cognitive_sensory_check`: `text` → `text[]` (ARRAY)
+
+**🔴 긴급 (아직 필요한 개선 사항)**
+
+2. **applications 테이블 필드 추가** ✅
+
+   - [x] `category` 필드 추가: `text` 타입, `'consult' | 'experience' | 'custom' | 'aftercare' | 'education'` ✅
+   - [x] `sub_category` 필드 추가: `text` 타입, `'repair' | 'rental' | 'custom_make' | 'visit' | 'exhibition' | 'cleaning' | 'reuse'` 등 ✅
+   - [x] `desired_date` 필드 추가: `date` 타입 (희망 서비스 일자) ✅
+   - [x] `assigned_staff_id` 필드 추가: `uuid` 타입, FK → profiles.id (배정된 담당자) ✅
+
+   > 📝 **마이그레이션 파일**: `migrations/002_add_applications_fields.sql` 생성 완료  
+   > ⚠️ **실행 필요**: Supabase Dashboard SQL Editor에서 마이그레이션 실행 후 `npm run gen:types` 실행
+
+3. **inventory 테이블 필드 추가** ✅
+
+   - [x] `is_rental_available` 필드 추가: `boolean` 타입, default `true` (대여 가능 여부) ✅
+   - [x] `purchase_date` 필드 추가: `date` 타입 (구입일) ✅
+   - [x] `purchase_price` 필드 추가: `numeric` 타입 (구입가격) ✅
+   - [x] `manufacturer` 필드 추가: `text` 타입 (제조사) ✅
+   - [x] `model` 필드 추가: `text` 타입 (모델명) ✅
+   - [x] `qr_code` 필드 추가: `text` 타입 (QR 코드 값) ✅
+
+   > 📝 **마이그레이션 파일**: `migrations/003_add_inventory_fields.sql` 생성 완료  
+   > ⚠️ **실행 필요**: Supabase Dashboard SQL Editor에서 마이그레이션 실행 후 `npm run gen:types` 실행
+
+**🟡 중요 (Phase 1 완료 전)**
+
+4. **service_logs 테이블 생성** ✅ (서비스 제공 상세 기록 - 상담 기록지, 서비스 진행 기록지, 평가지 양식 반영)
+
+   - [x] `id` (PK, UUID) ✅
+   - [x] `application_id` (FK → applications.id, NOT NULL) ✅
+   - [x] `staff_id` (FK → profiles.id, nullable) ✅
+   - [x] `inventory_id` (FK → inventory.id, nullable): 관련 기기 ✅
+   - [x] `service_date` (date, default CURRENT_DATE): 서비스 제공 일자 ✅
+   - [x] `service_type` (text, nullable): 서비스 유형 (repair, custom_make, rental, education 등) ✅
+   - [x] `service_area` (text, nullable): 서비스 영역 ✅
+   - [x] `funding_source` (text, nullable): 지원 구분 (public, private, center, other) ✅
+   - [x] `funding_detail` (text, nullable): 상세 재원 정보 ✅
+   - [x] `work_type` (text, nullable): 작업 유형 (상담·평가, 시험적용, 대여, 제작 등) ✅
+   - [x] `item_name` (text, nullable): 품목명 ✅
+   - [x] `work_description` (text, nullable): 작업 내용 설명 ✅
+   - [x] `work_result` (text, nullable): 작업 결과 ✅
+   - [x] `cost_total` (numeric, nullable): 수리/제작비 총액 ✅
+   - [x] `cost_materials` (numeric, nullable): 재료비 ✅
+   - [x] `cost_labor` (numeric, nullable): 인건비 ✅
+   - [x] `cost_other` (numeric, nullable): 기타 비용 ✅
+   - [x] `images_before` (text[], nullable): 작업 전 사진 URL 배열 ✅
+   - [x] `images_after` (text[], nullable): 작업 후 사진 URL 배열 ✅
+   - [x] `remarks` (text, nullable): 비고 ✅
+   - [x] `notes` (text, nullable): 추가 메모 ✅
+   - [x] `created_at` (timestamptz, default now()) ✅
+   - [x] `updated_at` (timestamptz, default now()) ✅
+
+   > 📝 **마이그레이션 파일**: `migrations/004_create_service_logs.sql` 생성 완료  
+   > ⚠️ **실행 필요**: Supabase Dashboard SQL Editor에서 마이그레이션 실행 후 `npm run gen:types` 실행  
+   > 📋 **참고**: 상담 기록지(첨부 19), 서비스 진행 기록지(첨부 20), 평가지(첨부 21) 양식 기반으로 설계됨
+
+5. **schedules 테이블 생성** ✅ (일정 관리)
+
+   - [x] `id` (PK, UUID) ✅
+   - [x] `application_id` (FK → applications.id, nullable) ✅
+   - [x] `staff_id` (FK → profiles.id, NOT NULL) ✅
+   - [x] `client_id` (FK → clients.id, nullable) ✅
+   - [x] `schedule_type` (text, NOT NULL): 'visit' | 'consult' | 'assessment' | 'delivery' | 'pickup' ✅
+   - [x] `scheduled_date` (date, NOT NULL) ✅
+   - [x] `scheduled_time` (time, nullable) ✅
+   - [x] `address` (text, nullable): 방문 주소 ✅
+   - [x] `notes` (text, nullable): 일정 메모 ✅
+   - [x] `status` (text, default 'scheduled'): 'scheduled' | 'completed' | 'cancelled' ✅
+   - [x] `created_at` (timestamptz, default now()) ✅
+   - [x] `updated_at` (timestamptz, default now()) ✅
+
+   > 📝 **마이그레이션 파일**: `migrations/005_create_schedules.sql` 생성 완료  
+   > ⚠️ **실행 필요**: Supabase Dashboard SQL Editor에서 마이그레이션 실행 후 `npm run gen:types` 실행
+
+**🟢 개선 (Phase 2 이후)**
+
+6. **notices 테이블 생성** ✅ (공지사항)
+
+   - [x] `id` (PK, UUID) ✅
+   - [x] `title` (text, NOT NULL) ✅
+   - [x] `content` (text, NOT NULL) ✅
+   - [x] `category` (text, nullable): 'notice' | 'support' | 'event' ✅
+   - [x] `is_pinned` (boolean, default false) ✅
+   - [x] `created_by` (FK → profiles.id, nullable) ✅
+   - [x] `created_at` (timestamptz, default now()) ✅
+   - [x] `updated_at` (timestamptz, nullable) ✅
+
+   > 📝 **마이그레이션 파일**: `migrations/006_create_notices.sql` 생성 완료  
+   > ⚠️ **실행 필요**: Supabase Dashboard SQL Editor에서 마이그레이션 실행 후 `npm run gen:types` 실행
+
+7. **rentals 테이블 생성** ✅ (대여 관리)
+
+   - [x] `id` (PK, UUID) ✅
+   - [x] `application_id` (FK → applications.id, NOT NULL) ✅
+   - [x] `inventory_id` (FK → inventory.id, NOT NULL) ✅
+   - [x] `client_id` (FK → clients.id, NOT NULL) ✅
+   - [x] `rental_start_date` (date, NOT NULL) ✅
+   - [x] `rental_end_date` (date, NOT NULL) ✅
+   - [x] `return_date` (date, nullable): 실제 반납일 ✅
+   - [x] `extension_count` (integer, default 0): 연장 횟수 ✅
+   - [x] `status` (text, default 'rented'): 'rented' | 'returned' | 'overdue' | 'damaged' ✅
+   - [x] `created_at` (timestamptz, default now()) ✅
+   - [x] `updated_at` (timestamptz, default now()) ✅
+
+   > 📝 **마이그레이션 파일**: `migrations/007_create_rentals.sql` 생성 완료  
+   > ⚠️ **실행 필요**: Supabase Dashboard SQL Editor에서 마이그레이션 실행 후 `npm run gen:types` 실행
+
+---
+
+## 🚀 Phase 1: 기반 구축 (Foundation) - 2주
+
+### 1.1 프로젝트 초기 설정
+
+- [ ] Next.js 15 프로젝트 생성 (`create-next-app`)
+- [ ] TypeScript 설정 (strict mode)
+- [ ] Tailwind CSS + PostCSS 설정
+- [ ] ESLint 설정
+- [ ] `.env.local` 템플릿 생성
+- [ ] `.gitignore` 설정 (`.env.local` 제외)
+
+### 1.2 인증 시스템 (Clerk)
+
+- [ ] Clerk 계정 생성 및 프로젝트 설정
+- [ ] Clerk SDK 설치 및 설정
+- [ ] `middleware.ts` 작성 (인증 체크, 라우팅 보호)
+- [ ] Route Groups 설정: `(auth)`, `(public)`, `(portal)`, `(admin)`
+- [ ] Clerk Webhook 설정 (`/api/webhooks/clerk/route.ts`)
+  - [ ] 유저 생성 시 Supabase `profiles` 테이블 동기화
+  - [ ] 유저 삭제 시 정리 로직
+
+### 1.3 데이터베이스 설정 (Supabase)
+
+- [ ] Supabase 프로젝트 확인
+  - [ ] Project Ref: `uyjbndiwyddjyjkdfuyi`
+  - [ ] MCP 서버 연결 확인 (`supabase-co-AT`)
+  - [ ] Supabase Dashboard에서 스키마 확인
+- [ ] `co-AT.sql` 스키마 실행 (개선사항 반영)
+  - [ ] 기존 스키마 백업
+  - [ ] 마이그레이션 스크립트 실행 (`migrations/001_fix_foreign_keys.sql`)
+- [ ] RLS (Row Level Security) 정책 작성
+  - [ ] `profiles`: 본인 프로필만 조회 가능
+  - [ ] `clients`: staff 이상만 조회 가능
+  - [ ] `applications`: 본인 신청서 또는 staff 이상 조회 가능
+  - [ ] `inventory`: staff 이상만 조회 가능
+  - [ ] `service_logs`: staff 이상만 조회 가능
+  - [ ] `schedules`: 본인 일정 또는 staff 이상 조회 가능
+- [ ] 타입 생성 스크립트 설정
+  - [ ] `package.json`에 스크립트 추가: `"gen:types": "npx -y supabase gen types typescript --project-id uyjbndiwyddjyjkdfuyi --schema public > types/database.types.ts"`
+  - [ ] `npm run gen:types` 실행하여 타입 생성
+- [ ] `lib/supabase/client.ts` 작성 (Client Component용)
+- [ ] `lib/supabase/server.ts` 작성 (Server Component용, Cookie 기반)
+
+### 1.4 UI 기반 설정
+
+- [ ] shadcn/ui 초기화 (`npx shadcn-ui@latest init`)
+- [ ] 기본 컴포넌트 설치: Button, Card, Input, Dialog, Calendar
+- [ ] `app/globals.css` 설정 (Pretendard 폰트 CDN 추가)
+- [ ] Tailwind Config 설정 (색상 토큰, Spacing-First 준수)
+- [ ] `lib/utils.ts` 작성 (`cn()` 함수)
+
+### 1.5 레이아웃 컴포넌트
+
+- [ ] `app/layout.tsx` (Root Layout, Providers)
+- [ ] `components/layout/public-header.tsx` (대민용 GNB)
+- [ ] `components/layout/public-footer.tsx`
+- [ ] `components/layout/admin-sidebar.tsx` (직원용 사이드바)
+- [ ] `components/layout/mobile-bottom-nav.tsx` (모바일 하단 탭)
+
+### 1.6 공통 컴포넌트
+
+- [ ] `components/common/logo.tsx` (GWATC 로고)
+- [ ] `components/common/loading-spinner.tsx`
+- [ ] `components/common/status-badge.tsx` (접수/완료 등 상태 뱃지)
+- [ ] `components/common/file-uploader.tsx` (이미지 업로드)
+
+---
+
+## 🎯 Phase 2: Public Zone (대민 서비스) - 2주
+
+### 2.1 랜딩 페이지
+
+- [ ] `app/(public)/page.tsx` 작성
+- [ ] `components/features/landing/HomeHeroSection.tsx`
+  - [ ] 메인 비주얼 및 슬로건
+- [ ] `components/features/landing/HomeQuickMenuGrid.tsx`
+  - [ ] 5대 사업 바로가기 카드 (gap-4 md:gap-6)
+- [ ] `components/features/landing/HomeNoticeTabs.tsx`
+  - [ ] 공지사항/지원사업 탭
+- [ ] `components/features/landing/HomeGallerySlider.tsx`
+  - [ ] 보조기기 유튜브 영상 갤러리
+- [ ] `components/features/landing/HomePublicCalendar.tsx`
+  - [ ] 공개 캘린더 컴포넌트 (월간 뷰, shadcn/ui Calendar 활용)
+  - [ ] 견학 일정, 교육 일정 등 대민 공개 일정 표시
+  - [ ] 일정 클릭 시 상세 정보 모달 표시 (일정 타입, 시간, 장소, 설명)
+  - [ ] 견학 예약 기능 (로그인 사용자만 예약 가능, `createApplication()` 호출)
+- [ ] `actions/schedule-actions.ts` 작성
+  - [ ] `getPublicSchedules()` Server Action - 공개 일정 조회 (schedule_type이 'exhibition' 또는 'education'인 일정)
+  - [ ] date-fns 라이브러리 활용 (날짜 포맷팅 및 계산)
+
+### 2.2 서비스 신청 시스템
+
+- [ ] `app/(portal)/apply/page.tsx` 작성
+- [ ] `components/features/application/ServiceApplicationWizard.tsx`
+  - [ ] 단계 관리 컨테이너 (Zustand Store 연동)
+- [ ] `components/features/application/ServiceCategorySelector.tsx`
+  - [ ] 5대 사업 카테고리 선택 그리드
+- [ ] `components/features/application/wizard-step-nav.tsx`
+  - [ ] 단계 표시기 (Step 1-2-3)
+- [ ] `components/features/application/forms/` 폼 컴포넌트
+  - [ ] `ServiceRepairForm.tsx` (수리 신청)
+  - [ ] `ServiceRentalForm.tsx` (대여 신청)
+  - [ ] `ServiceConsultForm.tsx` (상담 신청)
+  - [ ] `ServiceCustomForm.tsx` (맞춤제작 신청)
+- [ ] `lib/validators.ts` 작성
+  - [ ] Zod 스키마 정의 (모든 신청 폼 검증)
+- [ ] `actions/application-actions.ts` 작성
+  - [ ] `createApplication()` Server Action
+- [ ] `components/features/application/success-modal.tsx`
+  - [ ] 신청 완료 모달
+
+### 2.3 마이페이지 (Portal)
+
+- [ ] `app/(portal)/mypage/page.tsx` 작성
+- [ ] `components/features/portal/ClientTimelineList.tsx`
+  - [ ] 신청 이력 타임라인 리스트
+- [ ] `components/features/portal/ClientTimelineItem.tsx`
+  - [ ] 개별 이력 카드 (상태별 색상 분기)
+- [ ] `components/features/portal/ClientRentStatus.tsx`
+  - [ ] 대여 중인 기기 반납 D-Day 표시
+
+### 2.4 공지사항
+
+- [ ] `app/(public)/notices/page.tsx` (목록)
+- [ ] `app/(public)/notices/[id]/page.tsx` (상세)
+
+---
+
+## 🏢 Phase 3: Admin Zone (업무 시스템) - 3주
+
+### 3.1 통합 대시보드
+
+- [ ] `app/(admin)/dashboard/page.tsx` 작성
+- [ ] `components/features/dashboard/AdminDashboardKpi.tsx`
+  - [ ] 오늘의 실적 요약 카드 (신규 접수, 진행 중, 완료)
+- [ ] `components/features/dashboard/AdminNewRequestList.tsx`
+  - [ ] 신규 접수 건 리스트 (최신순)
+- [ ] `components/features/dashboard/AdminTodaySchedule.tsx`
+  - [ ] 오늘의 일정 (방문 예정)
+- [ ] React Query 설정 (`@tanstack/react-query`)
+  - [ ] `useDashboardStats()` 훅
+
+### 3.2 대상자 CRM
+
+- [ ] `app/(admin)/clients/page.tsx` 작성 (검색 및 리스트)
+- [ ] `app/(admin)/clients/[id]/page.tsx` 작성 (상세 정보)
+- [ ] `components/features/crm/ClientTable.tsx`
+  - [ ] 대상자 목록 (이름/생년월일 검색)
+  - [ ] 필터링 (장애유형, 서비스 이력)
+- [ ] `components/features/crm/ClientProfileCard.tsx`
+  - [ ] 대상자 기본 정보 표시
+- [ ] `components/features/crm/ClientHistoryTable.tsx`
+  - [ ] 서비스 이용 이력 타임라인 (5대 사업 통합)
+- [ ] `actions/client-actions.ts` 작성
+  - [ ] `searchClients()`, `getClientById()`, `updateClient()`
+
+### 3.3 상담 기록 시스템
+
+- [ ] `components/features/intake/IntakeRecordForm.tsx`
+  - [ ] 상담 기록지 입력 폼 (첨부 19 양식)
+  - [ ] 신체 기능 체크 (관절가동범위)
+  - [ ] 인지/감각 기능 체크박스
+  - [ ] 보유 보조기기 목록
+- [ ] `actions/intake-actions.ts` 작성
+  - [ ] `createIntakeRecord()` Server Action
+
+### 3.4 평가 시스템
+
+- [ ] `components/features/assessment/DomainAssessmentForm.tsx`
+  - [ ] 영역별 평가지 선택 (WC, ADL, S, SP, EC, CA, L, AAC, AM)
+  - [ ] 각 영역별 평가 폼 컴포넌트
+    - [ ] `WheelchairAssessmentForm.tsx` (휠체어)
+    - [ ] `ADLAssessmentForm.tsx` (일상생활동작)
+    - [ ] `SensoryAssessmentForm.tsx` (감각)
+    - [ ] `PostureAssessmentForm.tsx` (자세)
+    - [ ] `EnvironmentAssessmentForm.tsx` (환경개조)
+    - [ ] `ComputerAssessmentForm.tsx` (컴퓨터접근)
+    - [ ] `LeisureAssessmentForm.tsx` (레저)
+    - [ ] `AACAssessmentForm.tsx` (보완대체의사소통)
+    - [ ] `VehicleAssessmentForm.tsx` (자동차개조)
+- [ ] `actions/assessment-actions.ts` 작성
+  - [ ] `createDomainAssessment()` Server Action
+
+### 3.5 서비스 진행 기록
+
+- [ ] `components/features/process/ProcessLogForm.tsx`
+  - [ ] 서비스 진행 기록지 입력 (첨부 20 양식)
+  - [ ] 과정 선택 (상담·평가, 시험적용, 대여, 제작 등)
+  - [ ] 지원 구분 선택 (공적급여, 민간급여, 센터지원)
+- [ ] `actions/process-actions.ts` 작성
+  - [ ] `createProcessLog()` Server Action
+
+---
+
+## 🤖 Phase 4: AI 기능 구현 - 2주
+
+### 4.1 AI SOAP 노트 생성
+
+- [ ] Google AI Studio API Key 발급
+- [ ] `lib/gemini/client.ts` 작성
+- [ ] `actions/ai-actions.ts` 작성
+  - [ ] `generateSoapNote(text: string)` Server Action
+  - [ ] System Prompt 작성 (SOAP Note JSON 형식 강제)
+  - [ ] 에러 핸들링
+- [ ] `components/features/soap-note/SoapAudioRecorder.tsx`
+  - [ ] 음성 녹음 컴포넌트 (Web Audio API)
+  - [ ] STT 변환 (선택사항: Web Speech API 또는 Gemini STT)
+- [ ] `components/features/soap-note/SoapNoteEditor.tsx`
+  - [ ] SOAP 텍스트 에디터 (S, O, A, P 섹션)
+  - [ ] AI 생성 버튼 연동
+  - [ ] Streaming UI 패턴 (로딩 중 Skeleton)
+- [ ] `components/features/soap-note/AiGenerateButton.tsx`
+  - [ ] Gemini 호출 버튼
+  - [ ] 로딩 상태 표시
+
+### 4.2 RAG 챗봇 (선택사항)
+
+- [ ] 운영 지침서 벡터화 (Supabase pgvector)
+- [ ] `actions/rag-actions.ts` 작성
+  - [ ] 문서 검색 및 컨텍스트 결합
+- [ ] `components/features/chat/RegulationChatbot.tsx`
+  - [ ] 규정 검색 챗봇 UI
+
+---
+
+## 📦 Phase 5: 재고 관리 시스템 - 1주
+
+### 5.1 재고 관리
+
+- [ ] `app/(admin)/inventory/page.tsx` 작성
+- [ ] `components/features/inventory/InventoryList.tsx`
+  - [ ] 기기 목록 (상태별 필터링)
+  - [ ] 검색 기능
+- [ ] `components/features/inventory/InventoryStatusToggle.tsx`
+  - [ ] 대여/보관 상태 변경
+- [ ] `components/features/inventory/QRCodeGenerator.tsx`
+  - [ ] QR 코드 생성 (기기별)
+- [ ] `components/features/inventory/QRCodeScanner.tsx`
+  - [ ] QR 코드 스캔 (입/출고 처리)
+- [ ] `actions/inventory-actions.ts` 작성
+  - [ ] `updateInventoryStatus()` Server Action
+  - [ ] 대여 승인 시 재고 자동 차감 로직
+
+### 5.2 대여 관리
+
+- [ ] 대여 승인 시 `inventory.status` → '대여중' 변경
+- [ ] 반납 시 `inventory.status` → '보관' 변경
+- [ ] 대여 기간 만료 알림 (D-Day 계산)
+
+---
+
+## 💼 Phase 6: 비즈니스 로직 구현 - 1주
+
+### 6.1 한도 체크 로직
+
+- [ ] 수리비 10만원 한도 체크
+  - [ ] `actions/business-actions.ts` 작성
+  - [ ] `checkRepairLimit(clientId: string, amount: number)` 함수
+  - [ ] 연간 누적 수리비 계산
+  - [ ] 초과 시 경고 모달 표시
+- [ ] 맞춤제작 연 2회 횟수 제한 체크
+  - [ ] `checkCustomLimit(clientId: string)` 함수
+  - [ ] 연간 맞춤제작 횟수 계산
+  - [ ] 초과 시 경고 모달 표시
+
+### 6.2 개인정보 보유 기간 관리
+
+- [ ] 개인정보 보유 기간(5년) 만료 시 알림
+  - [ ] `actions/privacy-actions.ts` 작성
+  - [ ] 만료 예정 데이터 조회 (1개월 전 알림)
+  - [ ] 관리자 대시보드에 알림 표시
+
+---
+
+## 📅 Phase 7: 일정 관리 - 1주
+
+### 7.1 캘린더 시스템
+
+- [ ] `app/(admin)/schedule/page.tsx` 작성
+- [ ] `components/features/schedule/CalendarView.tsx`
+  - [ ] 월간/주간/일간 뷰
+  - [ ] 방문 일정 표시
+- [ ] `components/features/schedule/ScheduleForm.tsx`
+  - [ ] 일정 등록 폼
+- [ ] `actions/schedule-actions.ts` 작성
+  - [ ] `createSchedule()`, `updateSchedule()`, `deleteSchedule()`
+
+---
+
+## 🎨 Phase 8: UI/UX 개선 및 반응형 - 1주
+
+### 8.1 모바일 최적화
+
+- [ ] 모든 페이지 모바일 반응형 검토
+- [ ] 터치 제스처 최적화
+- [ ] 모바일 하단 네비게이션 적용
+
+### 8.2 접근성 (A11y)
+
+- [ ] 키보드 네비게이션 지원
+- [ ] 스크린 리더 대응 (aria-label)
+- [ ] 색상 대비 검증
+
+---
+
+## 🧪 Phase 9: 테스트 및 안정화 - 1주
+
+### 9.1 기능 테스트
+
+- [ ] 인증 플로우 테스트
+- [ ] 신청서 접수 플로우 테스트
+- [ ] AI SOAP 노트 생성 테스트
+- [ ] 재고 관리 플로우 테스트
+- [ ] 비즈니스 로직 한도 체크 테스트
+
+### 9.2 성능 최적화
+
+- [ ] 이미지 최적화 (`next/image` 사용)
+- [ ] 코드 스플리팅 검토
+- [ ] React Query 캐싱 전략 최적화
+
+### 9.3 보안 점검
+
+- [ ] RLS 정책 재검토
+- [ ] API Key 노출 방지 확인
+- [ ] XSS, CSRF 방어 확인
+
+---
+
+## 📊 Phase 10: 통계 및 보고서 - 1주
+
+### 10.1 통계 대시보드
+
+- [ ] `components/features/dashboard/StatsChart.tsx`
+  - [ ] 5대 사업별 실적 그래프
+  - [ ] 월별/연도별 통계
+- [ ] `actions/stats-actions.ts` 작성
+  - [ ] 실적 집계 쿼리
+
+### 10.2 데이터 내보내기
+
+- [ ] Excel 내보내기 기능 (xlsx 라이브러리)
+- [ ] 사업 실적 보고서 자동 생성
+
+---
+
+## 🚀 Phase 11: 배포 준비 - 1주
+
+### 11.1 환경 설정
+
+- [ ] Vercel 프로젝트 생성
+- [ ] 환경 변수 설정 (Clerk, Supabase, Gemini)
+- [ ] 도메인 연결
+
+### 11.2 CI/CD
+
+- [ ] GitHub Actions 설정 (선택사항)
+- [ ] 자동 배포 파이프라인 확인
+
+### 11.3 문서화
+
+- [ ] 사용자 매뉴얼 작성
+- [ ] 관리자 가이드 작성
+- [ ] API 문서 작성 (선택사항)
+
+---
+
+## 📝 개발 컨벤션 체크리스트
+
+### 코드 스타일
+
+- [ ] Spacing-First 정책 준수 (margin 사용 지양, padding/gap 활용)
+- [ ] 컴포넌트 네이밍: `[Domain][Role][Variant]` 형식
+- [ ] 불필요한 추상화 제거 (단순 래퍼 컴포넌트 금지)
+
+### 타입 안전성
+
+- [ ] `any` 타입 사용 금지
+- [ ] `database.types.ts` 적극 활용
+- [ ] Zod 스키마로 모든 폼 검증
+
+### Next.js 15 준수
+
+- [ ] 동적 파라미터에 `await params` 사용
+- [ ] Server Actions 활용 (API Route 최소화)
+- [ ] Server Components 우선 사용
+
+### 로깅
+
+- [ ] 핵심 기능에 로그 추가 (신청 접수, AI 생성, 재고 변경 등)
+
+---
+
+## 🔍 데이터베이스 스키마 개선 TODO
+
+### 📝 마이그레이션 스크립트 작성 필요
+
+> ⚠️ **참고**: Foreign Key 컬럼명 정리는 **이미 완료**되었습니다!  
+> 아래 스크립트는 추가 필드 및 테이블 생성에 집중합니다.
+
+다음 SQL 스크립트를 `migrations/002_add_fields_and_tables.sql` 파일로 작성:
+
+```sql
+-- ✅ Foreign Key 컬럼명 정리는 이미 완료되었습니다!
+-- 실제 데이터베이스는 이미 올바르게 설정되어 있습니다.
+
+-- 1. applications 테이블 필드 추가 ✅ (마이그레이션 파일: migrations/002_add_applications_fields.sql)
+-- ALTER TABLE applications
+--   ADD COLUMN IF NOT EXISTS category TEXT CHECK (category IN ('consult', 'experience', 'custom', 'aftercare', 'education')),
+--   ADD COLUMN IF NOT EXISTS sub_category TEXT,
+--   ADD COLUMN IF NOT EXISTS desired_date DATE,
+--   ADD COLUMN IF NOT EXISTS assigned_staff_id UUID REFERENCES profiles(id);
+
+-- 3. inventory 테이블 필드 추가 ✅ (마이그레이션 파일: migrations/003_add_inventory_fields.sql)
+-- ALTER TABLE inventory
+--   ADD COLUMN IF NOT EXISTS is_rental_available BOOLEAN DEFAULT true,
+--   ADD COLUMN IF NOT EXISTS purchase_date DATE,
+--   ADD COLUMN IF NOT EXISTS purchase_price NUMERIC,
+--   ADD COLUMN IF NOT EXISTS manufacturer TEXT,
+--   ADD COLUMN IF NOT EXISTS model TEXT,
+--   ADD COLUMN IF NOT EXISTS qr_code TEXT;
+
+-- 4. service_logs 테이블 생성 ✅ (마이그레이션 파일: migrations/004_create_service_logs.sql)
+-- 실제 양식 문서(상담 기록지, 서비스 진행 기록지, 평가지) 기반으로 설계됨
+-- CREATE TABLE IF NOT EXISTS service_logs (
+--   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--   application_id UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+--   staff_id UUID REFERENCES profiles(id),
+--   inventory_id UUID REFERENCES inventory(id),
+--   service_date DATE DEFAULT CURRENT_DATE,
+--   service_type TEXT,
+--   service_area TEXT,
+--   funding_source TEXT,
+--   funding_detail TEXT,
+--   work_type TEXT,
+--   item_name TEXT,
+--   work_description TEXT,
+--   work_result TEXT,
+--   cost_total NUMERIC,
+--   cost_materials NUMERIC,
+--   cost_labor NUMERIC,
+--   cost_other NUMERIC,
+--   images_before TEXT[],
+--   images_after TEXT[],
+--   remarks TEXT,
+--   notes TEXT,
+--   created_at TIMESTAMPTZ DEFAULT now(),
+--   updated_at TIMESTAMPTZ DEFAULT now()
+-- );
+
+-- 5. schedules 테이블 생성 ✅ (마이그레이션 파일: migrations/005_create_schedules.sql)
+-- CREATE TABLE IF NOT EXISTS schedules (
+--   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--   application_id UUID REFERENCES applications(id) ON DELETE SET NULL,
+--   staff_id UUID NOT NULL REFERENCES profiles(id),
+--   client_id UUID REFERENCES clients(id) ON DELETE SET NULL,
+--   schedule_type TEXT NOT NULL CHECK (schedule_type IN ('visit', 'consult', 'assessment', 'delivery', 'pickup')),
+--   scheduled_date DATE NOT NULL,
+--   scheduled_time TIME,
+--   address TEXT,
+--   notes TEXT,
+--   status TEXT DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'completed', 'cancelled')),
+--   created_at TIMESTAMPTZ DEFAULT now(),
+--   updated_at TIMESTAMPTZ DEFAULT now()
+-- );
+
+-- 6. notices 테이블 생성 ✅ (마이그레이션 파일: migrations/006_create_notices.sql)
+-- CREATE TABLE IF NOT EXISTS notices (
+--   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--   title TEXT NOT NULL,
+--   content TEXT NOT NULL,
+--   category TEXT CHECK (category IN ('notice', 'support', 'event')),
+--   is_pinned BOOLEAN DEFAULT false,
+--   created_by UUID REFERENCES profiles(id) ON DELETE SET NULL,
+--   created_at TIMESTAMPTZ DEFAULT now(),
+--   updated_at TIMESTAMPTZ
+-- );
+
+-- 7. rentals 테이블 생성 ✅ (마이그레이션 파일: migrations/007_create_rentals.sql)
+-- CREATE TABLE IF NOT EXISTS rentals (
+--   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+--   application_id UUID NOT NULL REFERENCES applications(id) ON DELETE CASCADE,
+--   inventory_id UUID NOT NULL REFERENCES inventory(id),
+--   client_id UUID NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+--   rental_start_date DATE NOT NULL,
+--   rental_end_date DATE NOT NULL,
+--   return_date DATE,
+--   extension_count INTEGER DEFAULT 0,
+--   status TEXT DEFAULT 'rented' CHECK (status IN ('rented', 'returned', 'overdue', 'damaged')),
+--   created_at TIMESTAMPTZ DEFAULT now(),
+--   updated_at TIMESTAMPTZ DEFAULT now()
+-- );
+
+-- 인덱스 생성
+CREATE INDEX IF NOT EXISTS idx_applications_client_id ON applications(client_id);
+CREATE INDEX IF NOT EXISTS idx_applications_category ON applications(category);
+CREATE INDEX IF NOT EXISTS idx_applications_status ON applications(status);
+CREATE INDEX IF NOT EXISTS idx_intake_records_application_id ON intake_records(application_id);
+CREATE INDEX IF NOT EXISTS idx_process_logs_application_id ON process_logs(application_id);
+CREATE INDEX IF NOT EXISTS idx_domain_assessments_application_id ON domain_assessments(application_id);
+CREATE INDEX IF NOT EXISTS idx_service_logs_application_id ON service_logs(application_id);
+CREATE INDEX IF NOT EXISTS idx_schedules_scheduled_date ON schedules(scheduled_date);
+CREATE INDEX IF NOT EXISTS idx_rentals_client_id ON rentals(client_id);
+CREATE INDEX IF NOT EXISTS idx_rentals_rental_end_date ON rentals(rental_end_date);
+```
+
+### ✅ 체크리스트
+
+**Phase 1.3 데이터베이스 설정 단계에서 수행:**
+
+- [ ] 위 마이그레이션 스크립트 실행
+- [ ] Foreign Key 제약조건 확인
+- [ ] 인덱스 생성 확인
+- [ ] `npm run gen:types` 실행하여 타입 재생성
+- [ ] RLS 정책 작성 (새 테이블 포함)
+
+---
+
+## 🔬 Supabase MCP를 통한 데이터베이스 학습
+
+### MCP 서버 설정 확인
+
+`mcp.json` 파일에 다음 설정이 되어 있습니다:
+
+```json
+{
+  "supabase-co-AT": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@supabase/mcp-server-supabase@latest",
+      "--read-only",
+      "--project-ref=uyjbndiwyddjyjkdfuyi"
+    ],
+    "env": {
+      "SUPABASE_ACCESS_TOKEN": "sbp_31e2d9d8e62851f8b5b15e9fe62e11e42acacdec"
+    }
+  }
+}
+```
+
+### 데이터베이스 스키마 확인 방법
+
+1. **MCP 리소스 조회**
+
+   - Cursor에서 MCP 서버를 통해 테이블 목록 확인
+   - 각 테이블의 컬럼 정보 확인
+
+2. **타입 생성**
+
+   - `npm run gen:types` 실행
+   - `types/database.types.ts` 파일 확인
+   - 생성된 타입을 코드에서 활용
+
+3. **실제 데이터 확인**
+   - Supabase Dashboard 접속
+   - Table Editor에서 데이터 확인
+   - SQL Editor에서 쿼리 실행
+
+### 스키마 변경 시 워크플로우
+
+1. Supabase Dashboard에서 스키마 변경 (또는 SQL 마이그레이션 실행)
+2. `npm run gen:types` 실행하여 타입 재생성
+3. TypeScript 타입 에러 확인 및 수정
+4. 코드에서 새로운 필드/테이블 활용
+
+---
+
+## 📚 참고 문서
+
+- **MRD.md**: 시장 요구사항, 5대 사업 정의
+- **PRD.md**: 기능 명세, UI/UX 가이드
+- **TRD.md**: 기술 설계, 아키텍처
+- **Mermaid.md**: ERD, 시퀀스 다이어그램
+- **DIR.md**: 디렉토리 구조 가이드
+- **보조기기센터사업안내.md**: 실제 업무 규정 및 양식
+- **assessform.md**: 평가 양식 상세
+- **counsilform.md**: 상담 기록지 양식
+- **processform.md**: 서비스 진행 기록지 양식
+
+---
+
+## ✅ 완료 기준 (Definition of Done)
+
+각 Phase 완료 시 다음을 확인:
+
+- [ ] 기능이 요구사항대로 동작하는가?
+- [ ] 타입 에러가 없는가?
+- [ ] 린트 에러가 없는가?
+- [ ] 모바일 반응형이 적용되었는가?
+- [ ] 핵심 기능에 로그가 추가되었는가?
+- [ ] Spacing-First 정책을 준수했는가?
+
+---
+
+**마지막 업데이트**: 2025. 12. 06
