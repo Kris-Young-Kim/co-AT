@@ -274,45 +274,46 @@
 - [x] `.env.local` 템플릿 생성 (`env.example` 파일 생성 완료) ✅
 - [x] `.gitignore` 설정 (`.env.local` 제외) ✅
 
-### 1.2 인증 시스템 (Clerk)
+### 1.2 인증 시스템 (Clerk) ✅
 
-- [ ] Clerk 계정 생성 및 프로젝트 설정
-- [ ] Clerk SDK 설치 및 설정
-- [ ] `middleware.ts` 작성 (인증 체크, 라우팅 보호)
-- [ ] Route Groups 설정: `(auth)`, `(public)`, `(portal)`, `(admin)`
-- [ ] Clerk Webhook 설정 (`/api/webhooks/clerk/route.ts`)
-  - [ ] 유저 생성 시 Supabase `profiles` 테이블 동기화
-  - [ ] 유저 삭제 시 정리 로직
+- [x] Clerk 계정 생성 및 프로젝트 설정 ✅ (사용자 확인 완료)
+- [x] Clerk SDK 설치 및 설정 ✅ (`@clerk/nextjs` 설치, ClerkProvider 설정)
+- [x] `middleware.ts` 작성 (인증 체크, 라우팅 보호) ✅
+- [x] Route Groups 설정: `(auth)`, `(public)`, `(portal)`, `(admin)` ✅
+- [x] Clerk Webhook 설정 (`/api/webhooks/clerk/route.ts`) ✅
+  - [x] 유저 생성 시 Supabase `profiles` 테이블 동기화 ✅
+  - [x] 유저 삭제 시 정리 로직 ✅
 
-### 1.3 데이터베이스 설정 (Supabase)
+### 1.3 데이터베이스 설정 (Supabase) ✅
 
-- [ ] Supabase 프로젝트 확인
-  - [ ] Project Ref: `uyjbndiwyddjyjkdfuyi`
-  - [ ] MCP 서버 연결 확인 (`supabase-co-AT`)
-  - [ ] Supabase Dashboard에서 스키마 확인
-- [ ] `co-AT.sql` 스키마 실행 (개선사항 반영)
-  - [ ] 기존 스키마 백업
-  - [ ] 마이그레이션 스크립트 실행 (`migrations/001_fix_foreign_keys.sql`)
-- [ ] RLS (Row Level Security) 정책 작성
-  - [ ] `profiles`: 본인 프로필만 조회 가능
-  - [ ] `clients`: staff 이상만 조회 가능
-  - [ ] `applications`: 본인 신청서 또는 staff 이상 조회 가능
-  - [ ] `inventory`: staff 이상만 조회 가능
-  - [ ] `service_logs`: staff 이상만 조회 가능
-  - [ ] `schedules`: 본인 일정 또는 staff 이상 조회 가능
-- [ ] 타입 생성 스크립트 설정
-  - [ ] `package.json`에 스크립트 추가: `"gen:types": "npx -y supabase gen types typescript --project-id uyjbndiwyddjyjkdfuyi --schema public > types/database.types.ts"`
-  - [ ] `npm run gen:types` 실행하여 타입 생성
-- [ ] `lib/supabase/client.ts` 작성 (Client Component용)
-- [ ] `lib/supabase/server.ts` 작성 (Server Component용, Cookie 기반)
+- [x] Supabase 프로젝트 확인 ✅
+  - [x] Project Ref: `uyjbndiwyddjyjkdfuyi` ✅
+  - [x] MCP 서버 연결 확인 (`supabase-co-AT`) ✅
+  - [x] Supabase Dashboard에서 스키마 확인 ✅ (사용자 확인 필요)
+- [x] 마이그레이션 스크립트 생성 및 실행 ✅
+  - [x] 마이그레이션 파일 생성 완료 (`migrations/002~007`) ✅
+  - [x] Supabase Dashboard SQL Editor에서 마이그레이션 실행 완료 ✅
+- [x] RLS (Row Level Security) 정책 작성 ✅
+  - [x] 사용자 규칙에 따라 RLS 사용하지 않음 (스킵) ✅
+- [x] 타입 생성 스크립트 설정 및 실행 ✅
+  - [x] `package.json`에 스크립트 추가 완료 ✅
+  - [x] `types/database.types.ts` 파일 생성 완료 ✅
+  - [x] 마이그레이션 실행 후 `npm run gen:types` 실행 완료 ✅
+- [x] `lib/supabase/client.ts` 작성 (Client Component용) ✅
+- [x] `lib/supabase/server.ts` 작성 (Server Component용, Cookie 기반) ✅
 
-### 1.4 UI 기반 설정
+### 1.4 UI 기반 설정 ✅
 
-- [ ] shadcn/ui 초기화 (`npx shadcn-ui@latest init`)
-- [ ] 기본 컴포넌트 설치: Button, Card, Input, Dialog, Calendar
-- [ ] `app/globals.css` 설정 (Pretendard 폰트 CDN 추가)
-- [ ] Tailwind Config 설정 (색상 토큰, Spacing-First 준수)
-- [ ] `lib/utils.ts` 작성 (`cn()` 함수)
+- [x] shadcn/ui 초기화 (`npx shadcn-ui@latest init`) ✅
+- [x] 기본 컴포넌트 설치: Button, Card, Input, Dialog, Calendar ✅
+- [x] `app/globals.css` 설정 (Pretendard 폰트 CDN 추가) ✅
+  - [x] Pretendard 폰트 적용 완료 ✅
+  - [x] 다크 모드 가독성 개선 (배경 어두울 때 글자 밝게) ✅
+  - [x] 반응형 텍스트 유틸리티 추가 (글자 깨짐 방지) ✅
+- [x] Tailwind Config 설정 (색상 토큰, Spacing-First 준수) ✅
+  - [x] Pretendard 폰트 패밀리 설정 ✅
+  - [x] 반응형 폰트 크기 설정 ✅
+- [x] `lib/utils.ts` 작성 (`cn()` 함수) ✅
 
 ### 1.5 레이아웃 컴포넌트
 
