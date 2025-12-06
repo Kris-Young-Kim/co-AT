@@ -265,14 +265,14 @@
 
 ## 🚀 Phase 1: 기반 구축 (Foundation) - 2주
 
-### 1.1 프로젝트 초기 설정
+### 1.1 프로젝트 초기 설정 ✅
 
-- [ ] Next.js 15 프로젝트 생성 (`create-next-app`)
-- [ ] TypeScript 설정 (strict mode)
-- [ ] Tailwind CSS + PostCSS 설정
-- [ ] ESLint 설정
-- [ ] `.env.local` 템플릿 생성
-- [ ] `.gitignore` 설정 (`.env.local` 제외)
+- [x] Next.js 15 프로젝트 생성 (`create-next-app`) ✅
+- [x] TypeScript 설정 (strict mode) ✅
+- [x] Tailwind CSS + PostCSS 설정 ✅
+- [x] ESLint 설정 ✅
+- [x] `.env.local` 템플릿 생성 (`env.example` 파일 생성 완료) ✅
+- [x] `.gitignore` 설정 (`.env.local` 제외) ✅
 
 ### 1.2 인증 시스템 (Clerk)
 

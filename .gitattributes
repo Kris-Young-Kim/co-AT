@@ -1,0 +1,18 @@
+# 줄바꿈 문자 설정
+* text=auto eol=lf
+
+# 바이너리 파일
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.exe binary
+
+# Lock 파일은 LF 유지
+pnpm-lock.yaml text eol=lf
+package-lock.json text eol=lf
+yarn.lock text eol=lf
+
