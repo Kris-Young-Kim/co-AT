@@ -315,13 +315,15 @@
   - [x] 반응형 폰트 크기 설정 ✅
 - [x] `lib/utils.ts` 작성 (`cn()` 함수) ✅
 
-### 1.5 레이아웃 컴포넌트
+### 1.5 레이아웃 컴포넌트 ✅
 
-- [ ] `app/layout.tsx` (Root Layout, Providers)
-- [ ] `components/layout/public-header.tsx` (대민용 GNB)
-- [ ] `components/layout/public-footer.tsx`
-- [ ] `components/layout/admin-sidebar.tsx` (직원용 사이드바)
-- [ ] `components/layout/mobile-bottom-nav.tsx` (모바일 하단 탭)
+- [x] `app/layout.tsx` (Root Layout, Providers) ✅
+- [x] `components/layout/public-header.tsx` (대민용 GNB) ✅
+- [x] `components/layout/public-footer.tsx` ✅
+- [x] `components/layout/admin-sidebar.tsx` (직원용 사이드바) ✅
+- [x] `components/layout/admin-header.tsx` (관리자 헤더) ✅
+- [x] `components/layout/portal-header.tsx` (포털 헤더) ✅
+- [x] `components/layout/mobile-bottom-nav.tsx` (모바일 하단 탭) ✅
 
 ### 1.6 공통 컴포넌트
 
