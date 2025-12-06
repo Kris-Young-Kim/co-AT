@@ -539,26 +539,28 @@ useEffect(() => {
 - [x] `actions/notice-actions.ts` 작성 ✅
   - [x] `getRecentNotices()`, `getNoticesByCategory()`, `getNoticeById()` Server Actions ✅
 
-### 2.2 서비스 신청 시스템
+### 2.2 서비스 신청 시스템 ✅
 
-- [ ] `app/(portal)/apply/page.tsx` 작성
-- [ ] `components/features/application/ServiceApplicationWizard.tsx`
-  - [ ] 단계 관리 컨테이너 (Zustand Store 연동)
-- [ ] `components/features/application/ServiceCategorySelector.tsx`
-  - [ ] 5대 사업 카테고리 선택 그리드
-- [ ] `components/features/application/wizard-step-nav.tsx`
-  - [ ] 단계 표시기 (Step 1-2-3)
-- [ ] `components/features/application/forms/` 폼 컴포넌트
-  - [ ] `ServiceRepairForm.tsx` (수리 신청)
-  - [ ] `ServiceRentalForm.tsx` (대여 신청)
-  - [ ] `ServiceConsultForm.tsx` (상담 신청)
-  - [ ] `ServiceCustomForm.tsx` (맞춤제작 신청)
-- [ ] `lib/validators.ts` 작성
-  - [ ] Zod 스키마 정의 (모든 신청 폼 검증)
-- [ ] `actions/application-actions.ts` 작성
-  - [ ] `createApplication()` Server Action
-- [ ] `components/features/application/success-modal.tsx`
-  - [ ] 신청 완료 모달
+- [x] `app/(portal)/apply/page.tsx` 작성 ✅
+- [x] `components/features/application/ServiceApplicationWizard.tsx` ✅
+  - [x] 단계 관리 컨테이너 (Zustand Store 연동) ✅
+- [x] `components/features/application/ServiceCategorySelector.tsx` ✅
+  - [x] 5대 사업 카테고리 선택 그리드 ✅
+- [x] `components/features/application/wizard-step-nav.tsx` ✅
+  - [x] 단계 표시기 (Step 1-2-3) ✅
+- [x] `components/features/application/forms/` 폼 컴포넌트 ✅
+  - [x] `ServiceRepairForm.tsx` (수리 신청) ✅
+  - [x] `ServiceRentalForm.tsx` (대여 신청) ✅
+  - [x] `ServiceConsultForm.tsx` (상담 신청) ✅
+  - [x] `ServiceCustomForm.tsx` (맞춤제작 신청) ✅
+- [x] `lib/validators.ts` 작성 ✅
+  - [x] Zod 스키마 정의 (모든 신청 폼 검증) ✅
+- [x] `actions/application-actions.ts` 작성 ✅
+  - [x] `createApplication()` Server Action ✅
+- [x] `components/features/application/success-modal.tsx` ✅
+  - [x] 신청 완료 모달 ✅
+- [x] `lib/stores/application-store.ts` 작성 ✅
+  - [x] Zustand Store로 신청 상태 관리 ✅
 
 ### 2.3 마이페이지 (Portal)
 
