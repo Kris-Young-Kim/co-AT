@@ -69,16 +69,16 @@ export function FileUploader({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className={cn(
-          "flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed p-8 transition-colors",
-          isDragging ? "border-primary bg-primary/5" : "border-muted bg-muted/50"
+          "flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed p-6 sm:p-8 transition-colors",
+          isDragging ? "border-primary bg-primary/5 dark:bg-primary/10" : "border-muted bg-muted/50 dark:bg-muted/30"
         )}
       >
-        <Upload className="h-10 w-10 text-muted-foreground" />
+        <Upload className="h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground" />
         <div className="text-center">
-          <p className="text-sm font-medium">
+          <p className="text-xs sm:text-sm font-medium text-foreground">
             파일을 드래그하거나 클릭하여 업로드
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground mt-1">
             {accept} (최대 {maxSize / 1024 / 1024}MB)
           </p>
         </div>
