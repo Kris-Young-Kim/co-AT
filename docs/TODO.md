@@ -562,15 +562,18 @@ useEffect(() => {
 - [x] `lib/stores/application-store.ts` 작성 ✅
   - [x] Zustand Store로 신청 상태 관리 ✅
 
-### 2.3 마이페이지 (Portal)
+### 2.3 마이페이지 (Portal) ✅
 
-- [ ] `app/(portal)/mypage/page.tsx` 작성
-- [ ] `components/features/portal/ClientTimelineList.tsx`
-  - [ ] 신청 이력 타임라인 리스트
-- [ ] `components/features/portal/ClientTimelineItem.tsx`
-  - [ ] 개별 이력 카드 (상태별 색상 분기)
-- [ ] `components/features/portal/ClientRentStatus.tsx`
-  - [ ] 대여 중인 기기 반납 D-Day 표시
+- [x] `app/(portal)/mypage/page.tsx` 작성 ✅
+- [x] `components/features/portal/ClientTimelineList.tsx` ✅
+  - [x] 신청 이력 타임라인 리스트 ✅
+- [x] `components/features/portal/ClientTimelineItem.tsx` ✅
+  - [x] 개별 이력 카드 (상태별 색상 분기) ✅
+- [x] `components/features/portal/ClientRentStatus.tsx` ✅
+  - [x] 대여 중인 기기 반납 D-Day 표시 ✅
+- [x] `actions/portal-actions.ts` 작성 ✅
+  - [x] `getMyApplications()` Server Action - 사용자 신청 이력 조회 ✅
+  - [x] `getMyRentals()` Server Action - 사용자 대여 중인 기기 조회 ✅
 
 ### 2.4 공지사항
 
