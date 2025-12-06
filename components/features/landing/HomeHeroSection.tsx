@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react"
 
 export function HomeHeroSection() {
   return (
-    <section className="relative flex min-h-[70vh] sm:min-h-[80vh] items-center justify-center overflow-hidden">
+    <section id="hero" className="relative flex min-h-[70vh] sm:min-h-[80vh] items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image

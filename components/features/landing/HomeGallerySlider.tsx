@@ -59,7 +59,7 @@ export function HomeGallerySlider({ videos = defaultVideos }: HomeGallerySliderP
   }
 
   return (
-    <section className="py-12 sm:py-16 md:py-24 bg-background">
+    <section id="gallery" className="py-12 sm:py-16 md:py-24 bg-background scroll-mt-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-responsive-xl font-bold text-center text-foreground mb-8 sm:mb-12">
           보조기기 영상 갤러리

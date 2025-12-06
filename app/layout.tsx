@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@/components/providers/clerk-provider";
+import { AccessibilityToolbar } from "@/components/accessibility/accessibility-toolbar";
+import { KeyboardNavigator } from "@/components/accessibility/keyboard-navigator";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +17,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="ko">
-        <body>{children}</body>
+        <body>
+          {children}
+          <AccessibilityToolbar />
+          <KeyboardNavigator />
+        </body>
       </html>
     </ClerkProvider>
   );
