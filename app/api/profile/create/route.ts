@@ -1,5 +1,3 @@
-"use server"
-
 import { auth, currentUser } from "@clerk/nextjs/server"
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
