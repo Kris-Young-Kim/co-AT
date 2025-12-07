@@ -26,17 +26,31 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(signInUrl)
   }
 
-  // 관리자 경로 접근 시 인증 확인 (권한은 페이지 레벨에서 체크)
-  // /admin/* 또는 /notices-management, /dashboard 등 관리자 전용 경로
-  // 단, /create-profile는 프로필 생성용이므로 예외 처리
+  // 관리자 경로 접근 시 관리자 세션 확인
   const adminPaths = ['/admin', '/notices-management', '/dashboard']
   const isAdminPath = adminPaths.some(path => url.pathname.startsWith(path))
-  const isCreateProfilePath = url.pathname === '/create-profile'
+  const isCreateProfilePath = url.pathname === '/create-profile' || url.pathname === '/admin/create-profile'
+  const isAdminRootPath = url.pathname === '/admin' // 관리자 로그인 페이지
+  const isAdminSessionApi = url.pathname === '/api/admin/session'
   
-  if (isAdminPath && !isCreateProfilePath && !userId) {
-    const signInUrl = new URL('/sign-in', req.url)
-    signInUrl.searchParams.set('redirect_url', req.url)
-    return NextResponse.redirect(signInUrl)
+  // 관리자 경로 접근 시 (로그인 페이지와 API 제외)
+  if (isAdminPath && !isCreateProfilePath && !isAdminRootPath && !isAdminSessionApi) {
+    // 관리자 세션 쿠키 확인
+    const adminSession = req.cookies.get('admin_session')?.value
+    
+    if (!adminSession) {
+      // 관리자 세션이 없으면 관리자 로그인 페이지로 리다이렉트
+      const adminSignInUrl = new URL('/admin', req.url)
+      adminSignInUrl.searchParams.set('redirect_url', req.url)
+      return NextResponse.redirect(adminSignInUrl)
+    }
+    
+    // 관리자 세션이 있지만 로그인하지 않은 경우
+    if (!userId) {
+      const adminSignInUrl = new URL('/admin', req.url)
+      adminSignInUrl.searchParams.set('redirect_url', req.url)
+      return NextResponse.redirect(adminSignInUrl)
+    }
   }
 
   return NextResponse.next()

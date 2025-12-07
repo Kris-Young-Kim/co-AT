@@ -3,7 +3,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { hasAdminOrStaffPermission, getCurrentUserProfileId } from "@/lib/utils/permissions"
 import { revalidatePath } from "next/cache"
-import { cookies } from "next/headers"
 
 export interface Attachment {
   type: "image" | "pdf" | "youtube"
