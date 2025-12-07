@@ -1,8 +1,29 @@
-export default function AdminDashboardPage() {
+import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { redirect } from "next/navigation"
+import { AdminDashboardContent } from "@/components/features/dashboard/AdminDashboardContent"
+
+export default async function AdminDashboardPage() {
+  // 권한 확인
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) {
+    console.log("[대시보드] 권한 없음 - 홈으로 리다이렉트")
+    redirect("/")
+  }
+
+  console.log("[대시보드] 권한 확인 완료 - 페이지 렌더링")
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-8 md:p-24">
-      <h1 className="text-responsive-xl font-bold text-foreground">관리자 대시보드</h1>
-      <p className="mt-4 text-responsive-lg text-foreground/90">직원 전용 페이지</p>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="mb-8">
+        <h1 className="text-responsive-xl font-bold text-foreground mb-2">
+          통합 대시보드
+        </h1>
+        <p className="text-muted-foreground">
+          오늘의 실적과 신규 접수 건을 확인하실 수 있습니다
+        </p>
+      </div>
+
+      <AdminDashboardContent />
     </div>
   )
 }

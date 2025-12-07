@@ -44,7 +44,7 @@ CREATE INDEX IF NOT EXISTS idx_notices_category_created ON notices(category, cre
 --   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 테이블 및 컬럼 코멘트
-COMMENT ON TABLE notices IS '공지사항 테이블 (공지, 지원사업, 이벤트 등)';
-COMMENT ON COLUMN notices.category IS '공지사항 카테고리: notice(공지), support(지원사업), event(이벤트)';
+COMMENT ON TABLE notices IS '공지사항 테이블 (공지, 활동 소식, 지원사업, 서비스 사례 등)';
+COMMENT ON COLUMN notices.category IS '공지사항 카테고리: notice(공지), event(활동 소식), support(지원사업), case(서비스 사례)';
 COMMENT ON COLUMN notices.is_pinned IS '상단 고정 여부 (true일 경우 목록 상단에 고정 표시)';
 

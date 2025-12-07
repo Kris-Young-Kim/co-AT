@@ -8,6 +8,7 @@ import Link from "next/link"
 import { ArrowLeft, Pin, Calendar, Share2 } from "lucide-react"
 import { notFound } from "next/navigation"
 import { NoticeShareButton } from "@/components/features/notices/NoticeShareButton"
+import { NoticeAttachments } from "@/components/features/notices/NoticeAttachments"
 
 interface NoticeDetailPageProps {
   params: Promise<{ id: string }>
@@ -22,10 +23,14 @@ export default async function NoticeDetailPage({ params }: NoticeDetailPageProps
   }
 
   const categoryLabel =
-    notice.category === "support"
+    notice.category === "notice"
+      ? "공지사항"
+      : notice.category === "activity"
+      ? "활동 소식"
+      : notice.category === "support"
       ? "지원사업"
-      : notice.category === "event"
-      ? "행사/이벤트"
+      : notice.category === "case"
+      ? "서비스 사례"
       : "공지사항"
 
   return (
@@ -71,6 +76,9 @@ export default async function NoticeDetailPage({ params }: NoticeDetailPageProps
               className="text-sm sm:text-base text-foreground whitespace-pre-wrap break-words [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-6 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mb-3 [&_h2]:mt-5 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mb-2 [&_h3]:mt-4 [&_p]:mb-4 [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-4 [&_li]:mb-2 [&_a]:text-primary [&_a]:underline [&_strong]:font-semibold [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm"
               dangerouslySetInnerHTML={{ __html: notice.content }}
             />
+            {notice.attachments && notice.attachments.length > 0 && (
+              <NoticeAttachments attachments={notice.attachments} />
+            )}
           </CardContent>
         </Card>
 

@@ -71,10 +71,14 @@ export function NoticeList({ initialNotices }: NoticeListProps) {
       <div className="space-y-4">
         {notices.map((notice) => {
           const categoryLabel =
-            notice.category === "support"
+            notice.category === "notice"
+              ? "공지사항"
+              : notice.category === "activity"
+              ? "활동 소식"
+              : notice.category === "support"
               ? "지원사업"
-              : notice.category === "event"
-              ? "행사/이벤트"
+              : notice.category === "case"
+              ? "서비스 사례"
               : "공지사항"
 
           return (

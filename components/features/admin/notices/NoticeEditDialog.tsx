@@ -27,11 +27,12 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import { updateNotice, type Notice } from "@/actions/notice-actions"
 import { useRouter } from "next/navigation"
+import { NoticeAttachmentManager, type Attachment } from "./NoticeAttachmentManager"
 
 const noticeSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요").max(200, "제목은 200자 이하여야 합니다"),
   content: z.string().min(1, "내용을 입력해주세요"),
-  category: z.enum(["notice", "support", "event"]).nullable(),
+  category: z.enum(["notice", "activity", "support", "case"]).nullable(),
   is_pinned: z.boolean().default(false),
 })
 
@@ -51,6 +52,7 @@ export function NoticeEditDialog({
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [attachments, setAttachments] = useState<Attachment[]>(notice.attachments || [])
 
   const {
     register,
@@ -92,6 +94,7 @@ export function NoticeEditDialog({
         content: data.content,
         category: data.category,
         is_pinned: data.is_pinned,
+        attachments: attachments.length > 0 ? attachments : undefined,
       })
 
       if (result.success) {
@@ -140,17 +143,17 @@ export function NoticeEditDialog({
             <Select
               value={category || ""}
               onValueChange={(value) =>
-                setValue("category", value === "null" ? null : (value as "notice" | "support" | "event"))
+                setValue("category", value === "null" ? null : (value as "notice" | "activity" | "support" | "case"))
               }
             >
               <SelectTrigger id="edit-category">
                 <SelectValue placeholder="카테고리 선택 (선택사항)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="null">카테고리 없음</SelectItem>
                 <SelectItem value="notice">공지사항</SelectItem>
+                <SelectItem value="activity">활동 소식</SelectItem>
                 <SelectItem value="support">지원사업</SelectItem>
-                <SelectItem value="event">행사/이벤트</SelectItem>
+                <SelectItem value="case">서비스 사례</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -174,6 +177,11 @@ export function NoticeEditDialog({
               HTML 태그를 사용할 수 있습니다
             </p>
           </div>
+
+          <NoticeAttachmentManager
+            attachments={attachments}
+            onChange={setAttachments}
+          />
 
           <div className="flex items-center space-x-2">
             <Checkbox

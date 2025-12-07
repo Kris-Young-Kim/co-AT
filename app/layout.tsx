@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@/components/providers/clerk-provider";
+import { QueryProvider } from "@/components/providers/query-provider";
 import { AccessibilityToolbar } from "@/components/accessibility/accessibility-toolbar";
 import { KeyboardNavigator } from "@/components/accessibility/keyboard-navigator";
 import "./globals.css";
@@ -16,13 +17,15 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="ko">
-        <body>
-          {children}
-          <AccessibilityToolbar />
-          <KeyboardNavigator />
-        </body>
-      </html>
+      <QueryProvider>
+        <html lang="ko">
+          <body>
+            {children}
+            <AccessibilityToolbar />
+            <KeyboardNavigator />
+          </body>
+        </html>
+      </QueryProvider>
     </ClerkProvider>
   );
 }
