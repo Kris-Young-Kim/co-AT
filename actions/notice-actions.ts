@@ -5,12 +5,20 @@ import { hasAdminOrStaffPermission, getCurrentUserProfileId } from "@/lib/utils/
 import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 
+export interface Attachment {
+  type: "image" | "pdf" | "youtube"
+  url: string
+  name: string
+  size?: number
+}
+
 export interface Notice {
   id: string
   title: string
   content: string
-  category: "notice" | "support" | "event" | null
+  category: "notice" | "activity" | "support" | "case" | null
   is_pinned: boolean
+  attachments?: Attachment[]
   created_at: string
   created_by: string | null
 }
@@ -18,16 +26,18 @@ export interface Notice {
 export interface CreateNoticeInput {
   title: string
   content: string
-  category?: "notice" | "support" | "event" | null
+  category?: "notice" | "activity" | "support" | "case" | null
   is_pinned?: boolean
+  attachments?: Attachment[]
 }
 
 export interface UpdateNoticeInput {
   id: string
   title?: string
   content?: string
-  category?: "notice" | "support" | "event" | null
+  category?: "notice" | "activity" | "support" | "case" | null
   is_pinned?: boolean
+  attachments?: Attachment[]
 }
 
 /**
@@ -63,14 +73,42 @@ export async function getRecentNotices(limit: number = 5): Promise<Notice[]> {
   // 고정 공지 + 최신 공지 합치기
   const allNotices = [...(pinned || []), ...(recent || [])]
 
-  return allNotices.slice(0, limit)
+  // attachments 필드가 있는 경우 추가로 조회
+  const noticesWithAttachments = await Promise.all(
+    allNotices.slice(0, limit).map(async (notice) => {
+      try {
+        const { data: noticeData } = await supabase
+          .from("notices")
+          .select("attachments")
+          .eq("id", notice.id)
+          .single()
+        
+        return {
+          ...notice,
+          attachments: noticeData?.attachments
+            ? (typeof noticeData.attachments === "string"
+                ? JSON.parse(noticeData.attachments)
+                : noticeData.attachments)
+            : undefined,
+        }
+      } catch {
+        // attachments 컬럼이 없거나 파싱 실패 시 무시
+        return {
+          ...notice,
+          attachments: undefined,
+        }
+      }
+    })
+  )
+
+  return noticesWithAttachments
 }
 
 /**
  * 카테고리별 공지사항 조회
  */
 export async function getNoticesByCategory(
-  category: "notice" | "support" | "event",
+  category: "notice" | "activity" | "support" | "case",
   limit: number = 10
 ): Promise<Notice[]> {
   const supabase = await createClient()
@@ -88,7 +126,35 @@ export async function getNoticesByCategory(
     return []
   }
 
-  return data || []
+  // attachments 필드가 있는 경우 추가로 조회
+  const noticesWithAttachments = await Promise.all(
+    (data || []).map(async (notice) => {
+      try {
+        const { data: noticeData } = await supabase
+          .from("notices")
+          .select("attachments")
+          .eq("id", notice.id)
+          .single()
+        
+        return {
+          ...notice,
+          attachments: noticeData?.attachments
+            ? (typeof noticeData.attachments === "string"
+                ? JSON.parse(noticeData.attachments)
+                : noticeData.attachments)
+            : undefined,
+        }
+      } catch {
+        // attachments 컬럼이 없거나 파싱 실패 시 무시
+        return {
+          ...notice,
+          attachments: undefined,
+        }
+      }
+    })
+  )
+
+  return noticesWithAttachments
 }
 
 /**
@@ -108,7 +174,29 @@ export async function getNoticeById(id: string): Promise<Notice | null> {
     return null
   }
 
-  return data
+  // attachments 필드가 있는 경우 추가로 조회
+  try {
+    const { data: noticeData } = await supabase
+      .from("notices")
+      .select("attachments")
+      .eq("id", id)
+      .single()
+    
+    return {
+      ...data,
+      attachments: noticeData?.attachments
+        ? (typeof noticeData.attachments === "string"
+            ? JSON.parse(noticeData.attachments)
+            : noticeData.attachments)
+        : undefined,
+    }
+  } catch {
+    // attachments 컬럼이 없거나 파싱 실패 시 무시
+    return {
+      ...data,
+      attachments: undefined,
+    }
+  }
 }
 
 /**
@@ -130,15 +218,27 @@ export async function createNotice(
 
     const supabase = await createClient()
 
+    // attachments 컬럼이 있는지 확인하고 선택적으로 저장
+    const insertData: any = {
+      title: input.title,
+      content: input.content,
+      category: input.category || null,
+      is_pinned: input.is_pinned || false,
+      created_by: profileId,
+    }
+
+    // attachments 컬럼이 있는 경우에만 추가
+    if (input.attachments && input.attachments.length > 0) {
+      try {
+        insertData.attachments = JSON.stringify(input.attachments)
+      } catch {
+        // JSON 변환 실패 시 무시
+      }
+    }
+
     const { data, error } = await supabase
       .from("notices")
-      .insert({
-        title: input.title,
-        content: input.content,
-        category: input.category || null,
-        is_pinned: input.is_pinned || false,
-        created_by: profileId,
-      })
+      .insert(insertData)
       .select("id")
       .single()
 
@@ -176,6 +276,7 @@ export async function updateNotice(
       content?: string
       category?: string | null
       is_pinned?: boolean
+      attachments?: string | null
       updated_at?: string
     } = {
       updated_at: new Date().toISOString(),
@@ -185,6 +286,11 @@ export async function updateNotice(
     if (input.content !== undefined) updateData.content = input.content
     if (input.category !== undefined) updateData.category = input.category
     if (input.is_pinned !== undefined) updateData.is_pinned = input.is_pinned
+    if (input.attachments !== undefined) {
+      updateData.attachments = input.attachments.length > 0
+        ? JSON.stringify(input.attachments)
+        : null
+    }
 
     const { error } = await supabase
       .from("notices")
@@ -254,6 +360,7 @@ export async function getAllNotices(): Promise<{
 
     const supabase = await createClient()
 
+    // attachments 컬럼이 있는지 확인하고 선택적으로 조회
     const { data, error } = await supabase
       .from("notices")
       .select("id, title, content, category, is_pinned, created_at, created_by")
@@ -265,7 +372,35 @@ export async function getAllNotices(): Promise<{
       return { success: false, error: "공지사항 조회에 실패했습니다" }
     }
 
-    return { success: true, notices: data || [] }
+    // attachments 필드가 있는 경우 추가로 조회
+    const noticesWithAttachments = await Promise.all(
+      (data || []).map(async (notice) => {
+        try {
+          const { data: noticeData } = await supabase
+            .from("notices")
+            .select("attachments")
+            .eq("id", notice.id)
+            .single()
+          
+          return {
+            ...notice,
+            attachments: noticeData?.attachments
+              ? (typeof noticeData.attachments === "string"
+                  ? JSON.parse(noticeData.attachments)
+                  : noticeData.attachments)
+              : undefined,
+          }
+        } catch {
+          // attachments 컬럼이 없거나 파싱 실패 시 무시
+          return {
+            ...notice,
+            attachments: undefined,
+          }
+        }
+      })
+    )
+
+    return { success: true, notices: noticesWithAttachments }
   } catch (error) {
     console.error("Unexpected error in getAllNotices:", error)
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }

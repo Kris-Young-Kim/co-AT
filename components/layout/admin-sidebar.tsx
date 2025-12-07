@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Logo } from "@/components/common/logo";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -11,11 +10,12 @@ import {
   Calendar,
   Settings,
   FileText,
+  Sparkles,
 } from "lucide-react";
 
 const menuItems = [
   { href: "/admin/dashboard", label: "대시보드", icon: LayoutDashboard },
-  { href: "/admin/notices-management", label: "공지사항 관리", icon: FileText },
+  { href: "/admin/notices-management", label: "새 글 관리", icon: FileText },
   { href: "/admin/clients", label: "대상자 관리", icon: Users },
   { href: "/admin/inventory", label: "재고 관리", icon: Package },
   { href: "/admin/schedule", label: "일정 관리", icon: Calendar },
@@ -26,11 +26,19 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-64 border-r bg-muted/40 md:block">
-      <div className="flex h-16 items-center gap-2 border-b px-6">
-        <Logo />
+    <aside className="hidden w-64 border-r bg-gradient-to-b from-background to-muted/20 md:block">
+      <div className="flex h-16 items-center gap-2 border-b px-6 bg-gradient-to-r from-primary/5 to-transparent">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <Sparkles className="h-4 w-4 text-primary" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-foreground">관리자</span>
+            <span className="text-[10px] text-muted-foreground">Admin Panel</span>
+          </div>
+        </div>
       </div>
-      <nav className="flex flex-col gap-1 p-2 sm:p-4">
+      <nav className="flex flex-col gap-1 p-3 sm:p-4">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive =
@@ -41,14 +49,20 @@ export function AdminSidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-2 sm:gap-3 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium transition-colors",
+                "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground hover:translate-x-1"
               )}
             >
-              <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+              <Icon className={cn(
+                "h-4 w-4 transition-transform duration-200",
+                isActive ? "scale-110" : "group-hover:scale-110"
+              )} />
               <span className="truncate">{item.label}</span>
+              {isActive && (
+                <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary-foreground/50" />
+              )}
             </Link>
           );
         })}

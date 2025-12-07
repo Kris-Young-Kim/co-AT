@@ -13,6 +13,7 @@ export async function getCurrentUserRole(): Promise<UserRole | null> {
     const { userId } = await auth()
 
     if (!userId) {
+      console.log("[권한 확인] 사용자 ID 없음")
       return null
     }
 
@@ -25,12 +26,15 @@ export async function getCurrentUserRole(): Promise<UserRole | null> {
       .single()
 
     if (error || !profile) {
+      console.log("[권한 확인] 프로필 조회 실패:", error?.message || "프로필 없음")
       return null
     }
 
-    return (profile.role as UserRole) || "user"
+    const role = (profile.role as UserRole) || "user"
+    console.log("[권한 확인] 사용자 역할:", role, "userId:", userId)
+    return role
   } catch (error) {
-    console.error("Error getting user role:", error)
+    console.error("[권한 확인] 오류:", error)
     return null
   }
 }

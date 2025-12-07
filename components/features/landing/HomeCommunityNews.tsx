@@ -26,9 +26,12 @@ export function HomeCommunityNews({
     <Card>
       <CardContent className="p-4 sm:p-6">
         <Tabs defaultValue="notice" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-4">
+          <TabsList className="grid w-full grid-cols-4 mb-4">
             <TabsTrigger value="notice" className="text-xs sm:text-sm">
               공지사항
+            </TabsTrigger>
+            <TabsTrigger value="support" className="text-xs sm:text-sm">
+              지원사업
             </TabsTrigger>
             <TabsTrigger value="gallery" className="text-xs sm:text-sm">
               활동 소식
@@ -70,6 +73,45 @@ export function HomeCommunityNews({
             <div className="pt-2">
               <Button asChild variant="outline" size="sm" className="w-full">
                 <Link href="/notices">
+                  <Plus className="mr-2 h-4 w-4" />
+                  더보기
+                </Link>
+              </Button>
+            </div>
+          </TabsContent>
+
+          {/* 지원사업 탭 */}
+          <TabsContent value="support" className="space-y-3 mt-0">
+            {supportNotices.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                등록된 지원사업 공지사항이 없습니다.
+              </p>
+            ) : (
+              <>
+                {supportNotices.slice(0, 3).map((notice) => (
+                  <Link key={notice.id} href={`/notices/${notice.id}`}>
+                    <div className="p-2 rounded-md border hover:bg-accent transition-colors cursor-pointer">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium text-foreground line-clamp-1">
+                            {notice.is_pinned && (
+                              <span className="inline-block mr-1 text-primary">📌</span>
+                            )}
+                            {notice.title}
+                          </p>
+                        </div>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">
+                          {format(new Date(notice.created_at), "MM.dd", { locale: ko })}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </>
+            )}
+            <div className="pt-2">
+              <Button asChild variant="outline" size="sm" className="w-full">
+                <Link href="/notices?category=support">
                   <Plus className="mr-2 h-4 w-4" />
                   더보기
                 </Link>

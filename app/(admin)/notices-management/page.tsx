@@ -11,8 +11,11 @@ export default async function AdminNoticesPage() {
   // 권한 확인
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) {
+    console.log("[공지사항 관리] 권한 없음 - 홈으로 리다이렉트")
     redirect("/")
   }
+  
+  console.log("[공지사항 관리] 권한 확인 완료 - 페이지 렌더링")
 
   // 공지사항 목록 조회
   const result = await getAllNotices()
@@ -24,16 +27,16 @@ export default async function AdminNoticesPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-responsive-xl font-bold text-foreground mb-2">
-              공지사항 관리
+              새 글 관리
             </h1>
             <p className="text-muted-foreground">
-              공지사항을 작성, 수정, 삭제할 수 있습니다
+              게시글을 작성, 수정, 삭제할 수 있습니다
             </p>
           </div>
           <NoticeCreateDialog>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              새 공지사항
+              새 글 작성
             </Button>
           </NoticeCreateDialog>
         </div>

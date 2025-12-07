@@ -34,6 +34,7 @@ const headerMenuItems = [
     hasDropdown: true,
     subItems: [
       { label: "공지사항", href: "/notices" },
+      { label: "지원사업", href: "/notices?category=support" },
       { label: "활동갤러리", href: "/community/gallery" },
       { label: "보조기기 서비스 사례", href: "/community/cases" },
     ],
