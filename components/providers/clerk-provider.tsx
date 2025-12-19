@@ -9,6 +9,7 @@ interface ClerkProviderProps {
 export function ClerkProvider({ children }: ClerkProviderProps) {
   return (
     <ClerkProviderBase
+      dynamic
       appearance={{
         elements: {
           rootBox: "w-full",
