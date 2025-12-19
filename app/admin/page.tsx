@@ -29,15 +29,76 @@ export default function AdminSignInPage() {
     if (user) {
       // 이미 로그인된 상태라면 관리자 세션 쿠키만 설정
       setIsCheckingSession(true)
+      
+      // 먼저 현재 세션 확인
       fetch('/api/admin/session', {
-        method: 'POST',
+        method: 'GET',
       })
-        .then(async (response) => {
-          if (response.ok) {
+        .then(async (getResponse) => {
+          if (getResponse.ok) {
+            const sessionData = await getResponse.json()
+            if (sessionData.hasAdminSession && sessionData.hasPermission) {
+              // 이미 관리자 세션이 있고 권한이 있으면 바로 리다이렉트
+              router.push(redirectUrl)
+              return
+            }
+          }
+          
+          // 세션이 없거나 권한이 없으면 새로 설정 시도
+          const postResponse = await fetch('/api/admin/session', {
+            method: 'POST',
+          })
+          
+          if (postResponse.ok) {
             // 세션 설정 성공 시 리다이렉트
             router.push(redirectUrl)
           } else {
-            const data = await response.json()
+            const data = await postResponse.json()
+            console.error('[Admin Login] 세션 설정 실패:', data)
+            
+            // 프로필이 없는 경우 Clerk role이 "admin" 또는 "staff"인지 확인 후 자동 프로필 생성
+            if (data.details?.includes('역할: 없음') || data.details?.includes('역할: None')) {
+              console.log('[Admin Login] 프로필이 없음. Clerk role 확인 중...')
+              
+              // Clerk 사용자 정보에서 role 확인
+              const clerkRole = user?.publicMetadata?.role as string || 
+                                user?.privateMetadata?.role as string || 
+                                null
+              
+              console.log('[Admin Login] Clerk role:', clerkRole)
+              
+              // Clerk role이 "admin" 또는 "staff"인 경우 프로필 생성 시도
+              if (clerkRole === 'admin' || clerkRole === 'staff') {
+                console.log(`[Admin Login] Clerk role이 ${clerkRole}임. 프로필 자동 생성 시도...`)
+                
+                // 프로필 생성 시도
+                const createResponse = await fetch('/api/profile/create', {
+                  method: 'POST',
+                })
+                
+                if (createResponse.ok) {
+                  const createData = await createResponse.json()
+                  
+                  // 프로필 생성 후 세션 설정 시도 (admin 또는 staff role 확인)
+                  if (createData.profile?.role === 'admin' || createData.profile?.role === 'staff') {
+                    const retryResponse = await fetch('/api/admin/session', {
+                      method: 'POST',
+                    })
+                    
+                    if (retryResponse.ok) {
+                      router.push(redirectUrl)
+                      return
+                    }
+                  }
+                } else {
+                  console.error('[Admin Login] 프로필 생성 실패:', await createResponse.json())
+                }
+              } else {
+                console.log('[Admin Login] Clerk role이 admin 또는 staff가 아님. 프로필 생성하지 않음.')
+                setError("Clerk에서 관리자 권한이 설정되지 않았습니다. Clerk 대시보드에서 사용자의 role을 'admin' 또는 'staff'로 설정해주세요.")
+              }
+            }
+            
             setError(data.error || "관리자 권한이 없습니다. 관리자 계정으로 로그인해주세요.")
             setIsCheckingSession(false)
           }

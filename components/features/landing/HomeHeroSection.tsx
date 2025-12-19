@@ -25,10 +25,7 @@ export function HomeHeroSection() {
         <h1 className="text-responsive-xl font-bold text-white drop-shadow-lg mb-4 sm:mb-6">
           Co-AT
         </h1>
-        <p className="text-responsive-lg text-white/95 drop-shadow-md mb-2 sm:mb-4">
-          GWATC 통합 케어 플랫폼
-        </p>
-        <p className="text-responsive text-white/90 drop-shadow-sm mb-6 sm:mb-8 max-w-2xl mx-auto">
+        <p className="text-responsive-lg text-white/90 drop-shadow-sm mb-6 sm:mb-8 max-w-2xl mx-auto">
           행정은 AI에게, 사람은 클라이언트에게
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

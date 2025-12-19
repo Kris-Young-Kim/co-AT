@@ -35,7 +35,7 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
   const [total, setTotal] = useState(initialTotal)
   const [isLoading, setIsLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
-  const [disabilityType, setDisabilityType] = useState<string>("")
+  const [disabilityType, setDisabilityType] = useState<string>("all")
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 20
 
@@ -44,7 +44,7 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
     try {
       const result = await searchClients({
         query: searchQuery || undefined,
-        disability_type: disabilityType || undefined,
+        disability_type: disabilityType === "all" ? undefined : disabilityType || undefined,
         limit: itemsPerPage,
         offset: (currentPage - 1) * itemsPerPage,
       })
@@ -126,7 +126,7 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
               <SelectValue placeholder="장애유형" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">전체</SelectItem>
+              <SelectItem value="all">전체</SelectItem>
               <SelectItem value="지체장애">지체장애</SelectItem>
               <SelectItem value="뇌병변장애">뇌병변장애</SelectItem>
               <SelectItem value="시각장애">시각장애</SelectItem>
@@ -247,6 +247,7 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
     </Card>
   )
 }
+
 
 
 
