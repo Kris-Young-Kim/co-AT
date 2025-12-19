@@ -9,7 +9,7 @@ const navItems = [
   { href: "/portal/mypage", label: "홈", icon: Home },
   { href: "/portal/apply", label: "신청", icon: FileText },
   { href: "/portal/mypage", label: "마이페이지", icon: User },
-]
+].map((item, index) => ({ ...item, key: `${item.href}-${index}` }))
 
 export function MobileBottomNav() {
   const pathname = usePathname()
@@ -23,7 +23,7 @@ export function MobileBottomNav() {
 
           return (
             <Link
-              key={item.href}
+              key={item.key || item.href}
               href={item.href}
               className={cn(
                 "flex flex-col items-center gap-1 px-2 sm:px-4 py-2 text-[10px] sm:text-xs transition-colors min-w-0 flex-1",

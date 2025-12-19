@@ -19,6 +19,7 @@ const menuItems = [
   { href: "/admin/clients", label: "대상자 관리", icon: Users },
   { href: "/admin/inventory", label: "재고 관리", icon: Package },
   { href: "/admin/schedule", label: "일정 관리", icon: Calendar },
+  { href: "/admin/users", label: "사용자 관리", icon: Users },
   { href: "/admin/settings", label: "설정", icon: Settings },
 ];
 

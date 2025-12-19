@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { SignInButton, UserButton, useUser } from "@clerk/nextjs"
+import { SignInButton, UserButton, useUser, ClerkLoaded, ClerkLoading, ClerkFailed } from "@clerk/nextjs"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -160,14 +160,31 @@ export function PublicHeader() {
           })}
         </nav>
         <div className="flex items-center gap-2 sm:gap-4">
-          {!isSignedIn ? (
-            <SignInButton mode="modal">
-              <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
-                로그인
-              </Button>
-            </SignInButton>
-          ) : null}
-          <UserButton afterSignOutUrl="/" />
+          <ClerkLoading>
+            <Button variant="ghost" size="sm" className="text-xs sm:text-sm" disabled>
+              로딩 중...
+            </Button>
+          </ClerkLoading>
+          <ClerkFailed>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-xs sm:text-sm text-destructive"
+              onClick={() => window.location.href = '/sign-in'}
+            >
+              로그인 (직접 이동)
+            </Button>
+          </ClerkFailed>
+          <ClerkLoaded>
+            {!isSignedIn ? (
+              <SignInButton mode="modal">
+                <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
+                  로그인
+                </Button>
+              </SignInButton>
+            ) : null}
+            <UserButton afterSignOutUrl="/" />
+          </ClerkLoaded>
         </div>
       </div>
     </header>
