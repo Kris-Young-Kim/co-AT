@@ -631,17 +631,17 @@ useEffect(() => {
 
 ### 3.2 대상자 CRM
 
-- [ ] `app/(admin)/clients/page.tsx` 작성 (검색 및 리스트)
-- [ ] `app/(admin)/clients/[id]/page.tsx` 작성 (상세 정보)
-- [ ] `components/features/crm/ClientTable.tsx`
-  - [ ] 대상자 목록 (이름/생년월일 검색)
-  - [ ] 필터링 (장애유형, 서비스 이력)
-- [ ] `components/features/crm/ClientProfileCard.tsx`
-  - [ ] 대상자 기본 정보 표시
-- [ ] `components/features/crm/ClientHistoryTable.tsx`
-  - [ ] 서비스 이용 이력 타임라인 (5대 사업 통합)
-- [ ] `actions/client-actions.ts` 작성
-  - [ ] `searchClients()`, `getClientById()`, `updateClient()`
+- [x] `app/(admin)/clients/page.tsx` 작성 (검색 및 리스트) ✅
+- [x] `app/(admin)/clients/[id]/page.tsx` 작성 (상세 정보) ✅
+- [x] `components/features/crm/ClientTable.tsx` ✅
+  - [x] 대상자 목록 (이름/생년월일 검색) ✅
+  - [x] 필터링 (장애유형, 서비스 이력) ✅
+- [x] `components/features/crm/ClientProfileCard.tsx` ✅
+  - [x] 대상자 기본 정보 표시 ✅
+- [x] `components/features/crm/ClientHistoryTable.tsx` ✅
+  - [x] 서비스 이용 이력 타임라인 (5대 사업 통합) ✅
+- [x] `actions/client-actions.ts` 작성 ✅
+  - [x] `searchClients()`, `getClientById()`, `updateClient()` ✅
 
 ### 3.3 상담 기록 시스템
 

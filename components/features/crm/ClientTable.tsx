@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { Loader2, Search, User, Plus, Pencil, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { format } from "date-fns"
@@ -158,17 +159,22 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
 
   return (
     <>
-      <Card>
-        <CardHeader>
+      <Card className="shadow-lg">
+        <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-primary/10">
           <div className="flex items-center justify-between">
-            <CardTitle>대상자 목록</CardTitle>
-            <Button onClick={handleCreate}>
+            <div>
+              <CardTitle className="text-2xl">대상자 목록</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                대상자 정보를 검색하고 관리하세요
+              </p>
+            </div>
+            <Button onClick={handleCreate} className="shadow-md">
               <Plus className="mr-2 h-4 w-4" />
               대상자 등록
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
         {/* 검색 및 필터 */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row">
           <div className="relative flex-1">
@@ -235,29 +241,48 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
           </div>
         ) : (
           <>
-            <div className="rounded-md border">
+            <div className="rounded-lg border shadow-sm overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>이름</TableHead>
-                    <TableHead>생년월일</TableHead>
-                    <TableHead>나이</TableHead>
-                    <TableHead>성별</TableHead>
-                    <TableHead>장애유형</TableHead>
-                    <TableHead>연락처</TableHead>
-                    <TableHead>신청 건수</TableHead>
-                    <TableHead className="text-right">관리</TableHead>
+                  <TableRow className="bg-muted/50">
+                    <TableHead className="font-semibold">이름</TableHead>
+                    <TableHead className="font-semibold">생년월일</TableHead>
+                    <TableHead className="font-semibold">나이</TableHead>
+                    <TableHead className="font-semibold">성별</TableHead>
+                    <TableHead className="font-semibold">장애유형</TableHead>
+                    <TableHead className="font-semibold">연락처</TableHead>
+                    <TableHead className="font-semibold">신청 건수</TableHead>
+                    <TableHead className="text-right font-semibold">관리</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {clients.map((client) => (
-                    <TableRow key={client.id}>
-                      <TableCell className="font-medium">{client.name}</TableCell>
+                  {clients.map((client, index) => (
+                    <TableRow 
+                      key={client.id}
+                      className="transition-colors hover:bg-muted/30 cursor-pointer"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <User className="h-4 w-4 text-primary" />
+                          </div>
+                          <span>{client.name}</span>
+                        </div>
+                      </TableCell>
                       <TableCell>{formatDate(client.birth_date)}</TableCell>
-                      <TableCell>{calculateAge(client.birth_date)}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{calculateAge(client.birth_date)}</Badge>
+                      </TableCell>
                       <TableCell>{client.gender || "-"}</TableCell>
-                      <TableCell>{client.disability_type || "-"}</TableCell>
-                      <TableCell>{client.contact || "-"}</TableCell>
+                      <TableCell>
+                        {client.disability_type ? (
+                          <Badge variant="secondary">{client.disability_type}</Badge>
+                        ) : (
+                          "-"
+                        )}
+                      </TableCell>
+                      <TableCell className="font-mono text-sm">{client.contact || "-"}</TableCell>
                       <TableCell>
                         <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
                           {client.application_count || 0}건
@@ -265,13 +290,14 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <Button asChild variant="ghost" size="sm">
-                            <Link href={`/admin/clients/${client.id}`}>상세보기</Link>
+                          <Button asChild variant="ghost" size="sm" className="hover:bg-primary/10">
+                            <Link href={`/clients/${client.id}`}>상세보기</Link>
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleEdit(client)}
+                            className="hover:bg-primary/10"
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
@@ -279,6 +305,7 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
                             variant="ghost"
                             size="sm"
                             onClick={() => setDeletingClient(client)}
+                            className="hover:bg-destructive/10"
                           >
                             <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>
