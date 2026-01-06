@@ -103,6 +103,17 @@ export function PublicHeader() {
                     <button
                       onMouseEnter={() => setOpenDropdown(item.id)}
                       onMouseLeave={() => setOpenDropdown(null)}
+                      onKeyDown={(e) => {
+                        // Enter 또는 Space 키로 드롭다운 열기/닫기
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault()
+                          setOpenDropdown(openDropdown === item.id ? null : item.id)
+                        }
+                        // Esc 키로 드롭다운 닫기 (Radix UI가 자동 처리하지만 명시적으로 추가)
+                        if (e.key === "Escape") {
+                          setOpenDropdown(null)
+                        }
+                      }}
                       className={cn(
                         "px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap relative",
                         isActive
