@@ -67,14 +67,20 @@ export function ClientHistoryTable({ history }: ClientHistoryTableProps) {
 
   if (history.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>서비스 이용 이력</CardTitle>
+      <Card className="shadow-lg">
+        <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-primary/10">
+          <CardTitle className="text-2xl flex items-center gap-2">
+            <Clock className="h-5 w-5 text-primary" />
+            서비스 이용 이력
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="py-12 text-center text-muted-foreground">
-            <Clock className="mx-auto h-12 w-12 mb-4 opacity-50" />
-            <p>서비스 이용 이력이 없습니다</p>
+          <div className="py-16 text-center text-muted-foreground">
+            <div className="mx-auto h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
+              <Clock className="h-8 w-8 opacity-50" />
+            </div>
+            <p className="text-lg font-medium mb-2">서비스 이용 이력이 없습니다</p>
+            <p className="text-sm">대상자의 서비스 이용 이력이 표시됩니다</p>
           </div>
         </CardContent>
       </Card>
@@ -82,9 +88,12 @@ export function ClientHistoryTable({ history }: ClientHistoryTableProps) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>서비스 이용 이력</CardTitle>
+    <Card className="shadow-lg">
+      <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-primary/10">
+        <CardTitle className="text-2xl flex items-center gap-2">
+          <Clock className="h-5 w-5 text-primary" />
+          서비스 이용 이력
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">

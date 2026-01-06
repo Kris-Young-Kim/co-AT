@@ -42,15 +42,17 @@ export function ClientProfileCard({ client }: ClientProfileCardProps) {
   const age = calculateAge(client.birth_date)
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="shadow-lg">
+      <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-primary/10">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-2 text-2xl">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <User className="h-5 w-5 text-primary" />
+            </div>
             기본 정보
           </CardTitle>
           {client.gender && (
-            <Badge variant="outline">{client.gender}</Badge>
+            <Badge variant="outline" className="text-sm px-3 py-1">{client.gender}</Badge>
           )}
         </div>
       </CardHeader>

@@ -1,0 +1,96 @@
+import { getClientById, getClientHistory } from "@/actions/client-actions"
+import { ClientProfileCard } from "@/components/features/crm/ClientProfileCard"
+import { ClientHistoryTable } from "@/components/features/crm/ClientHistoryTable"
+import { IntakeRecordForm } from "@/components/features/intake/IntakeRecordForm"
+import { ProcessLogForm } from "@/components/features/process/ProcessLogForm"
+import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { redirect, notFound } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Link from "next/link"
+import { ArrowLeft } from "lucide-react"
+
+interface ClientDetailPageProps {
+  params: Promise<{ id: string }>
+}
+
+export default async function ClientDetailPage({ params }: ClientDetailPageProps) {
+  // 권한 확인
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) {
+    console.log("[대상자 상세] 권한 없음 - 홈으로 리다이렉트")
+    redirect("/")
+  }
+
+  const { id } = await params
+
+  // 대상자 정보 조회
+  const clientResult = await getClientById(id)
+  if (!clientResult.success || !clientResult.client) {
+    notFound()
+  }
+
+  // 서비스 이력 조회
+  const historyResult = await getClientHistory(id)
+  const history = historyResult.success ? historyResult.history || [] : []
+
+  return (
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="mb-6">
+        <Button asChild variant="ghost" className="mb-4">
+          <Link href="/clients">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            목록으로
+          </Link>
+        </Button>
+        <h1 className="text-responsive-xl font-bold text-foreground mb-2">
+          대상자 상세 정보
+        </h1>
+        <p className="text-muted-foreground">
+          {clientResult.client.name}님의 상세 정보 및 서비스 이용 이력
+        </p>
+      </div>
+
+      <Tabs defaultValue="profile" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="profile">기본 정보</TabsTrigger>
+          <TabsTrigger value="history">서비스 이력</TabsTrigger>
+          <TabsTrigger value="intake">상담 기록</TabsTrigger>
+          <TabsTrigger value="process">서비스 진행 기록</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="profile" className="space-y-6">
+          <ClientProfileCard client={clientResult.client} />
+        </TabsContent>
+
+        <TabsContent value="history" className="space-y-6">
+          <ClientHistoryTable history={history} />
+        </TabsContent>
+
+        <TabsContent value="intake" className="space-y-6">
+          <IntakeRecordForm
+            clientId={id}
+            onSuccess={() => {
+              // 성공 시 처리 (예: 페이지 새로고침)
+              if (typeof window !== "undefined") {
+                window.location.reload()
+              }
+            }}
+          />
+        </TabsContent>
+
+        <TabsContent value="process" className="space-y-6">
+          <ProcessLogForm
+            clientId={id}
+            onSuccess={() => {
+              // 성공 시 처리 (예: 페이지 새로고침)
+              if (typeof window !== "undefined") {
+                window.location.reload()
+              }
+            }}
+          />
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}
