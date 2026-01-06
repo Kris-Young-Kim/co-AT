@@ -85,6 +85,26 @@
     @apply text-lg sm:text-xl md:text-2xl lg:text-3xl;
   }
   
+  /* 200% 확대 시 레이아웃 유지 */
+  @media (min-width: 1px) {
+    html[style*="font-size: 200%"] .container,
+    html[style*="font-size: 200%"] section {
+      max-width: 100%;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    html[style*="font-size: 200%"] .grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    
+    html[style*="font-size: 200%"] button,
+    html[style*="font-size: 200%"] a {
+      min-height: 44px; /* 터치 타겟 최소 크기 */
+      min-width: 44px;
+    }
+  }
+  
   /* 가독성 개선 - 다크 모드 대비 강화 */
   .text-readable {
     @apply text-foreground;
@@ -147,6 +167,21 @@
     --border: 0 0% 50%;
     --input: 0 0% 20%;
     --ring: 0 0% 100%;
+  }
+  
+  /* 고대비 모드에서 모든 요소의 대비 강화 */
+  .high-contrast * {
+    border-color: hsl(var(--border)) !important;
+  }
+  
+  .high-contrast button,
+  .high-contrast a,
+  .high-contrast [role="button"] {
+    border: 2px solid hsl(var(--foreground)) !important;
+  }
+  
+  .high-contrast img {
+    filter: contrast(1.2);
   }
   
   /* 키보드 포커스 강화 */
