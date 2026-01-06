@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { Database } from "@/types/database.types"
 
-type Client = Database["public"]["Tables"]["clients"]["Row"]
+export type Client = Database["public"]["Tables"]["clients"]["Row"]
 
 export interface ClientWithStats extends Client {
   application_count?: number
@@ -142,6 +142,47 @@ export async function getClientById(clientId: string): Promise<{
 }
 
 /**
+ * 대상자 등록
+ */
+export async function createClientRecord(
+  clientData: Omit<Client, "id" | "created_at" | "updated_at">
+): Promise<{
+  success: boolean
+  client?: Client
+  error?: string
+}> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) {
+      return { success: false, error: "권한이 없습니다" }
+    }
+
+    const supabase = await createClient()
+
+    const { data, error } = await supabase
+      .from("clients")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+      .insert({
+        ...clientData,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error("대상자 등록 실패:", error)
+      return { success: false, error: "대상자 등록에 실패했습니다: " + (error.message || "알 수 없는 오류") }
+    }
+
+    return { success: true, client: data }
+  } catch (error) {
+    console.error("Unexpected error in createClient:", error)
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
+
+/**
  * 대상자 정보 수정
  */
 export async function updateClient(
@@ -163,6 +204,7 @@ export async function updateClient(
     // updated_at 자동 업데이트
     const { data, error } = await supabase
       .from("clients")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
       .update({
         ...updates,
         updated_at: new Date().toISOString(),
@@ -179,6 +221,48 @@ export async function updateClient(
     return { success: true, client: data }
   } catch (error) {
     console.error("Unexpected error in updateClient:", error)
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
+
+/**
+ * 대상자 삭제
+ */
+export async function deleteClient(clientId: string): Promise<{
+  success: boolean
+  error?: string
+}> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) {
+      return { success: false, error: "권한이 없습니다" }
+    }
+
+    const supabase = await createClient()
+
+    // 관련 신청서가 있는지 확인
+    const { count: appCount } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("client_id", clientId)
+
+    if (appCount && appCount > 0) {
+      return { success: false, error: "관련 신청서가 있어 삭제할 수 없습니다" }
+    }
+
+    const { error } = await supabase
+      .from("clients")
+      .delete()
+      .eq("id", clientId)
+
+    if (error) {
+      console.error("대상자 삭제 실패:", error)
+      return { success: false, error: "대상자 삭제에 실패했습니다: " + (error.message || "알 수 없는 오류") }
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error("Unexpected error in deleteClient:", error)
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }
   }
 }
@@ -229,7 +313,7 @@ export async function getClientHistory(clientId: string): Promise<{
       .select("id")
       .eq("client_id", clientId)
 
-    const applicationIds = clientApplications?.map((app) => app.id) || []
+    const applicationIds = clientApplications?.map((app: { id: string }) => app.id) || []
     let serviceLogs: any[] = []
 
     if (applicationIds.length > 0) {
@@ -250,7 +334,7 @@ export async function getClientHistory(clientId: string): Promise<{
     const history: ClientHistoryItem[] = []
 
     // 신청서 이력 추가
-    applications?.forEach((app) => {
+    applications?.forEach((app: { id: string; category: string | null; sub_category: string | null; status: string | null; created_at: string | null }) => {
       const categoryMap: Record<string, string> = {
         consult: "상담",
         experience: "체험",
@@ -284,20 +368,20 @@ export async function getClientHistory(clientId: string): Promise<{
       })
     })
 
-    // 일정 이력 추가
-    schedules?.forEach((schedule) => {
-      const scheduleTypeMap: Record<string, string> = {
-        visit: "방문",
-        consultation: "상담",
-        assessment: "평가",
-        delivery: "배송",
-        pickup: "픽업",
-      }
+        // 일정 이력 추가
+        schedules?.forEach((schedule: { id: string; schedule_type: string | null; scheduled_date: string | null; scheduled_time: string | null; status: string | null; created_at: string | null }) => {
+          const scheduleTypeMap: Record<string, string> = {
+            visit: "방문",
+            consultation: "상담",
+            assessment: "평가",
+            delivery: "배송",
+            pickup: "픽업",
+          }
 
-      const typeName = scheduleTypeMap[schedule.schedule_type || ""] || schedule.schedule_type || "일정"
-      const timeStr = schedule.scheduled_time 
-        ? `${schedule.scheduled_date} ${schedule.scheduled_time}` 
-        : schedule.scheduled_date || ""
+          const typeName = scheduleTypeMap[schedule.schedule_type || ""] || schedule.schedule_type || "일정"
+          const timeStr = schedule.scheduled_time 
+            ? `${schedule.scheduled_date} ${schedule.scheduled_time}` 
+            : schedule.scheduled_date || ""
 
       history.push({
         id: schedule.id,
@@ -310,7 +394,7 @@ export async function getClientHistory(clientId: string): Promise<{
     })
 
     // 서비스 로그 이력 추가
-    serviceLogs?.forEach((log) => {
+    serviceLogs?.forEach((log: { id: string; service_type: string | null; service_area: string | null; service_date: string | null; created_at: string | null }) => {
       const serviceTypeMap: Record<string, string> = {
         repair: "수리",
         custom_make: "제작",

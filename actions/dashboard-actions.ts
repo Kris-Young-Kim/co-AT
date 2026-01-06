@@ -7,6 +7,45 @@ export interface DashboardStats {
   newToday: number
   inProgress: number
   completedToday: number
+  // 4대 사업별 통계
+  businessStats: {
+    // I. 상담 및 정보제공사업
+    consultation: {
+      total: number
+      today: number
+      inProgress: number
+      completed: number
+    }
+    // II. 맞춤형 지원사업
+    customSupport: {
+      total: number
+      today: number
+      inProgress: number
+      completed: number
+      rental: number // 대여 건수
+      customMake: number // 맞춤 제작 건수
+      assessment: number // 평가지원 건수
+    }
+    // III. 사후관리 지원사업
+    aftercare: {
+      total: number
+      today: number
+      inProgress: number
+      completed: number
+      cleaning: number // 소독 및 세척 건수
+      repair: number // 수리 건수
+      reuse: number // 재사용 지원 건수
+    }
+    // IV. 교육 및 홍보사업
+    education: {
+      total: number
+      today: number
+      inProgress: number
+      completed: number
+      training: number // 교육 건수
+      promotion: number // 홍보 건수
+    }
+  }
 }
 
 export interface NewApplication {
@@ -98,10 +137,235 @@ export async function getDashboardStats(): Promise<{
       console.error("오늘 완료 건수 조회 실패:", completedTodayError)
     }
 
+    // 4대 사업별 통계 조회
+    const currentYear = new Date().getFullYear()
+    const yearStart = new Date(currentYear, 0, 1).toISOString()
+    const yearEnd = new Date(currentYear, 11, 31, 23, 59, 59, 999).toISOString()
+
+    // I. 상담 및 정보제공사업 (consult)
+    const { count: consultTotal } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "consult")
+      .gte("created_at", yearStart)
+      .lte("created_at", yearEnd)
+
+    const { count: consultToday } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "consult")
+      .eq("status", "접수")
+      .gte("created_at", todayStart)
+      .lte("created_at", todayEndStr)
+
+    const { count: consultInProgress } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "consult")
+      .eq("status", "진행")
+
+    const { count: consultCompleted } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "consult")
+      .eq("status", "완료")
+      .gte("updated_at", yearStart)
+      .lte("updated_at", yearEnd)
+
+    // II. 맞춤형 지원사업 (custom)
+    const { count: customTotal } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "custom")
+      .gte("created_at", yearStart)
+      .lte("created_at", yearEnd)
+
+    const { count: customToday } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "custom")
+      .eq("status", "접수")
+      .gte("created_at", todayStart)
+      .lte("created_at", todayEndStr)
+
+    const { count: customInProgress } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "custom")
+      .eq("status", "진행")
+
+    const { count: customCompleted } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "custom")
+      .eq("status", "완료")
+      .gte("updated_at", yearStart)
+      .lte("updated_at", yearEnd)
+
+    // 대여 건수 (sub_category: rental)
+    const { count: rentalCount } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "custom")
+      .eq("sub_category", "rental")
+      .gte("created_at", yearStart)
+      .lte("created_at", yearEnd)
+
+    // 맞춤 제작 건수 (sub_category: custom_make)
+    const { count: customMakeCount } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "custom")
+      .eq("sub_category", "custom_make")
+      .gte("created_at", yearStart)
+      .lte("created_at", yearEnd)
+
+    // 평가지원 건수 (category: consult + sub_category: visit 또는 assessment)
+    const { count: assessmentCount } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "consult")
+      .in("sub_category", ["visit", "exhibition"])
+      .gte("created_at", yearStart)
+      .lte("created_at", yearEnd)
+
+    // III. 사후관리 지원사업 (aftercare)
+    const { count: aftercareTotal } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "aftercare")
+      .gte("created_at", yearStart)
+      .lte("created_at", yearEnd)
+
+    const { count: aftercareToday } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "aftercare")
+      .eq("status", "접수")
+      .gte("created_at", todayStart)
+      .lte("created_at", todayEndStr)
+
+    const { count: aftercareInProgress } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "aftercare")
+      .eq("status", "진행")
+
+    const { count: aftercareCompleted } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "aftercare")
+      .eq("status", "완료")
+      .gte("updated_at", yearStart)
+      .lte("updated_at", yearEnd)
+
+    // 소독 및 세척 건수 (sub_category: cleaning)
+    const { count: cleaningCount } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "aftercare")
+      .eq("sub_category", "cleaning")
+      .gte("created_at", yearStart)
+      .lte("created_at", yearEnd)
+
+    // 수리 건수 (sub_category: repair)
+    const { count: repairCount } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "aftercare")
+      .eq("sub_category", "repair")
+      .gte("created_at", yearStart)
+      .lte("created_at", yearEnd)
+
+    // 재사용 지원 건수 (sub_category: reuse)
+    const { count: reuseCount } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "aftercare")
+      .eq("sub_category", "reuse")
+      .gte("created_at", yearStart)
+      .lte("created_at", yearEnd)
+
+    // IV. 교육 및 홍보사업 (education)
+    const { count: educationTotal } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "education")
+      .gte("created_at", yearStart)
+      .lte("created_at", yearEnd)
+
+    const { count: educationToday } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "education")
+      .eq("status", "접수")
+      .gte("created_at", todayStart)
+      .lte("created_at", todayEndStr)
+
+    const { count: educationInProgress } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "education")
+      .eq("status", "진행")
+
+    const { count: educationCompleted } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "education")
+      .eq("status", "완료")
+      .gte("updated_at", yearStart)
+      .lte("updated_at", yearEnd)
+
+    // 교육 건수 (sub_category: education 또는 전체 education 카테고리)
+    const { count: trainingCount } = await supabase
+      .from("applications")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "education")
+      .gte("created_at", yearStart)
+      .lte("created_at", yearEnd)
+
+    // 홍보 건수는 공지사항이나 별도 테이블에서 관리될 수 있음
+    // 일단 education 카테고리로 통합 관리
+    const promotionCount = 0
+
     const stats: DashboardStats = {
       newToday: newTodayCount || 0,
       inProgress: inProgressCount || 0,
       completedToday: completedTodayCount || 0,
+      businessStats: {
+        consultation: {
+          total: consultTotal || 0,
+          today: consultToday || 0,
+          inProgress: consultInProgress || 0,
+          completed: consultCompleted || 0,
+        },
+        customSupport: {
+          total: customTotal || 0,
+          today: customToday || 0,
+          inProgress: customInProgress || 0,
+          completed: customCompleted || 0,
+          rental: rentalCount || 0,
+          customMake: customMakeCount || 0,
+          assessment: assessmentCount || 0,
+        },
+        aftercare: {
+          total: aftercareTotal || 0,
+          today: aftercareToday || 0,
+          inProgress: aftercareInProgress || 0,
+          completed: aftercareCompleted || 0,
+          cleaning: cleaningCount || 0,
+          repair: repairCount || 0,
+          reuse: reuseCount || 0,
+        },
+        education: {
+          total: educationTotal || 0,
+          today: educationToday || 0,
+          inProgress: educationInProgress || 0,
+          completed: educationCompleted || 0,
+          training: trainingCount || 0,
+          promotion: promotionCount,
+        },
+      },
     }
 
     return { success: true, stats }

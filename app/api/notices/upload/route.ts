@@ -82,8 +82,8 @@ export async function POST(req: Request) {
       console.error("파일 업로드 실패:", {
         error: uploadError,
         message: uploadError.message,
-        statusCode: uploadError.statusCode,
-        errorCode: uploadError.error,
+        statusCode: (uploadError as any).statusCode,
+        errorCode: (uploadError as any).error,
       })
       
       // 버킷이 없는 경우 더 명확한 에러 메시지
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
         errorMessage.includes("Bucket") || 
         errorMessage.includes("not found") ||
         errorMessage.includes("does not exist") ||
-        uploadError.statusCode === 404
+        (uploadError as any).statusCode === 404
       ) {
         return NextResponse.json(
           { 
@@ -108,7 +108,7 @@ export async function POST(req: Request) {
         { 
           error: "파일 업로드에 실패했습니다", 
           details: errorMessage,
-          code: uploadError.error || "UPLOAD_FAILED"
+          code: (uploadError as any).error || "UPLOAD_FAILED"
         },
         { status: 500 }
       )

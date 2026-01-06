@@ -19,10 +19,10 @@ import { useState } from "react"
 export function ServiceRentalForm() {
   const { formData, setFormData, setCurrentStep, selectedCategory } = useApplicationStore()
   const [rentalStartDate, setRentalStartDate] = useState<Date | undefined>(
-    formData?.rental_start_date ? new Date(formData.rental_start_date) : undefined
+    (formData as any)?.rental_start_date ? new Date((formData as any).rental_start_date) : undefined
   )
   const [rentalEndDate, setRentalEndDate] = useState<Date | undefined>(
-    formData?.rental_end_date ? new Date(formData.rental_end_date) : undefined
+    (formData as any)?.rental_end_date ? new Date((formData as any).rental_end_date) : undefined
   )
 
   const {

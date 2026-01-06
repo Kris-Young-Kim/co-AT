@@ -20,10 +20,22 @@ import {
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Loader2, Search, User } from "lucide-react"
+import { Loader2, Search, User, Plus, Pencil, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
+import { ClientFormDialog } from "./ClientFormDialog"
+import { deleteClient } from "@/actions/client-actions"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 interface ClientTableProps {
   initialClients?: ClientWithStats[]
@@ -38,6 +50,12 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
   const [disabilityType, setDisabilityType] = useState<string>("all")
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 20
+
+  // 다이얼로그 상태
+  const [isFormDialogOpen, setIsFormDialogOpen] = useState(false)
+  const [editingClient, setEditingClient] = useState<ClientWithStats | null>(null)
+  const [deletingClient, setDeletingClient] = useState<ClientWithStats | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const handleSearch = async () => {
     setIsLoading(true)
@@ -79,6 +97,40 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
 
   const totalPages = Math.ceil(total / itemsPerPage)
 
+  const handleCreate = () => {
+    setEditingClient(null)
+    setIsFormDialogOpen(true)
+  }
+
+  const handleEdit = (client: ClientWithStats) => {
+    setEditingClient(client)
+    setIsFormDialogOpen(true)
+  }
+
+  const handleDelete = async () => {
+    if (!deletingClient) return
+
+    setIsDeleting(true)
+    try {
+      const result = await deleteClient(deletingClient.id)
+      if (result.success) {
+        setDeletingClient(null)
+        handleSearch() // 목록 새로고침
+      } else {
+        alert(result.error || "삭제에 실패했습니다")
+      }
+    } catch (error) {
+      console.error("대상자 삭제 오류:", error)
+      alert("예상치 못한 오류가 발생했습니다")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  const handleFormSuccess = () => {
+    handleSearch() // 목록 새로고침
+  }
+
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "-"
     try {
@@ -105,11 +157,18 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>대상자 목록</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>대상자 목록</CardTitle>
+            <Button onClick={handleCreate}>
+              <Plus className="mr-2 h-4 w-4" />
+              대상자 등록
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
         {/* 검색 및 필터 */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row">
           <div className="relative flex-1">
@@ -205,9 +264,25 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button asChild variant="ghost" size="sm">
-                          <Link href={`/admin/clients/${client.id}`}>상세보기</Link>
-                        </Button>
+                        <div className="flex items-center justify-end gap-2">
+                          <Button asChild variant="ghost" size="sm">
+                            <Link href={`/admin/clients/${client.id}`}>상세보기</Link>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEdit(client)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setDeletingClient(client)}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -245,6 +320,46 @@ export function ClientTable({ initialClients = [], initialTotal = 0 }: ClientTab
         )}
       </CardContent>
     </Card>
+
+      {/* 등록/수정 다이얼로그 */}
+      <ClientFormDialog
+        open={isFormDialogOpen}
+        onOpenChange={setIsFormDialogOpen}
+        client={editingClient}
+        onSuccess={handleFormSuccess}
+      />
+
+      {/* 삭제 확인 다이얼로그 */}
+      <AlertDialog open={!!deletingClient} onOpenChange={(open) => !open && setDeletingClient(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>대상자 삭제</AlertDialogTitle>
+            <AlertDialogDescription>
+              {deletingClient?.name}님의 정보를 삭제하시겠습니까?
+              <br />
+              이 작업은 되돌릴 수 없습니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>취소</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  삭제 중...
+                </>
+              ) : (
+                "삭제"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
 

@@ -72,14 +72,14 @@ export async function getMyServiceHistory(): Promise<{
     const { data: client, error: clientError } = await supabase
       .from("clients")
       .select("id")
-      .eq("id", profile.id)
+      .eq("id", (profile as { id: string }).id)
       .single()
 
     if (clientError || !client) {
       return { success: true, history: [] }
     }
 
-    const clientId = client.id
+    const clientId = (client as { id: string }).id
     const allHistory: ServiceHistory[] = []
 
     // 1. 신청 이력 (applications)
@@ -89,12 +89,12 @@ export async function getMyServiceHistory(): Promise<{
       .eq("client_id", clientId)
 
     if (applications) {
-      applications.forEach((app) => {
+      applications.forEach((app: { id: string; desired_date: string | null; created_at: string | null; category: string | null; sub_category: string | null; status: string | null }) => {
         allHistory.push({
           id: app.id,
           type: "application",
-          date: app.desired_date || app.created_at,
-          created_at: app.created_at,
+          date: app.desired_date || app.created_at || "",
+          created_at: app.created_at || "",
           category: app.category,
           sub_category: app.sub_category,
           status: app.status,
@@ -110,7 +110,7 @@ export async function getMyServiceHistory(): Promise<{
       .select("id")
       .eq("client_id", clientId)
 
-    const applicationIds = clientApplications?.map((app) => app.id) || []
+    const applicationIds = clientApplications?.map((app: { id: string }) => app.id) || []
 
     let serviceLogs: any[] = []
     if (applicationIds.length > 0) {
@@ -243,7 +243,7 @@ export async function getMyRentals(): Promise<{
     const { data: client, error: clientError } = await supabase
       .from("clients")
       .select("id")
-      .eq("id", profile.id)
+      .eq("id", (profile as { id: string }).id)
       .single()
 
     if (clientError || !client) {
@@ -269,7 +269,7 @@ export async function getMyRentals(): Promise<{
         )
       `
       )
-      .eq("client_id", client.id)
+      .eq("client_id", (client as { id: string }).id)
       .eq("status", "rented")
       .order("rental_end_date", { ascending: true })
 
