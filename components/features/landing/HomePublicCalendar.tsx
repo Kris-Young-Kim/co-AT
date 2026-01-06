@@ -72,13 +72,38 @@ export function HomePublicCalendar({ initialSchedules = [] }: HomePublicCalendar
     setIsBookingDialogOpen(true)
   }
 
-  // 예약 확인 핸들러 (나중에 createApplication 호출)
+  // 예약 확인 핸들러
   const handleConfirmBooking = async () => {
-    if (!bookingSchedule) return
-    // TODO: createApplication() 호출
-    console.log("예약 확인:", bookingSchedule)
-    setIsBookingDialogOpen(false)
-    // 성공 메시지 표시
+    if (!bookingSchedule || !isSignedIn) return
+
+    try {
+      // 견학/교육 예약을 위한 신청서 생성
+      const response = await fetch("/api/applications/booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          schedule_id: bookingSchedule.id,
+          category: bookingSchedule.schedule_type === "exhibition" ? "experience" : "education",
+          desired_date: bookingSchedule.scheduled_date,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        alert("예약이 완료되었습니다!")
+        setIsBookingDialogOpen(false)
+        // 페이지 새로고침하여 최신 일정 반영
+        window.location.reload()
+      } else {
+        alert(data.error || "예약에 실패했습니다")
+      }
+    } catch (error) {
+      console.error("예약 오류:", error)
+      alert("예약 중 오류가 발생했습니다")
+    }
   }
 
   return (

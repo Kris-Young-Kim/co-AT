@@ -40,7 +40,7 @@ export const useApplicationStore = create<ApplicationState>((set) => ({
   
   setFormData: (data) =>
     set((state) => ({
-      formData: { ...state.formData, ...data },
+      formData: { ...state.formData, ...data } as ApplicationForm | null,
     })),
   
   setError: (field, error) =>

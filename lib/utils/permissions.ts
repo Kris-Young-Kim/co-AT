@@ -108,7 +108,7 @@ export async function getCurrentUserProfileId(): Promise<string | null> {
       return null
     }
 
-    return profile.id
+    return (profile as { id: string }).id
   } catch (error) {
     console.error("Error getting user profile ID:", error)
     return null

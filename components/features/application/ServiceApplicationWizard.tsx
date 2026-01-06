@@ -4,10 +4,14 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { WizardStepNav } from "./wizard-step-nav"
 import { ServiceCategorySelector } from "./ServiceCategorySelector"
-import { ServiceRepairForm } from "./forms/ServiceRepairForm"
-import { ServiceRentalForm } from "./forms/ServiceRentalForm"
 import { ServiceConsultForm } from "./forms/ServiceConsultForm"
+import { ServiceRentalForm } from "./forms/ServiceRentalForm"
 import { ServiceCustomForm } from "./forms/ServiceCustomForm"
+import { ServiceReuseForm } from "./forms/ServiceReuseForm"
+import { ServiceRepairForm } from "./forms/ServiceRepairForm"
+import { ServiceCleaningForm } from "./forms/ServiceCleaningForm"
+import { ServiceEducationForm } from "./forms/ServiceEducationForm"
+import { ServicePromotionForm } from "./forms/ServicePromotionForm"
 import { SuccessModal } from "./success-modal"
 import { useApplicationStore } from "@/lib/stores/application-store"
 import { createApplication } from "@/actions/application-actions"
@@ -52,20 +56,51 @@ export function ServiceApplicationWizard() {
           )
         }
 
-        // 카테고리에 따른 폼 선택
-        switch (selectedCategory) {
-          case "aftercare":
-            return <ServiceRepairForm />
-          case "experience":
-          case "custom":
-            return <ServiceRentalForm />
-          case "consult":
-            return <ServiceConsultForm />
-          case "education":
-            return <ServiceCustomForm />
-          default:
-            return <ServiceConsultForm />
+        // 카테고리 및 서브카테고리에 따른 폼 선택
+        // 상담
+        if (selectedCategory === "consult") {
+          return <ServiceConsultForm />
         }
+        
+        // 대여 (체험, 맞춤형)
+        if (selectedCategory === "experience" || (selectedCategory === "custom" && formData?.sub_category === "rental")) {
+          return <ServiceRentalForm />
+        }
+        
+        // 맞춤제작
+        if (selectedCategory === "custom" && formData?.sub_category === "custom_make") {
+          return <ServiceCustomForm />
+        }
+        
+        // 사후관리: 재사용, 수리, 소독 및 세척
+        if (selectedCategory === "aftercare") {
+          if (formData?.sub_category === "reuse") {
+            return <ServiceReuseForm />
+          }
+          if (formData?.sub_category === "repair") {
+            return <ServiceRepairForm />
+          }
+          if (formData?.sub_category === "cleaning") {
+            return <ServiceCleaningForm />
+          }
+          // 기본값: 수리
+          return <ServiceRepairForm />
+        }
+        
+        // 교육/홍보: 교육, 홍보
+        if (selectedCategory === "education") {
+          if (formData?.sub_category === "education") {
+            return <ServiceEducationForm />
+          }
+          if (formData?.sub_category === "promotion") {
+            return <ServicePromotionForm />
+          }
+          // 기본값: 교육
+          return <ServiceEducationForm />
+        }
+        
+        // 기본값: 상담
+        return <ServiceConsultForm />
 
       case 3:
         if (!formData) {

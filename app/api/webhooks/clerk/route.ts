@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       email,
       full_name: fullName,
       role: 'user', // 기본값
-    })
+    } as any)
 
     if (error) {
       console.error('프로필 생성 실패:', error)

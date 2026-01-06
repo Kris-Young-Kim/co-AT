@@ -3,6 +3,7 @@
 import { AdminDashboardKpi } from "./AdminDashboardKpi"
 import { AdminNewRequestList } from "./AdminNewRequestList"
 import { AdminTodaySchedule } from "./AdminTodaySchedule"
+import { BusinessStatsSection } from "./BusinessStatsSection"
 import { useDashboardStats, useNewApplications, useTodaySchedules } from "@/lib/hooks/useDashboardStats"
 import { Loader2 } from "lucide-react"
 
@@ -33,6 +34,9 @@ export function AdminDashboardContent() {
     <div className="space-y-6">
       {/* KPI 카드 */}
       <AdminDashboardKpi stats={stats} />
+
+      {/* 4대 핵심 사업 현황 */}
+      <BusinessStatsSection stats={stats.businessStats} />
 
       {/* 신규 접수 및 오늘의 일정 */}
       <div className="grid gap-6 md:grid-cols-2">

@@ -116,7 +116,7 @@ interface ClientTimelineItemProps {
 
 export function ClientTimelineItem({ history }: ClientTimelineItemProps) {
   // 타입별 아이콘 및 라벨 결정
-  let Icon = MessageSquare
+  let Icon: React.ComponentType<{ className?: string }> = MessageSquare
   let label = "서비스"
   let color = "text-primary"
 

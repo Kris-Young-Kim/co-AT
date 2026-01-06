@@ -33,7 +33,7 @@ const noticeSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요").max(200, "제목은 200자 이하여야 합니다"),
   content: z.string().min(1, "내용을 입력해주세요"),
   category: z.enum(["notice", "activity", "support", "case"]).nullable(),
-  is_pinned: z.boolean().default(false),
+  is_pinned: z.boolean(),
 })
 
 type NoticeFormData = z.infer<typeof noticeSchema>

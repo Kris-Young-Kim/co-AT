@@ -1,6 +1,6 @@
 import { ClientTimelineList } from "@/components/features/portal/ClientTimelineList"
 import { ClientRentStatus } from "@/components/features/portal/ClientRentStatus"
-import { getMyApplications, getMyRentals } from "@/actions/portal-actions"
+import { getMyServiceHistory, getMyRentals } from "@/actions/portal-actions"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

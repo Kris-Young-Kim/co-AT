@@ -2,14 +2,14 @@
 
 import { useSignIn, useUser } from "@clerk/nextjs"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Loader2, Lock, Mail } from "lucide-react"
 
-export default function AdminSignInPage() {
+function AdminSignInForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectUrl = searchParams.get('redirect_url') || '/admin/dashboard'
@@ -62,7 +62,7 @@ export default function AdminSignInPage() {
               
               // Clerk 사용자 정보에서 role 확인
               const clerkRole = user?.publicMetadata?.role as string || 
-                                user?.privateMetadata?.role as string || 
+                                (user as any)?.privateMetadata?.role as string || 
                                 null
               
               console.log('[Admin Login] Clerk role:', clerkRole)
@@ -290,3 +290,21 @@ export default function AdminSignInPage() {
   )
 }
 
+export default function AdminSignInPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-muted/50 p-4">
+        <Card className="w-full max-w-md shadow-lg">
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center justify-center space-y-4">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">로딩 중...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <AdminSignInForm />
+    </Suspense>
+  )
+}

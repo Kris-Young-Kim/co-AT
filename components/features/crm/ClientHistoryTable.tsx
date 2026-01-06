@@ -112,7 +112,7 @@ export function ClientHistoryTable({ history }: ClientHistoryTableProps) {
                       <Badge variant="outline" className="text-xs">
                         {getTypeLabel(item.type)}
                       </Badge>
-                      {getStatusBadge(item.status)}
+                      {getStatusBadge(item.status ?? null)}
                     </div>
                     {item.description && (
                       <p className="text-sm text-muted-foreground mb-2">{item.description}</p>

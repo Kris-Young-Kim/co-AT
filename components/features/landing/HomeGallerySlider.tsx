@@ -5,39 +5,14 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
-
-interface YouTubeVideo {
-  id: string
-  title: string
-  thumbnail: string
-  url: string
-}
-
-// 예시 YouTube 영상 데이터 (실제로는 Supabase나 외부 API에서 가져올 수 있음)
-const defaultVideos: YouTubeVideo[] = [
-  {
-    id: "1",
-    title: "보조기기센터 소개",
-    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
-    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-  },
-  {
-    id: "2",
-    title: "보조기기 체험 프로그램",
-    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
-    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-  },
-  {
-    id: "3",
-    title: "맞춤형 보조기기 제작",
-    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
-    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-  },
-]
+import type { YouTubeVideo } from "@/actions/youtube-actions"
 
 interface HomeGallerySliderProps {
   videos?: YouTubeVideo[]
 }
+
+// 기본 영상 데이터 (데이터가 없을 때 사용)
+const defaultVideos: YouTubeVideo[] = []
 
 export function HomeGallerySlider({ videos = defaultVideos }: HomeGallerySliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0)

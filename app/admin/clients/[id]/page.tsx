@@ -1,9 +1,12 @@
 import { getClientById, getClientHistory } from "@/actions/client-actions"
 import { ClientProfileCard } from "@/components/features/crm/ClientProfileCard"
 import { ClientHistoryTable } from "@/components/features/crm/ClientHistoryTable"
+import { IntakeRecordForm } from "@/components/features/intake/IntakeRecordForm"
+import { ProcessLogForm } from "@/components/features/process/ProcessLogForm"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { redirect, notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 
@@ -48,10 +51,42 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
         </p>
       </div>
 
-      <div className="space-y-6">
-        <ClientProfileCard client={clientResult.client} />
-        <ClientHistoryTable history={history} />
-      </div>
+      <Tabs defaultValue="profile" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="profile">기본 정보</TabsTrigger>
+          <TabsTrigger value="history">서비스 이력</TabsTrigger>
+          <TabsTrigger value="intake">상담 기록</TabsTrigger>
+          <TabsTrigger value="process">서비스 진행 기록</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="profile" className="space-y-6">
+          <ClientProfileCard client={clientResult.client} />
+        </TabsContent>
+
+        <TabsContent value="history" className="space-y-6">
+          <ClientHistoryTable history={history} />
+        </TabsContent>
+
+        <TabsContent value="intake" className="space-y-6">
+          <IntakeRecordForm
+            clientId={id}
+            onSuccess={() => {
+              // 성공 시 처리 (예: 페이지 새로고침)
+              window.location.reload()
+            }}
+          />
+        </TabsContent>
+
+        <TabsContent value="process" className="space-y-6">
+          <ProcessLogForm
+            clientId={id}
+            onSuccess={() => {
+              // 성공 시 처리 (예: 페이지 새로고침)
+              window.location.reload()
+            }}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

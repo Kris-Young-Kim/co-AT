@@ -74,7 +74,7 @@ export async function getRecentNotices(limit: number = 5): Promise<Notice[]> {
 
   // attachments 필드가 있는 경우 추가로 조회
   const noticesWithAttachments = await Promise.all(
-    allNotices.slice(0, limit).map(async (notice) => {
+    allNotices.slice(0, limit).map(async (notice: { id: string }) => {
       try {
         const { data: noticeData } = await supabase
           .from("notices")
@@ -84,10 +84,10 @@ export async function getRecentNotices(limit: number = 5): Promise<Notice[]> {
         
         return {
           ...notice,
-          attachments: noticeData?.attachments
-            ? (typeof noticeData.attachments === "string"
-                ? JSON.parse(noticeData.attachments)
-                : noticeData.attachments)
+          attachments: noticeData && (noticeData as unknown as { attachments?: any }).attachments
+            ? (typeof (noticeData as unknown as { attachments: any }).attachments === "string"
+                ? JSON.parse((noticeData as unknown as { attachments: string }).attachments)
+                : (noticeData as unknown as { attachments: any }).attachments)
             : undefined,
         }
       } catch {
@@ -100,7 +100,7 @@ export async function getRecentNotices(limit: number = 5): Promise<Notice[]> {
     })
   )
 
-  return noticesWithAttachments
+  return noticesWithAttachments as Notice[]
 }
 
 /**
@@ -127,7 +127,7 @@ export async function getNoticesByCategory(
 
   // attachments 필드가 있는 경우 추가로 조회
   const noticesWithAttachments = await Promise.all(
-    (data || []).map(async (notice) => {
+    (data || []).map(async (notice: { id: string }) => {
       try {
         const { data: noticeData } = await supabase
           .from("notices")
@@ -137,10 +137,10 @@ export async function getNoticesByCategory(
         
         return {
           ...notice,
-          attachments: noticeData?.attachments
-            ? (typeof noticeData.attachments === "string"
-                ? JSON.parse(noticeData.attachments)
-                : noticeData.attachments)
+          attachments: noticeData && (noticeData as unknown as { attachments?: any }).attachments
+            ? (typeof (noticeData as unknown as { attachments: any }).attachments === "string"
+                ? JSON.parse((noticeData as unknown as { attachments: string }).attachments)
+                : (noticeData as unknown as { attachments: any }).attachments)
             : undefined,
         }
       } catch {
@@ -153,7 +153,7 @@ export async function getNoticesByCategory(
     })
   )
 
-  return noticesWithAttachments
+  return noticesWithAttachments as Notice[]
 }
 
 /**
@@ -173,6 +173,10 @@ export async function getNoticeById(id: string): Promise<Notice | null> {
     return null
   }
 
+  if (!data) {
+    return null
+  }
+
   // attachments 필드가 있는 경우 추가로 조회
   try {
     const { data: noticeData } = await supabase
@@ -181,20 +185,25 @@ export async function getNoticeById(id: string): Promise<Notice | null> {
       .eq("id", id)
       .single()
     
+    const dataTyped = data as { id: string; title: string; content: string; category: "notice" | "activity" | "support" | "case" | null; is_pinned: boolean; created_at: string; created_by: string | null }
     return {
-      ...data,
-      attachments: noticeData?.attachments
-        ? (typeof noticeData.attachments === "string"
-            ? JSON.parse(noticeData.attachments)
-            : noticeData.attachments)
+      ...dataTyped,
+      attachments: noticeData && (noticeData as unknown as { attachments?: any }).attachments
+        ? (typeof (noticeData as unknown as { attachments: any }).attachments === "string"
+            ? JSON.parse((noticeData as unknown as { attachments: string }).attachments)
+            : (noticeData as unknown as { attachments: any }).attachments)
         : undefined,
-    }
+    } as Notice
   } catch {
     // attachments 컬럼이 없거나 파싱 실패 시 무시
-    return {
-      ...data,
-      attachments: undefined,
+    if (!data) {
+      return null
     }
+    const dataTyped = data as { id: string; title: string; content: string; category: "notice" | "activity" | "support" | "case" | null; is_pinned: boolean; created_at: string; created_by: string | null }
+    return {
+      ...dataTyped,
+      attachments: undefined,
+    } as Notice
   }
 }
 
@@ -237,7 +246,7 @@ export async function createNotice(
 
     const { data, error } = await supabase
       .from("notices")
-      .insert(insertData)
+      .insert(insertData as any)
       .select("id")
       .single()
 
@@ -249,7 +258,7 @@ export async function createNotice(
     revalidatePath("/notices")
     revalidatePath("/admin/notices-management")
 
-    return { success: true, noticeId: data.id }
+    return { success: true, noticeId: (data as { id: string }).id }
   } catch (error) {
     console.error("Unexpected error in createNotice:", error)
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }
@@ -293,7 +302,8 @@ export async function updateNotice(
 
     const { error } = await supabase
       .from("notices")
-      .update(updateData)
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+      .update(updateData as any)
       .eq("id", input.id)
 
     if (error) {
@@ -373,7 +383,7 @@ export async function getAllNotices(): Promise<{
 
     // attachments 필드가 있는 경우 추가로 조회
     const noticesWithAttachments = await Promise.all(
-      (data || []).map(async (notice) => {
+      (data || []).map(async (notice: { id: string }) => {
         try {
           const { data: noticeData } = await supabase
             .from("notices")
@@ -383,10 +393,10 @@ export async function getAllNotices(): Promise<{
           
           return {
             ...notice,
-            attachments: noticeData?.attachments
-              ? (typeof noticeData.attachments === "string"
-                  ? JSON.parse(noticeData.attachments)
-                  : noticeData.attachments)
+            attachments: noticeData && (noticeData as unknown as { attachments?: any }).attachments
+              ? (typeof (noticeData as unknown as { attachments: any }).attachments === "string"
+                  ? JSON.parse((noticeData as unknown as { attachments: string }).attachments)
+                  : (noticeData as unknown as { attachments: any }).attachments)
               : undefined,
           }
         } catch {
@@ -399,7 +409,7 @@ export async function getAllNotices(): Promise<{
       })
     )
 
-    return { success: true, notices: noticesWithAttachments }
+    return { success: true, notices: noticesWithAttachments as Notice[] }
   } catch (error) {
     console.error("Unexpected error in getAllNotices:", error)
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }

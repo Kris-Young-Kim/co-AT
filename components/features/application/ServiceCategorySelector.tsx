@@ -55,7 +55,10 @@ const serviceCategories = [
     label: "교육/홍보",
     description: "보조기기 활용 교육 및 홍보",
     icon: GraduationCap,
-    subCategories: [],
+    subCategories: [
+      { id: "education", label: "교육" },
+      { id: "promotion", label: "홍보" },
+    ],
   },
 ]
 

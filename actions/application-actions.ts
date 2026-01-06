@@ -4,6 +4,10 @@ import { createClient } from "@/lib/supabase/server"
 import { type ApplicationForm } from "@/lib/validators"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
+import { Database } from "@/types/database.types"
+
+type Profile = Database["public"]["Tables"]["profiles"]["Row"]
+type ClientInsert = Database["public"]["Tables"]["clients"]["Insert"]
 
 export async function createApplication(
   formData: ApplicationForm
@@ -28,24 +32,32 @@ export async function createApplication(
       return { success: false, error: "사용자 정보를 찾을 수 없습니다" }
     }
 
+    const profileId = (profile as { id: string }).id
+
+    if (!profileId) {
+      return { success: false, error: "사용자 정보를 찾을 수 없습니다" }
+    }
+
     // 클라이언트 정보 조회 또는 생성
     // TODO: 실제로는 클라이언트 정보를 먼저 확인하고 없으면 생성해야 함
     // 여기서는 간단히 profile.id를 client_id로 사용 (실제로는 별도 clients 테이블 조회 필요)
     const { data: client, error: clientError } = await supabase
       .from("clients")
       .select("id")
-      .eq("id", profile.id) // 임시로 profile.id 사용 (실제로는 별도 로직 필요)
+      .eq("id", profileId) // 임시로 profile.id 사용 (실제로는 별도 로직 필요)
       .single()
 
     let clientId: string
 
     if (clientError || !client) {
       // 클라이언트가 없으면 생성 (실제로는 더 많은 정보 필요)
+      const clientData: ClientInsert = {
+        name: formData.contact, // 임시 (실제로는 폼에서 이름 받아야 함)
+      }
       const { data: newClient, error: createClientError } = await supabase
         .from("clients")
-        .insert({
-          name: formData.contact, // 임시 (실제로는 폼에서 이름 받아야 함)
-        })
+        // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+        .insert(clientData)
         .select("id")
         .single()
 
@@ -53,20 +65,13 @@ export async function createApplication(
         return { success: false, error: "클라이언트 정보 생성에 실패했습니다" }
       }
 
-      clientId = newClient.id
+      clientId = (newClient as { id: string }).id
     } else {
-      clientId = client.id
+      clientId = (client as { id: string }).id
     }
 
     // 신청서 생성
-    const applicationData: {
-      client_id: string
-      category: string | null
-      sub_category: string | null
-      desired_date: string | null
-      status: string
-      service_year: number | null
-    } = {
+    const applicationData = {
       client_id: clientId,
       category: formData.category,
       sub_category: formData.sub_category || null,
@@ -79,6 +84,7 @@ export async function createApplication(
 
     const { data: application, error: applicationError } = await supabase
       .from("applications")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
       .insert(applicationData)
       .select("id")
       .single()
@@ -96,7 +102,7 @@ export async function createApplication(
 
     return {
       success: true,
-      applicationId: application.id,
+      applicationId: (application as { id: string }).id,
     }
   } catch (error) {
     console.error("Unexpected error in createApplication:", error)
