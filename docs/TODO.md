@@ -200,7 +200,7 @@ useEffect(() => {
 
 - **MCP 서버**: `supabase-co-AT`
 - **Project Ref**: `uyjbndiwyddjyjkdfuyi`
-- **접근 토큰**: `sbp_31e2d9d8e62851f8b5b15e9fe62e11e42acacdec`
+- **접근 토큰**: 환경 변수에서 설정 (보안상 문서에 노출하지 않음)
 - **모드**: Read-only (스키마 조회용)
 - **타입 생성 명령어**: `npm run gen:types` (project-ref 사용)
 
@@ -1038,7 +1038,7 @@ CREATE INDEX IF NOT EXISTS idx_rentals_rental_end_date ON rentals(rental_end_dat
       "--project-ref=uyjbndiwyddjyjkdfuyi"
     ],
     "env": {
-      "SUPABASE_ACCESS_TOKEN": "sbp_31e2d9d8e62851f8b5b15e9fe62e11e42acacdec"
+      "SUPABASE_ACCESS_TOKEN": "sbp_v0_4844266856c682057f82bc77cc1f1d2fb14d0e37"
     }
   }
 }
