@@ -154,13 +154,13 @@ useEffect(() => {
 
 ### 테스트 체크리스트
 
-#### 키보드 테스트
+#### 키보드 테스트 (메인 홈페이지: https://co-at-gw.vercel.app/ 에만 적용)
 
-- [ ] Tab 키로 모든 인터랙티브 요소 접근 가능
-- [ ] Shift + Tab으로 역방향 탐색 가능
-- [ ] Enter/Space로 버튼 클릭 가능
-- [ ] Esc로 모달/드롭다운 닫기 가능
-- [ ] 화살표 키로 메뉴/리스트 탐색 가능
+- [x] Tab 키로 모든 인터랙티브 요소 접근 가능
+- [x] Shift + Tab으로 역방향 탐색 가능
+- [x] Enter/Space로 버튼 클릭 가능 (PublicHeader 드롭다운에 명시적 핸들러 추가)
+- [x] Esc로 모달/드롭다운 닫기 가능 (PublicHeader 드롭다운에 명시적 핸들러 추가)
+- [x] 화살표 키로 메뉴/리스트 탐색 가능 (Radix UI DropdownMenu 기본 지원)
 
 #### 스크린 리더 테스트
 
