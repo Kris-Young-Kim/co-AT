@@ -48,7 +48,7 @@ export function HomeCalendarCompact({ initialSchedules = [] }: HomeCalendarCompa
     <Card className="h-full">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
-          <CalendarIcon className="h-5 w-5" />
+          <CalendarIcon className="h-5 w-5" aria-hidden="true" />
           공개 일정 캘린더
         </CardTitle>
       </CardHeader>
@@ -66,6 +66,7 @@ export function HomeCalendarCompact({ initialSchedules = [] }: HomeCalendarCompa
               hasSchedule: "bg-primary/10 text-primary font-semibold",
             }}
             className="rounded-md border w-full"
+            aria-label="공개 일정 캘린더"
             classNames={{
               months: "w-full",
               month: "w-full",
@@ -93,7 +94,7 @@ export function HomeCalendarCompact({ initialSchedules = [] }: HomeCalendarCompa
               {format(selectedDate, "yyyy년 MM월 dd일", { locale: ko })} 일정
             </h3>
             {selectedSchedules.length === 0 ? (
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground" role="status" aria-live="polite">
                 선택한 날짜에 일정이 없습니다.
               </p>
             ) : (
@@ -116,14 +117,16 @@ export function HomeCalendarCompact({ initialSchedules = [] }: HomeCalendarCompa
                       </Badge>
                       {schedule.scheduled_time && (
                         <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Clock className="h-3 w-3" />
-                          {schedule.scheduled_time.substring(0, 5)}
+                          <Clock className="h-3 w-3" aria-hidden="true" />
+                          <time dateTime={schedule.scheduled_time}>
+                            {schedule.scheduled_time.substring(0, 5)}
+                          </time>
                         </div>
                       )}
                     </div>
                     {schedule.address && (
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <MapPin className="h-3 w-3" />
+                        <MapPin className="h-3 w-3" aria-hidden="true" />
                         <span className="line-clamp-1">{schedule.address}</span>
                       </div>
                     )}

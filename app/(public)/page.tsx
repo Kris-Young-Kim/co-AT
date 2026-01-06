@@ -25,7 +25,7 @@ export default async function Home() {
       <HomeQuickMenuGrid />
 
       {/* 공지사항 및 활동 소식 */}
-      <section className="py-8 sm:py-12 bg-background">
+      <section className="py-8 sm:py-12 bg-background" aria-label="공지사항 및 일정 정보">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 lg:grid-cols-2">
             {/* 좌측: 공지사항, 활동 소식, 서비스 사례 */}
