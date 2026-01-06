@@ -645,13 +645,23 @@ useEffect(() => {
 
 ### 3.3 상담 기록 시스템
 
-- [ ] `components/features/intake/IntakeRecordForm.tsx`
-  - [ ] 상담 기록지 입력 폼 (첨부 19 양식)
-  - [ ] 신체 기능 체크 (관절가동범위)
-  - [ ] 인지/감각 기능 체크박스
-  - [ ] 보유 보조기기 목록
-- [ ] `actions/intake-actions.ts` 작성
-  - [ ] `createIntakeRecord()` Server Action
+- [x] `components/features/intake/IntakeRecordFormV2.tsx` ✅
+  - [x] 동적 양식 빌더 시스템 ✅
+  - [x] 상담 기록지 입력 폼 (첨부 19 양식) ✅
+  - [x] 신체 기능 체크 (관절가동범위) ✅
+  - [x] 인지/감각 기능 체크박스 ✅
+  - [x] 보유 보조기기 목록 ✅
+  - [x] 양식 자유 수정 기능 (드래그 앤 드롭, 필드 추가/수정/삭제) ✅
+  - [x] 양식 템플릿 저장/불러오기 ✅
+  - [x] 다양한 필드 타입 지원 (텍스트, 숫자, 날짜, 셀렉트, 체크박스, 라디오 등) ✅
+- [x] `actions/intake-actions.ts` 작성 ✅
+  - [x] `createIntakeRecord()` Server Action ✅
+- [x] `components/features/intake/FormBuilder.tsx` - 동적 양식 빌더 ✅
+- [x] `components/features/intake/DynamicFormField.tsx` - 동적 필드 렌더링 ✅
+- [x] `components/features/intake/FieldEditor.tsx` - 필드 편집기 ✅
+- [x] `components/features/intake/FormTemplateManager.tsx` - 템플릿 관리 ✅
+- [x] `lib/types/form-builder.types.ts` - 양식 타입 정의 ✅
+- [x] `lib/templates/default-intake-template.ts` - 기본 템플릿 ✅
 
 ### 3.4 평가 시스템
 
