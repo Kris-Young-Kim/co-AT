@@ -11,8 +11,6 @@ export default function SignInPage() {
             socialButtonsBlockButtonText: 'font-normal',
           },
         }}
-        // Apple, Google, Kakao만 표시 (Facebook 제외)
-        socialConnections={['oauth_apple', 'oauth_google', 'oauth_kakao']}
       />
     </div>
   )
