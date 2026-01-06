@@ -67,8 +67,9 @@ export function HomeGallerySlider({ videos = defaultVideos }: HomeGallerySliderP
                               target="_blank"
                               rel="noopener noreferrer"
                               className="flex items-center gap-2"
+                              aria-label={`${video.title} YouTube 영상 보기`}
                             >
-                              <ExternalLink className="h-5 w-5" />
+                              <ExternalLink className="h-5 w-5" aria-hidden="true" />
                               YouTube에서 보기
                             </a>
                           </Button>
@@ -96,7 +97,7 @@ export function HomeGallerySlider({ videos = defaultVideos }: HomeGallerySliderP
                 onClick={prevSlide}
                 aria-label="이전 영상"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
               </Button>
               <Button
                 variant="outline"
@@ -105,7 +106,7 @@ export function HomeGallerySlider({ videos = defaultVideos }: HomeGallerySliderP
                 onClick={nextSlide}
                 aria-label="다음 영상"
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
               </Button>
             </>
           )}

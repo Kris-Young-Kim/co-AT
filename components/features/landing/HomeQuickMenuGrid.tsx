@@ -63,7 +63,11 @@ export function HomeQuickMenuGrid() {
           {serviceCategories.map((service) => {
             const Icon = service.icon
             return (
-              <Link key={service.id} href={service.href}>
+              <Link 
+                key={service.id} 
+                href={service.href}
+                aria-label={`${service.label}: ${service.description}`}
+              >
                 <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer group">
                   <CardContent className="p-6 sm:p-8 flex flex-col items-center text-center gap-4">
                     <div
@@ -71,8 +75,9 @@ export function HomeQuickMenuGrid() {
                         "w-16 h-16 rounded-full flex items-center justify-center text-white group-hover:scale-110 transition-transform",
                         service.color
                       )}
+                      aria-hidden="true"
                     >
-                      <Icon className="h-8 w-8" />
+                      <Icon className="h-8 w-8" aria-hidden="true" />
                     </div>
                     <div>
                       <h3 className="text-lg sm:text-xl font-semibold text-foreground mb-2">

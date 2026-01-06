@@ -30,26 +30,30 @@ export function HomeHeroSection({ featuredVideo }: HomeHeroSectionProps) {
             {/* Fallback 이미지 (비디오 로딩 중 또는 모바일에서 표시) */}
             <Image
               src={featuredVideo.thumbnail}
-              alt={featuredVideo.title}
+              alt=""
+              role="presentation"
               fill
               className="object-cover md:hidden"
               priority
               quality={90}
+              aria-hidden="true"
             />
           </>
         ) : (
-          // 기본 이미지 배경
+          // 기본 이미지 배경 (장식용)
           <Image
             src="https://images.unsplash.com/photo-1709127347874-3f4674be5bc8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4MTYyMzB8MHwxfHNlYXJjaHw0fHxhc3Npc3RpdmUlMjB0ZWNobm9sb2d5JTIwY2FyZSUyMHN1cHBvcnR8ZW58MHwwfHx8MTc2NTAzNjU1Mnww&ixlib=rb-4.1.0&q=80&w=1920"
-            alt="보조기기센터 케어 지원"
+            alt=""
+            role="presentation"
             fill
             className="object-cover"
             priority
             quality={90}
+            aria-hidden="true"
           />
         )}
         {/* Dark Overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" aria-hidden="true" />
       </div>
 
       {/* Hero Content */}
@@ -62,9 +66,9 @@ export function HomeHeroSection({ featuredVideo }: HomeHeroSectionProps) {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button asChild size="lg" className="text-base sm:text-lg px-6 sm:px-8">
-            <Link href="/portal/mypage">
+            <Link href="/portal/mypage" aria-label="서비스 이용하기 페이지로 이동">
               서비스 이용하기
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
             </Link>
           </Button>
           <Button
@@ -73,7 +77,7 @@ export function HomeHeroSection({ featuredVideo }: HomeHeroSectionProps) {
             size="lg"
             className="text-base sm:text-lg px-6 sm:px-8 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
           >
-            <Link href="/notices">공지사항 보기</Link>
+            <Link href="/notices" aria-label="공지사항 페이지로 이동">공지사항 보기</Link>
           </Button>
         </div>
       </div>

@@ -162,13 +162,13 @@ useEffect(() => {
 - [x] Esc로 모달/드롭다운 닫기 가능 (PublicHeader 드롭다운에 명시적 핸들러 추가)
 - [x] 화살표 키로 메뉴/리스트 탐색 가능 (Radix UI DropdownMenu 기본 지원)
 
-#### 스크린 리더 테스트
+#### 스크린 리더 테스트 (메인 홈페이지: https://co-at-gw.vercel.app/ 에만 적용)
 
-- [ ] NVDA (Windows) 또는 VoiceOver (Mac)로 테스트
-- [ ] 모든 이미지에 적절한 alt 텍스트
-- [ ] 폼 요소에 레이블 연결
-- [ ] 에러 메시지가 스크린 리더로 읽힘
-- [ ] 페이지 구조가 논리적으로 읽힘
+- [ ] NVDA (Windows) 또는 VoiceOver (Mac)로 테스트 (수동 테스트 필요)
+- [x] 모든 이미지에 적절한 alt 텍스트 (배경 이미지는 role="presentation", aria-hidden="true" 추가)
+- [x] 폼 요소에 레이블 연결 (메인 홈페이지에는 폼 없음, 향후 추가 시 적용)
+- [x] 에러 메시지가 스크린 리더로 읽힘 (role="status", aria-live="polite" 추가)
+- [x] 페이지 구조가 논리적으로 읽힘 (시맨틱 HTML, ARIA 랜드마크, 탭 구조 개선)
 
 #### 시각 테스트
 
