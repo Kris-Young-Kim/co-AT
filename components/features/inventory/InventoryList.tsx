@@ -47,7 +47,7 @@ import {
   PackageCheck,
   PackageX,
   Wrench,
-  Spray,
+  SprayCan,
   Trash2,
   Edit,
   QrCode,
@@ -86,7 +86,7 @@ const statusConfig: Record<string, { label: string; icon: typeof Package; classN
   },
   소독중: {
     label: "소독중",
-    icon: Spray,
+    icon: SprayCan,
     className: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
   },
   폐기: {

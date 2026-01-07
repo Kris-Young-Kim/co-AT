@@ -78,7 +78,7 @@ export async function POST(req: Request) {
                'unknown'
     const userAgent = headerPayload.get('user-agent') || 'unknown'
 
-    await adminSupabase.from('security_logs').insert({
+    const { error: logError } = await adminSupabase.from('security_logs' as any).insert({
       event_type: eventType === 'session.created' ? 'login_success' : 'login_attempt',
       severity: 'low',
       clerk_user_id: userId,
@@ -92,9 +92,10 @@ export async function POST(req: Request) {
         eventType,
         timestamp: new Date().toISOString(),
       },
-    }).catch((error) => {
-      console.error('[Security] 로그인 시도 추적 실패:', error)
     })
+    if (logError) {
+      console.error('[Security] 로그인 시도 추적 실패:', logError)
+    }
   }
 
   // 유저 삭제 시 정리 로직

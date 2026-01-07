@@ -72,20 +72,22 @@ export async function createRental(
       return { success: false, error: "재고 정보를 찾을 수 없습니다" }
     }
 
-    if (inventory.status !== "보관") {
+    const inventoryTyped = inventory as { status?: string; is_rental_available?: boolean } | null;
+    if (!inventoryTyped || inventoryTyped.status !== "보관") {
       return {
         success: false,
-        error: `해당 기기는 현재 ${inventory.status} 상태로 대여할 수 없습니다`,
+        error: `해당 기기는 현재 ${inventoryTyped?.status || "알 수 없음"} 상태로 대여할 수 없습니다`,
       }
     }
 
-    if (!inventory.is_rental_available) {
+    if (!inventoryTyped.is_rental_available) {
       return { success: false, error: "해당 기기는 대여 불가능합니다" }
     }
 
     // 대여 기록 생성
     const { data: rental, error: rentalError } = await supabase
       .from("rentals")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
       .insert({
         application_id: input.application_id,
         inventory_id: input.inventory_id,
@@ -110,7 +112,8 @@ export async function createRental(
       // 대여는 생성되었지만 상태 변경 실패 - 경고만 표시
     }
 
-    console.log("[Rental Actions] 대여 생성 성공:", rental.id)
+    const rentalTyped = rental as { id: string } | null;
+    console.log("[Rental Actions] 대여 생성 성공:", rentalTyped?.id)
 
     // 경로 무효화
     revalidatePath("/admin/clients")
@@ -167,7 +170,8 @@ export async function returnRental(
       return { success: false, error: "대여 정보를 찾을 수 없습니다" }
     }
 
-    if (rental.status === "returned") {
+    const rentalTyped = rental as { status?: string } | null;
+    if (rentalTyped?.status === "returned") {
       return { success: false, error: "이미 반납된 대여입니다" }
     }
 
@@ -177,6 +181,7 @@ export async function returnRental(
     // 대여 상태 업데이트
     const { data: updatedRental, error: updateError } = await supabase
       .from("rentals")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         status: "returned",
         return_date: actualReturnDate,
@@ -192,7 +197,8 @@ export async function returnRental(
     }
 
     // 재고 상태를 '보관'으로 변경
-    const statusResult = await updateInventoryStatus(rental.inventory_id, "보관")
+    const rentalWithIds = rentalTyped as { inventory_id?: string; client_id?: string } | null;
+    const statusResult = await updateInventoryStatus(rentalWithIds?.inventory_id || "", "보관")
     if (!statusResult.success) {
       console.error("[Rental Actions] 재고 상태 변경 실패:", statusResult.error)
       // 반납은 완료되었지만 상태 변경 실패 - 경고만 표시
@@ -201,10 +207,11 @@ export async function returnRental(
     console.log("[Rental Actions] 대여 반납 성공:", rentalId)
 
     // 경로 무효화
+    const rentalClientId = rentalWithIds?.client_id || "";
     revalidatePath("/admin/clients")
-    revalidatePath(`/admin/clients/${rental.client_id}`)
+    revalidatePath(`/admin/clients/${rentalClientId}`)
     revalidatePath("/clients")
-    revalidatePath(`/clients/${rental.client_id}`)
+    revalidatePath(`/clients/${rentalClientId}`)
     revalidatePath("/admin/inventory")
     revalidatePath("/portal/mypage")
 
@@ -252,16 +259,19 @@ export async function extendRental(
       return { success: false, error: "대여 정보를 찾을 수 없습니다" }
     }
 
-    if (rental.status !== "rented") {
+    const rentalTypedForExtension = rental as { status?: string } | null;
+    if (rentalTypedForExtension?.status !== "rented") {
       return { success: false, error: "대여 중인 항목만 연장할 수 있습니다" }
     }
 
     // 연장 횟수 증가
-    const newExtensionCount = (rental.extension_count || 0) + 1
+    const rentalForExtension = rentalTypedForExtension as { extension_count?: number } | null;
+    const newExtensionCount = (rentalForExtension?.extension_count || 0) + 1
 
     // 대여 기간 업데이트
     const { data: updatedRental, error: updateError } = await supabase
       .from("rentals")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         rental_end_date: newEndDate,
         extension_count: newExtensionCount,
@@ -279,10 +289,11 @@ export async function extendRental(
     console.log("[Rental Actions] 대여 연장 성공:", rentalId)
 
     // 경로 무효화
+    const rentalClientIdForExtension = (rentalForExtension as { client_id?: string })?.client_id || "";
     revalidatePath("/admin/clients")
-    revalidatePath(`/admin/clients/${rental.client_id}`)
+    revalidatePath(`/admin/clients/${rentalClientIdForExtension}`)
     revalidatePath("/clients")
-    revalidatePath(`/clients/${rental.client_id}`)
+    revalidatePath(`/clients/${rentalClientIdForExtension}`)
     revalidatePath("/portal/mypage")
 
     return { success: true, rental: updatedRental }
@@ -428,13 +439,14 @@ export async function getRentalById(rentalId: string): Promise<{
     }
 
     // D-Day 계산
-    const endDate = new Date(data.rental_end_date)
+    const rentalData = data as { rental_end_date?: string; status?: string } | null;
+    const endDate = new Date(rentalData?.rental_end_date || "")
     const daysRemaining = differenceInDays(endDate, new Date())
-    const isOverdue = isPast(endDate) && !isToday(endDate) && data.status === "rented"
-    const isDueToday = isToday(endDate) && data.status === "rented"
+    const isOverdue = isPast(endDate) && !isToday(endDate) && rentalData?.status === "rented"
+    const isDueToday = isToday(endDate) && rentalData?.status === "rented"
 
     const rental: RentalWithDetails = {
-      ...data,
+      ...(data as unknown as RentalWithDetails),
       inventory_name: (data as any).inventory?.name || null,
       inventory_model: (data as any).inventory?.model || null,
       client_name: (data as any).clients?.name || null,

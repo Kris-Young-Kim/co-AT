@@ -1,7 +1,7 @@
 "use server"
 
 import { getGeminiClient } from "@/lib/gemini/client"
-import { getSupabaseServer } from "@/lib/supabase/server"
+import { createClient } from "@/lib/supabase/server"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { auth } from "@clerk/nextjs/server"
 import { chunkMarkdownBySections, classifyCategory } from "@/lib/utils/text-chunker"
@@ -41,6 +41,7 @@ async function getEmbedding(text: string, taskType: "RETRIEVAL_DOCUMENT" | "RETR
     // 모델: text-embedding-004 또는 gemini-embedding-001
     const model = client.getGenerativeModel({ model: "models/text-embedding-004" })
     
+    // @ts-expect-error - Gemini API 타입 추론 이슈
     const result = await model.embedContent({
       content: { parts: [{ text }] },
       taskType,
@@ -127,7 +128,7 @@ export async function embedRegulations(): Promise<{
     const chunks = chunkMarkdownBySections(content, 200, 1000)
     console.log(`[RAG Actions] ${chunks.length}개의 청크 생성`)
     
-    const supabase = await getSupabaseServer()
+    const supabase = await createClient()
     
     // 기존 데이터 삭제 (재생성 시)
     await supabase.from("regulations").delete().neq("id", "00000000-0000-0000-0000-000000000000")
@@ -145,6 +146,7 @@ export async function embedRegulations(): Promise<{
         const category = classifyCategory(chunk.title, chunk.content)
         
         // 데이터베이스에 저장
+        // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
         const { error } = await supabase.from("regulations").insert({
           title: chunk.title,
           content: chunk.content,
@@ -204,24 +206,59 @@ export async function searchRegulations(
   try {
     console.log("[RAG Actions] 규정 검색 시작:", { query, limit })
     
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/1ed68a72-80cb-4fd8-8b36-2f52025d15fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'actions/rag-actions.ts:searchRegulations:entry',message:'searchRegulations called',data:{query,limit},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'ALL'})}).catch(()=>{});
+    // #endregion
+    
     // 권한 확인
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/1ed68a72-80cb-4fd8-8b36-2f52025d15fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'actions/rag-actions.ts:searchRegulations:before-permission',message:'Before permission check',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
     const hasPermission = await hasAdminOrStaffPermission()
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/1ed68a72-80cb-4fd8-8b36-2f52025d15fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'actions/rag-actions.ts:searchRegulations:after-permission',message:'Permission check result',data:{hasPermission},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
     if (!hasPermission) {
       return { success: false, error: "권한이 없습니다" }
     }
     
     // 질문을 벡터화 (RETRIEVAL_QUERY 타입 사용)
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/1ed68a72-80cb-4fd8-8b36-2f52025d15fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'actions/rag-actions.ts:searchRegulations:before-embedding',message:'Before embedding generation',data:{query},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     const queryEmbedding = await getEmbedding(query, "RETRIEVAL_QUERY")
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/1ed68a72-80cb-4fd8-8b36-2f52025d15fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'actions/rag-actions.ts:searchRegulations:after-embedding',message:'Embedding generated',data:{embeddingLength:queryEmbedding?.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     
     // 모든 규정 청크 가져오기
-    const supabase = await getSupabaseServer()
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/1ed68a72-80cb-4fd8-8b36-2f52025d15fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'actions/rag-actions.ts:searchRegulations:before-supabase',message:'Before Supabase query',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+    const supabase = await createClient()
     const { data: regulations, error } = await supabase
       .from("regulations")
       .select("id, title, content, section, category, embedding")
     
+    // #region agent log
+    fetch('http://127.0.0.1:7243/ingest/1ed68a72-80cb-4fd8-8b36-2f52025d15fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'actions/rag-actions.ts:searchRegulations:after-supabase',message:'Supabase query result',data:{hasError:!!error,errorCode:error?.code,errorMessage:error?.message,regulationsCount:regulations?.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+    
     if (error) {
       console.error("[RAG Actions] 규정 조회 실패:", error)
-      return { success: false, error: "규정 조회에 실패했습니다" }
+      // #region agent log
+      fetch('http://127.0.0.1:7243/ingest/1ed68a72-80cb-4fd8-8b36-2f52025d15fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'actions/rag-actions.ts:searchRegulations:error',message:'Supabase query error',data:{errorCode:error.code,errorMessage:error.message,errorDetails:error.details,errorHint:error.hint},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
+      
+      // 테이블이 없는 경우 명확한 안내 메시지
+      if (error.code === 'PGRST205') {
+        return { 
+          success: false, 
+          error: "regulations 테이블이 존재하지 않습니다. 먼저 마이그레이션을 실행해주세요: migrations/012_create_regulations.sql" 
+        }
+      }
+      
+      return { success: false, error: `규정 조회에 실패했습니다: ${error.message}` }
     }
     
     if (!regulations || regulations.length === 0) {
@@ -229,8 +266,8 @@ export async function searchRegulations(
     }
     
     // 유사도 계산
-    const similarities = regulations
-      .map((reg) => {
+    const similarities = (regulations || [])
+      .map((reg: any) => {
         const embedding = reg.embedding as number[]
         if (!embedding || embedding.length === 0) {
           return null
@@ -246,15 +283,15 @@ export async function searchRegulations(
           similarity,
         }
       })
-      .filter((item): item is RegulationChunk & { similarity: number } => item !== null)
-      .sort((a, b) => b.similarity - a.similarity)
+      .filter((item: any): item is RegulationChunk & { similarity: number } => item !== null)
+      .sort((a: any, b: any) => (b?.similarity || 0) - (a?.similarity || 0))
       .slice(0, limit)
     
     console.log(`[RAG Actions] ${similarities.length}개의 유사 청크 발견`)
     
     return {
       success: true,
-      chunks: similarities,
+      chunks: similarities as RegulationChunk[],
     }
   } catch (error) {
     console.error("[RAG Actions] 규정 검색 실패:", error)
@@ -339,9 +376,34 @@ ${context}
     }
   } catch (error) {
     console.error("[RAG Actions] RAG 답변 생성 실패:", error)
+    
+    // 에러 타입별 처리
+    if (error instanceof Error) {
+      // API 키 관련 에러
+      if (error.message.includes("GOOGLE_AI_API_KEY") || error.message.includes("API key not valid") || error.message.includes("API_KEY_INVALID")) {
+        return {
+          success: false,
+          error: "Google AI API 키가 유효하지 않습니다. .env.local 파일의 GOOGLE_AI_API_KEY를 확인하고 개발 서버를 재시작해주세요.",
+        }
+      }
+      
+      // API 키 미설정 에러
+      if (error.message.includes("환경 변수가 설정되지 않았습니다")) {
+        return {
+          success: false,
+          error: "Google AI API 키가 설정되지 않았습니다. .env.local 파일에 GOOGLE_AI_API_KEY를 추가하고 개발 서버를 재시작해주세요.",
+        }
+      }
+      
+      return {
+        success: false,
+        error: `답변 생성 중 오류가 발생했습니다: ${error.message}`,
+      }
+    }
+    
     return {
       success: false,
-      error: error instanceof Error ? error.message : "알 수 없는 오류",
+      error: "예상치 못한 오류가 발생했습니다",
     }
   }
 }

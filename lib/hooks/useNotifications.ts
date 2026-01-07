@@ -67,6 +67,15 @@ export function useNotifications() {
               return old
             }
 
+            // 브라우저 알림 (선택사항)
+            if ("Notification" in window && Notification.permission === "granted") {
+              new Notification(newNotification.title || "", {
+                body: newNotification.body || "",
+                icon: "/favicon.ico",
+                tag: newNotification.id || "",
+              })
+            }
+
             return {
               ...old,
               notifications: [newNotification, ...(old.notifications || [])],
@@ -74,15 +83,6 @@ export function useNotifications() {
               unreadCount: (old.unreadCount || 0) + 1,
             }
           })
-
-          // 브라우저 알림 (선택사항)
-          if ("Notification" in window && Notification.permission === "granted") {
-            new Notification(newNotification.title, {
-              body: newNotification.body,
-              icon: "/favicon.ico",
-              tag: newNotification.id,
-            })
-          }
         }
       )
       .on(

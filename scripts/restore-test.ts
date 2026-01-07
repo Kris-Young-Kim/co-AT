@@ -31,7 +31,7 @@ async function runRestoreTest(backupIdOrLatest: string): Promise<RestoreTestResu
 
     if (backupIdOrLatest === "latest") {
       const { data, error } = await supabase
-        .from("backup_logs")
+        .from("backup_logs" as any)
         .select("*")
         .eq("status", "completed")
         .order("started_at", { ascending: false })
@@ -45,7 +45,7 @@ async function runRestoreTest(backupIdOrLatest: string): Promise<RestoreTestResu
       backupLog = data
     } else {
       const { data, error } = await supabase
-        .from("backup_logs")
+        .from("backup_logs" as any)
         .select("*")
         .eq("id", backupIdOrLatest)
         .single()
@@ -57,12 +57,13 @@ async function runRestoreTest(backupIdOrLatest: string): Promise<RestoreTestResu
       backupLog = data
     }
 
-    if (backupLog.status !== "completed") {
-      throw new Error(`백업이 완료되지 않았습니다: ${backupLog.status}`)
+    const backupLogTyped = backupLog as { status?: string; id?: string; backup_name?: string; backup_type?: string; tables_count?: number; records_count?: number } | null;
+    if (backupLogTyped?.status !== "completed") {
+      throw new Error(`백업이 완료되지 않았습니다: ${backupLogTyped?.status || "알 수 없음"}`)
     }
 
-    console.log(`[Restore Test] 백업 정보: ${backupLog.backup_name}`)
-    console.log(`[Restore Test] 테이블 수: ${backupLog.tables_count}, 레코드 수: ${backupLog.records_count}`)
+    console.log(`[Restore Test] 백업 정보: ${backupLogTyped?.backup_name || ""}`)
+    console.log(`[Restore Test] 테이블 수: ${backupLogTyped?.tables_count || 0}, 레코드 수: ${backupLogTyped?.records_count || 0}`)
 
     // 실제 복구는 테스트 환경에서만 실행
     // 프로덕션 데이터를 덮어쓰지 않도록 주의
@@ -74,13 +75,13 @@ async function runRestoreTest(backupIdOrLatest: string): Promise<RestoreTestResu
 
       // 백업 로그만 업데이트 (복구 테스트 완료로 표시)
       const { error: updateError } = await supabase
-        .from("backup_logs")
+        .from("backup_logs" as any)
         .update({
           restore_tested_at: new Date().toISOString(),
           restore_test_status: "passed",
           restore_test_notes: "복구 테스트 검증 완료 (실제 복구 미수행)",
         })
-        .eq("id", backupLog.id)
+        .eq("id", backupLogTyped?.id || "")
 
       if (updateError) {
         throw new Error(`백업 로그 업데이트 실패: ${updateError.message}`)
@@ -88,10 +89,10 @@ async function runRestoreTest(backupIdOrLatest: string): Promise<RestoreTestResu
 
       return {
         success: true,
-        backupId: backupLog.id,
-        backupName: backupLog.backup_name,
-        tablesRestored: backupLog.tables_count || 0,
-        recordsRestored: backupLog.records_count || 0,
+        backupId: backupLogTyped?.id || "",
+        backupName: backupLogTyped?.backup_name || "",
+        tablesRestored: backupLogTyped?.tables_count || 0,
+        recordsRestored: backupLogTyped?.records_count || 0,
       }
     }
 
@@ -103,13 +104,13 @@ async function runRestoreTest(backupIdOrLatest: string): Promise<RestoreTestResu
 
     // 복구 테스트 결과 업데이트
     const { error: updateError } = await supabase
-      .from("backup_logs")
+      .from("backup_logs" as any)
       .update({
         restore_tested_at: new Date().toISOString(),
         restore_test_status: "passed",
         restore_test_notes: "복구 테스트 성공",
       })
-      .eq("id", backupLog.id)
+      .eq("id", backupLogTyped?.id || "")
 
     if (updateError) {
       throw new Error(`백업 로그 업데이트 실패: ${updateError.message}`)
@@ -119,10 +120,10 @@ async function runRestoreTest(backupIdOrLatest: string): Promise<RestoreTestResu
 
     return {
       success: true,
-      backupId: backupLog.id,
-      backupName: backupLog.backup_name,
-      tablesRestored: backupLog.tables_count || 0,
-      recordsRestored: backupLog.records_count || 0,
+      backupId: backupLogTyped?.id || "",
+      backupName: backupLogTyped?.backup_name || "",
+      tablesRestored: backupLogTyped?.tables_count || 0,
+      recordsRestored: backupLogTyped?.records_count || 0,
     }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error)
@@ -133,7 +134,7 @@ async function runRestoreTest(backupIdOrLatest: string): Promise<RestoreTestResu
     try {
       const supabase = createAdminClient()
       await supabase
-        .from("backup_logs")
+        .from("backup_logs" as any)
         .update({
           restore_tested_at: new Date().toISOString(),
           restore_test_status: "failed",

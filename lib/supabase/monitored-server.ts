@@ -21,10 +21,10 @@ class MonitoredSupabaseClient {
 
   // Supabase 클라이언트의 모든 메서드를 프록시로 래핑
   get from() {
-    return new Proxy(this.client.from.bind(this.client), {
-      apply: (target, thisArg, args) => {
+    return new Proxy(this.client.from.bind(this.client) as any, {
+      apply: (target: any, thisArg: any, args: any[]) => {
         const table = args[0] as string;
-        const queryBuilder = target.apply(thisArg, args);
+        const queryBuilder = target.apply(thisArg, args) as any;
 
         // QueryBuilder의 메서드들을 래핑
         return this.wrapQueryBuilder(queryBuilder, table);
@@ -40,7 +40,7 @@ class MonitoredSupabaseClient {
         // select, insert, update, delete, upsert 등 쿼리 실행 메서드 래핑
         if (typeof original === "function" && ["select", "insert", "update", "delete", "upsert"].includes(prop as string)) {
           return (...args: any[]) => {
-            const query = `${prop}(${table})`;
+            const query = `${String(prop)}(${table})`;
             return measureQuery(
               () => original.apply(target, args),
               {
@@ -91,7 +91,7 @@ class MonitoredSupabaseClient {
   }
 
   get rest() {
-    return this.client.rest;
+    return (this.client as any).rest;
   }
 }
 

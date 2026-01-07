@@ -140,7 +140,7 @@ export function IntakeRecordFormV2({
         client_id: clientId,
         consult_date: String(formData.consult_date || new Date().toISOString().split("T")[0]),
         body_function_data: bodyFunctionData,
-        cognitive_sensory_check: cognitiveSensoryCheck,
+        cognitive_sensory_check: Array.isArray(cognitiveSensoryCheck) ? cognitiveSensoryCheck.filter((item): item is string => typeof item === "string") : undefined,
         current_devices: currentDevices.length > 0 ? currentDevices : undefined,
         consultation_content: String(formData.consultation_content || ""),
         main_activity_place: String(formData.main_activity_place || ""),

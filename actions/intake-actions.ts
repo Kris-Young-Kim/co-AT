@@ -90,9 +90,11 @@ export async function createIntakeRecord(
       .eq("id", input.application_id)
       .single()
 
-    if (!appError && application && application.status === "접수") {
+    const applicationTyped = application as { status?: string } | null;
+    if (!appError && applicationTyped && applicationTyped.status === "접수") {
       const { error: updateError } = await supabase
         .from("applications")
+        // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
         .update({ status: "배정" })
         .eq("id", input.application_id)
 

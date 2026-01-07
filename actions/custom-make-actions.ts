@@ -9,6 +9,16 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { checkCustomLimit, checkCustomMakeCostLimit } from "./business-actions";
 import { createSchedule } from "./schedule-actions";
+import type { Database } from "@/types/database.types";
+import {
+  type TableInsert,
+  type TableRow,
+  type TableUpdate,
+  type TableRowPick,
+  asTableRow,
+  asTableRows,
+  asTableRowPick,
+} from "@/lib/utils/supabase-types";
 
 export interface CustomMakeItem {
   id: string;
@@ -148,27 +158,30 @@ export async function createCustomMake(input: CreateCustomMakeInput): Promise<{
     }
 
     // 맞춤제작 프로젝트 생성
+    const insertData: TableInsert<"custom_makes"> = {
+      application_id: input.application_id,
+      client_id: input.client_id,
+      item_name: input.item_name,
+      item_description: input.item_description || null,
+      specifications: input.specifications || null,
+      measurements: input.measurements || null,
+      design_files: input.design_files || null,
+      reference_images: input.reference_images || null,
+      assigned_staff_id: input.assigned_staff_id || null,
+      expected_completion_date: input.expected_completion_date || null,
+      cost_materials: input.cost_materials || null,
+      cost_labor: input.cost_labor || null,
+      cost_equipment: input.cost_equipment || null,
+      cost_other: input.cost_other || null,
+      cost_total: input.cost_total || null,
+      progress_status: "design",
+      progress_percentage: 0,
+    }
+
     const { data, error } = await supabase
       .from("custom_makes")
-      .insert({
-        application_id: input.application_id,
-        client_id: input.client_id,
-        item_name: input.item_name,
-        item_description: input.item_description || null,
-        specifications: input.specifications || null,
-        measurements: input.measurements || null,
-        design_files: input.design_files || null,
-        reference_images: input.reference_images || null,
-        assigned_staff_id: input.assigned_staff_id || null,
-        expected_completion_date: input.expected_completion_date || null,
-        cost_materials: input.cost_materials || null,
-        cost_labor: input.cost_labor || null,
-        cost_equipment: input.cost_equipment || null,
-        cost_other: input.cost_other || null,
-        cost_total: input.cost_total || null,
-        progress_status: "design",
-        progress_percentage: 0,
-      })
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
+      .insert(insertData)
       .select()
       .single();
 
@@ -180,13 +193,21 @@ export async function createCustomMake(input: CreateCustomMakeInput): Promise<{
       return { success: false, error: "맞춤제작 프로젝트 생성에 실패했습니다" };
     }
 
+    const customMakeData = asTableRow("custom_makes", data)
+    if (!customMakeData) {
+      return { success: false, error: "맞춤제작 프로젝트 생성에 실패했습니다" };
+    }
+
     // 초기 진행도 이력 생성
-    await supabase.from("custom_make_progress").insert({
-      custom_make_id: data.id,
+    const progressInsertData: TableInsert<"custom_make_progress"> = {
+      custom_make_id: customMakeData.id,
       progress_status: "design",
       progress_percentage: 0,
       notes: "맞춤제작 프로젝트 생성",
-    });
+    }
+    await supabase.from("custom_make_progress")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
+      .insert(progressInsertData);
 
     // 예상 완료일이 있으면 일정 자동 생성
     if (input.expected_completion_date) {
@@ -207,7 +228,7 @@ export async function createCustomMake(input: CreateCustomMakeInput): Promise<{
       }
     }
 
-    console.log("[Custom Make Actions] 맞춤제작 프로젝트 생성 성공:", data.id);
+    console.log("[Custom Make Actions] 맞춤제작 프로젝트 생성 성공:", customMakeData.id);
 
     revalidatePath("/admin/custom-makes");
     revalidatePath("/admin/schedule");
@@ -215,7 +236,7 @@ export async function createCustomMake(input: CreateCustomMakeInput): Promise<{
     revalidatePath("/clients");
     revalidatePath(`/clients/${input.client_id}`);
 
-    return { success: true, customMake: data };
+    return { success: true, customMake: customMakeData };
   } catch (error) {
     console.error(
       "[Custom Make Actions] 맞춤제작 프로젝트 생성 중 오류:",
@@ -278,7 +299,7 @@ export async function updateCustomMakeProgress(
     const staffId = profile ? (profile as { id: string }).id : null;
 
     // 맞춤제작 정보 업데이트
-    const updateData: any = {
+    const updateData: TableUpdate<"custom_makes"> = {
       updated_at: new Date().toISOString(),
     };
 
@@ -295,6 +316,7 @@ export async function updateCustomMakeProgress(
 
     const { data: updatedCustomMake, error: updateError } = await supabase
       .from("custom_makes")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update(updateData)
       .eq("id", customMakeId)
       .select()
@@ -305,23 +327,31 @@ export async function updateCustomMakeProgress(
       return { success: false, error: "진행도 업데이트에 실패했습니다" };
     }
 
+    const updatedCustomMakeTyped = asTableRow("custom_makes", updatedCustomMake)
+    if (!updatedCustomMakeTyped) {
+      return { success: false, error: "진행도 업데이트에 실패했습니다" };
+    }
+
     // 진행도 이력 추가
     if (
       progress.progress_status ||
       progress.progress_percentage !== undefined
     ) {
-      await supabase.from("custom_make_progress").insert({
+      const progressInsertData: TableInsert<"custom_make_progress"> = {
         custom_make_id: customMakeId,
-        staff_id: staffId,
+        staff_id: staffId || null,
         progress_status:
-          progress.progress_status || updatedCustomMake.progress_status,
+          progress.progress_status || updatedCustomMakeTyped.progress_status || "design",
         progress_percentage:
           progress.progress_percentage !== undefined
             ? progress.progress_percentage
-            : updatedCustomMake.progress_percentage || 0,
+            : updatedCustomMakeTyped.progress_percentage || 0,
         notes: progress.notes || null,
         images: progress.images || null,
-      });
+      }
+      await supabase.from("custom_make_progress")
+        // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
+        .insert(progressInsertData);
     }
 
     // 제작 시작일, 납품일이 있으면 일정 자동 생성/업데이트
@@ -333,21 +363,27 @@ export async function updateCustomMakeProgress(
       .eq("id", customMakeId)
       .single();
 
-    if (customMake) {
+    const customMakeTyped = asTableRowPick(
+      "custom_makes",
+      customMake,
+      ["application_id", "client_id", "item_name", "manufacturing_start_date", "delivery_date", "expected_completion_date"]
+    )
+
+    if (customMakeTyped) {
       const staffIdForSchedule = await getCurrentUserProfileId();
       if (staffIdForSchedule) {
         // 제작 시작일 일정 생성
         if (
           progress.manufacturing_start_date &&
           progress.manufacturing_start_date !==
-            customMake.manufacturing_start_date
+            customMakeTyped.manufacturing_start_date
         ) {
           await createSchedule({
-            application_id: customMake.application_id,
-            client_id: customMake.client_id,
+            application_id: customMakeTyped.application_id,
+            client_id: customMakeTyped.client_id,
             schedule_type: "custom_make",
             scheduled_date: progress.manufacturing_start_date,
-            notes: `맞춤제작 시작: ${customMake.item_name}`,
+            notes: `맞춤제작 시작: ${customMakeTyped.item_name}`,
             status: "scheduled",
           });
           console.log(
@@ -359,14 +395,14 @@ export async function updateCustomMakeProgress(
         // 납품일 일정 생성
         if (
           progress.delivery_date &&
-          progress.delivery_date !== customMake.delivery_date
+          progress.delivery_date !== customMakeTyped.delivery_date
         ) {
           await createSchedule({
-            application_id: customMake.application_id,
-            client_id: customMake.client_id,
+            application_id: customMakeTyped.application_id,
+            client_id: customMakeTyped.client_id,
             schedule_type: "custom_make",
             scheduled_date: progress.delivery_date,
-            notes: `맞춤제작 납품: ${customMake.item_name}`,
+            notes: `맞춤제작 납품: ${customMakeTyped.item_name}`,
             status: "scheduled",
           });
           console.log(
@@ -383,7 +419,7 @@ export async function updateCustomMakeProgress(
     revalidatePath("/admin/schedule");
     revalidatePath(`/admin/custom-makes/${customMakeId}`);
 
-    return { success: true, customMake: updatedCustomMake };
+    return { success: true, customMake: updatedCustomMakeTyped };
   } catch (error) {
     console.error("[Custom Make Actions] 진행도 업데이트 중 오류:", error);
     return {
@@ -431,18 +467,25 @@ export async function assignEquipment(
       return { success: false, error: "장비 정보를 찾을 수 없습니다" };
     }
 
-    if (equipment.status !== "available" && equipment.status !== "reserved") {
+    const equipmentTyped = asTableRowPick("equipment", equipment, ["id", "type", "status"])
+    if (!equipmentTyped) {
+      return { success: false, error: "장비 정보를 찾을 수 없습니다" };
+    }
+
+    if (equipmentTyped.status !== "available" && equipmentTyped.status !== "reserved") {
       return { success: false, error: "해당 장비는 현재 사용할 수 없습니다" };
     }
 
     // 장비 배정 및 상태 변경
+    const updateData: TableUpdate<"custom_makes"> = {
+      equipment_id: equipmentId,
+      equipment_type: equipmentTyped.type,
+      updated_at: new Date().toISOString(),
+    }
     const { data: updatedCustomMake, error: updateError } = await supabase
       .from("custom_makes")
-      .update({
-        equipment_id: equipmentId,
-        equipment_type: equipment.type,
-        updated_at: new Date().toISOString(),
-      })
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
+      .update(updateData)
       .eq("id", customMakeId)
       .select()
       .single();
@@ -452,9 +495,15 @@ export async function assignEquipment(
       return { success: false, error: "장비 배정에 실패했습니다" };
     }
 
+    const updatedCustomMakeTyped = asTableRow("custom_makes", updatedCustomMake)
+    if (!updatedCustomMakeTyped) {
+      return { success: false, error: "장비 배정에 실패했습니다" };
+    }
+
     // 장비 상태를 '사용중'으로 변경
     await supabase
       .from("equipment")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({ status: "in_use", updated_at: new Date().toISOString() })
       .eq("id", equipmentId);
 
@@ -463,7 +512,7 @@ export async function assignEquipment(
     revalidatePath("/admin/custom-makes");
     revalidatePath(`/admin/custom-makes/${customMakeId}`);
 
-    return { success: true, customMake: updatedCustomMake };
+    return { success: true, customMake: updatedCustomMakeTyped };
   } catch (error) {
     console.error("[Custom Make Actions] 장비 배정 중 오류:", error);
     return {
@@ -624,7 +673,7 @@ export async function getCustomMakeById(customMakeId: string): Promise<{
     }
 
     const customMake: CustomMakeWithDetails = {
-      ...data,
+      ...(data as unknown as CustomMakeItem),
       client_name: (data as any).clients?.name || null,
       staff_name: (data as any).profiles?.full_name || null,
       equipment_name: (data as any).equipment?.name || null,
@@ -740,6 +789,7 @@ export async function createEquipment(data: {
 
     const { data: equipment, error } = await supabase
       .from("equipment")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
       .insert({
         name: data.name,
         type: data.type,
@@ -759,8 +809,9 @@ export async function createEquipment(data: {
       return { success: false, error: "장비 등록에 실패했습니다" };
     }
 
-    console.log("[Custom Make Actions] 장비 등록 성공:", equipment?.id);
-    return { success: true, equipment: equipment as EquipmentItem };
+    const equipmentTyped = asTableRow("equipment", equipment) as EquipmentItem | null;
+    console.log("[Custom Make Actions] 장비 등록 성공:", equipmentTyped?.id);
+    return { success: true, equipment: equipmentTyped || undefined };
   } catch (error) {
     console.error("[Custom Make Actions] 장비 등록 중 오류:", error);
     return {
@@ -806,6 +857,7 @@ export async function updateEquipment(
 
     const { data: equipment, error } = await supabase
       .from("equipment")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         ...data,
         updated_at: new Date().toISOString(),
@@ -819,8 +871,9 @@ export async function updateEquipment(
       return { success: false, error: "장비 수정에 실패했습니다" };
     }
 
-    console.log("[Custom Make Actions] 장비 수정 성공:", equipment?.id);
-    return { success: true, equipment: equipment as EquipmentItem };
+    const equipmentTyped = asTableRow("equipment", equipment) as EquipmentItem | null;
+    console.log("[Custom Make Actions] 장비 수정 성공:", equipmentTyped?.id);
+    return { success: true, equipment: equipmentTyped || undefined };
   } catch (error) {
     console.error("[Custom Make Actions] 장비 수정 중 오류:", error);
     return {

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import type { Database } from "@/types/database.types";
 
 export type AssessmentDomainType =
   | "WC"
@@ -92,7 +93,11 @@ export async function createDomainAssessment(
       .eq("id", input.application_id)
       .single();
 
-    const clientId = application?.client_id;
+    // 타입을 명시적으로 지정하여 TypeScript 타입 추론 문제 해결
+    type ApplicationRow = Pick<Database["public"]["Tables"]["applications"]["Row"], "client_id">
+    const applicationTyped = application as ApplicationRow | null
+
+    const clientId = applicationTyped?.client_id;
 
     revalidatePath("/admin/clients");
     if (clientId) {

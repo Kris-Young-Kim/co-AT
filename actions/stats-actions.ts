@@ -138,8 +138,8 @@ export async function getMonthlyStats(
     }
 
     // 신청서를 월별로 집계
-    applications?.forEach((app) => {
-      const date = new Date(app.created_at)
+    applications?.forEach((app: any) => {
+      const date = new Date(app.created_at || "")
       const month = date.getMonth()
       const category = app.category
 
@@ -212,7 +212,7 @@ export async function getYearlyStats(
     }
 
     // 신청서를 연도별로 집계
-    applications?.forEach((app) => {
+    applications?.forEach((app: any) => {
       const date = new Date(app.created_at)
       const year = date.getFullYear()
       const category = app.category
@@ -310,7 +310,7 @@ export async function getBusinessDetailStats(
     // 신청서 집계
     const subCategoryCounts: Record<string, Record<string, number>> = {}
 
-    applications?.forEach((app) => {
+    applications?.forEach((app: any) => {
       const category = app.category
       if (!category || !categoryData[category]) return
 
@@ -388,14 +388,14 @@ export async function getStatsSummary(
 
     // 고유 대상자 수 조회
     const uniqueClientIds = new Set(
-      applications?.map((app) => app.client_id).filter(Boolean) || []
+      applications?.map((app: any) => app.client_id).filter(Boolean) || []
     )
 
     // 전체 통계 계산
     const totalApplications = applications?.length || 0
     const totalClients = uniqueClientIds.size
     const totalCompleted =
-      applications?.filter((app) => app.status === "완료").length || 0
+      applications?.filter((app: any) => app.status === "완료").length || 0
     const completionRate =
       totalApplications > 0 ? (totalCompleted / totalApplications) * 100 : 0
 
@@ -408,7 +408,7 @@ export async function getStatsSummary(
       education: 0,
     }
 
-    applications?.forEach((app) => {
+    applications?.forEach((app: any) => {
       const category = app.category
       if (category === "consult") businessSummary.consultation++
       else if (category === "experience") businessSummary.experience++

@@ -31,6 +31,8 @@ export function SoapAudioRecorder({
       recognitionRef.current = new SpeechRecognition()
       const recognition = recognitionRef.current
 
+      if (!recognition) return
+
       // 한국어 설정
       recognition.lang = "ko-KR"
       recognition.continuous = true // 연속 인식
@@ -192,7 +194,7 @@ interface SpeechRecognitionErrorEvent {
 
 declare global {
   interface Window {
-    SpeechRecognition: typeof SpeechRecognition
-    webkitSpeechRecognition: typeof SpeechRecognition
+    SpeechRecognition: new () => SpeechRecognition
+    webkitSpeechRecognition: new () => SpeechRecognition
   }
 }

@@ -64,7 +64,7 @@ export async function logAuditEvent(input: AuditLogInput): Promise<{
 
     // 감사 로그 생성
     const { data: auditLog, error } = await supabase
-      .from("audit_logs")
+      .from("audit_logs" as any)
       .insert({
         action_type: input.action_type,
         table_name: input.table_name,
@@ -95,12 +95,13 @@ export async function logAuditEvent(input: AuditLogInput): Promise<{
     }
 
     // 의심스러운 활동이면 알림 발송
+    const auditLogTyped = auditLog as { id?: string } | null;
     if (suspiciousCheck.isSuspicious) {
-      await notifySuspiciousActivity(auditLog.id, suspiciousCheck.reason || "의심스러운 활동 탐지")
+      await notifySuspiciousActivity(auditLogTyped?.id || "", suspiciousCheck.reason || "의심스러운 활동 탐지")
     }
 
-    console.log("[Audit Logger] 감사 로그 기록 성공:", auditLog.id)
-    return { success: true, auditLogId: auditLog.id }
+    console.log("[Audit Logger] 감사 로그 기록 성공:", auditLogTyped?.id)
+    return { success: true, auditLogId: auditLogTyped?.id || "" }
   } catch (error) {
     console.error("[Audit Logger] 감사 로그 기록 중 오류:", error)
     return {

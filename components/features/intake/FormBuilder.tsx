@@ -29,13 +29,14 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import {
-  DragDropContext,
-  Draggable,
-  DropResult,
+  DndContext,
+  useDraggable,
+  DragEndEvent,
 } from "@dnd-kit/core"
 import {
   SortableContext,
   verticalListSortingStrategy,
+  useSortable,
 } from "@dnd-kit/sortable"
 import {
   Plus,
@@ -57,6 +58,7 @@ import type {
 } from "@/lib/types/form-builder.types"
 import { DynamicFormField } from "./DynamicFormField"
 import { FieldEditor } from "./FieldEditor"
+import { SortableFieldItem } from "./SortableFieldItem"
 
 interface FormBuilderProps {
   template: FormTemplate
@@ -81,10 +83,18 @@ export function FormBuilder({
     new Set(template.sections.map((s) => s.id))
   )
 
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination || !onTemplateChange) return
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || !onTemplateChange) return
 
-    const { source, destination } = result
+    const source = {
+      droppableId: active.data.current?.droppableId || "",
+      index: active.data.current?.index || 0,
+    }
+    const destination = {
+      droppableId: over.data.current?.droppableId || "",
+      index: over.data.current?.index || 0,
+    }
     const newSections = [...template.sections]
 
     // 섹션 재배치
@@ -227,7 +237,7 @@ export function FormBuilder({
 
   return (
     <div className="space-y-6">
-      <DragDropContext onDragEnd={handleDragEnd}>
+      <DndContext onDragEnd={handleDragEnd}>
         <div className="space-y-6">
           {template.sections
             .sort((a, b) => a.order - b.order)
@@ -287,74 +297,18 @@ export function FormBuilder({
                       strategy={verticalListSortingStrategy}
                     >
                       <div className="space-y-4">
-                        {section.fields.map((field, index) => (
-                          <Draggable
+                        {section.fields.map((field) => (
+                          <SortableFieldItem
                             key={field.id}
-                            draggableId={field.id}
-                            index={index}
-                            disabled={readOnly}
-                          >
-                            {(provided, snapshot) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                className={`p-4 border rounded-lg bg-card transition-shadow ${
-                                  snapshot.isDragging
-                                    ? "shadow-lg opacity-50"
-                                    : "hover:shadow-md"
-                                }`}
-                              >
-                                <div className="flex items-start gap-3">
-                                  {!readOnly && (
-                                    <div
-                                      {...provided.dragHandleProps}
-                                      className="mt-1 cursor-grab active:cursor-grabbing"
-                                    >
-                                      <GripVertical className="h-5 w-5 text-muted-foreground" />
-                                    </div>
-                                  )}
-                                  <div className="flex-1">
-                                    <DynamicFormField
-                                      field={field}
-                                      value={formData[field.name]}
-                                      onChange={(value) => {
-                                        onDataChange({
-                                          ...formData,
-                                          [field.name]: value,
-                                        })
-                                      }}
-                                      readOnly={readOnly}
-                                    />
-                                  </div>
-                                  {!readOnly && (
-                                    <div className="flex items-center gap-2">
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() =>
-                                          handleEditField(field)
-                                        }
-                                      >
-                                        <Edit className="h-4 w-4" />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() =>
-                                          handleDeleteField(
-                                            section.id,
-                                            field.id
-                                          )
-                                        }
-                                      >
-                                        <Trash2 className="h-4 w-4 text-destructive" />
-                                      </Button>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-                          </Draggable>
+                            field={field}
+                            formData={formData}
+                            onDataChange={onDataChange}
+                            onEdit={handleEditField}
+                            onDelete={(fieldId) =>
+                              handleDeleteField(section.id, fieldId)
+                            }
+                            readOnly={readOnly}
+                          />
                         ))}
                       </div>
                     </SortableContext>
@@ -363,7 +317,7 @@ export function FormBuilder({
               </Card>
             ))}
         </div>
-      </DragDropContext>
+      </DndContext>
 
       {!readOnly && (
         <Button

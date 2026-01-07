@@ -41,3 +41,6 @@ next-env.d.ts
 /co-AT/
 
 /docs/TODO.md
+
+# clerk configuration (can include secrets)
+/.clerk/

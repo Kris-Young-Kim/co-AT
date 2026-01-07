@@ -1,8 +1,10 @@
--- regulations 테이블 생성 (RAG 챗봇용 규정 문서 저장)
--- 실행일: 2025-01-27
--- 설명: 보조기기센터 운영 지침서를 벡터화하여 저장하는 테이블
--- 참고: Gemini Embedding API를 사용하여 벡터 생성
+-- regulations 테이블 생성 (단계별 실행용)
+-- 이 파일은 문제 해결을 위해 단계별로 나눈 버전입니다.
+-- 전체 마이그레이션을 한 번에 실행하는 것이 권장됩니다.
 
+-- ============================================
+-- 1단계: 테이블 생성
+-- ============================================
 CREATE TABLE IF NOT EXISTS regulations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   
@@ -26,21 +28,42 @@ CREATE TABLE IF NOT EXISTS regulations (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 인덱스 생성 (성능 최적화)
+-- 테이블 생성 확인
+SELECT 'regulations 테이블이 생성되었습니다.' AS status;
+
+-- ============================================
+-- 2단계: 기본 인덱스 생성
+-- ============================================
 CREATE INDEX IF NOT EXISTS idx_regulations_category ON regulations(category);
 CREATE INDEX IF NOT EXISTS idx_regulations_section ON regulations(section);
 CREATE INDEX IF NOT EXISTS idx_regulations_title ON regulations(title);
 CREATE INDEX IF NOT EXISTS idx_regulations_created_at ON regulations(created_at DESC);
 
--- GIN 인덱스 (JSONB 검색 최적화)
+-- ============================================
+-- 3단계: GIN 인덱스 생성 (JSONB 검색 최적화)
+-- ============================================
 CREATE INDEX IF NOT EXISTS idx_regulations_embedding ON regulations USING GIN (embedding);
 
--- 전체 텍스트 검색을 위한 인덱스 (제목 + 내용)
--- korean 설정이 없을 수 있으므로 simple 사용 (한국어는 pg_trgm 확장 필요)
+-- ============================================
+-- 4단계: 전체 텍스트 검색 인덱스 생성
+-- ============================================
+-- simple 설정 사용 (korean 설정이 없을 수 있음)
 CREATE INDEX IF NOT EXISTS idx_regulations_content_search ON regulations USING GIN (to_tsvector('simple', title || ' ' || content));
 
--- 테이블 및 컬럼 코멘트
+-- ============================================
+-- 5단계: 테이블 및 컬럼 코멘트 추가
+-- ============================================
 COMMENT ON TABLE regulations IS '보조기기센터 운영 지침서 벡터화 데이터 (RAG 챗봇용)';
 COMMENT ON COLUMN regulations.embedding IS 'Gemini Embedding API로 생성한 벡터 (JSON 배열)';
 COMMENT ON COLUMN regulations.category IS '카테고리: 대여, 수리, 맞춤제작, 평가, 예산, 인력, 보고 등';
 COMMENT ON COLUMN regulations.chunk_index IS '원본 문서 내 청크 순서 (문서 재구성 시 사용)';
+
+-- ============================================
+-- 최종 확인
+-- ============================================
+SELECT 
+  'regulations 테이블 및 인덱스 생성 완료' AS status,
+  COUNT(*) AS table_exists
+FROM information_schema.tables 
+WHERE table_schema = 'public' 
+  AND table_name = 'regulations';

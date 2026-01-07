@@ -31,7 +31,6 @@ const store: Map<string, RateEntry> =
 
 function getClientIp(req: NextRequest) {
   return (
-    req.ip ||
     req.headers.get("x-real-ip") ||
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     "unknown"
@@ -130,7 +129,7 @@ async function logSecurityEvent(data: {
   try {
     const supabase = createAdminClient()
 
-    await supabase.from("security_logs").insert({
+    await supabase.from("security_logs" as any).insert({
       event_type: data.eventType as any,
       severity: data.severity,
       ip_address: data.ip,

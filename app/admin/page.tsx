@@ -30,13 +30,24 @@ function AdminSignInForm() {
       // 이미 로그인된 상태라면 관리자 세션 쿠키만 설정
       setIsCheckingSession(true)
       
+      // 타임아웃 설정 (10초)
+      const timeoutId = setTimeout(() => {
+        console.error('[Admin Login] 세션 확인 타임아웃')
+        setError('세션 확인 시간이 초과되었습니다. 페이지를 새로고침해주세요.')
+        setIsCheckingSession(false)
+      }, 10000)
+      
       // 먼저 현재 세션 확인
       fetch('/api/admin/session', {
         method: 'GET',
       })
         .then(async (getResponse) => {
+          clearTimeout(timeoutId)
+          
           if (getResponse.ok) {
             const sessionData = await getResponse.json()
+            console.log('[Admin Login] 세션 확인 결과:', sessionData)
+            
             if (sessionData.hasAdminSession && sessionData.hasPermission) {
               // 이미 관리자 세션이 있고 권한이 있으면 바로 리다이렉트
               router.push(redirectUrl)
@@ -104,10 +115,16 @@ function AdminSignInForm() {
           }
         })
         .catch((error) => {
-          console.error('세션 설정 중 오류:', error)
-          setError('세션 설정 중 오류가 발생했습니다.')
+          clearTimeout(timeoutId)
+          console.error('[Admin Login] 세션 설정 중 오류:', error)
+          setError('세션 설정 중 오류가 발생했습니다. 네트워크 연결을 확인해주세요.')
           setIsCheckingSession(false)
         })
+      
+      // cleanup 함수에서 타임아웃 제거
+      return () => {
+        clearTimeout(timeoutId)
+      }
     } else {
       setIsCheckingSession(false)
     }

@@ -54,7 +54,7 @@ async function logSecurityAlert(alert: SecurityAlert): Promise<void> {
   try {
     const supabase = createAdminClient()
 
-    await supabase.from("security_logs").insert({
+    await supabase.from("security_logs" as any).insert({
       event_type: "security_alert",
       severity: alert.severity,
       threat_description: alert.description,

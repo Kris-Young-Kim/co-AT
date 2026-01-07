@@ -46,7 +46,7 @@ export async function createNotification(
 
     // 알림 생성
     const { data: notification, error } = await supabase
-      .from("notifications")
+      .from("notifications" as any)
       .insert({
         user_id: params.userId || null,
         clerk_user_id: params.clerkUserId || null,
@@ -66,14 +66,15 @@ export async function createNotification(
       return { success: false, error: "알림 생성에 실패했습니다" }
     }
 
-    console.log("[Notification Actions] 알림 생성 성공:", notification.id)
+    const notificationTyped = (notification as unknown) as { id: string } | null;
+    console.log("[Notification Actions] 알림 생성 성공:", notificationTyped?.id)
 
     // Realtime으로 알림 발송 (Supabase가 자동으로 처리)
     // 클라이언트에서 구독 중이면 자동으로 수신됨
 
     return {
       success: true,
-      notificationId: notification.id,
+      notificationId: notificationTyped?.id,
     }
   } catch (error) {
     console.error("[Notification Actions] 알림 생성 중 오류:", error)
@@ -122,9 +123,9 @@ export async function getNotifications(params?: {
 
     // 알림 조회 (사용자별 + 브로드캐스트)
     let query = supabase
-      .from("notifications")
+      .from("notifications" as any)
       .select("*", { count: "exact" })
-      .or(`user_id.eq.${profile.id},user_id.is.null`) // 사용자 알림 또는 브로드캐스트
+      .or(`user_id.eq.${(profile as { id: string }).id},user_id.is.null`) // 사용자 알림 또는 브로드캐스트
       .order("created_at", { ascending: false })
 
     if (params?.status) {
@@ -151,9 +152,9 @@ export async function getNotifications(params?: {
 
     // 미읽음 알림 수 조회
     const { count: unreadCount } = await supabase
-      .from("notifications")
+      .from("notifications" as any)
       .select("*", { count: "exact", head: true })
-      .or(`user_id.eq.${profile.id},user_id.is.null`)
+      .or(`user_id.eq.${(profile as { id: string }).id},user_id.is.null`)
       .eq("status", "unread")
       .or("expires_at.is.null,expires_at.gt.now()")
 
@@ -207,13 +208,14 @@ export async function markNotificationAsRead(
 
     // 알림 읽음 처리
     const { error } = await supabase
-      .from("notifications")
+      .from("notifications" as any)
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         status: "read",
         read_at: new Date().toISOString(),
       })
       .eq("id", notificationId)
-      .or(`user_id.eq.${profile.id},user_id.is.null`) // 본인 알림 또는 브로드캐스트만
+      .or(`user_id.eq.${(profile as { id: string }).id},user_id.is.null`) // 본인 알림 또는 브로드캐스트만
 
     if (error) {
       console.error("[Notification Actions] 알림 읽음 처리 실패:", error)
@@ -260,12 +262,13 @@ export async function markAllNotificationsAsRead(): Promise<{ success: boolean; 
 
     // 모든 미읽음 알림 읽음 처리
     const { error } = await supabase
-      .from("notifications")
+      .from("notifications" as any)
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         status: "read",
         read_at: new Date().toISOString(),
       })
-      .or(`user_id.eq.${profile.id},user_id.is.null`)
+      .or(`user_id.eq.${(profile as { id: string }).id},user_id.is.null`)
       .eq("status", "unread")
 
     if (error) {
@@ -315,12 +318,13 @@ export async function archiveNotification(
 
     // 알림 보관
     const { error } = await supabase
-      .from("notifications")
+      .from("notifications" as any)
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         status: "archived",
       })
       .eq("id", notificationId)
-      .or(`user_id.eq.${profile.id},user_id.is.null`)
+      .or(`user_id.eq.${(profile as { id: string }).id},user_id.is.null`)
 
     if (error) {
       console.error("[Notification Actions] 알림 보관 실패:", error)

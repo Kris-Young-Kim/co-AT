@@ -65,21 +65,21 @@ export async function GET(request: Request) {
     const stats = {
       total: events?.length || 0,
       bySeverity: {
-        critical: events?.filter((e) => e.severity === "critical").length || 0,
-        high: events?.filter((e) => e.severity === "high").length || 0,
-        medium: events?.filter((e) => e.severity === "medium").length || 0,
-        low: events?.filter((e) => e.severity === "low").length || 0,
+        critical: events?.filter((e: any) => e.severity === "critical").length || 0,
+        high: events?.filter((e: any) => e.severity === "high").length || 0,
+        medium: events?.filter((e: any) => e.severity === "medium").length || 0,
+        low: events?.filter((e: any) => e.severity === "low").length || 0,
       },
       byType: {
-        login_attempt: events?.filter((e) => e.event_type === "login_attempt").length || 0,
-        login_success: events?.filter((e) => e.event_type === "login_success").length || 0,
-        login_failure: events?.filter((e) => e.event_type === "login_failure").length || 0,
-        sql_injection: events?.filter((e) => e.event_type === "sql_injection").length || 0,
-        xss_attack: events?.filter((e) => e.event_type === "xss_attack").length || 0,
-        rate_limit_exceeded: events?.filter((e) => e.event_type === "rate_limit_exceeded").length || 0,
+        login_attempt: events?.filter((e: any) => e.event_type === "login_attempt").length || 0,
+        login_success: events?.filter((e: any) => e.event_type === "login_success").length || 0,
+        login_failure: events?.filter((e: any) => e.event_type === "login_failure").length || 0,
+        sql_injection: events?.filter((e: any) => e.event_type === "sql_injection").length || 0,
+        xss_attack: events?.filter((e: any) => e.event_type === "xss_attack").length || 0,
+        rate_limit_exceeded: events?.filter((e: any) => e.event_type === "rate_limit_exceeded").length || 0,
       },
-      blocked: events?.filter((e) => e.blocked).length || 0,
-      notified: events?.filter((e) => e.notified).length || 0,
+      blocked: events?.filter((e: any) => e.blocked).length || 0,
+      notified: events?.filter((e: any) => e.notified).length || 0,
     }
 
     console.log("[Security Events API] 보안 이벤트 조회 성공:", stats)
