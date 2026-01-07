@@ -192,13 +192,19 @@ export async function getServiceProgressData(
 
     if (schedules) {
       const scheduleTypeNames: Record<string, string> = {
-        consultation: "상담",
+        visit: "방문",
+        consult: "상담",
         assessment: "평가",
-        trial: "시험적용",
-        delivery: "인도",
-        training: "교육",
-        maintenance: "유지관리",
-        other: "기타",
+        delivery: "배송",
+        pickup: "픽업",
+        exhibition: "견학",
+        education: "교육",
+      }
+
+      const statusNames: Record<string, string> = {
+        scheduled: "예정",
+        completed: "완료",
+        cancelled: "취소",
       }
 
       schedules.forEach((schedule: any) => {
@@ -207,14 +213,16 @@ export async function getServiceProgressData(
           type: "schedule",
           date: schedule.scheduled_date || schedule.created_at,
           title: `${scheduleTypeNames[schedule.schedule_type] || schedule.schedule_type} 일정`,
-          description: schedule.address || undefined,
-          status: schedule.status,
+          description: schedule.address || schedule.notes || undefined,
+          status: statusNames[schedule.status] || schedule.status,
           metadata: {
             일정유형: scheduleTypeNames[schedule.schedule_type] || schedule.schedule_type,
             일정일시: schedule.scheduled_time
               ? `${schedule.scheduled_date} ${schedule.scheduled_time.substring(0, 5)}`
               : schedule.scheduled_date,
             주소: schedule.address || "-",
+            상태: statusNames[schedule.status] || schedule.status || "-",
+            메모: schedule.notes || "-",
           },
         })
       })

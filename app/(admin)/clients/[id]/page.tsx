@@ -4,6 +4,7 @@ import { ClientHistoryTable } from "@/components/features/crm/ClientHistoryTable
 import { IntakeRecordFormV2 } from "@/components/features/intake/IntakeRecordFormV2"
 import { DomainAssessmentFormV2 } from "@/components/features/assessment/DomainAssessmentFormV2"
 import { ServiceProgressDashboard } from "@/components/features/process/ServiceProgressDashboard"
+import { SoapNoteEditor } from "@/components/features/soap-note/SoapNoteEditor"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { redirect, notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -57,6 +58,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
           <TabsTrigger value="profile">기본 정보</TabsTrigger>
           <TabsTrigger value="history">서비스 이력</TabsTrigger>
           <TabsTrigger value="intake">상담 기록</TabsTrigger>
+          <TabsTrigger value="soap">SOAP 노트</TabsTrigger>
           <TabsTrigger value="assessment">평가</TabsTrigger>
           <TabsTrigger value="process">서비스 진행 기록</TabsTrigger>
         </TabsList>
@@ -80,6 +82,10 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
               }
             }}
           />
+        </TabsContent>
+
+        <TabsContent value="soap" className="space-y-6">
+          <SoapNoteEditor />
         </TabsContent>
 
         <TabsContent value="assessment" className="space-y-6">
