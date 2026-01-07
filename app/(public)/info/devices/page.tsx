@@ -1,14 +1,15 @@
 import type { Metadata } from "next"
 import { Breadcrumb } from "@/components/common/breadcrumb"
+import { PublicDeviceList } from "@/components/features/inventory/PublicDeviceList"
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
 
 export const metadata: Metadata = {
   title: "보유 보조기기",
-  description: "강원특별자치도 보조기기센터에서 보유하고 있는 다양한 보조기기 목록을 확인하세요.",
+  description: "강원특별자치도 보조기기센터에서 보유하고 있는 다양한 보조기기 목록을 확인하세요. 실시간으로 대여 가능 여부와 상태를 확인할 수 있습니다.",
   openGraph: {
     title: "보유 보조기기 | GWATC 보조기기센터",
-    description: "강원특별자치도 보조기기센터에서 보유하고 있는 다양한 보조기기 목록을 확인하세요.",
+    description: "강원특별자치도 보조기기센터에서 보유하고 있는 다양한 보조기기 목록을 확인하세요. 실시간으로 대여 가능 여부와 상태를 확인할 수 있습니다.",
     url: `${baseUrl}/info/devices`,
     type: "website",
   },
@@ -27,14 +28,15 @@ export default function DevicesPage() {
         ]}
         className="mb-6"
       />
-      <h1 className="text-responsive-xl font-bold text-foreground mb-6">
-        보유 보조기기
-      </h1>
-      <div className="prose prose-sm sm:prose-base max-w-none dark:prose-invert">
+      <div className="mb-8">
+        <h1 className="text-responsive-xl font-bold text-foreground mb-2">
+          보유 보조기기
+        </h1>
         <p className="text-muted-foreground">
-          보유 보조기기 페이지입니다.
+          센터에서 보유하고 있는 보조기기 목록입니다. 상태별로 필터링하여 대여 가능한 기기를 확인할 수 있습니다.
         </p>
       </div>
+      <PublicDeviceList />
     </div>
   )
 }

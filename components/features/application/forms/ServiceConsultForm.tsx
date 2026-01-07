@@ -1,6 +1,7 @@
 "use client"
 
-import { useForm } from "react-hook-form"
+import React from "react"
+import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { consultApplicationSchema, type ConsultApplicationForm } from "@/lib/validators"
 import { Input } from "@/components/ui/input"
@@ -18,20 +19,35 @@ export function ServiceConsultForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setValue,
+    control,
     watch,
+    setValue,
   } = useForm<ConsultApplicationForm>({
     resolver: zodResolver(consultApplicationSchema),
     defaultValues: {
       category: "consult",
+      description: formData?.description || formData?.consult_purpose || "",
       ...formData,
     } as Partial<ConsultApplicationForm>,
   })
 
   const consultType = watch("consult_type")
+  const consultPurpose = watch("consult_purpose")
+
+  // consult_purpose가 변경되면 description도 함께 업데이트
+  React.useEffect(() => {
+    if (consultPurpose) {
+      setValue("description", consultPurpose, { shouldValidate: true })
+    }
+  }, [consultPurpose, setValue])
 
   const onSubmit = async (data: ConsultApplicationForm) => {
-    setFormData(data)
+    // description 필드가 없으면 consult_purpose를 description으로 복사
+    const formDataToSave = {
+      ...data,
+      description: data.description || data.consult_purpose || "",
+    }
+    setFormData(formDataToSave)
     setCurrentStep(3)
   }
 
@@ -39,31 +55,40 @@ export function ServiceConsultForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
         <Label>상담 유형 *</Label>
-        <RadioGroup
-          value={consultType}
-          onValueChange={(value) => setValue("consult_type", value as "phone" | "visit" | "center")}
-          className="flex flex-col gap-3"
-          aria-describedby={errors.consult_type ? "consult_type-error" : undefined}
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="phone" id="phone" />
-            <Label htmlFor="phone" className="font-normal cursor-pointer">
-              전화 상담
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="visit" id="visit" />
-            <Label htmlFor="visit" className="font-normal cursor-pointer">
-              방문 상담
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="center" id="center" />
-            <Label htmlFor="center" className="font-normal cursor-pointer">
-              센터 방문
-            </Label>
-          </div>
-        </RadioGroup>
+        <Controller
+          name="consult_type"
+          control={control}
+          rules={{ required: "상담 유형을 선택해주세요" }}
+          render={({ field }) => (
+            <RadioGroup
+              value={field.value}
+              onValueChange={(value) => {
+                field.onChange(value as "phone" | "visit" | "center")
+              }}
+              className="flex flex-col gap-3"
+              aria-describedby={errors.consult_type ? "consult_type-error" : undefined}
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="phone" id="phone" />
+                <Label htmlFor="phone" className="font-normal cursor-pointer">
+                  전화 상담
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="visit" id="visit" />
+                <Label htmlFor="visit" className="font-normal cursor-pointer">
+                  방문 상담
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="center" id="center" />
+                <Label htmlFor="center" className="font-normal cursor-pointer">
+                  센터 방문
+                </Label>
+              </div>
+            </RadioGroup>
+          )}
+        />
         {errors.consult_type && (
           <p id="consult_type-error" className="text-sm text-destructive" role="alert">
             {errors.consult_type.message}
@@ -121,6 +146,9 @@ export function ServiceConsultForm() {
           </p>
         )}
       </div>
+
+      {/* description 필드 (hidden, consult_purpose와 동기화) */}
+      <input type="hidden" {...register("description")} />
 
       <div className="space-y-2">
         <Label htmlFor="contact">연락처 *</Label>

@@ -223,7 +223,6 @@ export function ServiceApplicationWizard() {
         applicationId={applicationId}
         onClose={() => {
           setShowSuccessModal(false)
-          router.push("/portal/mypage")
         }}
       />
     </div>

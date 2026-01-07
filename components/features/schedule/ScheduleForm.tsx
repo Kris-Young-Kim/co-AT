@@ -46,6 +46,28 @@ const scheduleTypeLabels: Record<string, string> = {
   education: "교육",
 }
 
+// 강원특별자치도 18개 시군 목록
+const gangwonRegions = [
+  "춘천시",
+  "원주시",
+  "강릉시",
+  "동해시",
+  "태백시",
+  "속초시",
+  "삼척시",
+  "홍천군",
+  "횡성군",
+  "영월군",
+  "평창군",
+  "정선군",
+  "철원군",
+  "화천군",
+  "양구군",
+  "인제군",
+  "고성군",
+  "양양군",
+]
+
 export function ScheduleForm({
   open,
   onOpenChange,
@@ -64,6 +86,8 @@ export function ScheduleForm({
     notes: null,
     status: "scheduled",
   })
+  const [visitType, setVisitType] = useState<"center" | "visit" | null>(null)
+  const [visitRegion, setVisitRegion] = useState<string>("")
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
 
@@ -81,6 +105,20 @@ export function ScheduleForm({
         status: schedule.status,
       })
       setSelectedDate(new Date(schedule.scheduled_date))
+      // 견학일 경우 항상 내방
+      if (schedule.schedule_type === "exhibition") {
+        setVisitType("center")
+        setVisitRegion("")
+      } else if (schedule.address) {
+        // 주소가 있으면 "방문", 없으면 "내방"으로 추정 (기존 데이터 호환성)
+        setVisitType("visit")
+        // 주소에서 시군 추출 시도 (간단한 매칭)
+        const region = gangwonRegions.find((r) => schedule.address?.includes(r))
+        setVisitRegion(region || "")
+      } else {
+        setVisitType("center")
+        setVisitRegion("")
+      }
     } else {
       setFormData({
         schedule_type: "exhibition",
@@ -91,6 +129,13 @@ export function ScheduleForm({
         status: "scheduled",
       })
       setSelectedDate(new Date())
+      // 견학일 경우 자동으로 내방으로 설정
+      if (formData.schedule_type === "exhibition") {
+        setVisitType("center")
+      } else {
+        setVisitType(null)
+      }
+      setVisitRegion("")
     }
     setError(null)
   }, [schedule, open])
@@ -181,12 +226,22 @@ export function ScheduleForm({
             <Label htmlFor="schedule_type">일정 유형 *</Label>
             <Select
               value={formData.schedule_type}
-              onValueChange={(value) =>
+              onValueChange={(value) => {
+                const newType = value as CreateScheduleInput["schedule_type"]
                 setFormData((prev) => ({
                   ...prev,
-                  schedule_type: value as CreateScheduleInput["schedule_type"],
+                  schedule_type: newType,
                 }))
-              }
+                // 견학으로 변경 시 자동으로 내방으로 설정
+                if (newType === "exhibition") {
+                  setVisitType("center")
+                  setVisitRegion("")
+                  setFormData((prev) => ({
+                    ...prev,
+                    address: null,
+                  }))
+                }
+              }}
             >
               <SelectTrigger id="schedule_type">
                 <SelectValue placeholder="일정 유형 선택" />
@@ -254,21 +309,71 @@ export function ScheduleForm({
             </div>
           </div>
 
-          {/* 주소 */}
+          {/* 내방 여부 */}
           <div className="space-y-2">
-            <Label htmlFor="address">주소</Label>
-            <Input
-              id="address"
-              value={formData.address || ""}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  address: e.target.value || null,
-                }))
-              }
-              placeholder="방문 주소를 입력하세요"
-            />
+            <h3 className="text-sm font-semibold text-foreground">내방 여부</h3>
+            <Select
+              value={visitType || ""}
+              onValueChange={(value) => {
+                setVisitType(value as "center" | "visit" | null)
+                if (value === "center") {
+                  setFormData((prev) => ({
+                    ...prev,
+                    address: null,
+                  }))
+                  setVisitRegion("")
+                } else if (value === "visit") {
+                  // 방문 선택 시 지역은 선택하도록 유도
+                  setVisitRegion("")
+                }
+              }}
+              disabled={formData.schedule_type === "exhibition"}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="선택" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="center">내방</SelectItem>
+                {formData.schedule_type !== "exhibition" && (
+                  <SelectItem value="visit">방문</SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+            {formData.schedule_type === "exhibition" && (
+              <p className="text-xs text-muted-foreground">
+                견학 일정은 내방만 가능합니다.
+              </p>
+            )}
           </div>
+
+          {/* 방문 지역 (방문 선택 시에만 표시, 견학 제외) */}
+          {visitType === "visit" && formData.schedule_type !== "exhibition" && (
+            <div className="space-y-2">
+              <Label htmlFor="visit_region">방문 지역 *</Label>
+              <Select
+                value={visitRegion}
+                onValueChange={(value) => {
+                  setVisitRegion(value)
+                  // 선택한 지역을 주소 필드에 저장 (기존 스키마 호환성)
+                  setFormData((prev) => ({
+                    ...prev,
+                    address: value || null,
+                  }))
+                }}
+              >
+                <SelectTrigger id="visit_region">
+                  <SelectValue placeholder="시군을 선택하세요" />
+                </SelectTrigger>
+                <SelectContent>
+                  {gangwonRegions.map((region) => (
+                    <SelectItem key={region} value={region}>
+                      {region}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {/* 메모 */}
           <div className="space-y-2">
@@ -295,7 +400,7 @@ export function ScheduleForm({
               onValueChange={(value) =>
                 setFormData((prev) => ({
                   ...prev,
-                  status: value as "scheduled" | "completed" | "cancelled",
+                  status: value as "scheduled" | "confirmed" | "completed" | "cancelled",
                 }))
               }
             >
@@ -304,6 +409,7 @@ export function ScheduleForm({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="scheduled">예정</SelectItem>
+                <SelectItem value="confirmed">확정</SelectItem>
                 <SelectItem value="completed">완료</SelectItem>
                 <SelectItem value="cancelled">취소</SelectItem>
               </SelectContent>

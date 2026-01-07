@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { format, startOfMonth, endOfMonth } from "date-fns"
 import { hasAdminOrStaffPermission, getCurrentUserProfileId } from "@/lib/utils/permissions"
 import { revalidatePath } from "next/cache"
@@ -12,7 +13,7 @@ export interface PublicSchedule {
   scheduled_time: string | null
   address: string | null
   notes: string | null
-  status: "scheduled" | "completed" | "cancelled"
+  status: "scheduled" | "confirmed" | "completed" | "cancelled"
 }
 
 /**
@@ -88,7 +89,7 @@ export interface Schedule {
   scheduled_time: string | null
   address: string | null
   notes: string | null
-  status: "scheduled" | "completed" | "cancelled"
+  status: "scheduled" | "confirmed" | "completed" | "cancelled"
   created_at: string | null
   updated_at: string | null
 }
@@ -101,7 +102,7 @@ export interface CreateScheduleInput {
   scheduled_time?: string | null
   address?: string | null
   notes?: string | null
-  status?: "scheduled" | "completed" | "cancelled"
+  status?: "scheduled" | "confirmed" | "completed" | "cancelled"
 }
 
 export interface UpdateScheduleInput {
@@ -113,7 +114,7 @@ export interface UpdateScheduleInput {
   scheduled_time?: string | null
   address?: string | null
   notes?: string | null
-  status?: "scheduled" | "completed" | "cancelled"
+  status?: "scheduled" | "confirmed" | "completed" | "cancelled"
 }
 
 /**
@@ -202,7 +203,7 @@ export async function getSchedules(
             }
 
             // 상태 결정
-            let scheduleStatus: "scheduled" | "completed" | "cancelled" = "scheduled"
+            let scheduleStatus: "scheduled" | "confirmed" | "completed" | "cancelled" = "scheduled"
             const cmWithStatus = cmTyped;
             if (field.type === "design") {
               scheduleStatus = cmWithStatus?.progress_status === "design" ? "scheduled" : "completed"
@@ -270,7 +271,8 @@ export async function createSchedule(
       return { success: false, error: "사용자 정보를 찾을 수 없습니다" }
     }
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from("schedules")
@@ -290,8 +292,17 @@ export async function createSchedule(
       .single()
 
     if (error) {
-      console.error("[일정 생성] 실패:", error)
-      return { success: false, error: error.message }
+      console.error("[일정 생성] 실패:", {
+        error: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+        input,
+      })
+      return { 
+        success: false, 
+        error: `일정 생성에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
+      }
     }
 
     const scheduleData = data as Schedule | null;
@@ -318,7 +329,8 @@ export async function updateSchedule(
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     const updateData: Partial<CreateScheduleInput> = {}
     if (input.application_id !== undefined) updateData.application_id = input.application_id
@@ -339,8 +351,18 @@ export async function updateSchedule(
       .single()
 
     if (error) {
-      console.error("[일정 수정] 실패:", error)
-      return { success: false, error: error.message }
+      console.error("[일정 수정] 실패:", {
+        error: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+        id: input.id,
+        updateData,
+      })
+      return { 
+        success: false, 
+        error: `일정 수정에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
+      }
     }
 
     const updatedScheduleData = data as Schedule | null;
@@ -367,7 +389,8 @@ export async function deleteSchedule(
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     const { error } = await supabase
       .from("schedules")
@@ -375,8 +398,17 @@ export async function deleteSchedule(
       .eq("id", id)
 
     if (error) {
-      console.error("[일정 삭제] 실패:", error)
-      return { success: false, error: error.message }
+      console.error("[일정 삭제] 실패:", {
+        error: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+        id,
+      })
+      return { 
+        success: false, 
+        error: `일정 삭제에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
+      }
     }
 
     console.log("[일정 삭제] 성공:", id)

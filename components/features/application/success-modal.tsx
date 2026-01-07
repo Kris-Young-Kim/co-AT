@@ -23,7 +23,8 @@ export function SuccessModal({ open, applicationId, onClose }: SuccessModalProps
 
   const handleGoToMyPage = () => {
     onClose()
-    router.push("/portal/mypage")
+    // window.location을 사용하여 전체 페이지 새로고침과 함께 이동
+    window.location.href = "/portal/mypage"
   }
 
   return (

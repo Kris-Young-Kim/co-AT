@@ -26,8 +26,9 @@ import {
   createInventoryItem,
   updateInventoryItem,
 } from "@/actions/inventory-actions"
-import { Loader2 } from "lucide-react"
+import { Loader2, X, Image as ImageIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 
 interface InventoryFormDialogProps {
   open: boolean
@@ -45,6 +46,8 @@ export function InventoryFormDialog({
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
 
   // 폼 데이터
   const [formData, setFormData] = useState({
@@ -75,6 +78,7 @@ export function InventoryFormDialog({
         purchase_price: item.purchase_price?.toString() || "",
         qr_code: item.qr_code || "",
       })
+      setImageUrl(item.image_url || null)
     } else {
       setFormData({
         name: "",
@@ -88,9 +92,53 @@ export function InventoryFormDialog({
         purchase_price: "",
         qr_code: "",
       })
+      setImageUrl(null)
     }
     setError(null)
   }, [item, open])
+
+  // 이미지 업로드 핸들러
+  const handleImageUpload = async (file: File) => {
+    setIsUploadingImage(true)
+    setError(null)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+
+      const response = await fetch("/api/inventory/upload", {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "이미지 업로드에 실패했습니다")
+      }
+
+      const data = await response.json()
+      setImageUrl(data.url)
+    } catch (error) {
+      console.error("[재고 이미지 업로드] 오류:", error)
+      const errorMessage = error instanceof Error ? error.message : "이미지 업로드에 실패했습니다"
+      setError(errorMessage)
+      
+      // Storage 버킷 관련 에러인 경우 더 자세한 안내
+      if (errorMessage.includes("버킷") || errorMessage.includes("Bucket")) {
+        alert(
+          "이미지 업로드를 사용하려면 Supabase Storage 버킷을 생성해야 합니다.\n\n" +
+          "생성 방법:\n" +
+          "1. Supabase 대시보드 접속\n" +
+          "2. Storage 메뉴로 이동\n" +
+          "3. 'Create a new bucket' 클릭\n" +
+          "4. 버킷 이름: 'inventory'\n" +
+          "5. Public bucket 활성화\n" +
+          "6. 생성 후 다시 시도해주세요."
+        )
+      }
+    } finally {
+      setIsUploadingImage(false)
+    }
+  }
 
   // 폼 제출
   const handleSubmit = async (e: React.FormEvent) => {
@@ -110,6 +158,7 @@ export function InventoryFormDialog({
         purchase_date: formData.purchase_date || null,
         purchase_price: formData.purchase_price ? parseFloat(formData.purchase_price) : null,
         qr_code: formData.qr_code || null,
+        image_url: imageUrl || null,
       }
 
       let result
@@ -291,6 +340,72 @@ export function InventoryFormDialog({
                 />
               </div>
             </div>
+          </div>
+
+          {/* 이미지 업로드 */}
+          <div className="space-y-2 pt-4 border-t">
+            <Label>기기 사진</Label>
+            {imageUrl ? (
+              <div className="relative w-full h-48 rounded-lg overflow-hidden border">
+                <Image
+                  src={imageUrl}
+                  alt="재고 이미지"
+                  fill
+                  className="object-cover"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-2 right-2"
+                  onClick={() => setImageUrl(null)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed rounded-lg p-6">
+                <div className="flex flex-col items-center justify-center gap-4">
+                  <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-foreground mb-1">
+                      이미지를 업로드하세요
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      JPG, PNG, GIF (최대 5MB)
+                    </p>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        handleImageUpload(file)
+                      }
+                    }}
+                    className="hidden"
+                    id="image-upload"
+                    disabled={isUploadingImage}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById("image-upload")?.click()}
+                    disabled={isUploadingImage}
+                  >
+                    {isUploadingImage ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        업로드 중...
+                      </>
+                    ) : (
+                      "이미지 선택"
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* QR 코드 */}

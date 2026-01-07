@@ -1,6 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { useApplicationStore } from "@/lib/stores/application-store"
 import { cn } from "@/lib/utils"
 import {
@@ -9,6 +11,7 @@ import {
   Wrench,
   Heart,
   GraduationCap,
+  Save,
 } from "lucide-react"
 
 const serviceCategories = [
@@ -63,12 +66,36 @@ const serviceCategories = [
 ]
 
 export function ServiceCategorySelector() {
-  const { selectedCategory, setSelectedCategory, setSelectedSubCategory } =
+  const { selectedCategory, setSelectedCategory, setSelectedSubCategory, setCurrentStep, selectedSubCategory } =
     useApplicationStore()
+  const [isSaving, setIsSaving] = useState(false)
 
   const selectedCategoryData = serviceCategories.find(
     (cat) => cat.id === selectedCategory
   )
+
+  const handleSaveDraft = () => {
+    if (!selectedCategory) {
+      alert("카테고리를 먼저 선택해주세요.")
+      return
+    }
+
+    setIsSaving(true)
+    try {
+      const draftData = {
+        selectedCategory,
+        selectedSubCategory,
+        savedAt: new Date().toISOString(),
+      }
+      localStorage.setItem("application_draft", JSON.stringify(draftData))
+      alert("임시 저장되었습니다.")
+    } catch (error) {
+      console.error("임시 저장 실패:", error)
+      alert("임시 저장에 실패했습니다.")
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -165,6 +192,36 @@ export function ServiceCategorySelector() {
             </div>
           </div>
         )}
+
+      {/* 버튼 영역 */}
+      {selectedCategory && (
+        <div className="flex justify-end gap-3 pt-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleSaveDraft}
+            disabled={isSaving}
+            className="min-w-[120px]"
+          >
+            <Save className="mr-2 h-4 w-4" />
+            {isSaving ? "저장 중..." : "임시 저장"}
+          </Button>
+          <Button
+            onClick={() => {
+              // 선택된 카테고리와 세부 카테고리를 formData에 저장
+              const { setFormData } = useApplicationStore.getState()
+              setFormData({
+                category: selectedCategory,
+                sub_category: selectedSubCategory || undefined,
+              } as any)
+              setCurrentStep(2)
+            }}
+            className="min-w-[120px]"
+          >
+            다음
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

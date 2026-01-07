@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   ZoomIn,
@@ -13,6 +14,7 @@ import {
 import { cn } from "@/lib/utils"
 
 export function AccessibilityToolbar() {
+  const pathname = usePathname()
   const [isOpen, setIsOpen] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(100)
   const [highContrast, setHighContrast] = useState(false)
@@ -133,6 +135,11 @@ export function AccessibilityToolbar() {
     window.addEventListener("keydown", handleKeyPress)
     return () => window.removeEventListener("keydown", handleKeyPress)
   }, [isOpen, zoomLevel, highContrast, isSpeaking])
+
+  // 관리자 페이지에서는 접근성 도구를 표시하지 않음
+  if (pathname?.startsWith("/admin")) {
+    return <></>
+  }
 
   if (!isOpen) {
     return (
