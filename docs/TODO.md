@@ -869,15 +869,41 @@ useEffect(() => {
 
 ### 6.1 한도 체크 로직
 
-- [ ] 수리비 10만원 한도 체크
-  - [ ] `actions/business-actions.ts` 작성
-  - [ ] `checkRepairLimit(clientId: string, amount: number)` 함수
-  - [ ] 연간 누적 수리비 계산
-  - [ ] 초과 시 경고 모달 표시
-- [ ] 맞춤제작 연 2회 횟수 제한 체크
-  - [ ] `checkCustomLimit(clientId: string)` 함수
-  - [ ] 연간 맞춤제작 횟수 계산
-  - [ ] 초과 시 경고 모달 표시
+- [x] 수리비 10만원 한도 체크 ✅
+  - [x] `actions/business-actions.ts` 작성 ✅
+  - [x] `checkRepairLimit(clientId: string, amount: number)` 함수 ✅
+  - [x] 연간 누적 수리비 계산 ✅
+    - [x] `service_logs` 테이블에서 수리비 합계 계산 ✅
+    - [x] `applications` 테이블과 JOIN하여 `client_id` 필터링 ✅
+    - [x] 올해 연도 기준으로 계산 ✅
+  - [x] 초과 시 경고 모달 표시 ✅
+    - [x] `RepairLimitWarningDialog` 컴포넌트 작성 ✅
+    - [x] 현재 누적 수리비, 신규 수리비, 합계, 한도 표시 ✅
+    - [x] 초과 금액 계산 및 표시 ✅
+  - [ ] 수리비 입력 폼에 한도 체크 통합 (service_logs 생성 시)
+- [x] 맞춤제작 연 2회 횟수 제한 체크 ✅
+  - [x] `actions/business-actions.ts` 작성 ✅
+  - [x] `checkCustomLimit(clientId: string)` 함수 ✅
+  - [x] 연간 맞춤제작 횟수 계산 ✅
+    - [x] `custom_makes` 테이블에서 완료된 프로젝트 카운트 ✅
+    - [x] `applications` 테이블에서 맞춤제작 신청서 카운트 ✅
+    - [x] 올해 연도 기준으로 계산 ✅
+  - [x] 초과 시 경고 모달 표시 ✅
+    - [x] `CustomLimitWarningDialog` 컴포넌트 작성 ✅
+    - [x] `CustomMakeFormDialog`에 제한 체크 로직 통합 ✅
+    - [x] `createCustomMake()` 함수에 제한 체크 통합 ✅
+- [x] 맞춤제작비 10만원 한도 체크 (재료비 기준) ✅
+  - [x] `checkCustomMakeCostLimit(clientId: string, amount: number)` 함수 ✅
+  - [x] 연간 누적 맞춤제작비(재료비) 계산 ✅
+    - [x] `custom_makes` 테이블에서 재료비(`cost_materials`) 합계 계산 ✅
+    - [x] 재료비 없으면 총 비용(`cost_total`)의 70% 추정 ✅
+    - [x] 올해 연도 기준으로 계산 ✅
+  - [x] 초과 시 경고 모달 표시 ✅
+    - [x] `CustomMakeCostLimitWarningDialog` 컴포넌트 작성 ✅
+    - [x] 현재 누적 재료비, 신규 재료비, 합계, 한도 표시 ✅
+    - [x] 초과 금액 계산 및 표시 ✅
+    - [x] `CustomMakeFormDialog`에 재료비 입력 필드 및 한도 체크 통합 ✅
+    - [x] `createCustomMake()` 함수에 비용 한도 체크 통합 ✅
 
 ### 6.2 개인정보 보유 기간 관리
 

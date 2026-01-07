@@ -23,9 +23,12 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { createCustomMake, type CreateCustomMakeInput } from "@/actions/custom-make-actions"
 import { searchClients, type Client } from "@/actions/client-actions"
+import { checkCustomLimit, checkCustomMakeCostLimit } from "@/actions/business-actions"
 import { Loader2, AlertCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { format, addDays } from "date-fns"
+import { CustomLimitWarningDialog } from "./CustomLimitWarningDialog"
+import { CustomMakeCostLimitWarningDialog } from "./CustomMakeCostLimitWarningDialog"
 
 interface CustomMakeFormDialogProps {
   open: boolean
@@ -43,6 +46,18 @@ export function CustomMakeFormDialog({
   const [error, setError] = useState<string | null>(null)
   const [clients, setClients] = useState<Client[]>([])
   const [isLoadingClients, setIsLoadingClients] = useState(false)
+  const [isLimitWarningOpen, setIsLimitWarningOpen] = useState(false)
+  const [limitCheckResult, setLimitCheckResult] = useState<{
+    currentCount: number
+    limit: number
+  } | null>(null)
+  const [isCostLimitWarningOpen, setIsCostLimitWarningOpen] = useState(false)
+  const [costLimitCheckResult, setCostLimitCheckResult] = useState<{
+    currentTotal: number
+    newAmount: number
+    newTotal: number
+    limit: number
+  } | null>(null)
 
   // 폼 데이터
   const [formData, setFormData] = useState<CreateCustomMakeInput>({
@@ -52,6 +67,8 @@ export function CustomMakeFormDialog({
     item_description: "",
     specifications: "",
     expected_completion_date: format(addDays(new Date(), 30), "yyyy-MM-dd"), // 기본 30일 후
+    cost_materials: undefined,
+    cost_total: undefined,
   })
 
   // 클라이언트 목록 로드
@@ -75,9 +92,47 @@ export function CustomMakeFormDialog({
     }
   }
 
-  // 폼 제출
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  // 맞춤제작 횟수 제한 체크
+  const handleLimitCheck = async () => {
+    if (!formData.client_id) return true
+
+    const limitCheck = await checkCustomLimit(formData.client_id)
+    if (limitCheck.success && limitCheck.isExceeded) {
+      setLimitCheckResult({
+        currentCount: limitCheck.currentCount || 0,
+        limit: limitCheck.limit || 2,
+      })
+      setIsLimitWarningOpen(true)
+      return false
+    }
+    return true
+  }
+
+  // 맞춤제작비(재료비) 한도 체크
+  const handleCostLimitCheck = async () => {
+    if (!formData.client_id || !formData.cost_materials || formData.cost_materials <= 0) {
+      return true
+    }
+
+    const costLimitCheck = await checkCustomMakeCostLimit(
+      formData.client_id,
+      formData.cost_materials
+    )
+    if (costLimitCheck.success && costLimitCheck.isExceeded) {
+      setCostLimitCheckResult({
+        currentTotal: costLimitCheck.currentTotal || 0,
+        newAmount: formData.cost_materials,
+        newTotal: costLimitCheck.newTotal || 0,
+        limit: costLimitCheck.limit || 100000,
+      })
+      setIsCostLimitWarningOpen(true)
+      return false
+    }
+    return true
+  }
+
+  // 실제 제출 처리
+  const handleActualSubmit = async () => {
     setError(null)
     setIsSubmitting(true)
 
@@ -88,6 +143,7 @@ export function CustomMakeFormDialog({
         console.log("[Custom Make Form Dialog] 맞춤제작 프로젝트 생성 성공")
         onSuccess?.()
         onOpenChange(false)
+        setIsLimitWarningOpen(false)
         // 폼 초기화
         setFormData({
           application_id: "",
@@ -96,17 +152,42 @@ export function CustomMakeFormDialog({
           item_description: "",
           specifications: "",
           expected_completion_date: format(addDays(new Date(), 30), "yyyy-MM-dd"),
+          cost_materials: undefined,
+          cost_total: undefined,
         })
         router.refresh()
       } else {
         setError(result.error || "맞춤제작 프로젝트 생성에 실패했습니다")
+        setIsLimitWarningOpen(false)
       }
     } catch (error) {
       console.error("[Custom Make Form Dialog] 맞춤제작 프로젝트 생성 중 오류:", error)
       setError("예상치 못한 오류가 발생했습니다")
+      setIsLimitWarningOpen(false)
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // 폼 제출
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+
+    // 맞춤제작 횟수 제한 체크
+    const canProceedCount = await handleLimitCheck()
+    if (!canProceedCount) {
+      return // 경고 다이얼로그 표시됨
+    }
+
+    // 맞춤제작비(재료비) 한도 체크
+    const canProceedCost = await handleCostLimitCheck()
+    if (!canProceedCost) {
+      return // 경고 다이얼로그 표시됨
+    }
+
+    // 제한을 초과하지 않으면 바로 제출
+    await handleActualSubmit()
   }
 
   return (
@@ -223,6 +304,51 @@ export function CustomMakeFormDialog({
             />
           </div>
 
+          {/* 재료비 (한도 체크용) */}
+          <div className="space-y-2">
+            <Label htmlFor="cost_materials">
+              재료비 (원) <span className="text-xs text-muted-foreground">(선택사항)</span>
+            </Label>
+            <Input
+              id="cost_materials"
+              type="number"
+              value={formData.cost_materials || ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  cost_materials: e.target.value ? parseFloat(e.target.value) : undefined,
+                })
+              }
+              placeholder="재료비를 입력하세요 (연간 10만원 한도)"
+              min="0"
+              step="1000"
+            />
+            <p className="text-xs text-muted-foreground">
+              재료비는 연간 10만원으로 제한됩니다. 초과 시 자부담입니다.
+            </p>
+          </div>
+
+          {/* 총 비용 (선택사항) */}
+          <div className="space-y-2">
+            <Label htmlFor="cost_total">
+              총 비용 (원) <span className="text-xs text-muted-foreground">(선택사항)</span>
+            </Label>
+            <Input
+              id="cost_total"
+              type="number"
+              value={formData.cost_total || ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  cost_total: e.target.value ? parseFloat(e.target.value) : undefined,
+                })
+              }
+              placeholder="총 비용을 입력하세요"
+              min="0"
+              step="1000"
+            />
+          </div>
+
           <DialogFooter>
             <Button
               type="button"
@@ -244,6 +370,46 @@ export function CustomMakeFormDialog({
             </Button>
           </DialogFooter>
         </form>
+
+        {/* 맞춤제작 횟수 제한 경고 다이얼로그 */}
+        {limitCheckResult && (
+          <CustomLimitWarningDialog
+            open={isLimitWarningOpen}
+            onOpenChange={setIsLimitWarningOpen}
+            currentCount={limitCheckResult.currentCount}
+            limit={limitCheckResult.limit}
+            onConfirm={async () => {
+              setIsLimitWarningOpen(false)
+              setLimitCheckResult(null)
+              // 비용 한도 체크 후 제출
+              const canProceedCost = await handleCostLimitCheck()
+              if (canProceedCost) {
+                await handleActualSubmit()
+              }
+            }}
+            onCancel={() => {
+              setIsLimitWarningOpen(false)
+              setLimitCheckResult(null)
+            }}
+          />
+        )}
+
+        {/* 맞춤제작비 한도 경고 다이얼로그 */}
+        {costLimitCheckResult && (
+          <CustomMakeCostLimitWarningDialog
+            open={isCostLimitWarningOpen}
+            onOpenChange={setIsCostLimitWarningOpen}
+            currentTotal={costLimitCheckResult.currentTotal}
+            newAmount={costLimitCheckResult.newAmount}
+            newTotal={costLimitCheckResult.newTotal}
+            limit={costLimitCheckResult.limit}
+            onConfirm={handleActualSubmit}
+            onCancel={() => {
+              setIsCostLimitWarningOpen(false)
+              setCostLimitCheckResult(null)
+            }}
+          />
+        )}
       </DialogContent>
     </Dialog>
   )
