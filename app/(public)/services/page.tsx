@@ -1,8 +1,27 @@
+import type { Metadata } from "next"
 import Link from "next/link"
+import { Breadcrumb } from "@/components/common/breadcrumb"
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
+
+export const metadata: Metadata = {
+  title: "주요사업",
+  description: "강원특별자치도 보조기기센터의 5대 핵심 사업을 소개합니다. 상담 및 정보제공, 맞춤형 지원, 사후관리, 교육/홍보 서비스를 확인하세요.",
+  openGraph: {
+    title: "주요사업 | GWATC 보조기기센터",
+    description: "강원특별자치도 보조기기센터의 5대 핵심 사업을 소개합니다. 상담 및 정보제공, 맞춤형 지원, 사후관리, 교육/홍보 서비스를 확인하세요.",
+    url: `${baseUrl}/services`,
+    type: "website",
+  },
+  alternates: {
+    canonical: `${baseUrl}/services`,
+  },
+}
 
 export default function ServicesPage() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <Breadcrumb items={[{ label: "주요사업", href: "/services" }]} className="mb-6" />
       <h1 className="text-responsive-xl font-bold text-foreground mb-6">
         주요사업
       </h1>

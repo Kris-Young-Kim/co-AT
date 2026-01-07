@@ -1,6 +1,26 @@
+import type { Metadata } from "next"
+import { Breadcrumb } from "@/components/common/breadcrumb"
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
+
+export const metadata: Metadata = {
+  title: "보조기기 정보",
+  description: "강원특별자치도 보조기기센터에서 보유하고 있는 보조기기 정보, 재사용 보조기기, 맞춤형 추천, 수리센터 안내, 정부지원사업 정보를 확인하세요.",
+  openGraph: {
+    title: "보조기기 정보 | GWATC 보조기기센터",
+    description: "강원특별자치도 보조기기센터에서 보유하고 있는 보조기기 정보, 재사용 보조기기, 맞춤형 추천, 수리센터 안내, 정부지원사업 정보를 확인하세요.",
+    url: `${baseUrl}/info`,
+    type: "website",
+  },
+  alternates: {
+    canonical: `${baseUrl}/info`,
+  },
+}
+
 export default function InfoPage() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <Breadcrumb items={[{ label: "보조기기 정보", href: "/info" }]} className="mb-6" />
       <h1 className="text-responsive-xl font-bold text-foreground mb-6">
         보조기기 정보
       </h1>

@@ -1,6 +1,26 @@
+import type { Metadata } from "next"
+import { Breadcrumb } from "@/components/common/breadcrumb"
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
+
+export const metadata: Metadata = {
+  title: "커뮤니티",
+  description: "강원특별자치도 보조기기센터의 공지사항, 활동갤러리, 보조기기 서비스 사례 등 커뮤니티 정보를 확인하세요.",
+  openGraph: {
+    title: "커뮤니티 | GWATC 보조기기센터",
+    description: "강원특별자치도 보조기기센터의 공지사항, 활동갤러리, 보조기기 서비스 사례 등 커뮤니티 정보를 확인하세요.",
+    url: `${baseUrl}/community`,
+    type: "website",
+  },
+  alternates: {
+    canonical: `${baseUrl}/community`,
+  },
+}
+
 export default function CommunityPage() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <Breadcrumb items={[{ label: "커뮤니티", href: "/community" }]} className="mb-6" />
       <h1 className="text-responsive-xl font-bold text-foreground mb-6">
         커뮤니티
       </h1>
