@@ -79,6 +79,13 @@ export async function getInventoryList(
   try {
     console.log("[Inventory Actions] 재고 목록 조회 시작:", params)
 
+    // 권한 확인
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) {
+      console.error("[Inventory Actions] 권한 없음")
+      return { success: false, error: "권한이 없습니다" }
+    }
+
     const supabase = await createClient()
 
     let query = supabase.from("inventory").select("*", { count: "exact" })
