@@ -96,12 +96,56 @@ export async function createApplication(
       }
     }
 
+    const applicationId = (application as { id: string }).id
+
+    // 워크플로우 자동화: 신청 접수 시 desired_date가 있으면 일정 자동 생성
+    if (formData.desired_date) {
+      try {
+        // 일정 타입 결정 (카테고리별)
+        let scheduleType: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" = "consult"
+        
+        if (formData.category === "consult") {
+          scheduleType = "consult"
+        } else if (formData.category === "experience") {
+          scheduleType = "visit"
+        } else if (formData.category === "custom") {
+          scheduleType = "visit"
+        } else if (formData.category === "aftercare") {
+          scheduleType = "visit"
+        } else if (formData.category === "education") {
+          scheduleType = "education"
+        }
+
+        // 일정 생성 (createSchedule 함수 import 필요)
+        const { createSchedule } = await import("./schedule-actions")
+        const scheduleResult = await createSchedule({
+          application_id: applicationId,
+          client_id: clientId,
+          schedule_type: scheduleType,
+          scheduled_date: formData.desired_date.toISOString().split("T")[0],
+          notes: `신청 접수 시 자동 생성된 일정 (${formData.category})`,
+          status: "scheduled",
+        })
+
+        if (scheduleResult.success) {
+          console.log("[워크플로우 자동화] 신청 접수 시 일정 자동 생성 성공:", scheduleResult.data?.id)
+        } else {
+          console.error("[워크플로우 자동화] 일정 자동 생성 실패:", scheduleResult.error)
+        }
+      } catch (error) {
+        console.error("[워크플로우 자동화] 일정 자동 생성 중 오류:", error)
+        // 일정 생성 실패해도 신청서 생성은 성공으로 처리
+      }
+    }
+
     revalidatePath("/portal/apply")
     revalidatePath("/portal/mypage")
+    revalidatePath("/admin/schedule")
+    revalidatePath("/")
 
     return {
       success: true,
-      applicationId: (application as { id: string }).id,
+      applicationId,
     }
   } catch (error) {
     console.error("Unexpected error in createApplication:", error)
