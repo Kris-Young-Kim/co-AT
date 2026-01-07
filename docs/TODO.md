@@ -156,71 +156,77 @@
 
 1. **모니터링 및 로깅 시스템**
 
-   - Sentry 통합 (에러 추적)
-   - 구조화된 로깅 (JSON, 로그 레벨 관리)
-   - Vercel Analytics (페이지 로딩, Core Web Vitals)
-   - Supabase Monitoring (DB 쿼리 성능)
+   - [ ] Sentry 통합 (에러 추적)
+   - [ ] 구조화된 로깅 (JSON, 로그 레벨 관리)
+   - [ ] Vercel Analytics (페이지 로딩, Core Web Vitals)
+   - [ ] Supabase Monitoring (DB 쿼리 성능)
 
 2. **에러 처리 및 복구 메커니즘**
 
-   - React Error Boundary 강화
-   - 자동 재시도 로직 (지수 백오프)
-   - 에러 알림 시스템 (Slack/Discord 웹훅)
+   - [ ] React Error Boundary 강화
+   - [ ] 자동 재시도 로직 (지수 백오프)
+   - [ ] 에러 알림 시스템 (Notion 데이터베이스 또는 Google Sheet 수신; 향후 필요 시 Slack/Discord로 확장)
 
 3. **헬스 체크 및 상태 페이지**
 
-   - `/api/health` 엔드포인트 (서버, DB, Auth, AI 상태)
-   - 공개 상태 페이지 (`status.co-at-gw.vercel.app`)
-   - Uptime 모니터링 (UptimeRobot/Pingdom)
+   - [x] `/api/health` 엔드포인트 (서버, DB, Auth, AI 상태) — 최소 응답: `{app:'ok', db:'ok', auth:'ok', ai:'ok', version:'<git_sha>'}`
+   - [x] 공개 상태 페이지 (`status.co-at-gw.vercel.app`) — 헬스 응답 요약 카드 + 최근 24h 히스토리
+   - [ ] Uptime 모니터링 (UptimeRobot/Pingdom) — 알림 채널: Notion DB 또는 Google Sheet 기록(필요시 Slack/Discord 확장)
 
 4. **Rate Limiting 및 DDoS 방어**
 
-   - Vercel Edge Middleware (IP 기반 제한)
-   - 사용자별 Rate Limit (Clerk ID 기반)
-   - 엔드포인트별 제한 (AI 생성 API 등)
+   - [ ] Vercel Edge Middleware (IP 기반 제한)
+   - [ ] 사용자별 Rate Limit (Clerk ID 기반)
+   - [ ] 엔드포인트별 제한 (AI 생성 API 등)
 
 5. **데이터베이스 최적화 및 모니터링**
 
-   - 슬로우 쿼리 로깅 (1초 이상)
-   - 인덱스 최적화
-   - 연결 풀 모니터링
+   - [ ] 슬로우 쿼리 로깅 (1초 이상)
+   - [ ] 인덱스 최적화
+   - [ ] 연결 풀 모니터링
 
 6. **재해 복구 계획 (Disaster Recovery)**
 
-   - RTO: 4시간, RPO: 1시간 목표
-   - 다중 백업 (일일, 주간, 월간)
-   - 분기별 복구 테스트
+   - [ ] RTO: 4시간, RPO: 1시간 목표
+   - [ ] 다중 백업 (일일, 주간, 월간)
+   - [ ] 분기별 복구 테스트
 
 7. **보안 모니터링 및 위협 탐지**
-   - 로그인 시도 추적
-   - SQL Injection/XSS 공격 탐지
-   - 크리티컬 보안 이벤트 알림
+   - [ ] 로그인 시도 추적
+   - [ ] SQL Injection/XSS 공격 탐지
+   - [ ] 크리티컬 보안 이벤트 알림
 
 **기능 고도화**:
 
 1. **실시간 알림 시스템**
 
-   - Supabase Realtime 활용
-   - 알림 센터 (모든 알림 통합 관리)
-   - 대여 만료 알림 (D-Day 7일 전, 3일 전, 당일)
+   - [ ] Supabase Realtime 활용
+   - [ ] 알림 센터 (모든 알림 통합 관리)
+   - [ ] 대여 만료 알림 (D-Day 7일 전, 3일 전, 당일)
+   - [ ] 알림 데이터 모델: `notifications`(id, user_id/null, type, title, body, link, status, created_at, expires_at), `notification_preferences`(user_id, channel, enabled)
+   - [ ] 송신 채널: 웹 인앱(Toasts + 알림 센터), 이메일(선택), Webhook(관리자용)
+   - [ ] 트리거/프로듀서: 상담/신청/배정/결제/재고 상태 변경 시 DB 트리거나 서버 액션으로 `notifications` enqueue → Supabase Realtime 채널 publish
+   - [ ] 클라이언트: 알림 센터(무한스크롤), 읽음/읽지 않음 토글, 퍼블릭 존은 비로그인용 브로드캐스트만(예: 공지)
+   - [ ] 대여 만료 알림: Supabase 스케줄러(또는 Vercel/cron)로 매일 09:00 UTC 실행 → D-7/3/0 대상 `notifications` + 이메일/Webhook 전송
+   - [ ] 장애/로깅: 알림 발송 결과를 `notification_logs`에 기록(성공/실패, 응답 코드, 재시도 횟수)
 
 2. **워크플로우 자동화**
 
-   - 상태 전환 자동화 (상담 완료 → 배정)
-   - 일정 자동 생성 (신청 접수 시)
-   - 리마인더 자동 발송
+   - [ ] 상태 전환 자동화 (상담 완료 → 배정)
+   - [ ] 일정 자동 생성 (신청 접수 시)
+   - [ ] 리마인더 자동 발송
 
 3. **감사 로그 (Audit Log)**
 
-   - 모든 데이터 변경 이력 기록
-   - 로그 조회 기능
-   - 의심스러운 활동 알림
+   - [ ] 모든 데이터 변경 이력 기록
+   - [ ] 로그 조회 기능
+   - [ ] 의심스러운 활동 알림
 
 4. **고급 대시보드**
-   - 실시간 KPI 모니터링
-   - 전년 동기 대비 실적 비교
-   - 팀별 성과 분석
-   - 예산 집행 현황
+   - [ ] 실시간 KPI 모니터링
+   - [ ] 전년 동기 대비 실적 비교
+   - [ ] 팀별 성과 분석
+   - [ ] 예산 집행 현황
 
 #### ⭐⭐ 중기 구현 권장 (Medium Priority)
 
