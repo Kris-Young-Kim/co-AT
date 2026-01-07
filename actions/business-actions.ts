@@ -2,6 +2,8 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import type { Database } from "@/types/database.types"
+import { asTableRowsPick } from "@/lib/utils/supabase-types"
 
 /**
  * 맞춤제작 연 2회 횟수 제한 체크
@@ -234,8 +236,10 @@ export async function checkRepairLimit(
         .eq("category", "aftercare")
         .eq("sub_category", "repair")
 
-      if (!appsError && applications && applications.length > 0) {
-        const applicationIds = applications.map((app) => app.id)
+      const applicationsList = asTableRowsPick("applications", applications, ["id"])
+
+      if (!appsError && applicationsList.length > 0) {
+        const applicationIds = applicationsList.map((app) => app.id)
 
         // 2. 해당 신청서들의 service_logs 조회
         const { data: logs, error: logsError } = await supabase
@@ -246,9 +250,11 @@ export async function checkRepairLimit(
           .gte("service_date", yearStart.split("T")[0])
           .lte("service_date", yearEnd.split("T")[0])
 
-        if (!logsError && logs) {
+        const logsList = asTableRowsPick("service_logs", logs, ["cost_total"])
+
+        if (!logsError && logsList.length > 0) {
           currentTotal =
-            logs.reduce((sum: number, log: any) => {
+            logsList.reduce((sum: number, log) => {
               const cost = parseFloat(log.cost_total?.toString() || "0") || 0
               return sum + cost
             }, 0) || 0

@@ -63,7 +63,7 @@ export async function getExpiringPrivacyData(): Promise<{
     }
 
     // 만료일 및 남은 일수 계산
-    const clientsWithExpiration = (clients || []).map((client) => {
+    const clientsWithExpiration = (clients || []).map((client: any) => {
       const createdAt = new Date(client.created_at || "")
       const expirationDate = new Date(createdAt)
       expirationDate.setFullYear(expirationDate.getFullYear() + RETENTION_PERIOD_YEARS)
@@ -142,7 +142,7 @@ export async function getExpiredPrivacyData(): Promise<{
     }
 
     // 만료일 및 경과 일수 계산
-    const expiredClients = (clients || []).map((client) => {
+    const expiredClients = (clients || []).map((client: any) => {
       const createdAt = new Date(client.created_at || "")
       const expirationDate = new Date(createdAt)
       expirationDate.setFullYear(expirationDate.getFullYear() + RETENTION_PERIOD_YEARS)

@@ -175,18 +175,21 @@ export async function createClientRecord(
       return { success: false, error: "대상자 등록에 실패했습니다: " + (error.message || "알 수 없는 오류") }
     }
 
+    // 타입을 명시적으로 지정하여 TypeScript 타입 추론 문제 해결
+    const clientDataTyped = data as Client
+
     // 감사 로그 기록
     const { logAuditEvent } = await import("@/lib/utils/audit-logger")
     await logAuditEvent({
       action_type: "create",
       table_name: "clients",
-      record_id: data.id,
-      new_values: data as Record<string, unknown>,
-      client_id: data.id,
-      description: `고객 등록: ${data.name}`,
+      record_id: clientDataTyped.id,
+      new_values: clientDataTyped as Record<string, unknown>,
+      client_id: clientDataTyped.id,
+      description: `고객 등록: ${clientDataTyped.name}`,
     })
 
-    return { success: true, client: data }
+    return { success: true, client: clientDataTyped }
   } catch (error) {
     console.error("Unexpected error in createClient:", error)
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }
@@ -219,6 +222,9 @@ export async function updateClient(
       .eq("id", clientId)
       .single()
 
+    // 타입을 명시적으로 지정하여 TypeScript 타입 추론 문제 해결
+    const oldDataTyped = oldData as Client | null
+
     // updated_at 자동 업데이트
     const { data, error } = await supabase
       .from("clients")
@@ -236,21 +242,24 @@ export async function updateClient(
       return { success: false, error: "대상자 수정에 실패했습니다" }
     }
 
+    // 타입을 명시적으로 지정하여 TypeScript 타입 추론 문제 해결
+    const clientDataTyped = data as Client
+
     // 감사 로그 기록
     const { logAuditEvent, compareValues } = await import("@/lib/utils/audit-logger")
-    const changedFields = oldData ? compareValues(oldData as Record<string, unknown>, data as Record<string, unknown>) : []
+    const changedFields = oldDataTyped ? compareValues(oldDataTyped as Record<string, unknown>, clientDataTyped as Record<string, unknown>) : []
     await logAuditEvent({
       action_type: "update",
       table_name: "clients",
       record_id: clientId,
-      old_values: oldData as Record<string, unknown> | undefined,
-      new_values: data as Record<string, unknown>,
+      old_values: oldDataTyped ? (oldDataTyped as Record<string, unknown>) : undefined,
+      new_values: clientDataTyped as Record<string, unknown>,
       changed_fields: changedFields,
       client_id: clientId,
-      description: `고객 정보 수정: ${data.name} (변경 필드: ${changedFields.join(", ")})`,
+      description: `고객 정보 수정: ${clientDataTyped.name} (변경 필드: ${changedFields.join(", ")})`,
     })
 
-    return { success: true, client: data }
+    return { success: true, client: clientDataTyped }
   } catch (error) {
     console.error("Unexpected error in updateClient:", error)
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }
@@ -279,6 +288,9 @@ export async function deleteClient(clientId: string): Promise<{
       .eq("id", clientId)
       .single()
 
+    // 타입을 명시적으로 지정하여 TypeScript 타입 추론 문제 해결
+    const oldDataTyped = oldData as Client | null
+
     // 관련 신청서가 있는지 확인
     const { count: appCount } = await supabase
       .from("applications")
@@ -305,9 +317,9 @@ export async function deleteClient(clientId: string): Promise<{
       action_type: "delete",
       table_name: "clients",
       record_id: clientId,
-      old_values: oldData as Record<string, unknown> | undefined,
+      old_values: oldDataTyped ? (oldDataTyped as Record<string, unknown>) : undefined,
       client_id: clientId,
-      description: `고객 삭제: ${oldData?.name || clientId}`,
+      description: `고객 삭제: ${oldDataTyped?.name || clientId}`,
     })
 
     return { success: true }

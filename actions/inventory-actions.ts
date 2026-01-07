@@ -200,6 +200,7 @@ export async function createInventoryItem(
 
     const { data: newItem, error } = await supabase
       .from("inventory")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
       .insert({
         name: data.name,
         asset_code: data.asset_code || null,
@@ -220,9 +221,11 @@ export async function createInventoryItem(
       return { success: false, error: "재고 등록에 실패했습니다" }
     }
 
-    console.log("[Inventory Actions] 재고 등록 성공:", newItem?.id)
+    // 타입 캐스팅
+    const newItemTyped = newItem as InventoryItem | null;
+    console.log("[Inventory Actions] 재고 등록 성공:", newItemTyped?.id);
 
-    return { success: true, item: newItem }
+    return { success: true, item: newItemTyped || undefined }
   } catch (error) {
     console.error("[Inventory Actions] 재고 등록 중 오류:", error)
     return {
@@ -256,6 +259,7 @@ export async function updateInventoryItem(
 
     const { data: updatedItem, error } = await supabase
       .from("inventory")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         ...data,
         updated_at: new Date().toISOString(),
@@ -342,6 +346,7 @@ export async function updateInventoryStatus(
 
     const { data: updatedItem, error } = await supabase
       .from("inventory")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         status,
         updated_at: new Date().toISOString(),

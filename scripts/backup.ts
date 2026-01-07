@@ -52,7 +52,7 @@ async function runBackup(backupType: BackupType): Promise<BackupResult> {
   try {
     // 백업 로그 생성
     const { data: backupLog, error: logError } = await supabase
-      .from("backup_logs")
+      .from("backup_logs" as any)
       .insert({
         backup_type: backupType,
         backup_name: backupName,
@@ -71,7 +71,8 @@ async function runBackup(backupType: BackupType): Promise<BackupResult> {
       throw new Error(`백업 로그 생성 실패: ${logError?.message}`)
     }
 
-    const backupId = backupLog.id
+    const backupLogTyped = backupLog as { id?: string } | null;
+    const backupId = backupLogTyped?.id || ""
     let totalRecords = 0
     const backupData: Record<string, unknown[]> = {}
 
@@ -80,7 +81,7 @@ async function runBackup(backupType: BackupType): Promise<BackupResult> {
       console.log(`[Backup] ${table} 테이블 백업 중...`)
 
       const { data, error, count } = await supabase
-        .from(table)
+        .from(table as any)
         .select("*", { count: "exact" })
 
       if (error) {
@@ -104,7 +105,7 @@ async function runBackup(backupType: BackupType): Promise<BackupResult> {
 
     // 백업 로그 업데이트
     const { error: updateError } = await supabase
-      .from("backup_logs")
+      .from("backup_logs" as any)
       .update({
         status: "completed",
         completed_at: new Date().toISOString(),
@@ -138,7 +139,7 @@ async function runBackup(backupType: BackupType): Promise<BackupResult> {
     try {
       const supabase = createAdminClient()
       await supabase
-        .from("backup_logs")
+        .from("backup_logs" as any)
         .update({
           status: "failed",
           completed_at: new Date().toISOString(),

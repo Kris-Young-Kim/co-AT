@@ -10,11 +10,11 @@ import { ArrowLeft } from "lucide-react"
 import dynamic from "next/dynamic"
 
 // 코드 스플리팅: 큰 폼 컴포넌트는 탭 활성화 시에만 로드
+// Server Component에서는 ssr: false를 사용할 수 없으므로 제거
 const IntakeRecordFormV2 = dynamic(
   () => import("@/components/features/intake/IntakeRecordFormV2").then((mod) => ({ default: mod.IntakeRecordFormV2 })),
   {
     loading: () => <div className="py-8 text-center text-muted-foreground">상담 기록 폼 로딩 중...</div>,
-    ssr: false,
   }
 )
 
@@ -22,7 +22,6 @@ const DomainAssessmentFormV2 = dynamic(
   () => import("@/components/features/assessment/DomainAssessmentFormV2").then((mod) => ({ default: mod.DomainAssessmentFormV2 })),
   {
     loading: () => <div className="py-8 text-center text-muted-foreground">평가 폼 로딩 중...</div>,
-    ssr: false,
   }
 )
 
@@ -30,7 +29,6 @@ const ServiceProgressDashboard = dynamic(
   () => import("@/components/features/process/ServiceProgressDashboard").then((mod) => ({ default: mod.ServiceProgressDashboard })),
   {
     loading: () => <div className="py-8 text-center text-muted-foreground">서비스 진행 기록 로딩 중...</div>,
-    ssr: false,
   }
 )
 
@@ -38,7 +36,6 @@ const SoapNoteEditor = dynamic(
   () => import("@/components/features/soap-note/SoapNoteEditor").then((mod) => ({ default: mod.SoapNoteEditor })),
   {
     loading: () => <div className="py-8 text-center text-muted-foreground">SOAP 노트 에디터 로딩 중...</div>,
-    ssr: false,
   }
 )
 

@@ -185,11 +185,12 @@ export async function getSchedules(
 
         for (const cm of customMakes) {
           // 날짜 필드들을 배열로 만들어서 처리
+          const cmTyped = cm as { id?: string; application_id?: string; assigned_staff_id?: string | null; client_id?: string; design_start_date?: string | null; manufacturing_start_date?: string | null; expected_completion_date?: string | null; delivery_date?: string | null; progress_status?: string | null; item_name?: string } | null;
           const dateFields = [
-            { date: cm.design_start_date, label: "설계 시작", type: "design" },
-            { date: cm.manufacturing_start_date, label: "제작 시작", type: "manufacturing" },
-            { date: cm.expected_completion_date, label: "완료 예정", type: "completion" },
-            { date: cm.delivery_date, label: "납품", type: "delivery" },
+            { date: cmTyped?.design_start_date, label: "설계 시작", type: "design" },
+            { date: cmTyped?.manufacturing_start_date, label: "제작 시작", type: "manufacturing" },
+            { date: cmTyped?.expected_completion_date, label: "완료 예정", type: "completion" },
+            { date: cmTyped?.delivery_date, label: "납품", type: "delivery" },
           ]
 
           for (const field of dateFields) {
@@ -202,24 +203,25 @@ export async function getSchedules(
 
             // 상태 결정
             let scheduleStatus: "scheduled" | "completed" | "cancelled" = "scheduled"
+            const cmWithStatus = cmTyped;
             if (field.type === "design") {
-              scheduleStatus = cm.progress_status === "design" ? "scheduled" : "completed"
+              scheduleStatus = cmWithStatus?.progress_status === "design" ? "scheduled" : "completed"
             } else if (field.type === "manufacturing") {
-              scheduleStatus = ["manufacturing", "inspection", "delivery", "completed"].includes(cm.progress_status || "") ? "completed" : "scheduled"
+              scheduleStatus = ["manufacturing", "inspection", "delivery", "completed"].includes(cmWithStatus?.progress_status || "") ? "completed" : "scheduled"
             } else if (field.type === "completion" || field.type === "delivery") {
-              scheduleStatus = cm.progress_status === "completed" ? "completed" : "scheduled"
+              scheduleStatus = cmWithStatus?.progress_status === "completed" ? "completed" : "scheduled"
             }
 
             customMakeSchedules.push({
-              id: `custom_make_${cm.id}_${field.type}`,
-              application_id: cm.application_id,
-              staff_id: cm.assigned_staff_id || staffId || "",
-              client_id: cm.client_id,
+              id: `custom_make_${cmTyped?.id || ""}_${field.type}`,
+              application_id: cmTyped?.application_id || "",
+              staff_id: cmTyped?.assigned_staff_id || staffId || "",
+              client_id: cmTyped?.client_id || "",
               schedule_type: "custom_make",
               scheduled_date: field.date,
               scheduled_time: null,
               address: null,
-              notes: `맞춤제작 ${field.label}: ${cm.item_name}`,
+              notes: `맞춤제작 ${field.label}: ${cmTyped?.item_name || ""}`,
               status: scheduleStatus,
               created_at: null,
               updated_at: null,
@@ -272,6 +274,7 @@ export async function createSchedule(
 
     const { data, error } = await supabase
       .from("schedules")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
       .insert({
         staff_id: staffId,
         application_id: input.application_id || null,
@@ -291,10 +294,11 @@ export async function createSchedule(
       return { success: false, error: error.message }
     }
 
-    console.log("[일정 생성] 성공:", data.id)
+    const scheduleData = data as Schedule | null;
+    console.log("[일정 생성] 성공:", scheduleData?.id)
     revalidatePath("/admin/schedule")
     revalidatePath("/") // 메인페이지 캘린더도 갱신
-    return { success: true, data }
+    return { success: true, data: scheduleData || undefined }
   } catch (error) {
     console.error("[일정 생성] 예외:", error)
     return { success: false, error: String(error) }
@@ -328,6 +332,7 @@ export async function updateSchedule(
 
     const { data, error } = await supabase
       .from("schedules")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update(updateData)
       .eq("id", input.id)
       .select()
@@ -338,10 +343,11 @@ export async function updateSchedule(
       return { success: false, error: error.message }
     }
 
-    console.log("[일정 수정] 성공:", data.id)
+    const updatedScheduleData = data as Schedule | null;
+    console.log("[일정 수정] 성공:", updatedScheduleData?.id)
     revalidatePath("/admin/schedule")
     revalidatePath("/") // 메인페이지 캘린더도 갱신
-    return { success: true, data }
+    return { success: true, data: updatedScheduleData || undefined }
   } catch (error) {
     console.error("[일정 수정] 예외:", error)
     return { success: false, error: String(error) }

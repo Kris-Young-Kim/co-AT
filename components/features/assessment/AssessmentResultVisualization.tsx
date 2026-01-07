@@ -143,7 +143,7 @@ export function AssessmentResultVisualization({
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {domainAssessments.map((assessment, index) => (
+                  {(domainAssessments as any[] || []).map((assessment: any, index: number) => (
                     <Card key={assessment.id || index} className="border shadow-md hover:shadow-lg transition-shadow">
                       <CardHeader className="pb-3 border-b bg-gradient-to-r from-primary/5 to-primary/10">
                         <div className="flex items-center justify-between">

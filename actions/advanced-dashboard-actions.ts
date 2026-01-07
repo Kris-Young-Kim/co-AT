@@ -2,6 +2,8 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import type { Database } from "@/types/database.types"
+import { asTableRowsPick } from "@/lib/utils/supabase-types"
 
 export interface YearOverYearComparison {
   currentYear: number
@@ -251,7 +253,10 @@ export async function getTeamPerformance(
       .select("id, team, role")
       .in("role", ["staff", "manager"])
 
-    if (!profiles) {
+    // profiles가 null일 수 있으므로 빈 배열로 기본값 설정
+    const profilesList = asTableRowsPick("profiles", profiles, ["id", "team", "role"])
+
+    if (profilesList.length === 0) {
       return { success: true, teams: [] }
     }
 
@@ -269,7 +274,7 @@ export async function getTeamPerformance(
     })
 
     // 각 프로필의 팀 정보 수집
-    for (const profile of profiles) {
+    for (const profile of profilesList) {
       const team = profile.team || ""
       if (!teamMap.has(team)) {
         teamMap.set(team, {
@@ -288,7 +293,7 @@ export async function getTeamPerformance(
     // 각 팀의 실적 조회
     for (const [teamKey, teamData] of teamMap.entries()) {
       // 팀 멤버 ID 목록
-      const teamMemberIds = profiles
+      const teamMemberIds = profilesList
         .filter((p) => (p.team || "") === teamKey)
         .map((p) => p.id)
 
@@ -331,8 +336,10 @@ export async function getTeamPerformance(
         .gte("service_date", yearStart.split("T")[0])
         .lte("service_date", yearEnd.split("T")[0])
 
+      const serviceLogsList = asTableRowsPick("service_logs", serviceLogs, ["cost_total"])
+
       const totalCost =
-        serviceLogs?.reduce((sum, log) => sum + (log.cost_total || 0), 0) || 0
+        serviceLogsList.reduce((sum, log) => sum + (log.cost_total || 0), 0)
 
       // 일정 통계
       const { count: totalSchedules } = await supabase
@@ -420,12 +427,14 @@ export async function getBudgetExecution(
       .lte("service_date", endStr)
       .not("cost_total", "is", null)
 
+    const allServiceLogsList = asTableRowsPick("service_logs", allServiceLogs, ["cost_total", "service_type", "service_date"])
+
     const totalSpent =
-      allServiceLogs?.reduce((sum, log) => sum + (log.cost_total || 0), 0) || 0
+      allServiceLogsList.reduce((sum, log) => sum + (log.cost_total || 0), 0)
 
     // 카테고리별 집계
     const categoryMap = new Map<string, { spent: number; count: number }>()
-    for (const log of allServiceLogs || []) {
+    for (const log of allServiceLogsList) {
       const category = log.service_type || "기타"
       if (!categoryMap.has(category)) {
         categoryMap.set(category, { spent: 0, count: 0 })
@@ -443,7 +452,7 @@ export async function getBudgetExecution(
 
     // 월별 집계
     const monthMap = new Map<string, { spent: number; count: number }>()
-    for (const log of allServiceLogs || []) {
+    for (const log of allServiceLogsList) {
       if (!log.service_date) continue
       const month = log.service_date.substring(0, 7) // YYYY-MM
       if (!monthMap.has(month)) {

@@ -13,7 +13,7 @@ export async function exampleWithQueryLogger() {
 
   // 쿼리 실행 시간 측정
   const result = await measureQuery(
-    () => supabase.from("clients").select("*").limit(10),
+    () => Promise.resolve(supabase.from("clients").select("*").limit(10)),
     {
       query: "SELECT * FROM clients LIMIT 10",
       table: "clients",

@@ -50,21 +50,21 @@ export async function GET(request: Request) {
     const stats = {
       total: backups?.length || 0,
       byType: {
-        daily: backups?.filter((b) => b.backup_type === "daily").length || 0,
-        weekly: backups?.filter((b) => b.backup_type === "weekly").length || 0,
-        monthly: backups?.filter((b) => b.backup_type === "monthly").length || 0,
-        manual: backups?.filter((b) => b.backup_type === "manual").length || 0,
+        daily: backups?.filter((b: any) => b.backup_type === "daily").length || 0,
+        weekly: backups?.filter((b: any) => b.backup_type === "weekly").length || 0,
+        monthly: backups?.filter((b: any) => b.backup_type === "monthly").length || 0,
+        manual: backups?.filter((b: any) => b.backup_type === "manual").length || 0,
       },
       byStatus: {
-        completed: backups?.filter((b) => b.status === "completed").length || 0,
-        failed: backups?.filter((b) => b.status === "failed").length || 0,
-        in_progress: backups?.filter((b) => b.status === "in_progress").length || 0,
+        completed: backups?.filter((b: any) => b.status === "completed").length || 0,
+        failed: backups?.filter((b: any) => b.status === "failed").length || 0,
+        in_progress: backups?.filter((b: any) => b.status === "in_progress").length || 0,
       },
       latestBackup: backups?.[0] || null,
       restoreTestStatus: {
-        passed: backups?.filter((b) => b.restore_test_status === "passed").length || 0,
-        failed: backups?.filter((b) => b.restore_test_status === "failed").length || 0,
-        not_tested: backups?.filter((b) => b.restore_test_status === "not_tested" || !b.restore_test_status).length || 0,
+        passed: backups?.filter((b: any) => b.restore_test_status === "passed").length || 0,
+        failed: backups?.filter((b: any) => b.restore_test_status === "failed").length || 0,
+        not_tested: backups?.filter((b: any) => b.restore_test_status === "not_tested" || !b.restore_test_status).length || 0,
       },
     }
 
