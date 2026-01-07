@@ -2,7 +2,8 @@ import { getClientById, getClientHistory } from "@/actions/client-actions"
 import { ClientProfileCard } from "@/components/features/crm/ClientProfileCard"
 import { ClientHistoryTable } from "@/components/features/crm/ClientHistoryTable"
 import { IntakeRecordFormV2 } from "@/components/features/intake/IntakeRecordFormV2"
-import { ProcessLogForm } from "@/components/features/process/ProcessLogForm"
+import { DomainAssessmentFormV2 } from "@/components/features/assessment/DomainAssessmentFormV2"
+import { ServiceProgressDashboard } from "@/components/features/process/ServiceProgressDashboard"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { redirect, notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -56,6 +57,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
           <TabsTrigger value="profile">기본 정보</TabsTrigger>
           <TabsTrigger value="history">서비스 이력</TabsTrigger>
           <TabsTrigger value="intake">상담 기록</TabsTrigger>
+          <TabsTrigger value="assessment">평가</TabsTrigger>
           <TabsTrigger value="process">서비스 진행 기록</TabsTrigger>
         </TabsList>
 
@@ -80,15 +82,23 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
           />
         </TabsContent>
 
-        <TabsContent value="process" className="space-y-6">
-          <ProcessLogForm
+        <TabsContent value="assessment" className="space-y-6">
+          <DomainAssessmentFormV2
             clientId={id}
+            applicationId={undefined}
             onSuccess={() => {
               // 성공 시 처리 (예: 페이지 새로고침)
               if (typeof window !== "undefined") {
                 window.location.reload()
               }
             }}
+          />
+        </TabsContent>
+
+        <TabsContent value="process" className="space-y-6">
+          <ServiceProgressDashboard
+            clientId={id}
+            applicationId={undefined}
           />
         </TabsContent>
       </Tabs>
