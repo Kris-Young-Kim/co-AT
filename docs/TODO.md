@@ -1053,11 +1053,25 @@ useEffect(() => {
   - [x] 프로덕션에서 `console.log` 제거 (에러/경고 제외) ✅
   - [x] 패키지 임포트 최적화 (`optimizePackageImports`) ✅
 
-### 9.3 보안 점검
+### 9.3 보안 점검 ✅
 
-- [ ] RLS 정책 재검토
-- [ ] API Key 노출 방지 확인
-- [ ] XSS, CSRF 방어 확인
+- [x] RLS 정책 재검토 ✅
+  - [x] `docs/SECURITY_GUIDE.md` 보안 가이드 문서 작성 ✅
+  - [x] `migrations/011_enable_rls_policies.sql` RLS 정책 마이그레이션 파일 생성 ✅
+  - [x] 모든 테이블에 대한 RLS 정책 정의 (profiles, applications, schedules, notices, inventory, rentals, custom_makes, service_logs) ✅
+  - [x] 개발 환경에서는 RLS 비활성화, 프로덕션 배포 전 활성화 필요 명시 ✅
+- [x] API Key 노출 방지 확인 ✅
+  - [x] 환경 변수 보안 검토: `NEXT_PUBLIC_` 접두사 올바르게 사용 ✅
+  - [x] 서버 전용 키 확인: `SUPABASE_SERVICE_ROLE_KEY`, `CLERK_SECRET_KEY`, `GOOGLE_AI_API_KEY` 클라이언트 노출 없음 ✅
+  - [x] `.gitignore`에 `.env*.local`, `.env` 포함 확인 ✅
+  - [x] `env.example` 파일에 보안 주의사항 명시 ✅
+- [x] XSS, CSRF 방어 확인 ✅
+  - [x] XSS 방어: `dangerouslySetInnerHTML` 사용 없음 확인 ✅
+  - [x] React 기본 이스케이프 처리 활용 ✅
+  - [x] 사용자 입력 검증: Zod 스키마 사용 ✅
+  - [x] CSRF 방어: Next.js 기본 보호 + SameSite 쿠키 정책 ✅
+  - [x] Webhook 검증: Clerk Webhook은 svix 라이브러리로 검증 ✅
+  - [x] 관리자 세션 쿠키: `httpOnly`, `secure`, `sameSite: 'lax'` 설정 확인 ✅
 
 ---
 
