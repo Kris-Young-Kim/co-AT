@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { createProcessLog } from "@/actions/process-actions"
-import { Loader2 } from "lucide-react"
+import { Loader2, ClipboardList } from "lucide-react"
 import { format } from "date-fns"
 
 interface ProcessLogFormProps {
@@ -122,11 +122,17 @@ export function ProcessLogForm({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>서비스 진행 기록지 (첨부 20)</CardTitle>
+    <Card className="shadow-lg">
+      <CardHeader className="border-b bg-gradient-to-r from-primary/5 to-primary/10">
+        <CardTitle className="text-2xl flex items-center gap-2">
+          <ClipboardList className="h-5 w-5 text-primary" />
+          서비스 진행 기록지 (첨부 20)
+        </CardTitle>
+        <p className="text-sm text-muted-foreground mt-1">
+          서비스 진행 내용을 상세히 기록하세요
+        </p>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
             <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3">
