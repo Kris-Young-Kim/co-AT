@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
+import { checkCustomLimit, checkCustomMakeCostLimit } from "./business-actions"
 
 export interface CustomMakeItem {
   id: string
@@ -104,6 +105,41 @@ export async function createCustomMake(
 
     const supabase = await createClient()
 
+    // 맞춤제작 횟수 제한 체크
+    const limitCheck = await checkCustomLimit(input.client_id)
+    if (limitCheck.success && limitCheck.isExceeded) {
+      console.warn("[Custom Make Actions] 맞춤제작 횟수 제한 초과:", {
+        clientId: input.client_id,
+        currentCount: limitCheck.currentCount,
+        limit: limitCheck.limit,
+      })
+      return {
+        success: false,
+        error: `맞춤제작 연간 제한(2회)을 초과했습니다. 현재 ${limitCheck.currentCount}회 사용 중입니다.`,
+      }
+    }
+
+    // 맞춤제작비(재료비) 한도 체크 (재료비가 있는 경우)
+    if (input.cost_materials && input.cost_materials > 0) {
+      const costLimitCheck = await checkCustomMakeCostLimit(
+        input.client_id,
+        input.cost_materials
+      )
+      if (costLimitCheck.success && costLimitCheck.isExceeded) {
+        console.warn("[Custom Make Actions] 맞춤제작비 한도 초과:", {
+          clientId: input.client_id,
+          currentTotal: costLimitCheck.currentTotal,
+          newAmount: input.cost_materials,
+          newTotal: costLimitCheck.newTotal,
+          limit: costLimitCheck.limit,
+        })
+        return {
+          success: false,
+          error: `맞춤제작비(재료비) 연간 한도(10만원)를 초과했습니다. 현재 누적: ${costLimitCheck.currentTotal?.toLocaleString()}원, 신규: ${input.cost_materials.toLocaleString()}원, 합계: ${costLimitCheck.newTotal?.toLocaleString()}원입니다. 초과분은 자부담입니다.`,
+        }
+      }
+    }
+
     // 맞춤제작 프로젝트 생성
     const { data, error } = await supabase
       .from("custom_makes")
@@ -118,6 +154,8 @@ export async function createCustomMake(
         reference_images: input.reference_images || null,
         assigned_staff_id: input.assigned_staff_id || null,
         expected_completion_date: input.expected_completion_date || null,
+        cost_materials: input.cost_materials || null,
+        cost_total: input.cost_total || null,
         progress_status: "design",
         progress_percentage: 0,
       })
