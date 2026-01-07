@@ -2,7 +2,6 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
-import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { updateInventoryStatus } from "./inventory-actions"
 import { differenceInDays, isPast, isToday, addDays, format } from "date-fns"

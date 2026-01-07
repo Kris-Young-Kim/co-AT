@@ -1,10 +1,11 @@
+import type { ReactNode } from "react"
 import { AdminSidebar } from "@/components/layout/admin-sidebar"
 import { AdminHeader } from "@/components/layout/admin-header"
 
 export default function AdminLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <div className="flex min-h-screen flex-col">

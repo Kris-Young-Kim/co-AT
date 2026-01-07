@@ -131,6 +131,182 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_make_progress: {
+        Row: {
+          created_at: string | null
+          custom_make_id: string
+          id: string
+          images: string[] | null
+          notes: string | null
+          progress_percentage: number
+          progress_status: string
+          staff_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          custom_make_id: string
+          id?: string
+          images?: string[] | null
+          notes?: string | null
+          progress_percentage: number
+          progress_status: string
+          staff_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          custom_make_id?: string
+          id?: string
+          images?: string[] | null
+          notes?: string | null
+          progress_percentage?: number
+          progress_status?: string
+          staff_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_make_progress_custom_make_id_fkey"
+            columns: ["custom_make_id"]
+            isOneToOne: false
+            referencedRelation: "custom_makes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custom_make_progress_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      custom_makes: {
+        Row: {
+          actual_completion_date: string | null
+          application_id: string
+          assigned_staff_id: string | null
+          client_id: string
+          cost_equipment: number | null
+          cost_labor: number | null
+          cost_materials: number | null
+          cost_other: number | null
+          cost_total: number | null
+          created_at: string | null
+          delivery_date: string | null
+          delivery_notes: string | null
+          design_files: string[] | null
+          design_start_date: string | null
+          equipment_id: string | null
+          equipment_type: string | null
+          expected_completion_date: string | null
+          id: string
+          inspection_notes: string | null
+          item_description: string | null
+          item_name: string
+          manufacturing_notes: string | null
+          manufacturing_start_date: string | null
+          measurements: Json | null
+          progress_percentage: number | null
+          progress_status: string | null
+          reference_images: string[] | null
+          result_images: string[] | null
+          specifications: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          actual_completion_date?: string | null
+          application_id: string
+          assigned_staff_id?: string | null
+          client_id: string
+          cost_equipment?: number | null
+          cost_labor?: number | null
+          cost_materials?: number | null
+          cost_other?: number | null
+          cost_total?: number | null
+          created_at?: string | null
+          delivery_date?: string | null
+          delivery_notes?: string | null
+          design_files?: string[] | null
+          design_start_date?: string | null
+          equipment_id?: string | null
+          equipment_type?: string | null
+          expected_completion_date?: string | null
+          id?: string
+          inspection_notes?: string | null
+          item_description?: string | null
+          item_name: string
+          manufacturing_notes?: string | null
+          manufacturing_start_date?: string | null
+          measurements?: Json | null
+          progress_percentage?: number | null
+          progress_status?: string | null
+          reference_images?: string[] | null
+          result_images?: string[] | null
+          specifications?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          actual_completion_date?: string | null
+          application_id?: string
+          assigned_staff_id?: string | null
+          client_id?: string
+          cost_equipment?: number | null
+          cost_labor?: number | null
+          cost_materials?: number | null
+          cost_other?: number | null
+          cost_total?: number | null
+          created_at?: string | null
+          delivery_date?: string | null
+          delivery_notes?: string | null
+          design_files?: string[] | null
+          design_start_date?: string | null
+          equipment_id?: string | null
+          equipment_type?: string | null
+          expected_completion_date?: string | null
+          id?: string
+          inspection_notes?: string | null
+          item_description?: string | null
+          item_name?: string
+          manufacturing_notes?: string | null
+          manufacturing_start_date?: string | null
+          measurements?: Json | null
+          progress_percentage?: number | null
+          progress_status?: string | null
+          reference_images?: string[] | null
+          result_images?: string[] | null
+          specifications?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custom_makes_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custom_makes_assigned_staff_id_fkey"
+            columns: ["assigned_staff_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custom_makes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custom_makes_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "equipment"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       domain_assessments: {
         Row: {
           application_id: string
@@ -185,6 +361,59 @@ export type Database = {
           {
             foreignKeyName: "domain_assessments_evaluator_id_fkey"
             columns: ["evaluator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipment: {
+        Row: {
+          created_at: string | null
+          id: string
+          location: string | null
+          manager_id: string | null
+          manufacturer: string | null
+          model: string | null
+          name: string
+          serial_number: string | null
+          specifications: Json | null
+          status: string | null
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          location?: string | null
+          manager_id?: string | null
+          manufacturer?: string | null
+          model?: string | null
+          name: string
+          serial_number?: string | null
+          specifications?: Json | null
+          status?: string | null
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          location?: string | null
+          manager_id?: string | null
+          manufacturer?: string | null
+          model?: string | null
+          name?: string
+          serial_number?: string | null
+          specifications?: Json | null
+          status?: string | null
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_manager_id_fkey"
+            columns: ["manager_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

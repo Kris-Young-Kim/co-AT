@@ -38,8 +38,10 @@ const noticeSchema = z.object({
 
 type NoticeFormData = z.infer<typeof noticeSchema>
 
+import type { ReactNode } from "react"
+
 interface NoticeCreateDialogProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export function NoticeCreateDialog({ children }: NoticeCreateDialogProps) {

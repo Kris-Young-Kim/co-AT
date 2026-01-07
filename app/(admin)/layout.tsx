@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import { AdminSidebar } from "@/components/layout/admin-sidebar"
 import { AdminHeader } from "@/components/layout/admin-header"
 import { AdminMobileBottomNav } from "@/components/layout/admin-mobile-bottom-nav"
@@ -5,7 +6,7 @@ import { AdminMobileBottomNav } from "@/components/layout/admin-mobile-bottom-na
 export default function AdminLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <div className="flex min-h-screen flex-col pb-16 md:pb-0">

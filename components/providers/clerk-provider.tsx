@@ -1,9 +1,10 @@
 "use client"
 
+import type { ReactNode } from "react"
 import { ClerkProvider as ClerkProviderBase } from "@clerk/nextjs"
 
 interface ClerkProviderProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export function ClerkProvider({ children }: ClerkProviderProps) {

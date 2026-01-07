@@ -38,9 +38,11 @@ const noticeSchema = z.object({
 
 type NoticeFormData = z.infer<typeof noticeSchema>
 
+import type { ReactNode } from "react"
+
 interface NoticeEditDialogProps {
   notice: Notice
-  children: React.ReactNode
+  children: ReactNode
   onSuccess?: () => void
 }
 

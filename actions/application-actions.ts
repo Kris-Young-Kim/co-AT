@@ -6,7 +6,6 @@ import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { Database } from "@/types/database.types"
 
-type Profile = Database["public"]["Tables"]["profiles"]["Row"]
 type ClientInsert = Database["public"]["Tables"]["clients"]["Insert"]
 
 export async function createApplication(
