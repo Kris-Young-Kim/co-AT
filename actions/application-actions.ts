@@ -98,6 +98,18 @@ export async function createApplication(
 
     const applicationId = (application as { id: string }).id
 
+    // 감사 로그 기록
+    const { logAuditEvent } = await import("@/lib/utils/audit-logger")
+    await logAuditEvent({
+      action_type: "create",
+      table_name: "applications",
+      record_id: applicationId,
+      new_values: applicationData as Record<string, unknown>,
+      application_id: applicationId,
+      client_id: clientId,
+      description: `신청서 접수: ${formData.category} - ${formData.sub_category || ""}`,
+    })
+
     // 워크플로우 자동화: 신청 접수 시 desired_date가 있으면 일정 자동 생성
     if (formData.desired_date) {
       try {
