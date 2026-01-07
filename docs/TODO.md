@@ -106,7 +106,10 @@
 
 ### Phase 6: 비즈니스 로직
 
-- [ ] 수리비 입력 폼에 한도 체크 통합 (`service_logs` 생성 시)
+- [x] 수리비 입력 폼에 한도 체크 통합 (`service_logs` 생성 시) ✅
+  - [x] `actions/service-log-actions.ts` 생성 (createServiceLog, updateServiceLog) ✅
+  - [x] 수리비 한도 체크 통합 (checkRepairLimit) ✅
+  - [x] 한도 초과 시 경고 정보 반환 (UI에서 경고 다이얼로그 표시 가능) ✅
 
 ### Phase 8: 접근성
 
