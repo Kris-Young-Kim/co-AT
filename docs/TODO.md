@@ -665,29 +665,45 @@ useEffect(() => {
 
 ### 3.4 평가 시스템
 
-- [ ] `components/features/assessment/DomainAssessmentForm.tsx`
-  - [ ] 영역별 평가지 선택 (WC, ADL, S, SP, EC, CA, L, AAC, AM)
-  - [ ] 각 영역별 평가 폼 컴포넌트
-    - [ ] `WheelchairAssessmentForm.tsx` (휠체어및이동)
-    - [ ] `ADLAssessmentForm.tsx` (일상생활동작)
-    - [ ] `SensoryAssessmentForm.tsx` (감각)
-    - [ ] `PostureAssessmentForm.tsx` (자세)
-    - [ ] `EnvironmentAssessmentForm.tsx` (주택및환경개조)
-    - [ ] `ComputerAssessmentForm.tsx` (컴퓨터접근)
-    - [ ] `LeisureAssessmentForm.tsx` (레저)
-    - [ ] `AACAssessmentForm.tsx` (보완대체의사소통)
-    - [ ] `VehicleAssessmentForm.tsx` (자동차개조)
-- [ ] `actions/assessment-actions.ts` 작성
-  - [ ] `createDomainAssessment()` Server Action
+- [x] `components/features/assessment/DomainAssessmentFormV2.tsx` ✅
+  - [x] 동적 양식 빌더 시스템 ✅
+  - [x] 영역별 평가지 선택 (WC, ADL, S, SP, EC, CA, L, AAC, AM) ✅
+  - [x] 각 영역별 평가 템플릿 (동적 필드 렌더링) ✅
+    - [x] 휠체어 및 이동 (WC) ✅
+    - [x] 일상생활동작 (ADL) ✅
+    - [x] 감각 (S) ✅
+    - [x] 자세 (SP) ✅
+    - [x] 주택 및 환경개조 (EC) ✅
+    - [x] 컴퓨터 접근 (CA) ✅
+    - [x] 레저 (L) ✅
+    - [x] 보완대체의사소통 (AAC) ✅
+    - [x] 자동차 개조 (AM) ✅
+  - [x] 양식 자유 수정 기능 (드래그 앤 드롭, 필드 추가/수정/삭제) ✅
+  - [x] 평가 템플릿 저장/불러오기 ✅
+  - [x] 평가 결과 시각화 ✅
+- [x] `actions/assessment-actions.ts` 작성 ✅
+  - [x] `createDomainAssessment()` Server Action ✅
+  - [x] `getDomainAssessments()` - 평가 목록 조회 ✅
+  - [x] `getDomainAssessmentById()` - 평가 상세 조회 ✅
+  - [x] `updateDomainAssessment()` - 평가 수정 ✅
+- [x] `components/features/assessment/AssessmentResultVisualization.tsx` - 평가 결과 시각화 ✅
+- [x] `lib/templates/assessment-templates.ts` - 영역별 평가 템플릿 ✅
 
 ### 3.5 서비스 진행 기록
 
-- [ ] `components/features/process/ProcessLogForm.tsx`
-  - [ ] 서비스 진행 기록지 입력 (첨부 20 양식)
-  - [ ] 과정 선택 (상담·평가, 시험적용, 대여, 제작 등)
-  - [ ] 지원 구분 선택 (공적급여, 민간급여, 센터지원)
-- [ ] `actions/process-actions.ts` 작성
-  - [ ] `createProcessLog()` Server Action
+- [x] `components/features/process/ServiceProgressDashboard.tsx` ✅
+  - [x] 종합 대시보드 (상담 기록, 평가, 일정, 진행 기록 통합) ✅
+  - [x] 통합 타임라인 뷰 ✅
+  - [x] 타입별 통계 요약 (상담/평가/일정/진행 기록) ✅
+  - [x] 진행 기록 작성 기능 (Dialog) ✅
+- [x] `components/features/process/ProcessLogForm.tsx` ✅
+  - [x] 서비스 진행 기록지 입력 (첨부 20 양식) ✅
+  - [x] 과정 선택 (상담·평가, 시험적용, 대여, 제작 등) ✅
+  - [x] 지원 구분 선택 (공적급여, 민간급여, 센터지원) ✅
+- [x] `actions/process-actions.ts` 작성 ✅
+  - [x] `createProcessLog()` Server Action ✅
+  - [x] `getServiceProgressData()` - 통합 진행 데이터 조회 ✅
+  - [x] `getProcessLogs()` - 진행 기록 목록 조회 ✅
 
 ---
 
