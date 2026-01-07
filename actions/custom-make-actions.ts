@@ -594,3 +594,166 @@ export async function getEquipment(params?: {
     }
   }
 }
+
+/**
+ * 장비 등록
+ */
+export async function createEquipment(data: {
+  name: string
+  type: string
+  manufacturer?: string
+  model?: string
+  serial_number?: string
+  specifications?: any
+  location?: string
+  manager_id?: string
+}): Promise<{
+  success: boolean
+  equipment?: EquipmentItem
+  error?: string
+}> {
+  try {
+    console.log("[Custom Make Actions] 장비 등록:", data)
+
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) {
+      return { success: false, error: "권한이 없습니다" }
+    }
+
+    const supabase = await createClient()
+
+    const { data: equipment, error } = await supabase
+      .from("equipment")
+      .insert({
+        name: data.name,
+        type: data.type,
+        manufacturer: data.manufacturer || null,
+        model: data.model || null,
+        serial_number: data.serial_number || null,
+        specifications: data.specifications || null,
+        location: data.location || null,
+        manager_id: data.manager_id || null,
+        status: "available",
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error("[Custom Make Actions] 장비 등록 실패:", error)
+      return { success: false, error: "장비 등록에 실패했습니다" }
+    }
+
+    console.log("[Custom Make Actions] 장비 등록 성공:", equipment?.id)
+    return { success: true, equipment: equipment as EquipmentItem }
+  } catch (error) {
+    console.error("[Custom Make Actions] 장비 등록 중 오류:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
+    }
+  }
+}
+
+/**
+ * 장비 수정
+ */
+export async function updateEquipment(
+  id: string,
+  data: {
+    name?: string
+    type?: string
+    manufacturer?: string
+    model?: string
+    serial_number?: string
+    specifications?: any
+    location?: string
+    manager_id?: string
+    status?: string
+  }
+): Promise<{
+  success: boolean
+  equipment?: EquipmentItem
+  error?: string
+}> {
+  try {
+    console.log("[Custom Make Actions] 장비 수정:", { id, data })
+
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) {
+      return { success: false, error: "권한이 없습니다" }
+    }
+
+    const supabase = await createClient()
+
+    const { data: equipment, error } = await supabase
+      .from("equipment")
+      .update({
+        ...data,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select()
+      .single()
+
+    if (error) {
+      console.error("[Custom Make Actions] 장비 수정 실패:", error)
+      return { success: false, error: "장비 수정에 실패했습니다" }
+    }
+
+    console.log("[Custom Make Actions] 장비 수정 성공:", equipment?.id)
+    return { success: true, equipment: equipment as EquipmentItem }
+  } catch (error) {
+    console.error("[Custom Make Actions] 장비 수정 중 오류:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
+    }
+  }
+}
+
+/**
+ * 장비 삭제
+ */
+export async function deleteEquipment(id: string): Promise<{
+  success: boolean
+  error?: string
+}> {
+  try {
+    console.log("[Custom Make Actions] 장비 삭제:", id)
+
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) {
+      return { success: false, error: "권한이 없습니다" }
+    }
+
+    const supabase = await createClient()
+
+    // 장비가 사용 중인지 확인
+    const { data: inUse } = await supabase
+      .from("custom_makes")
+      .select("id")
+      .eq("equipment_id", id)
+      .in("progress_status", ["design", "manufacturing", "inspection"])
+      .limit(1)
+
+    if (inUse && inUse.length > 0) {
+      return { success: false, error: "사용 중인 장비는 삭제할 수 없습니다" }
+    }
+
+    const { error } = await supabase.from("equipment").delete().eq("id", id)
+
+    if (error) {
+      console.error("[Custom Make Actions] 장비 삭제 실패:", error)
+      return { success: false, error: "장비 삭제에 실패했습니다" }
+    }
+
+    console.log("[Custom Make Actions] 장비 삭제 성공:", id)
+    return { success: true }
+  } catch (error) {
+    console.error("[Custom Make Actions] 장비 삭제 중 오류:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
+    }
+  }
+}
