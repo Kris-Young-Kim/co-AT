@@ -1116,16 +1116,30 @@ useEffect(() => {
 
 ## 🚀 Phase 11: 배포 준비 - 1주
 
-### 11.1 환경 설정
+### 11.1 환경 설정 ✅
 
-- [ ] Vercel 프로젝트 생성
-- [ ] 환경 변수 설정 (Clerk, Supabase, Gemini)
-- [ ] 도메인 연결
+- [x] Vercel 프로젝트 생성 ✅
+- [x] 환경 변수 설정 (Clerk, Supabase, Gemini) ✅
+- [x] 도메인 연결 ✅
 
-### 11.2 CI/CD
+### 11.2 CI/CD ✅
 
-- [ ] GitHub Actions 설정 (선택사항)
-- [ ] 자동 배포 파이프라인 확인
+- [x] GitHub Actions 설정 ✅
+  - [x] `.github/workflows/ci.yml` CI 워크플로우 생성 (lint, test, build) ✅
+  - [x] `.github/workflows/deploy.yml` 배포 워크플로우 생성 (Vercel 배포) ✅
+  - [x] `.github/workflows/type-check.yml` 타입 체크 워크플로우 생성 ✅
+  - [x] GitHub Actions에서 pnpm 사용 설정 ✅
+  - [x] Node.js 20 버전 사용 설정 ✅
+- [x] 자동 배포 파이프라인 확인 ✅
+  - [x] main 브랜치 push 시 자동 배포 트리거 설정 ✅
+  - [x] PR 시 CI 검증 (lint, test, build) ✅
+  - [x] 배포 전 테스트 실행 ✅
+  - [x] Vercel 배포 액션 통합 ✅
+- [x] GitHub 템플릿 추가 ✅
+  - [x] Pull Request 템플릿 생성 ✅
+  - [x] 버그 리포트 이슈 템플릿 생성 ✅
+  - [x] 기능 요청 이슈 템플릿 생성 ✅
+  - [x] 기여 가이드 문서 작성 ✅
 
 ### 11.3 문서화
 
