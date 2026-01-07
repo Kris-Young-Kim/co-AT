@@ -204,6 +204,8 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                                   ? "default"
                                   : schedule.status === "cancelled"
                                   ? "destructive"
+                                  : schedule.status === "confirmed"
+                                  ? "secondary"
                                   : "outline"
                               }
                               className="text-xs"
@@ -212,6 +214,8 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                                 ? "완료"
                                 : schedule.status === "cancelled"
                                 ? "취소"
+                                : schedule.status === "confirmed"
+                                ? "확정"
                                 : "예정"}
                             </Badge>
                           </div>
@@ -395,6 +399,8 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                               ? "default"
                               : schedule.status === "cancelled"
                               ? "destructive"
+                              : schedule.status === "confirmed"
+                              ? "secondary"
                               : "outline"
                           }
                         >
@@ -402,6 +408,8 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                             ? "완료"
                             : schedule.status === "cancelled"
                             ? "취소"
+                            : schedule.status === "confirmed"
+                            ? "확정"
                             : "예정"}
                         </Badge>
                       </div>

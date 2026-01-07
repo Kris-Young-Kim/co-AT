@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission, getCurrentUserProfileId } from "@/lib/utils/permissions"
 import { revalidatePath } from "next/cache"
 
@@ -41,9 +42,11 @@ export interface UpdateNoticeInput {
 
 /**
  * 최신 공지사항 조회 (고정 공지 + 최신 공지)
+ * 공개 페이지용 - RLS를 우회하여 모든 공지사항 조회
  */
 export async function getRecentNotices(limit: number = 5): Promise<Notice[]> {
-  const supabase = await createClient()
+  // 공개 페이지이므로 RLS를 우회하여 조회
+  const supabase = createAdminClient()
 
   // 고정 공지사항 조회
   const { data: pinned, error: pinnedError } = await supabase
@@ -54,7 +57,10 @@ export async function getRecentNotices(limit: number = 5): Promise<Notice[]> {
     .limit(limit)
 
   if (pinnedError) {
-    console.error("고정 공지사항 조회 실패:", pinnedError)
+    console.error("[공지사항 조회] 고정 공지사항 조회 실패:", {
+      error: pinnedError.message,
+      code: pinnedError.code,
+    })
   }
 
   // 최신 공지사항 조회 (고정 제외)
@@ -66,7 +72,10 @@ export async function getRecentNotices(limit: number = 5): Promise<Notice[]> {
     .limit(limit)
 
   if (recentError) {
-    console.error("최신 공지사항 조회 실패:", recentError)
+    console.error("[공지사항 조회] 최신 공지사항 조회 실패:", {
+      error: recentError.message,
+      code: recentError.code,
+    })
   }
 
   // 고정 공지 + 최신 공지 합치기
@@ -105,12 +114,14 @@ export async function getRecentNotices(limit: number = 5): Promise<Notice[]> {
 
 /**
  * 카테고리별 공지사항 조회
+ * 공개 페이지용 - RLS를 우회하여 조회
  */
 export async function getNoticesByCategory(
   category: "notice" | "activity" | "support" | "case",
   limit: number = 10
 ): Promise<Notice[]> {
-  const supabase = await createClient()
+  // 공개 페이지이므로 RLS를 우회하여 조회
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from("notices")
@@ -158,9 +169,11 @@ export async function getNoticesByCategory(
 
 /**
  * 공지사항 상세 조회
+ * 공개 페이지용 - RLS를 우회하여 조회
  */
 export async function getNoticeById(id: string): Promise<Notice | null> {
-  const supabase = await createClient()
+  // 공개 페이지이므로 RLS를 우회하여 조회
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from("notices")
@@ -169,7 +182,11 @@ export async function getNoticeById(id: string): Promise<Notice | null> {
     .single()
 
   if (error) {
-    console.error("공지사항 조회 실패:", error)
+    console.error("[공지사항 조회] 상세 조회 실패:", {
+      error: error.message,
+      code: error.code,
+      id,
+    })
     return null
   }
 
@@ -224,7 +241,8 @@ export async function createNotice(
       return { success: false, error: "사용자 정보를 찾을 수 없습니다" }
     }
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     // attachments 컬럼이 있는지 확인하고 선택적으로 저장
     const insertData: any = {
@@ -246,13 +264,24 @@ export async function createNotice(
 
     const { data, error } = await supabase
       .from("notices")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
       .insert(insertData as any)
       .select("id")
       .single()
 
     if (error) {
-      console.error("공지사항 생성 실패:", error)
-      return { success: false, error: "공지사항 생성에 실패했습니다" }
+      console.error("[공지사항 생성] 실패:", {
+        error: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+        insertData,
+        profileId,
+      })
+      return { 
+        success: false, 
+        error: `공지사항 생성에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
+      }
     }
 
     revalidatePath("/notices")
@@ -367,7 +396,8 @@ export async function getAllNotices(): Promise<{
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     // attachments 컬럼이 있는지 확인하고 선택적으로 조회
     const { data, error } = await supabase
@@ -377,8 +407,16 @@ export async function getAllNotices(): Promise<{
       .order("created_at", { ascending: false })
 
     if (error) {
-      console.error("공지사항 조회 실패:", error)
-      return { success: false, error: "공지사항 조회에 실패했습니다" }
+      console.error("[공지사항 조회] 실패:", {
+        error: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      })
+      return { 
+        success: false, 
+        error: `공지사항 조회에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
+      }
     }
 
     // attachments 필드가 있는 경우 추가로 조회

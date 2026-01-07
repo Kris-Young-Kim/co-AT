@@ -39,6 +39,26 @@ export interface RentalStatus {
   inventory_model: string | null
 }
 
+export interface CustomMakeStatus {
+  id: string
+  item_name: string
+  item_description: string | null
+  progress_status: string | null
+  progress_percentage: number | null
+  expected_completion_date: string | null
+  delivery_date: string | null
+  created_at: string | null
+}
+
+export interface ReuseServiceStatus {
+  id: string
+  item_name: string | null
+  work_description: string | null
+  work_result: string | null
+  service_date: string | null
+  created_at: string | null
+}
+
 /**
  * 현재 로그인한 사용자의 통합 서비스 이력 조회
  * (신청, 상담, 맞춤제작, 재사용지원, 수리및점검, 소독및세척, 대여 포함)
@@ -305,3 +325,170 @@ export async function getMyRentals(): Promise<{
   }
 }
 
+/**
+ * 현재 로그인한 사용자의 맞춤제작 기기 조회
+ */
+export async function getMyCustomMakes(): Promise<{
+  success: boolean
+  customMakes?: CustomMakeStatus[]
+  error?: string
+}> {
+  try {
+    const { userId } = await auth()
+
+    if (!userId) {
+      return { success: false, error: "로그인이 필요합니다" }
+    }
+
+    const supabase = await createClient()
+
+    // 사용자 프로필 조회
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("clerk_user_id", userId)
+      .single()
+
+    if (profileError || !profile) {
+      return { success: false, error: "사용자 정보를 찾을 수 없습니다" }
+    }
+
+    // 클라이언트 정보 조회
+    const { data: client, error: clientError } = await supabase
+      .from("clients")
+      .select("id")
+      .eq("id", (profile as { id: string }).id)
+      .single()
+
+    if (clientError || !client) {
+      return { success: true, customMakes: [] }
+    }
+
+    const clientId = (client as { id: string }).id
+
+    // 맞춤제작 기기 조회
+    const { data: customMakes, error: customMakesError } = await supabase
+      .from("custom_makes")
+      .select("id, item_name, item_description, progress_status, progress_percentage, expected_completion_date, delivery_date, created_at")
+      .eq("client_id", clientId)
+      .order("created_at", { ascending: false })
+
+    if (customMakesError) {
+      console.error("Custom makes fetch error:", customMakesError)
+      return { success: false, error: "맞춤제작 정보 조회에 실패했습니다" }
+    }
+
+    const formattedCustomMakes: CustomMakeStatus[] =
+      customMakes?.map((item: any) => ({
+        id: item.id,
+        item_name: item.item_name,
+        item_description: item.item_description,
+        progress_status: item.progress_status,
+        progress_percentage: item.progress_percentage,
+        expected_completion_date: item.expected_completion_date,
+        delivery_date: item.delivery_date,
+        created_at: item.created_at,
+      })) || []
+
+    return {
+      success: true,
+      customMakes: formattedCustomMakes,
+    }
+  } catch (error) {
+    console.error("Unexpected error in getMyCustomMakes:", error)
+    return {
+      success: false,
+      error: "예상치 못한 오류가 발생했습니다",
+    }
+  }
+}
+
+/**
+ * 현재 로그인한 사용자의 재사용 기기 지원 이력 조회
+ */
+export async function getMyReuseServices(): Promise<{
+  success: boolean
+  reuseServices?: ReuseServiceStatus[]
+  error?: string
+}> {
+  try {
+    const { userId } = await auth()
+
+    if (!userId) {
+      return { success: false, error: "로그인이 필요합니다" }
+    }
+
+    const supabase = await createClient()
+
+    // 사용자 프로필 조회
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("clerk_user_id", userId)
+      .single()
+
+    if (profileError || !profile) {
+      return { success: false, error: "사용자 정보를 찾을 수 없습니다" }
+    }
+
+    // 클라이언트 정보 조회
+    const { data: client, error: clientError } = await supabase
+      .from("clients")
+      .select("id")
+      .eq("id", (profile as { id: string }).id)
+      .single()
+
+    if (clientError || !client) {
+      return { success: true, reuseServices: [] }
+    }
+
+    const clientId = (client as { id: string }).id
+
+    // 클라이언트의 신청서 ID 조회
+    const { data: applications } = await supabase
+      .from("applications")
+      .select("id")
+      .eq("client_id", clientId)
+
+    const applicationIds = applications?.map((app: { id: string }) => app.id) || []
+
+    if (applicationIds.length === 0) {
+      return { success: true, reuseServices: [] }
+    }
+
+    // 재사용 기기 지원 이력 조회 (service_type이 'reuse'인 service_logs)
+    const { data: reuseLogs, error: reuseLogsError } = await supabase
+      .from("service_logs")
+      .select("id, item_name, work_description, work_result, service_date, created_at")
+      .in("application_id", applicationIds)
+      .eq("service_type", "reuse")
+      .order("service_date", { ascending: false, nullsFirst: false })
+      .order("created_at", { ascending: false })
+
+    if (reuseLogsError) {
+      console.error("Reuse services fetch error:", reuseLogsError)
+      return { success: false, error: "재사용 기기 지원 이력 조회에 실패했습니다" }
+    }
+
+    const formattedReuseServices: ReuseServiceStatus[] =
+      reuseLogs?.map((log: any) => ({
+        id: log.id,
+        item_name: log.item_name,
+        work_description: log.work_description,
+        work_result: log.work_result,
+        service_date: log.service_date,
+        created_at: log.created_at,
+      })) || []
+
+    return {
+      success: true,
+      reuseServices: formattedReuseServices,
+    }
+  } catch (error) {
+    console.error("Unexpected error in getMyReuseServices:", error)
+    return {
+      success: false,
+      error: "예상치 못한 오류가 발생했습니다",
+    }
+  }
+}

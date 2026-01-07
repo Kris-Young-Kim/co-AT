@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 
 export interface ReusableDevice {
@@ -27,6 +28,7 @@ export interface InventoryItem {
   purchase_date: string | null
   purchase_price: number | null
   qr_code: string | null
+  image_url: string | null
   created_at: string | null
   updated_at: string | null
 }
@@ -52,7 +54,8 @@ export interface InventoryListResult {
  * inventory 테이블에서 status가 '보관'이고 is_rental_available이 true인 기기들 조회
  */
 export async function getReusableDevices(limit: number = 20): Promise<ReusableDevice[]> {
-  const supabase = await createClient()
+  // 공개 페이지이므로 RLS를 우회하여 조회
+  const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from("inventory")
@@ -71,6 +74,57 @@ export async function getReusableDevices(limit: number = 20): Promise<ReusableDe
 }
 
 /**
+ * 공개 페이지용 재고 목록 조회 (필터링, 상태별 조회 지원)
+ */
+export async function getPublicInventoryList(params?: {
+  status?: string
+  is_rental_available?: boolean
+  category?: string
+  limit?: number
+}): Promise<InventoryItem[]> {
+  try {
+    // 공개 페이지이므로 RLS를 우회하여 조회
+    const supabase = createAdminClient()
+
+    let query = supabase.from("inventory").select("*")
+
+    // 상태 필터
+    if (params?.status) {
+      query = query.eq("status", params.status)
+    }
+
+    // 대여 가능 여부 필터
+    if (params?.is_rental_available !== undefined) {
+      query = query.eq("is_rental_available", params.is_rental_available)
+    }
+
+    // 카테고리 필터
+    if (params?.category) {
+      query = query.eq("category", params.category)
+    }
+
+    // 정렬 (최신순)
+    query = query.order("created_at", { ascending: false })
+
+    // 제한
+    const limit = params?.limit || 100
+    query = query.limit(limit)
+
+    const { data, error } = await query
+
+    if (error) {
+      console.error("[Inventory Actions] 공개 재고 목록 조회 실패:", error)
+      return []
+    }
+
+    return (data || []) as InventoryItem[]
+  } catch (error) {
+    console.error("[Inventory Actions] 공개 재고 목록 조회 중 오류:", error)
+    return []
+  }
+}
+
+/**
  * 재고 목록 조회 (필터링, 검색, 페이지네이션 지원)
  */
 export async function getInventoryList(
@@ -86,7 +140,8 @@ export async function getInventoryList(
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     let query = supabase.from("inventory").select("*", { count: "exact" })
 
@@ -154,7 +209,8 @@ export async function getInventoryItem(id: string): Promise<{
   try {
     console.log("[Inventory Actions] 재고 상세 조회:", id)
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from("inventory")
@@ -196,7 +252,8 @@ export async function createInventoryItem(
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     const { data: newItem, error } = await supabase
       .from("inventory")
@@ -212,13 +269,23 @@ export async function createInventoryItem(
         purchase_date: data.purchase_date || null,
         purchase_price: data.purchase_price || null,
         qr_code: data.qr_code || null,
+        image_url: data.image_url || null,
       })
       .select()
       .single()
 
     if (error) {
-      console.error("[Inventory Actions] 재고 등록 실패:", error)
-      return { success: false, error: "재고 등록에 실패했습니다" }
+      console.error("[Inventory Actions] 재고 등록 실패:", {
+        error: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+        data,
+      })
+      return { 
+        success: false, 
+        error: `재고 등록에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
+      }
     }
 
     // 타입 캐스팅
@@ -255,7 +322,8 @@ export async function updateInventoryItem(
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     const { data: updatedItem, error } = await supabase
       .from("inventory")
@@ -269,8 +337,18 @@ export async function updateInventoryItem(
       .single()
 
     if (error) {
-      console.error("[Inventory Actions] 재고 수정 실패:", error)
-      return { success: false, error: "재고 수정에 실패했습니다" }
+      console.error("[Inventory Actions] 재고 수정 실패:", {
+        error: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+        id,
+        data,
+      })
+      return { 
+        success: false, 
+        error: `재고 수정에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
+      }
     }
 
     console.log("[Inventory Actions] 재고 수정 성공:", id)
@@ -301,7 +379,8 @@ export async function deleteInventoryItem(id: string): Promise<{
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     const { error } = await supabase.from("inventory").delete().eq("id", id)
 
@@ -342,7 +421,8 @@ export async function updateInventoryStatus(
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     const { data: updatedItem, error } = await supabase
       .from("inventory")
@@ -383,7 +463,8 @@ export async function getInventoryByQRCode(qrCode: string): Promise<{
   try {
     console.log("[Inventory Actions] QR 코드로 재고 조회:", qrCode)
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from("inventory")

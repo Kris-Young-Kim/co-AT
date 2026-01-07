@@ -15,16 +15,16 @@ export function RegulationChatbotFloating() {
   const [isOpen, setIsOpen] = useState(false)
 
   if (!isOpen) {
-    return (
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-20 z-50 rounded-full bg-primary p-3 text-primary-foreground shadow-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-transform hover:scale-110"
-        aria-label="규정 검색 챗봇 열기"
-        title="규정 검색 챗봇"
-      >
-        <MessageSquare className="h-5 w-5" />
-      </button>
-    )
+        return (
+            <button
+              onClick={() => setIsOpen(true)}
+              className="fixed bottom-4 right-4 z-50 rounded-lg bg-primary px-4 py-3 text-primary-foreground shadow-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-transform hover:scale-105"
+              aria-label="규정 검색 챗봇 열기"
+              title="규정 검색 챗봇"
+            >
+              <MessageSquare className="h-5 w-5" />
+            </button>
+          )
   }
 
   return (

@@ -87,30 +87,44 @@ export async function hasAdminPermission(): Promise<boolean> {
 
 /**
  * 현재 사용자의 프로필 ID 조회
+ * RLS를 우회하기 위해 서비스 역할 사용
  */
 export async function getCurrentUserProfileId(): Promise<string | null> {
   try {
     const { userId } = await auth()
 
     if (!userId) {
+      console.log("[프로필 ID 조회] 사용자 ID 없음")
       return null
     }
 
-    const supabase = await createClient()
+    // RLS를 우회하기 위해 서비스 역할 사용
+    const supabase = createAdminClient()
 
     const { data: profile, error } = await supabase
       .from("profiles")
       .select("id")
       .eq("clerk_user_id", userId)
-      .single()
+      .maybeSingle()
 
-    if (error || !profile) {
+    // PGRST116은 "결과 없음"을 의미하는 정상적인 코드입니다
+    if (error && error.code !== 'PGRST116') {
+      console.error("[프로필 ID 조회] 프로필 조회 실패:", {
+        error: error.message,
+        code: error.code,
+        userId,
+      })
+      return null
+    }
+
+    if (!profile) {
+      console.log("[프로필 ID 조회] 프로필 없음 - userId:", userId)
       return null
     }
 
     return (profile as { id: string }).id
   } catch (error) {
-    console.error("Error getting user profile ID:", error)
+    console.error("[프로필 ID 조회] 예외 발생:", error)
     return null
   }
 }

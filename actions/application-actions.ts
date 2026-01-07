@@ -49,9 +49,10 @@ export async function createApplication(
     let clientId: string
 
     if (clientError || !client) {
-      // 클라이언트가 없으면 생성 (실제로는 더 많은 정보 필요)
+      // 클라이언트가 없으면 생성 (id를 profileId로 설정하여 1:1 관계 유지)
       const clientData: ClientInsert = {
-        name: formData.contact, // 임시 (실제로는 폼에서 이름 받아야 함)
+        id: profileId, // profile.id를 client.id로 사용
+        name: formData.contact || "신청자", // 임시 (실제로는 폼에서 이름 받아야 함)
       }
       const { data: newClient, error: createClientError } = await supabase
         .from("clients")
@@ -61,7 +62,8 @@ export async function createApplication(
         .single()
 
       if (createClientError || !newClient) {
-        return { success: false, error: "클라이언트 정보 생성에 실패했습니다" }
+        console.error("Client creation error:", createClientError)
+        return { success: false, error: "클라이언트 정보 생성에 실패했습니다: " + (createClientError?.message || "알 수 없는 오류") }
       }
 
       clientId = (newClient as { id: string }).id
