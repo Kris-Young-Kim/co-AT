@@ -1,16 +1,46 @@
 import { getClientById, getClientHistory } from "@/actions/client-actions"
 import { ClientProfileCard } from "@/components/features/crm/ClientProfileCard"
 import { ClientHistoryTable } from "@/components/features/crm/ClientHistoryTable"
-import { IntakeRecordFormV2 } from "@/components/features/intake/IntakeRecordFormV2"
-import { DomainAssessmentFormV2 } from "@/components/features/assessment/DomainAssessmentFormV2"
-import { ServiceProgressDashboard } from "@/components/features/process/ServiceProgressDashboard"
-import { SoapNoteEditor } from "@/components/features/soap-note/SoapNoteEditor"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { redirect, notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import dynamic from "next/dynamic"
+
+// 코드 스플리팅: 큰 폼 컴포넌트는 탭 활성화 시에만 로드
+const IntakeRecordFormV2 = dynamic(
+  () => import("@/components/features/intake/IntakeRecordFormV2").then((mod) => ({ default: mod.IntakeRecordFormV2 })),
+  {
+    loading: () => <div className="py-8 text-center text-muted-foreground">상담 기록 폼 로딩 중...</div>,
+    ssr: false,
+  }
+)
+
+const DomainAssessmentFormV2 = dynamic(
+  () => import("@/components/features/assessment/DomainAssessmentFormV2").then((mod) => ({ default: mod.DomainAssessmentFormV2 })),
+  {
+    loading: () => <div className="py-8 text-center text-muted-foreground">평가 폼 로딩 중...</div>,
+    ssr: false,
+  }
+)
+
+const ServiceProgressDashboard = dynamic(
+  () => import("@/components/features/process/ServiceProgressDashboard").then((mod) => ({ default: mod.ServiceProgressDashboard })),
+  {
+    loading: () => <div className="py-8 text-center text-muted-foreground">서비스 진행 기록 로딩 중...</div>,
+    ssr: false,
+  }
+)
+
+const SoapNoteEditor = dynamic(
+  () => import("@/components/features/soap-note/SoapNoteEditor").then((mod) => ({ default: mod.SoapNoteEditor })),
+  {
+    loading: () => <div className="py-8 text-center text-muted-foreground">SOAP 노트 에디터 로딩 중...</div>,
+    ssr: false,
+  }
+)
 
 interface ClientDetailPageProps {
   params: Promise<{ id: string }>
