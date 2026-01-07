@@ -20,7 +20,7 @@ export function useDashboardStats() {
       }
       return result.stats
     },
-    refetchInterval: 60000, // 1분마다 자동 갱신
+    refetchInterval: 30000, // 30초마다 자동 갱신 (실시간 KPI 모니터링)
   })
 }
 
@@ -34,7 +34,7 @@ export function useNewApplications(limit: number = 10) {
       }
       return result.applications
     },
-    refetchInterval: 60000, // 1분마다 자동 갱신
+    refetchInterval: 30000, // 30초마다 자동 갱신 (실시간 KPI 모니터링)
   })
 }
 
@@ -48,7 +48,7 @@ export function useTodaySchedules() {
       }
       return result.schedules
     },
-    refetchInterval: 60000, // 1분마다 자동 갱신
+    refetchInterval: 30000, // 30초마다 자동 갱신 (실시간 KPI 모니터링)
   })
 }
 

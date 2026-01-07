@@ -235,10 +235,23 @@
      - [x] 의심스러운 활동 로그 조회 기능 ✅
 
 4. **고급 대시보드**
-   - [ ] 실시간 KPI 모니터링
-   - [ ] 전년 동기 대비 실적 비교
-   - [ ] 팀별 성과 분석
-   - [ ] 예산 집행 현황
+
+   - [x] 실시간 KPI 모니터링 ✅
+     - [x] 대시보드 갱신 간격을 1분에서 30초로 단축 (실시간 모니터링 강화) ✅
+     - [x] `lib/hooks/useDashboardStats.ts` 업데이트 ✅
+   - [x] 전년 동기 대비 실적 비교 ✅
+     - [x] `actions/advanced-dashboard-actions.ts` 생성: `getYearOverYearComparison()` 함수 구현 ✅
+     - [x] 신청서 건수, 완료 건수, 카테고리별 비교 기능 ✅
+   - [x] 팀별 성과 분석 ✅
+     - [x] `getTeamPerformance()` 함수 구현: profiles.team 필드 기반 팀별 통계 ✅
+     - [x] 신청서, 서비스 로그, 일정, 비용 통계 제공 ✅
+   - [x] 예산 집행 현황 ✅
+     - [x] `getBudgetExecution()` 함수 구현: service_logs.cost_total 기반 집행 현황 ✅
+     - [x] 카테고리별, 월별 집행 내역 제공 ✅
+   - [x] 고급 대시보드 UI 컴포넌트 ✅
+     - [x] `components/features/dashboard/AdvancedDashboardSection.tsx` 생성 ✅
+     - [x] 탭 기반 UI (전년 동기 대비, 팀별 성과, 예산 집행) ✅
+     - [x] `AdminDashboardContent`에 통합 ✅
 
 #### ⭐⭐ 중기 구현 권장 (Medium Priority)
 

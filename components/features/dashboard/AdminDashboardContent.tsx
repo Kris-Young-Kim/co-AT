@@ -6,6 +6,7 @@ import { AdminTodaySchedule } from "./AdminTodaySchedule"
 import { BusinessStatsSection } from "./BusinessStatsSection"
 import { RentalAlerts } from "./RentalAlerts"
 import { PrivacyRetentionAlerts } from "./PrivacyRetentionAlerts"
+import { AdvancedDashboardSection } from "./AdvancedDashboardSection"
 import { useDashboardStats, useNewApplications, useTodaySchedules } from "@/lib/hooks/useDashboardStats"
 import { Loader2 } from "lucide-react"
 
@@ -51,6 +52,9 @@ export function AdminDashboardContent() {
         <AdminNewRequestList applications={applications || []} />
         <AdminTodaySchedule schedules={schedules || []} />
       </div>
+
+      {/* 고급 대시보드 */}
+      <AdvancedDashboardSection />
     </div>
   )
 }
