@@ -1,6 +1,26 @@
+import type { Metadata } from "next"
+import { Breadcrumb } from "@/components/common/breadcrumb"
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
+
+export const metadata: Metadata = {
+  title: "센터소개",
+  description: "강원특별자치도 보조기기센터의 인사말, 조직도, 연혁, 찾아오시는 길 등 센터에 대한 정보를 확인하세요.",
+  openGraph: {
+    title: "센터소개 | GWATC 보조기기센터",
+    description: "강원특별자치도 보조기기센터의 인사말, 조직도, 연혁, 찾아오시는 길 등 센터에 대한 정보를 확인하세요.",
+    url: `${baseUrl}/about`,
+    type: "website",
+  },
+  alternates: {
+    canonical: `${baseUrl}/about`,
+  },
+}
+
 export default function AboutPage() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <Breadcrumb items={[{ label: "센터소개", href: "/about" }]} className="mb-6" />
       <h1 className="text-responsive-xl font-bold text-foreground mb-6">
         센터소개
       </h1>

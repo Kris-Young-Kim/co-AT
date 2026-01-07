@@ -1,6 +1,32 @@
+import type { Metadata } from "next"
+import { Breadcrumb } from "@/components/common/breadcrumb"
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
+
+export const metadata: Metadata = {
+  title: "사후관리",
+  description: "보조기기의 지속적인 사후관리 서비스를 제공합니다. 소독/세척, 점검/수리, 재사용 서비스를 확인하세요.",
+  openGraph: {
+    title: "사후관리 | GWATC 보조기기센터",
+    description: "보조기기의 지속적인 사후관리 서비스를 제공합니다. 소독/세척, 점검/수리, 재사용 서비스를 확인하세요.",
+    url: `${baseUrl}/services/aftercare`,
+    type: "website",
+  },
+  alternates: {
+    canonical: `${baseUrl}/services/aftercare`,
+  },
+}
+
 export default function AftercarePage() {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <Breadcrumb
+        items={[
+          { label: "주요사업", href: "/services" },
+          { label: "사후관리", href: "/services/aftercare" },
+        ]}
+        className="mb-6"
+      />
       <h1 className="text-responsive-xl font-bold text-foreground mb-6">
         사후관리
       </h1>

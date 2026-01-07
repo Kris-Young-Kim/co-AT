@@ -2,7 +2,7 @@
 
 > **프로젝트**: GWATC 통합 관리 플랫폼 (Co-AT)  
 > **비전**: "행정은 AI에게, 사람은 클라이언트에게"  
-> **기술 스택**: Next.js 15, Clerk, Supabase, Gemini Flash  
+> **기술 스택**: Next.js 16, React 19, Clerk, Supabase, Gemini Flash  
 > **작성일**: 2025. 12. 06
 > **마지막 업데이트**: 2025. 01. 27
 
@@ -21,7 +21,7 @@
 
 ### 🚀 Phase 1: 기반 구축 ✅
 
-- [x] 프로젝트 초기 설정 (Next.js 15, TypeScript, Tailwind CSS, ESLint)
+- [x] 프로젝트 초기 설정 (Next.js 16, React 19, TypeScript, Tailwind CSS, ESLint)
 - [x] 인증 시스템 (Clerk 연동, Webhook 설정)
 - [x] 데이터베이스 설정 (Supabase, 마이그레이션, RLS, 타입 생성)
 - [x] UI 기반 설정 (shadcn/ui, Pretendard 폰트, Tailwind Config)
@@ -127,6 +127,30 @@
 ### 📊 우선순위별 정리
 
 #### ⭐⭐⭐ 즉시 구현 권장 (High Priority)
+
+**SEO 최적화** (Public Zone):
+
+1. **SEO 기본 구현**
+   - [x] XML 사이트맵 생성 (`app/sitemap.ts`)
+   - [x] robots.txt 파일 생성 (`public/robots.txt`)
+   - [x] 각 페이지별 고유한 메타 설명 추가 (Public Zone 모든 주요 페이지)
+   - [x] 구조화된 데이터(Schema.org) 마크업 추가 (Organization, NewsArticle, BreadcrumbList)
+   - [x] Open Graph 및 Twitter Card 태그 추가 (루트 레이아웃 및 페이지별)
+   - [x] 브레드크럼 구조화된 데이터 추가 (Breadcrumb 컴포넌트)
+   - [x] Canonical URL 태그 추가 (모든 Public Zone 페이지)
+   - [x] Public Zone 주요 페이지별 메타데이터 추가
+     - [x] 메인 페이지
+     - [x] 서비스 페이지 (주요사업, 상담, 맞춤형 지원, 사후관리, 교육/홍보)
+     - [x] 공지사항 (목록, 상세)
+     - [x] 보조기기 정보 (정보, 정부지원사업, 보유 보조기기, 재사용 보조기기, 추천, 수리센터, 자료실)
+     - [x] 센터소개 (소개, 인사말, 조직도, 연혁, 찾아오시는 길)
+     - [x] 커뮤니티 (커뮤니티, 활동갤러리, 서비스 사례)
+     - [x] 서비스 신청 (이용 안내)
+   - [x] OG 이미지 설정 가이드 제공 (`docs/OG_IMAGE_GUIDE.md`)
+   - [ ] 실제 OG 이미지 파일 생성 (`public/og-image.jpg`, 수동 작업 필요)
+   - [ ] Google Search Console 등록 (수동 작업 필요)
+   - [ ] Naver Search Advisor 등록 (수동 작업 필요)
+   - [ ] 참고: `docs/SEO_STANDARD.md` 문서 참조
 
 **SaaS 안정화** (최우선):
 
@@ -257,6 +281,8 @@
 - **ADMIN_GUIDE.md**: 관리자 가이드
 - **API_DOCUMENTATION.md**: API 문서
 - **SECURITY_GUIDE.md**: 보안 가이드
+- **SEO_STANDARD.md**: SEO 최적화 가이드
+- **NEXTJS_16_GUIDE.md**: Next.js 16 App Router 개발 가이드
 - **보조기기센터사업안내.md**: 실제 업무 규정 및 양식
 
 ---

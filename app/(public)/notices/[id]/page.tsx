@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { getNoticeById } from "@/actions/notice-actions"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -9,9 +10,43 @@ import { ArrowLeft, Pin, Calendar } from "lucide-react"
 import { notFound } from "next/navigation"
 import { NoticeShareButton } from "@/components/features/notices/NoticeShareButton"
 import { NoticeAttachments } from "@/components/features/notices/NoticeAttachments"
+import { Breadcrumb } from "@/components/common/breadcrumb"
+
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
 
 interface NoticeDetailPageProps {
   params: Promise<{ id: string }>
+}
+
+// 동적 메타데이터 생성
+export async function generateMetadata({ params }: NoticeDetailPageProps): Promise<Metadata> {
+  const { id } = await params
+  const notice = await getNoticeById(id)
+
+  if (!notice) {
+    return {
+      title: "공지사항을 찾을 수 없습니다",
+    }
+  }
+
+  // HTML 태그 제거하여 메타 설명 생성
+  const plainContent = notice.content.replace(/<[^>]*>/g, "").substring(0, 150)
+
+  return {
+    title: notice.title,
+    description: plainContent || "강원특별자치도 보조기기센터 공지사항입니다.",
+    openGraph: {
+      title: notice.title,
+      description: plainContent || "강원특별자치도 보조기기센터 공지사항입니다.",
+      url: `${baseUrl}/notices/${id}`,
+      type: "article",
+      publishedTime: notice.created_at,
+      modifiedTime: notice.created_at,
+    },
+    alternates: {
+      canonical: `${baseUrl}/notices/${id}`,
+    },
+  }
 }
 
 export default async function NoticeDetailPage({ params }: NoticeDetailPageProps) {
@@ -20,6 +55,24 @@ export default async function NoticeDetailPage({ params }: NoticeDetailPageProps
 
   if (!notice) {
     notFound()
+  }
+
+  // 구조화된 데이터 (JSON-LD)
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: notice.title,
+    description: notice.content.replace(/<[^>]*>/g, "").substring(0, 200),
+    datePublished: notice.created_at,
+    dateModified: notice.created_at,
+    author: {
+      "@type": "Organization",
+      name: "GWATC 보조기기센터",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "GWATC 보조기기센터",
+    },
   }
 
   const categoryLabel =
@@ -34,10 +87,24 @@ export default async function NoticeDetailPage({ params }: NoticeDetailPageProps
       : "공지사항"
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-      <div className="max-w-4xl mx-auto">
-        {/* 뒤로가기 버튼 및 공유 버튼 */}
-        <div className="mb-6 flex items-center justify-between">
+    <>
+      {/* 구조화된 데이터 (JSON-LD) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="max-w-4xl mx-auto">
+          <Breadcrumb
+            items={[
+              { label: "공지사항", href: "/notices" },
+              { label: notice.title.length > 30 ? notice.title.substring(0, 30) + "..." : notice.title, href: `/notices/${id}` },
+            ]}
+            className="mb-6"
+          />
+          {/* 뒤로가기 버튼 및 공유 버튼 */}
+          <div className="mb-6 flex items-center justify-between">
           <Button variant="ghost" asChild>
             <Link href="/notices">
               <ArrowLeft className="mr-2 h-4 w-4" />
@@ -93,6 +160,7 @@ export default async function NoticeDetailPage({ params }: NoticeDetailPageProps
         </div>
       </div>
     </div>
+    </>
   )
 }
 
