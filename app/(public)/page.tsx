@@ -1,11 +1,27 @@
 import { HomeHeroSection } from "@/components/features/landing/HomeHeroSection"
 import { HomeQuickMenuGrid } from "@/components/features/landing/HomeQuickMenuGrid"
 import { HomeCommunityNews } from "@/components/features/landing/HomeCommunityNews"
-import { HomeGallerySlider } from "@/components/features/landing/HomeGallerySlider"
-import { HomeCalendarCompact } from "@/components/features/landing/HomeCalendarCompact"
 import { getRecentNotices, getNoticesByCategory } from "@/actions/notice-actions"
 import { getPublicSchedules } from "@/actions/schedule-actions"
 import { getPublicYouTubeVideos } from "@/actions/youtube-actions"
+import dynamic from "next/dynamic"
+
+// 코드 스플리팅: 큰 컴포넌트는 동적 임포트로 지연 로딩
+const HomeGallerySlider = dynamic(
+  () => import("@/components/features/landing/HomeGallerySlider").then((mod) => ({ default: mod.HomeGallerySlider })),
+  {
+    loading: () => <div className="py-12 text-center text-muted-foreground">영상 갤러리 로딩 중...</div>,
+    ssr: true,
+  }
+)
+
+const HomeCalendarCompact = dynamic(
+  () => import("@/components/features/landing/HomeCalendarCompact").then((mod) => ({ default: mod.HomeCalendarCompact })),
+  {
+    loading: () => <div className="py-12 text-center text-muted-foreground">캘린더 로딩 중...</div>,
+    ssr: true,
+  }
+)
 
 export default async function Home() {
   // Server Component에서 데이터 페칭

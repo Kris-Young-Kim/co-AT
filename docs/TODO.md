@@ -1030,11 +1030,28 @@ useEffect(() => {
 
 **테스트 결과**: ✅ 모든 테스트 통과 (22/22)
 
-### 9.2 성능 최적화
+### 9.2 성능 최적화 ✅
 
-- [ ] 이미지 최적화 (`next/image` 사용)
-- [ ] 코드 스플리팅 검토
-- [ ] React Query 캐싱 전략 최적화
+- [x] 이미지 최적화 (`next/image` 사용) ✅
+  - [x] `next.config.mjs`에 이미지 최적화 설정 추가 ✅
+    - [x] Supabase Storage 도메인 추가 ✅
+    - [x] YouTube 썸네일 도메인 추가 ✅
+    - [x] AVIF, WebP 포맷 지원 ✅
+    - [x] 디바이스별 이미지 크기 최적화 ✅
+  - [x] 모든 이미지에 `next/image` 사용 확인 ✅
+  - [x] `sizes` 속성으로 반응형 이미지 최적화 ✅
+- [x] 코드 스플리팅 검토 ✅
+  - [x] 메인 페이지 큰 컴포넌트 동적 임포트 (`HomeGallerySlider`, `HomeCalendarCompact`) ✅
+  - [x] 관리자 페이지 탭 컴포넌트 동적 임포트 (`IntakeRecordFormV2`, `DomainAssessmentFormV2`, `ServiceProgressDashboard`, `SoapNoteEditor`) ✅
+  - [x] 로딩 상태 UI 추가 ✅
+- [x] React Query 캐싱 전략 최적화 ✅
+  - [x] `staleTime` 5분으로 증가 (자주 변경되지 않는 데이터) ✅
+  - [x] `gcTime` 30분으로 설정 (캐시 보관 시간) ✅
+  - [x] 불필요한 자동 재요청 비활성화 (`refetchOnWindowFocus`, `refetchOnReconnect`, `refetchOnMount`) ✅
+  - [x] 재시도 설정 최적화 (`retry: 1`) ✅
+- [x] Next.js 컴파일러 최적화 ✅
+  - [x] 프로덕션에서 `console.log` 제거 (에러/경고 제외) ✅
+  - [x] 패키지 임포트 최적화 (`optimizePackageImports`) ✅
 
 ### 9.3 보안 점검
 
