@@ -967,11 +967,24 @@ useEffect(() => {
 - [x] 고대비 모드 CSS 추가 (`app/globals.css`) ✅
 - [x] 키보드 포커스 강화 스타일 추가 ✅
 - [x] 스크린 리더 전용 클래스 추가 (`.sr-only`) ✅
-- [ ] 모든 인터랙티브 요소에 aria-label 추가
-- [ ] 모든 이미지에 alt 텍스트 추가
-- [ ] 폼 요소에 aria-describedby 연결
-- [ ] 색상 대비 검증 (WCAG AA 기준)
+- [x] 모든 인터랙티브 요소에 aria-label 추가 ✅
+  - [x] 아이콘 버튼에 aria-label 추가 (CalendarView, HomeGallerySlider, AdminHeader 등) ✅
+  - [x] 아이콘에 aria-hidden="true" 추가 ✅
+  - [x] 링크에 적절한 aria-label 추가 ✅
+- [x] 모든 이미지에 alt 텍스트 추가 ✅
+  - [x] 의미 있는 이미지에 적절한 alt 텍스트 추가 ✅
+  - [x] 장식용 이미지는 `alt=""` 및 `role="presentation"` 처리 ✅
+- [x] 폼 요소에 aria-describedby 연결 ✅
+  - [x] ServiceConsultForm에 aria-describedby 추가 ✅
+  - [x] 에러 메시지에 id 및 role="alert" 추가 ✅
+  - [x] 입력 필드에 aria-invalid 속성 추가 ✅
+- [x] 색상 대비 검증 (WCAG AA 기준) ✅
+  - [x] Primary, Secondary, Muted, Destructive 색상 대비율 검증 ✅
+  - [x] 다크 모드 색상 대비율 검증 ✅
+  - [x] 접근성 가이드 문서 작성 (`docs/ACCESSIBILITY_GUIDE.md`) ✅
 - [ ] 스크린 리더 테스트 (NVDA, JAWS)
+  - [ ] 수동 테스트 필요 (개발 환경에서 테스트)
+  - [ ] 테스트 가이드 문서화 완료 (`docs/ACCESSIBILITY_GUIDE.md`) ✅
 
 ---
 

@@ -212,8 +212,9 @@ export function ScheduleForm({
                     "w-full justify-start text-left font-normal",
                     !selectedDate && "text-muted-foreground"
                   )}
+                  aria-label="일정 날짜 선택"
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  <CalendarIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                   {selectedDate ? (
                     format(selectedDate, "yyyy년 MM월 dd일", { locale: ko })
                   ) : (
@@ -237,7 +238,7 @@ export function ScheduleForm({
           <div className="space-y-2">
             <Label htmlFor="scheduled_time">일정 시간</Label>
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
+              <Clock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               <Input
                 id="scheduled_time"
                 type="time"
@@ -248,6 +249,7 @@ export function ScheduleForm({
                     scheduled_time: e.target.value || null,
                   }))
                 }
+                aria-label="일정 시간"
               />
             </div>
           </div>
@@ -317,8 +319,8 @@ export function ScheduleForm({
             >
               취소
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button type="submit" disabled={isSubmitting} aria-label={schedule ? "일정 수정" : "일정 등록"}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
               {schedule ? "수정" : "등록"}
             </Button>
           </DialogFooter>

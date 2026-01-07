@@ -142,16 +142,18 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                     size="icon"
                     onClick={handlePreviousMonth}
                     disabled={loading}
+                    aria-label="이전 달"
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                   </Button>
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={handleNextMonth}
                     disabled={loading}
+                    aria-label="다음 달"
                   >
-                    <ChevronRight className="h-4 w-4" />
+                    <ChevronRight className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 </div>
               </div>
@@ -258,16 +260,18 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                     size="icon"
                     onClick={() => setCurrentDate(subMonths(currentDate, 1))}
                     disabled={loading}
+                    aria-label="이전 주"
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                   </Button>
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={() => setCurrentDate(addMonths(currentDate, 1))}
                     disabled={loading}
+                    aria-label="다음 주"
                   >
-                    <ChevronRight className="h-4 w-4" />
+                    <ChevronRight className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 </div>
               </div>
