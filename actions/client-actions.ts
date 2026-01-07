@@ -175,6 +175,17 @@ export async function createClientRecord(
       return { success: false, error: "대상자 등록에 실패했습니다: " + (error.message || "알 수 없는 오류") }
     }
 
+    // 감사 로그 기록
+    const { logAuditEvent } = await import("@/lib/utils/audit-logger")
+    await logAuditEvent({
+      action_type: "create",
+      table_name: "clients",
+      record_id: data.id,
+      new_values: data as Record<string, unknown>,
+      client_id: data.id,
+      description: `고객 등록: ${data.name}`,
+    })
+
     return { success: true, client: data }
   } catch (error) {
     console.error("Unexpected error in createClient:", error)
@@ -201,6 +212,13 @@ export async function updateClient(
 
     const supabase = await createClient()
 
+    // 기존 데이터 조회 (변경 전 값)
+    const { data: oldData } = await supabase
+      .from("clients")
+      .select("*")
+      .eq("id", clientId)
+      .single()
+
     // updated_at 자동 업데이트
     const { data, error } = await supabase
       .from("clients")
@@ -217,6 +235,20 @@ export async function updateClient(
       console.error("대상자 수정 실패:", error)
       return { success: false, error: "대상자 수정에 실패했습니다" }
     }
+
+    // 감사 로그 기록
+    const { logAuditEvent, compareValues } = await import("@/lib/utils/audit-logger")
+    const changedFields = oldData ? compareValues(oldData as Record<string, unknown>, data as Record<string, unknown>) : []
+    await logAuditEvent({
+      action_type: "update",
+      table_name: "clients",
+      record_id: clientId,
+      old_values: oldData as Record<string, unknown> | undefined,
+      new_values: data as Record<string, unknown>,
+      changed_fields: changedFields,
+      client_id: clientId,
+      description: `고객 정보 수정: ${data.name} (변경 필드: ${changedFields.join(", ")})`,
+    })
 
     return { success: true, client: data }
   } catch (error) {
@@ -240,6 +272,13 @@ export async function deleteClient(clientId: string): Promise<{
 
     const supabase = await createClient()
 
+    // 기존 데이터 조회 (삭제 전 값)
+    const { data: oldData } = await supabase
+      .from("clients")
+      .select("*")
+      .eq("id", clientId)
+      .single()
+
     // 관련 신청서가 있는지 확인
     const { count: appCount } = await supabase
       .from("applications")
@@ -259,6 +298,17 @@ export async function deleteClient(clientId: string): Promise<{
       console.error("대상자 삭제 실패:", error)
       return { success: false, error: "대상자 삭제에 실패했습니다: " + (error.message || "알 수 없는 오류") }
     }
+
+    // 감사 로그 기록
+    const { logAuditEvent } = await import("@/lib/utils/audit-logger")
+    await logAuditEvent({
+      action_type: "delete",
+      table_name: "clients",
+      record_id: clientId,
+      old_values: oldData as Record<string, unknown> | undefined,
+      client_id: clientId,
+      description: `고객 삭제: ${oldData?.name || clientId}`,
+    })
 
     return { success: true }
   } catch (error) {

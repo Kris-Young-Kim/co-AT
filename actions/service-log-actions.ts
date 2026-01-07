@@ -183,6 +183,18 @@ export async function createServiceLog(
 
     console.log("[Service Log Actions] 서비스 로그 생성 성공:", data.id)
 
+    // 감사 로그 기록
+    const { logAuditEvent } = await import("@/lib/utils/audit-logger")
+    await logAuditEvent({
+      action_type: "create",
+      table_name: "service_logs",
+      record_id: data.id,
+      new_values: data as Record<string, unknown>,
+      application_id: input.application_id,
+      client_id: clientId,
+      description: `서비스 로그 생성: ${input.service_type || ""} - ${input.item_name || ""}`,
+    })
+
     revalidatePath("/admin/clients")
     revalidatePath(`/admin/clients/${clientId}`)
     revalidatePath("/clients")
@@ -305,6 +317,21 @@ export async function updateServiceLog(
     }
 
     console.log("[Service Log Actions] 서비스 로그 수정 성공:", id)
+
+    // 감사 로그 기록
+    const { logAuditEvent, compareValues } = await import("@/lib/utils/audit-logger")
+    const changedFields = existingLog ? compareValues(existingLog as Record<string, unknown>, data as Record<string, unknown>) : []
+    await logAuditEvent({
+      action_type: "update",
+      table_name: "service_logs",
+      record_id: id,
+      old_values: existingLog as Record<string, unknown> | undefined,
+      new_values: data as Record<string, unknown>,
+      changed_fields: changedFields,
+      application_id: existingLog?.application_id,
+      client_id: clientId,
+      description: `서비스 로그 수정: ${id} (변경 필드: ${changedFields.join(", ")})`,
+    })
 
     revalidatePath("/admin/clients")
     revalidatePath(`/admin/clients/${clientId}`)
