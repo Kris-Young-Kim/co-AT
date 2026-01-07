@@ -907,10 +907,17 @@ useEffect(() => {
 
 ### 6.2 개인정보 보유 기간 관리
 
-- [ ] 개인정보 보유 기간(5년) 만료 시 알림
-  - [ ] `actions/privacy-actions.ts` 작성
-  - [ ] 만료 예정 데이터 조회 (1개월 전 알림)
-  - [ ] 관리자 대시보드에 알림 표시
+- [x] 개인정보 보유 기간(5년) 만료 시 알림 ✅
+  - [x] `actions/privacy-actions.ts` 작성 ✅
+    - [x] `getExpiringPrivacyData()` - 만료 예정 데이터 조회 (1개월 전 알림) ✅
+    - [x] `getExpiredPrivacyData()` - 만료된 데이터 조회 ✅
+    - [x] `getPrivacyRetentionStats()` - 보유 기간 통계 조회 ✅
+  - [x] 만료 예정 데이터 조회 (1개월 전 알림) ✅
+  - [x] 관리자 대시보드에 알림 표시 ✅
+    - [x] `PrivacyRetentionAlerts` 컴포넌트 작성 ✅
+    - [x] 만료된 데이터 우선 표시 (긴급) ✅
+    - [x] 만료 예정 데이터 표시 (1개월 전, 7일 이내 긴급 표시) ✅
+    - [x] 대상자 상세보기 링크 제공 ✅
 
 ---
 

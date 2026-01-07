@@ -5,6 +5,7 @@ import { AdminNewRequestList } from "./AdminNewRequestList"
 import { AdminTodaySchedule } from "./AdminTodaySchedule"
 import { BusinessStatsSection } from "./BusinessStatsSection"
 import { RentalAlerts } from "./RentalAlerts"
+import { PrivacyRetentionAlerts } from "./PrivacyRetentionAlerts"
 import { useDashboardStats, useNewApplications, useTodaySchedules } from "@/lib/hooks/useDashboardStats"
 import { Loader2 } from "lucide-react"
 
@@ -38,6 +39,9 @@ export function AdminDashboardContent() {
 
       {/* 대여 알림 */}
       <RentalAlerts />
+
+      {/* 개인정보 보유 기간 알림 */}
+      <PrivacyRetentionAlerts />
 
       {/* 4대 핵심 사업 현황 */}
       <BusinessStatsSection stats={stats.businessStats} />
