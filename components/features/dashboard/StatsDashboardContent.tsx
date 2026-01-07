@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { StatsChart } from "./StatsChart"
 import { StatsSummaryCard } from "./StatsSummaryCard"
 import { BusinessDetailTable } from "./BusinessDetailTable"
+import { ExportExcelButton } from "./ExportExcelButton"
 import {
   getMonthlyStats,
   getYearlyStats,
@@ -178,7 +179,19 @@ export function StatsDashboardContent() {
       </Card>
 
       {/* 통계 요약 카드 */}
-      {summary && <StatsSummaryCard summary={summary} />}
+      {summary && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">통계 요약</h2>
+            <ExportExcelButton
+              summary={summary}
+              monthlyStats={monthlyStats}
+              yearlyStats={yearlyStats}
+            />
+          </div>
+          <StatsSummaryCard summary={summary} />
+        </div>
+      )}
 
       {/* 통계 차트 */}
       <StatsChart monthlyStats={monthlyStats} yearlyStats={yearlyStats} />
