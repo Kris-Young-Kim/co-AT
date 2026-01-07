@@ -159,7 +159,7 @@ export function DomainAssessmentFormV2({
         domain_type: selectedDomain,
         evaluation_date: String(formData.evaluation_date || new Date().toISOString().split("T")[0]),
         evaluation_data: Object.keys(evaluationData).length > 0 ? evaluationData : null,
-        measurements: Object.keys(measurements).length > 0 ? measurements : null,
+        measurements: Object.keys(measurements).length > 0 ? measurements : undefined,
         evaluator_opinion: String(formData.evaluator_opinion || ""),
         recommended_device: String(formData.recommended_device || ""),
         future_plan: String(formData.future_plan || ""),

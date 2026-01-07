@@ -109,11 +109,11 @@ function createBusinessDetailSheet(summary: StatsSummary): XLSX.WorkSheet {
   summary.businessDetails.forEach((business) => {
     data.push([
       business.categoryLabel,
-      business.received,
-      business.inProgress,
-      business.completed,
-      business.cancelled,
-      business.total,
+      String(business.received),
+      String(business.inProgress),
+      String(business.completed),
+      String(business.cancelled),
+      String(business.total),
       "",
     ])
 
@@ -126,7 +126,7 @@ function createBusinessDetailSheet(summary: StatsSummary): XLSX.WorkSheet {
           "",
           "",
           "",
-          subCat.count,
+          String(subCat.count),
           "",
         ])
       })
@@ -162,12 +162,12 @@ function createMonthlySheet(monthlyStats: MonthlyStats[]): XLSX.WorkSheet {
   monthlyStats.forEach((stat) => {
     data.push([
       stat.monthLabel,
-      stat.consultation,
-      stat.experience,
-      stat.custom,
-      stat.aftercare,
-      stat.education,
-      stat.total,
+      String(stat.consultation),
+      String(stat.experience),
+      String(stat.custom),
+      String(stat.aftercare),
+      String(stat.education),
+      String(stat.total),
     ])
   })
 
@@ -186,12 +186,12 @@ function createMonthlySheet(monthlyStats: MonthlyStats[]): XLSX.WorkSheet {
 
   data.push([
     "합계",
-    totals.consultation,
-    totals.experience,
-    totals.custom,
-    totals.aftercare,
-    totals.education,
-    totals.total,
+    String(totals.consultation),
+    String(totals.experience),
+    String(totals.custom),
+    String(totals.aftercare),
+    String(totals.education),
+    String(totals.total),
   ])
 
   const ws = XLSX.utils.aoa_to_sheet(data)
@@ -223,12 +223,12 @@ function createYearlySheet(yearlyStats: YearlyStats[]): XLSX.WorkSheet {
   yearlyStats.forEach((stat) => {
     data.push([
       `${stat.year}년`,
-      stat.consultation,
-      stat.experience,
-      stat.custom,
-      stat.aftercare,
-      stat.education,
-      stat.total,
+      String(stat.consultation),
+      String(stat.experience),
+      String(stat.custom),
+      String(stat.aftercare),
+      String(stat.education),
+      String(stat.total),
     ])
   })
 
@@ -247,12 +247,12 @@ function createYearlySheet(yearlyStats: YearlyStats[]): XLSX.WorkSheet {
 
   data.push([
     "합계",
-    totals.consultation,
-    totals.experience,
-    totals.custom,
-    totals.aftercare,
-    totals.education,
-    totals.total,
+    String(totals.consultation),
+    String(totals.experience),
+    String(totals.custom),
+    String(totals.aftercare),
+    String(totals.education),
+    String(totals.total),
   ])
 
   const ws = XLSX.utils.aoa_to_sheet(data)

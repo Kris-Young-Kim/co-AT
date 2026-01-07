@@ -76,6 +76,11 @@ export interface CreateCustomMakeInput {
   reference_images?: string[]
   assigned_staff_id?: string
   expected_completion_date?: string
+  cost_materials?: number | null
+  cost_labor?: number | null
+  cost_equipment?: number | null
+  cost_other?: number | null
+  cost_total?: number | null
 }
 
 export interface CustomMakeWithDetails extends CustomMakeItem {

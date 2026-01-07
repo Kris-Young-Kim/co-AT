@@ -6,7 +6,6 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import type {
   ProgressItem,
-  ProgressItemType,
 } from "@/components/features/process/ServiceProgressDashboard";
 
 export interface ProcessLogInput {

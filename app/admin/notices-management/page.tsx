@@ -1,4 +1,4 @@
-import { getAllNotices, deleteNotice } from "@/actions/notice-actions"
+import { getAllNotices } from "@/actions/notice-actions"
 import { NoticeList } from "@/components/features/admin/notices/NoticeList"
 import { NoticeCreateDialog } from "@/components/features/admin/notices/NoticeCreateDialog"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

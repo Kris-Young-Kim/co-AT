@@ -1,10 +1,11 @@
+import type { ReactNode } from "react"
 import { PublicHeader } from "@/components/layout/public-header"
 import { PublicFooter } from "@/components/layout/public-footer"
 
 export default function PublicLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <div className="flex min-h-screen flex-col">

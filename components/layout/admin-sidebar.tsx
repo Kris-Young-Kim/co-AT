@@ -12,11 +12,13 @@ import {
   FileText,
   Sparkles,
   BarChart3,
+  MessageSquare,
 } from "lucide-react";
 
 const menuItems = [
   { href: "/admin/dashboard", label: "대시보드", icon: LayoutDashboard },
   { href: "/admin/stats", label: "통계 대시보드", icon: BarChart3 },
+  { href: "/admin/chatbot", label: "규정 검색 챗봇", icon: MessageSquare },
   { href: "/admin/notices-management", label: "새 글 관리", icon: FileText },
   { href: "/admin/clients", label: "대상자 관리", icon: Users },
   { href: "/admin/inventory", label: "재고 관리", icon: Package },
