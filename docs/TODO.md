@@ -175,15 +175,15 @@
 
 4. **Rate Limiting 및 DDoS 방어**
 
-   - [ ] Vercel Edge Middleware (IP 기반 제한)
+   - [x] Vercel Edge Middleware (IP 기반 제한)
    - [ ] 사용자별 Rate Limit (Clerk ID 기반)
    - [ ] 엔드포인트별 제한 (AI 생성 API 등)
 
 5. **데이터베이스 최적화 및 모니터링**
 
-   - [ ] 슬로우 쿼리 로깅 (1초 이상)
-   - [ ] 인덱스 최적화
-   - [ ] 연결 풀 모니터링
+   - [x] 슬로우 쿼리 로깅 (1초 이상) - `lib/utils/query-logger.ts` 구현 완료
+   - [x] 인덱스 최적화 - `migrations/014_optimize_indexes.sql` 생성 완료
+   - [x] 연결 풀 모니터링 - `app/api/db/monitor/route.ts` 구현 완료
 
 6. **재해 복구 계획 (Disaster Recovery)**
 
