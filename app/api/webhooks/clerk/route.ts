@@ -2,6 +2,7 @@ import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
@@ -65,6 +66,35 @@ export async function POST(req: Request) {
     }
 
     console.log('프로필 생성 성공:', userId)
+  }
+
+  // 로그인 시도 추적
+  if (eventType === 'session.created' || eventType === 'session.ended') {
+    const { id: userId } = evt.data
+    const adminSupabase = createAdminClient()
+    const headerPayload = await headers()
+    const ip = headerPayload.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+               headerPayload.get('x-real-ip') || 
+               'unknown'
+    const userAgent = headerPayload.get('user-agent') || 'unknown'
+
+    await adminSupabase.from('security_logs').insert({
+      event_type: eventType === 'session.created' ? 'login_success' : 'login_attempt',
+      severity: 'low',
+      clerk_user_id: userId,
+      ip_address: ip,
+      user_agent: userAgent,
+      request_path: '/api/webhooks/clerk',
+      threat_description: eventType === 'session.created' 
+        ? '로그인 성공' 
+        : '세션 종료',
+      metadata: {
+        eventType,
+        timestamp: new Date().toISOString(),
+      },
+    }).catch((error) => {
+      console.error('[Security] 로그인 시도 추적 실패:', error)
+    })
   }
 
   // 유저 삭제 시 정리 로직
