@@ -117,6 +117,76 @@
   /* 스무스 스크롤 */
   html {
     scroll-behavior: smooth;
+    /* 터치 스크롤 최적화 */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 터치 제스처 최적화 */
+  * {
+    /* 터치 딜레이 제거 */
+    touch-action: manipulation;
+  }
+
+  /* 버튼 및 링크 터치 피드백 */
+  button,
+  a,
+  [role="button"] {
+    /* 터치 타겟 최소 크기 (WCAG 2.1 AA 기준) */
+    min-height: 44px;
+    min-width: 44px;
+    /* 터치 활성화 피드백 */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* 모바일에서 텍스트 선택 방지 (버튼 클릭 시) */
+  button,
+  [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* 모바일 뷰포트 최적화 */
+  @media (max-width: 768px) {
+    /* 모바일에서 스크롤 영역 최적화 */
+    body {
+      overflow-x: hidden;
+    }
+
+    /* 모바일에서 컨테이너 패딩 조정 */
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    /* 모바일에서 그리드 간격 조정 */
+    .grid {
+      gap: 1rem;
+    }
+  }
+
+  /* Safe Area 지원 (iPhone X 이상 노치 대응) */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* 터치 매니퓰레이션 유틸리티 */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    tap-highlight-color: rgba(0, 0, 0, 0.1);
   }
   
   /* 아코디언 애니메이션 */
