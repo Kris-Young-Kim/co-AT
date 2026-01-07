@@ -794,11 +794,32 @@ useEffect(() => {
   - [x] 수동 입력 지원 ✅
   - [x] 재고 조회 및 상세 정보 표시 ✅
 
-### 5.2 대여 관리
+### 5.2 대여 관리 ✅
 
-- [ ] 대여 승인 시 `inventory.status` → '대여중' 변경
-- [ ] 반납 시 `inventory.status` → '보관' 변경
-- [ ] 대여 기간 만료 알림 (D-Day 계산)
+- [x] `actions/rental-actions.ts` 작성 ✅
+  - [x] `createRental()` - 대여 생성 (대여 승인) ✅
+  - [x] `returnRental()` - 대여 반납 ✅
+  - [x] `extendRental()` - 대여 기간 연장 ✅
+  - [x] `getRentals()` - 대여 목록 조회 ✅
+  - [x] `getRentalById()` - 대여 상세 조회 ✅
+  - [x] `getOverdueRentals()` - 연체 대여 목록 조회 ✅
+  - [x] `getExpiringRentals()` - 만료 예정 대여 목록 조회 (D-Day 계산) ✅
+- [x] 대여 승인 시 `inventory.status` → '대여중' 변경 ✅
+  - [x] `createRental()` 함수에서 자동 처리 ✅
+- [x] 반납 시 `inventory.status` → '보관' 변경 ✅
+  - [x] `returnRental()` 함수에서 자동 처리 ✅
+- [x] 대여 기간 만료 알림 (D-Day 계산) ✅
+  - [x] `getOverdueRentals()` - 연체 대여 조회 ✅
+  - [x] `getExpiringRentals()` - 만료 예정 대여 조회 (7일 이내) ✅
+  - [x] `RentalAlerts` 컴포넌트 - 대시보드 알림 표시 ✅
+- [x] `app/(admin)/rentals/page.tsx` 작성 ✅
+- [x] `components/features/inventory/RentalManagementContent.tsx` 작성 ✅
+  - [x] 대여 목록 표시 (상태별 필터링) ✅
+  - [x] 반납 처리 다이얼로그 ✅
+  - [x] 연장 처리 다이얼로그 ✅
+  - [x] D-Day 계산 및 표시 ✅
+  - [x] 연체/만료 예정 알림 ✅
+- [x] 사이드바에 대여 관리 메뉴 추가 ✅
 
 ---
 
