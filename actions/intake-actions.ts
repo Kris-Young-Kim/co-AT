@@ -83,10 +83,31 @@ export async function createIntakeRecord(
       }
     }
 
+    // 워크플로우 자동화: 상담 완료 시 신청서 상태를 "배정"으로 자동 전환
+    const { data: application, error: appError } = await supabase
+      .from("applications")
+      .select("id, status")
+      .eq("id", input.application_id)
+      .single()
+
+    if (!appError && application && application.status === "접수") {
+      const { error: updateError } = await supabase
+        .from("applications")
+        .update({ status: "배정" })
+        .eq("id", input.application_id)
+
+      if (updateError) {
+        console.error("[워크플로우 자동화] 신청서 상태 전환 실패:", updateError)
+      } else {
+        console.log("[워크플로우 자동화] 상담 완료 → 배정 상태 자동 전환:", input.application_id)
+      }
+    }
+
     revalidatePath("/admin/clients")
     revalidatePath(`/admin/clients/${input.client_id}`)
     revalidatePath("/clients")
     revalidatePath(`/clients/${input.client_id}`)
+    revalidatePath("/admin/dashboard")
 
     return { success: true, intakeRecordId: (data as { id: string }).id }
   } catch (error) {

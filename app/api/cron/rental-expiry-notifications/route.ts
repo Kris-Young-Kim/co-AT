@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     console.log("[Rental Expiry Notifications] 대여 만료 알림 스케줄러 시작")
 
     // 보안: Cron Secret 확인 (Vercel Cron 사용 시)
-    const authHeader = request.headers.get("authorization")
+    const authHeader = request.headers.get("Authorization")
     const cronSecret = process.env.CRON_SECRET
 
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
