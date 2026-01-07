@@ -83,7 +83,7 @@ export interface Schedule {
   application_id: string | null
   staff_id: string
   client_id: string | null
-  schedule_type: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education"
+  schedule_type: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make"
   scheduled_date: string
   scheduled_time: string | null
   address: string | null
@@ -96,7 +96,7 @@ export interface Schedule {
 export interface CreateScheduleInput {
   application_id?: string | null
   client_id?: string | null
-  schedule_type: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education"
+  schedule_type: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make"
   scheduled_date: string
   scheduled_time?: string | null
   address?: string | null
@@ -108,7 +108,7 @@ export interface UpdateScheduleInput {
   id: string
   application_id?: string | null
   client_id?: string | null
-  schedule_type?: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education"
+  schedule_type?: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make"
   scheduled_date?: string
   scheduled_time?: string | null
   address?: string | null
@@ -118,6 +118,7 @@ export interface UpdateScheduleInput {
 
 /**
  * 관리자용 일정 조회 (모든 타입, 모든 상태)
+ * 맞춤제작 일정도 함께 조회
  */
 export async function getSchedules(
   year?: number,
@@ -159,15 +160,89 @@ export async function getSchedules(
       query = query.eq("status", status)
     }
 
-    const { data, error } = await query
+    const { data: schedules, error } = await query
 
     if (error) {
       console.error("[일정 조회] 실패:", error)
       return { success: false, error: error.message }
     }
 
-    console.log("[일정 조회] 성공:", data?.length || 0, "개")
-    return { success: true, data: data || [] }
+    // 맞춤제작 일정 추가 조회 (custom_makes 테이블의 날짜 필드 기반)
+    // schedule_type 필터가 없거나 'custom_make'인 경우에만 조회
+    if (!scheduleType || scheduleType === "custom_make") {
+      let customMakeQuery = supabase
+        .from("custom_makes")
+        .select("id, application_id, client_id, assigned_staff_id, item_name, design_start_date, manufacturing_start_date, expected_completion_date, delivery_date, progress_status")
+        .in("progress_status", ["design", "manufacturing", "inspection", "delivery", "completed"])
+
+      const { data: customMakes, error: customMakeError } = await customMakeQuery
+
+      if (!customMakeError && customMakes) {
+        const staffId = await getCurrentUserProfileId()
+        const customMakeSchedules: Schedule[] = []
+        const startDateStr = year && month ? format(startOfMonth(new Date(year, month - 1)), "yyyy-MM-dd") : null
+        const endDateStr = year && month ? format(endOfMonth(new Date(year, month - 1)), "yyyy-MM-dd") : null
+
+        for (const cm of customMakes) {
+          // 날짜 필드들을 배열로 만들어서 처리
+          const dateFields = [
+            { date: cm.design_start_date, label: "설계 시작", type: "design" },
+            { date: cm.manufacturing_start_date, label: "제작 시작", type: "manufacturing" },
+            { date: cm.expected_completion_date, label: "완료 예정", type: "completion" },
+            { date: cm.delivery_date, label: "납품", type: "delivery" },
+          ]
+
+          for (const field of dateFields) {
+            if (!field.date) continue
+
+            // 년/월 필터링
+            if (startDateStr && endDateStr) {
+              if (field.date < startDateStr || field.date > endDateStr) continue
+            }
+
+            // 상태 결정
+            let scheduleStatus: "scheduled" | "completed" | "cancelled" = "scheduled"
+            if (field.type === "design") {
+              scheduleStatus = cm.progress_status === "design" ? "scheduled" : "completed"
+            } else if (field.type === "manufacturing") {
+              scheduleStatus = ["manufacturing", "inspection", "delivery", "completed"].includes(cm.progress_status || "") ? "completed" : "scheduled"
+            } else if (field.type === "completion" || field.type === "delivery") {
+              scheduleStatus = cm.progress_status === "completed" ? "completed" : "scheduled"
+            }
+
+            customMakeSchedules.push({
+              id: `custom_make_${cm.id}_${field.type}`,
+              application_id: cm.application_id,
+              staff_id: cm.assigned_staff_id || staffId || "",
+              client_id: cm.client_id,
+              schedule_type: "custom_make",
+              scheduled_date: field.date,
+              scheduled_time: null,
+              address: null,
+              notes: `맞춤제작 ${field.label}: ${cm.item_name}`,
+              status: scheduleStatus,
+              created_at: null,
+              updated_at: null,
+            })
+          }
+        }
+
+        // 기존 일정과 맞춤제작 일정 합치기
+        const allSchedules = [...(schedules || []), ...customMakeSchedules]
+        // 날짜 및 시간 순으로 정렬
+        allSchedules.sort((a, b) => {
+          const dateCompare = a.scheduled_date.localeCompare(b.scheduled_date)
+          if (dateCompare !== 0) return dateCompare
+          return (a.scheduled_time || "").localeCompare(b.scheduled_time || "")
+        })
+
+        console.log("[일정 조회] 성공:", allSchedules.length, "개 (일반:", schedules?.length || 0, "개, 맞춤제작:", customMakeSchedules.length, "개)")
+        return { success: true, data: allSchedules }
+      }
+    }
+
+    console.log("[일정 조회] 성공:", schedules?.length || 0, "개")
+    return { success: true, data: schedules || [] }
   } catch (error) {
     console.error("[일정 조회] 예외:", error)
     return { success: false, error: String(error) }

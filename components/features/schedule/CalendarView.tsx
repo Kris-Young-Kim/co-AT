@@ -26,6 +26,7 @@ const scheduleTypeLabels: Record<string, string> = {
   pickup: "픽업",
   exhibition: "견학",
   education: "교육",
+  custom_make: "맞춤제작",
 }
 
 const scheduleTypeColors: Record<string, string> = {
@@ -36,6 +37,7 @@ const scheduleTypeColors: Record<string, string> = {
   pickup: "bg-yellow-100 text-yellow-800",
   exhibition: "bg-pink-100 text-pink-800",
   education: "bg-indigo-100 text-indigo-800",
+  custom_make: "bg-teal-100 text-teal-800",
 }
 
 export function CalendarView({ initialSchedules = [], onScheduleClick, onDateClick }: CalendarViewProps) {

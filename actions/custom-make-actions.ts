@@ -1,10 +1,11 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { hasAdminOrStaffPermission, getCurrentUserProfileId } from "@/lib/utils/permissions"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { checkCustomLimit, checkCustomMakeCostLimit } from "./business-actions"
+import { createSchedule } from "./schedule-actions"
 
 export interface CustomMakeItem {
   id: string
@@ -180,9 +181,26 @@ export async function createCustomMake(
       notes: "맞춤제작 프로젝트 생성",
     })
 
+    // 예상 완료일이 있으면 일정 자동 생성
+    if (input.expected_completion_date) {
+      const staffId = await getCurrentUserProfileId()
+      if (staffId) {
+        await createSchedule({
+          application_id: input.application_id,
+          client_id: input.client_id,
+          schedule_type: "custom_make",
+          scheduled_date: input.expected_completion_date,
+          notes: `맞춤제작 완료 예정: ${input.item_name}`,
+          status: "scheduled",
+        })
+        console.log("[Custom Make Actions] 맞춤제작 완료 일정 생성:", input.expected_completion_date)
+      }
+    }
+
     console.log("[Custom Make Actions] 맞춤제작 프로젝트 생성 성공:", data.id)
 
     revalidatePath("/admin/custom-makes")
+    revalidatePath("/admin/schedule")
     revalidatePath(`/admin/clients/${input.client_id}`)
     revalidatePath("/clients")
     revalidatePath(`/clients/${input.client_id}`)
@@ -281,9 +299,48 @@ export async function updateCustomMakeProgress(
       })
     }
 
+    // 제작 시작일, 납품일이 있으면 일정 자동 생성/업데이트
+    const { data: customMake } = await supabase
+      .from("custom_makes")
+      .select("application_id, client_id, item_name, manufacturing_start_date, delivery_date, expected_completion_date")
+      .eq("id", customMakeId)
+      .single()
+
+    if (customMake) {
+      const staffIdForSchedule = await getCurrentUserProfileId()
+      if (staffIdForSchedule) {
+        // 제작 시작일 일정 생성
+        if (progress.manufacturing_start_date && progress.manufacturing_start_date !== customMake.manufacturing_start_date) {
+          await createSchedule({
+            application_id: customMake.application_id,
+            client_id: customMake.client_id,
+            schedule_type: "custom_make",
+            scheduled_date: progress.manufacturing_start_date,
+            notes: `맞춤제작 시작: ${customMake.item_name}`,
+            status: "scheduled",
+          })
+          console.log("[Custom Make Actions] 제작 시작 일정 생성:", progress.manufacturing_start_date)
+        }
+
+        // 납품일 일정 생성
+        if (progress.delivery_date && progress.delivery_date !== customMake.delivery_date) {
+          await createSchedule({
+            application_id: customMake.application_id,
+            client_id: customMake.client_id,
+            schedule_type: "custom_make",
+            scheduled_date: progress.delivery_date,
+            notes: `맞춤제작 납품: ${customMake.item_name}`,
+            status: "scheduled",
+          })
+          console.log("[Custom Make Actions] 납품 일정 생성:", progress.delivery_date)
+        }
+      }
+    }
+
     console.log("[Custom Make Actions] 진행도 업데이트 성공:", customMakeId)
 
     revalidatePath("/admin/custom-makes")
+    revalidatePath("/admin/schedule")
     revalidatePath(`/admin/custom-makes/${customMakeId}`)
 
     return { success: true, customMake: updatedCustomMake }
