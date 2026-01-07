@@ -187,9 +187,9 @@
 
 6. **재해 복구 계획 (Disaster Recovery)**
 
-   - [ ] RTO: 4시간, RPO: 1시간 목표
-   - [ ] 다중 백업 (일일, 주간, 월간)
-   - [ ] 분기별 복구 테스트
+   - [x] RTO: 4시간, RPO: 1시간 목표 - `docs/DISASTER_RECOVERY.md` 문서화 완료
+   - [x] 다중 백업 (일일, 주간, 월간) - `scripts/backup.ts` 및 `migrations/015_create_backup_logs.sql` 구현 완료
+   - [x] 분기별 복구 테스트 - `scripts/restore-test.ts` 구현 완료
 
 7. **보안 모니터링 및 위협 탐지**
    - [ ] 로그인 시도 추적
