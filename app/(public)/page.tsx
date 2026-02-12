@@ -8,6 +8,8 @@ import { getPublicYouTubeVideos } from "@/actions/youtube-actions"
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "홈",
   description: "강원특별자치도 보조기기센터 홈페이지입니다. 상담, 체험, 맞춤형 지원, 사후관리, 교육홍보 등 5대 핵심 서비스를 확인하고 신청하실 수 있습니다.",
