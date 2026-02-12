@@ -4,6 +4,8 @@ import { AdminHeader } from "@/components/layout/admin-header"
 import { RegulationChatbotFloating } from "@/components/features/chat/RegulationChatbotFloating"
 import { hasManagerPermission } from "@/lib/utils/permissions"
 
+export const dynamic = "force-dynamic"
+
 export default async function AdminLayout({
   children,
 }: {
