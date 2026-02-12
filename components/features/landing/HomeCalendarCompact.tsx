@@ -16,9 +16,15 @@ interface HomeCalendarCompactProps {
 }
 
 export function HomeCalendarCompact({ initialSchedules = [] }: HomeCalendarCompactProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [mounted, setMounted] = useState(false)
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [schedules, setSchedules] = useState<PublicSchedule[]>(initialSchedules)
   const [selectedSchedules, setSelectedSchedules] = useState<PublicSchedule[]>([])
+
+  useEffect(() => {
+    setMounted(true)
+    setSelectedDate(new Date())
+  }, [])
 
   // 날짜 선택 시 해당 날짜의 일정 조회
   useEffect(() => {
@@ -53,7 +59,12 @@ export function HomeCalendarCompact({ initialSchedules = [] }: HomeCalendarCompa
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* 캘린더 */}
+        {/* 캘린더 - 서버/클라이언트 날짜 불일치 방지를 위해 마운트 후에만 렌더 */}
+        {!mounted ? (
+          <div className="h-[280px] flex items-center justify-center text-muted-foreground text-sm">
+            캘린더 로딩 중...
+          </div>
+        ) : (
         <div className="w-full">
           <Calendar
             mode="single"
@@ -86,6 +97,7 @@ export function HomeCalendarCompact({ initialSchedules = [] }: HomeCalendarCompa
             }}
           />
         </div>
+        )}
 
         {/* 선택된 날짜의 일정 목록 */}
         {selectedDate && (

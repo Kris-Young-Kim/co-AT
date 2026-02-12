@@ -119,6 +119,7 @@ export function HomeCommunityNews({
                         <time
                           className="text-xs text-muted-foreground whitespace-nowrap"
                           dateTime={notice.created_at}
+                          suppressHydrationWarning
                         >
                           {format(new Date(notice.created_at), "MM.dd", {
                             locale: ko,
@@ -186,6 +187,7 @@ export function HomeCommunityNews({
                         <time
                           className="text-xs text-muted-foreground whitespace-nowrap"
                           dateTime={notice.created_at}
+                          suppressHydrationWarning
                         >
                           {format(new Date(notice.created_at), "MM.dd", {
                             locale: ko,

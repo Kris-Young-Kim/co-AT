@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import dynamic from "next/dynamic";
 import { ClerkProvider } from "@/components/providers/clerk-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
-import { AccessibilityToolbar } from "@/components/accessibility/accessibility-toolbar";
-import { KeyboardNavigator } from "@/components/accessibility/keyboard-navigator";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { VercelAnalyticsProvider } from "@/components/providers/vercel-analytics-provider";
 import "./globals.css";
+
+const AccessibilityToolbar = dynamic(
+  () => import("@/components/accessibility/accessibility-toolbar").then((m) => ({ default: m.AccessibilityToolbar })),
+  { ssr: false }
+);
+
+const KeyboardNavigator = dynamic(
+  () => import("@/components/accessibility/keyboard-navigator").then((m) => ({ default: m.KeyboardNavigator })),
+  { ssr: false }
+);
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app";
 const siteName = "GWATC 보조기기센터";
@@ -88,13 +96,12 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <QueryProvider>
-        <html lang="ko">
-          <body>
+        <html lang="ko" suppressHydrationWarning>
+          <body suppressHydrationWarning>
             {children}
             <AccessibilityToolbar />
             <KeyboardNavigator />
-            <Analytics />
-            <SpeedInsights />
+            <VercelAnalyticsProvider />
           </body>
         </html>
       </QueryProvider>

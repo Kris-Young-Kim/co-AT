@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { HomeHeroSection } from "@/components/features/landing/HomeHeroSection"
 import { HomeQuickMenuGrid } from "@/components/features/landing/HomeQuickMenuGrid"
-import { HomeCommunityNews } from "@/components/features/landing/HomeCommunityNews"
 import { getRecentNotices, getNoticesByCategory } from "@/actions/notice-actions"
 import { getPublicSchedules } from "@/actions/schedule-actions"
 import { getPublicYouTubeVideos } from "@/actions/youtube-actions"
@@ -23,12 +22,17 @@ export const metadata: Metadata = {
   },
 }
 
-// 코드 스플리팅: 큰 컴포넌트는 동적 임포트로 지연 로딩
+// Hydration 불일치 방지: 클라이언트 전용 렌더 (ssr: false)
+const HomeCommunityNews = dynamic(
+  () => import("@/components/features/landing/HomeCommunityNews").then((mod) => ({ default: mod.HomeCommunityNews })),
+  { loading: () => <div className="min-h-[200px] flex items-center justify-center text-muted-foreground text-sm">공지사항 로딩 중...</div>, ssr: false }
+)
+
 const HomeGallerySlider = dynamic(
   () => import("@/components/features/landing/HomeGallerySlider").then((mod) => ({ default: mod.HomeGallerySlider })),
   {
     loading: () => <div className="py-12 text-center text-muted-foreground">영상 갤러리 로딩 중...</div>,
-    ssr: true,
+    ssr: false,
   }
 )
 
@@ -36,7 +40,7 @@ const HomeCalendarCompact = dynamic(
   () => import("@/components/features/landing/HomeCalendarCompact").then((mod) => ({ default: mod.HomeCalendarCompact })),
   {
     loading: () => <div className="py-12 text-center text-muted-foreground">캘린더 로딩 중...</div>,
-    ssr: true,
+    ssr: false,
   }
 )
 

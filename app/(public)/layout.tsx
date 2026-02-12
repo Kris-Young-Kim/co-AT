@@ -1,7 +1,16 @@
 import type { ReactNode } from "react"
-import { PublicHeader } from "@/components/layout/public-header"
+import dynamic from "next/dynamic"
 import { PublicFooter } from "@/components/layout/public-footer"
-import { SupportServiceChatbotFloating } from "@/components/features/chat/SupportServiceChatbotFloating"
+
+const PublicHeader = dynamic(
+  () => import("@/components/layout/public-header").then((m) => ({ default: m.PublicHeader })),
+  { ssr: false, loading: () => <div className="h-14 sm:h-16 border-b bg-background/95" /> }
+)
+
+const SupportServiceChatbotFloating = dynamic(
+  () => import("@/components/features/chat/SupportServiceChatbotFloating").then((m) => ({ default: m.SupportServiceChatbotFloating })),
+  { ssr: false }
+)
 
 export default function PublicLayout({
   children,

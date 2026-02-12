@@ -668,6 +668,51 @@ export type Database = {
         }
         Relationships: []
       }
+      regulations: {
+        Row: {
+          category: string | null
+          chunk_index: number | null
+          chunk_size: number | null
+          content: string
+          created_at: string | null
+          embedding: Json | null
+          embedding_model: string | null
+          id: string
+          section: string | null
+          source_file: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          chunk_index?: number | null
+          chunk_size?: number | null
+          content: string
+          created_at?: string | null
+          embedding?: Json | null
+          embedding_model?: string | null
+          id?: string
+          section?: string | null
+          source_file?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          chunk_index?: number | null
+          chunk_size?: number | null
+          content?: string
+          created_at?: string | null
+          embedding?: Json | null
+          embedding_model?: string | null
+          id?: string
+          section?: string | null
+          source_file?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       rentals: {
         Row: {
           application_id: string
@@ -793,6 +838,80 @@ export type Database = {
           {
             foreignKeyName: "schedules_staff_id_fkey"
             columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      security_logs: {
+        Row: {
+          blocked: boolean | null
+          clerk_user_id: string | null
+          created_at: string | null
+          detected_pattern: string | null
+          event_type: string
+          id: string
+          ip_address: string | null
+          location: string | null
+          metadata: Json | null
+          notification_sent_at: string | null
+          notified: boolean | null
+          request_body: string | null
+          request_headers: Json | null
+          request_method: string | null
+          request_path: string | null
+          severity: string
+          threat_description: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          blocked?: boolean | null
+          clerk_user_id?: string | null
+          created_at?: string | null
+          detected_pattern?: string | null
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          location?: string | null
+          metadata?: Json | null
+          notification_sent_at?: string | null
+          notified?: boolean | null
+          request_body?: string | null
+          request_headers?: Json | null
+          request_method?: string | null
+          request_path?: string | null
+          severity: string
+          threat_description?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          blocked?: boolean | null
+          clerk_user_id?: string | null
+          created_at?: string | null
+          detected_pattern?: string | null
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          location?: string | null
+          metadata?: Json | null
+          notification_sent_at?: string | null
+          notified?: boolean | null
+          request_body?: string | null
+          request_headers?: Json | null
+          request_method?: string | null
+          request_path?: string | null
+          severity?: string
+          threat_description?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "security_logs_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
