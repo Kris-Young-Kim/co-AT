@@ -99,10 +99,14 @@ export async function POST() {
     const email = user.emailAddresses?.[0]?.emailAddress || null
 
     // Clerk 메타데이터의 role에 따라 프로필 role 설정
-    // "admin" 또는 "staff"인 경우 해당 role로 생성, 그 외는 "user"
-    const profileRole = clerkRole === "admin" ? "admin" 
-                      : clerkRole === "staff" ? "staff" 
-                      : "user"
+    const profileRole =
+      clerkRole === "admin"
+        ? "admin"
+        : clerkRole === "staff"
+          ? "staff"
+          : clerkRole === "manager"
+            ? "manager"
+            : "user"
 
     console.log("[Profile Create] 프로필 생성 시도:", {
       clerk_user_id: userId,

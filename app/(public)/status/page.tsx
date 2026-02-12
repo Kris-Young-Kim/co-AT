@@ -86,7 +86,9 @@ export default async function StatusPage() {
           <span>버전: {data.version}</span>
           <span>API 지연: {data.latencyMs}ms</span>
           <span>DB 지연: {data.db.latencyMs ?? "-"}ms</span>
-          <span>갱신: {new Date(data.timestamp).toLocaleString()}</span>
+          <span suppressHydrationWarning>
+            갱신: {new Date(data.timestamp).toLocaleString("ko-KR", { dateStyle: "medium", timeStyle: "short" })}
+          </span>
         </div>
         {data.db.error && (
           <p className="mt-2 text-xs text-red-600">DB 오류: {data.db.error}</p>

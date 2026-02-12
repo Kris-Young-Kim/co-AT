@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Logo } from "@/components/common/logo"
 import { Button } from "@/components/ui/button"
 import {
@@ -81,6 +81,8 @@ export function PublicHeader() {
   const pathname = usePathname()
   const { isSignedIn } = useUser()
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -171,31 +173,37 @@ export function PublicHeader() {
           })}
         </nav>
         <div className="flex items-center gap-2 sm:gap-4">
-          <ClerkLoading>
-            <Button variant="ghost" size="sm" className="text-xs sm:text-sm" disabled>
-              로딩 중...
-            </Button>
-          </ClerkLoading>
-          <ClerkFailed>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-xs sm:text-sm text-destructive"
-              onClick={() => window.location.href = '/sign-in'}
-            >
-              로그인 (직접 이동)
-            </Button>
-          </ClerkFailed>
-          <ClerkLoaded>
-            {!isSignedIn ? (
-              <SignInButton mode="modal">
-                <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
-                  로그인
+          {!mounted ? (
+            <div className="h-9 w-20" aria-hidden />
+          ) : (
+            <>
+              <ClerkLoading>
+                <Button variant="ghost" size="sm" className="text-xs sm:text-sm" disabled>
+                  로딩 중...
                 </Button>
-              </SignInButton>
-            ) : null}
-            <UserButton afterSignOutUrl="/" />
-          </ClerkLoaded>
+              </ClerkLoading>
+              <ClerkFailed>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-xs sm:text-sm text-destructive"
+                  onClick={() => window.location.href = '/sign-in'}
+                >
+                  로그인 (직접 이동)
+                </Button>
+              </ClerkFailed>
+              <ClerkLoaded>
+                {!isSignedIn ? (
+                  <SignInButton mode="modal">
+                    <Button variant="ghost" size="sm" className="text-xs sm:text-sm">
+                      로그인
+                    </Button>
+                  </SignInButton>
+                ) : null}
+                <UserButton afterSignOutUrl="/" />
+              </ClerkLoaded>
+            </>
+          )}
         </div>
       </div>
     </header>
