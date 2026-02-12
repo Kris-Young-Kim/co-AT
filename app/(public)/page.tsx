@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 import { HomeHeroSection } from "@/components/features/landing/HomeHeroSection"
 import { HomeQuickMenuGrid } from "@/components/features/landing/HomeQuickMenuGrid"
+import { HomePageClientSections } from "@/components/features/landing/HomePageClientSections"
 import { getRecentNotices, getNoticesByCategory } from "@/actions/notice-actions"
 import { getPublicSchedules } from "@/actions/schedule-actions"
 import { getPublicYouTubeVideos } from "@/actions/youtube-actions"
-import dynamic from "next/dynamic"
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
 
@@ -21,28 +21,6 @@ export const metadata: Metadata = {
     canonical: baseUrl,
   },
 }
-
-// Hydration 불일치 방지: 클라이언트 전용 렌더 (ssr: false)
-const HomeCommunityNews = dynamic(
-  () => import("@/components/features/landing/HomeCommunityNews").then((mod) => ({ default: mod.HomeCommunityNews })),
-  { loading: () => <div className="min-h-[200px] flex items-center justify-center text-muted-foreground text-sm">공지사항 로딩 중...</div>, ssr: false }
-)
-
-const HomeGallerySlider = dynamic(
-  () => import("@/components/features/landing/HomeGallerySlider").then((mod) => ({ default: mod.HomeGallerySlider })),
-  {
-    loading: () => <div className="py-12 text-center text-muted-foreground">영상 갤러리 로딩 중...</div>,
-    ssr: false,
-  }
-)
-
-const HomeCalendarCompact = dynamic(
-  () => import("@/components/features/landing/HomeCalendarCompact").then((mod) => ({ default: mod.HomeCalendarCompact })),
-  {
-    loading: () => <div className="py-12 text-center text-muted-foreground">캘린더 로딩 중...</div>,
-    ssr: false,
-  }
-)
 
 export default async function Home() {
   // Server Component에서 데이터 페칭
@@ -82,27 +60,13 @@ export default async function Home() {
       {/* 5대 핵심 사업 바로가기 */}
       <HomeQuickMenuGrid />
 
-      {/* 공지사항 및 활동 소식 */}
-      <section className="py-8 sm:py-12 bg-background" aria-label="공지사항 및 일정 정보">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-6 lg:grid-cols-2">
-            {/* 좌측: 공지사항, 활동 소식, 서비스 사례 */}
-            <div className="lg:max-w-md">
-              <HomeCommunityNews
-                initialNotices={notices}
-                initialSupportNotices={supportNotices}
-              />
-            </div>
-            {/* 우측: 캘린더 */}
-            <div className="lg:flex-1">
-              <HomeCalendarCompact initialSchedules={schedules} />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 유튜브 영상 갤러리 */}
-      {videos.length > 0 && <HomeGallerySlider videos={videos} />}
+      {/* 공지사항, 캘린더, 갤러리 (Client Component에서 ssr: false) */}
+      <HomePageClientSections
+        notices={notices}
+        supportNotices={supportNotices}
+        schedules={schedules}
+        videos={videos}
+      />
     </div>
     </>
   )
