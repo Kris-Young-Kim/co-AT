@@ -26,7 +26,10 @@ export function ServiceConsultForm() {
     resolver: zodResolver(consultApplicationSchema),
     defaultValues: {
       category: "consult",
-      description: formData?.description || formData?.consult_purpose || "",
+      description:
+        formData?.description ||
+        (formData as Partial<ConsultApplicationForm>)?.consult_purpose ||
+        "",
       ...formData,
     } as Partial<ConsultApplicationForm>,
   })

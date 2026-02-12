@@ -276,7 +276,6 @@ export async function createSchedule(
 
     const { data, error } = await supabase
       .from("schedules")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
       .insert({
         staff_id: staffId,
         application_id: input.application_id || null,
@@ -344,7 +343,6 @@ export async function updateSchedule(
 
     const { data, error } = await supabase
       .from("schedules")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update(updateData)
       .eq("id", input.id)
       .select()
