@@ -1,18 +1,16 @@
-import { auth } from "@clerk/nextjs/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
-import { hasAdminPermission } from "@/lib/utils/permissions"
+import { hasManagerPermission } from "@/lib/utils/permissions"
 
 /**
- * 모든 사용자 목록 조회 (admin만 접근 가능)
+ * 모든 사용자 목록 조회 (admin, manager만 접근 가능)
  */
 export async function GET() {
   try {
-    // admin만 접근 가능
-    const hasPermission = await hasAdminPermission()
+    const hasPermission = await hasManagerPermission()
     if (!hasPermission) {
       return NextResponse.json(
-        { error: "관리자 권한이 필요합니다" },
+        { error: "관리자 또는 매니저 권한이 필요합니다" },
         { status: 403 }
       )
     }

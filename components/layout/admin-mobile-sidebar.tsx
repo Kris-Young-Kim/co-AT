@@ -29,17 +29,21 @@ const menuItems = [
   { href: "/admin/rentals", label: "대여 관리", icon: Package },
   { href: "/admin/custom-makes", label: "맞춤제작 관리", icon: Package },
   { href: "/admin/schedule", label: "일정 관리", icon: Calendar },
-  { href: "/admin/users", label: "사용자 관리", icon: Users },
+  { href: "/admin/users", label: "사용자 관리", icon: Users, managerOnly: true },
   { href: "/admin/settings", label: "설정", icon: Settings },
 ]
 
 interface AdminMobileSidebarProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  showUsersManagement?: boolean
 }
 
-export function AdminMobileSidebar({ open, onOpenChange }: AdminMobileSidebarProps) {
+export function AdminMobileSidebar({ open, onOpenChange, showUsersManagement = false }: AdminMobileSidebarProps) {
   const pathname = usePathname()
+  const filteredItems = menuItems.filter(
+    (item) => !("managerOnly" in item && item.managerOnly) || showUsersManagement
+  )
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -64,7 +68,7 @@ export function AdminMobileSidebar({ open, onOpenChange }: AdminMobileSidebarPro
           </div>
         </DialogHeader>
         <nav className="flex flex-col gap-1 p-3 overflow-y-auto">
-          {menuItems.map((item) => {
+          {filteredItems.map((item) => {
             const Icon = item.icon
             const isActive =
               pathname === item.href || pathname?.startsWith(item.href + "/")

@@ -99,8 +99,10 @@ export function RegulationChatbot({ className }: RegulationChatbotProps) {
         errorMessage = "Google AI API 키가 설정되지 않았습니다.\n\n.env.local 파일에 GOOGLE_AI_API_KEY를 추가하고 개발 서버를 재시작해주세요."
       } else if (errorMessage.includes("generativelanguage.googleapis.com")) {
         errorMessage = "Google AI API 연결에 실패했습니다.\n\nAPI 키를 확인하고 네트워크 연결을 확인해주세요."
+      } else if (errorMessage.includes("저장된 규정이 없습니다")) {
+        errorMessage = "저장된 규정이 없습니다. 먼저 벡터화를 실행해주세요.\n\n관리자 설정 > 규정 챗봇 데이터에서 \"문서 벡터화 실행\" 버튼을 클릭하세요."
       }
-      
+
       setError(errorMessage)
     } finally {
       setIsLoading(false)
