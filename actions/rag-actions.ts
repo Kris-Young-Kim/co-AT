@@ -2,13 +2,16 @@
 
 import { getGeminiClient } from "@/lib/gemini/client";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions";
 import {
   chunkMarkdownBySections,
+  chunkTextBySize,
   classifyCategory,
 } from "@/lib/utils/text-chunker";
-import { readFileSync } from "fs";
+import { readFileSync, existsSync, readdirSync } from "fs";
 import { join } from "path";
+import { PDFParse } from "pdf-parse";
 
 /**
  * 규정 문서 청크 정보
@@ -114,10 +117,43 @@ function cosineSimilarity(vecA: number[], vecB: number[]): number {
   return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
+/** 파일에서 텍스트 추출 (PDF/MD/TXT) */
+async function extractTextFromFile(
+  filePath: string,
+  buffer?: Buffer
+): Promise<{ content: string; title: string }> {
+  const baseName = filePath.split(/[/\\]/).pop()?.replace(/\.[^.]+$/, "") || "문서";
+  const ext = filePath.toLowerCase().slice(filePath.lastIndexOf("."));
+
+  if (ext === ".pdf") {
+    const { PDFParse } = await import("pdf-parse");
+    const data = buffer || readFileSync(filePath);
+    const parser = new PDFParse({ data: Buffer.isBuffer(data) ? data : Buffer.from(data) });
+    try {
+      const result = await parser.getText();
+      await parser.destroy();
+      return { content: result.text, title: baseName };
+    } finally {
+      await parser.destroy().catch(() => {});
+    }
+  }
+
+  if (ext === ".md" || ext === ".txt") {
+    const content = buffer
+      ? buffer.toString("utf-8")
+      : readFileSync(filePath, "utf-8");
+    return { content, title: baseName };
+  }
+
+  throw new Error(`지원하지 않는 형식: ${ext}`);
+}
+
 /**
- * 보조기기센터사업안내.md 파일을 읽어서 청크로 분할하고 벡터화하여 저장
+ * docs/ 및 docs/regulations/ 폴더의 문서(PDF, MD, TXT)를 벡터화하여 저장
  */
-export async function embedRegulations(): Promise<{
+export async function embedRegulations(options?: {
+  filePaths?: string[];
+}): Promise<{
   success: boolean;
   message: string;
   chunksCount?: number;
@@ -126,18 +162,116 @@ export async function embedRegulations(): Promise<{
   try {
     console.log("[RAG Actions] 규정 문서 벡터화 시작");
 
-    // 권한 확인
     const hasPermission = await hasAdminOrStaffPermission();
     if (!hasPermission) {
       return { success: false, message: "권한이 없습니다" };
     }
 
-    // 문서 파일 읽기
-    const filePath = join(process.cwd(), "docs", "보조기기센터사업안내.md");
-    const content = readFileSync(filePath, "utf-8");
+    const docsDir = join(process.cwd(), "docs");
+    const regulationsDir = join(docsDir, "regulations");
+    const allowedExt = [".pdf", ".md", ".txt"];
 
-    // 문서를 청크로 분할
-    const chunks = chunkMarkdownBySections(content, 200, 1000);
+    let filesToProcess: Array<{ path: string; fullPath: string; buffer?: Buffer }> = [];
+
+    if (options?.filePaths?.length) {
+      for (const p of options.filePaths) {
+        const full = p.startsWith("regulations/")
+          ? join(regulationsDir, p.replace("regulations/", ""))
+          : join(docsDir, p);
+        if (existsSync(full)) {
+          const ext = full.toLowerCase().slice(full.lastIndexOf("."));
+          if (allowedExt.includes(ext))
+            filesToProcess.push({ path: p, fullPath: full });
+        }
+      }
+    }
+
+    if (filesToProcess.length === 0) {
+      // 기본: docs/ 및 docs/regulations/ 전체 스캔
+      const scan = (dir: string, prefix: string) => {
+        if (!existsSync(dir)) return;
+        try {
+          const entries = readdirSync(dir, { withFileTypes: true });
+          for (const e of entries) {
+            if (e.isFile()) {
+              const ext = e.name.toLowerCase().slice(e.name.lastIndexOf("."));
+              if (allowedExt.includes(ext))
+                filesToProcess.push({
+                  path: prefix ? `${prefix}/${e.name}` : e.name,
+                  fullPath: join(dir, e.name),
+                });
+            }
+          }
+        } catch {}
+      };
+      scan(docsDir, "");
+      scan(regulationsDir, "regulations");
+    }
+
+    // Storage에서 추가 파일 가져오기 (선택적)
+    try {
+      const supabase = createAdminClient();
+      const { data: list } = await supabase.storage
+        .from("regulations")
+        .list("regulations", { limit: 50 });
+      if (list) {
+        for (const f of list) {
+          if (f.name && allowedExt.some((e) => f.name!.toLowerCase().endsWith(e))) {
+            const { data } = await supabase.storage
+              .from("regulations")
+              .download(`regulations/${f.name}`);
+            if (data) {
+              const buf = Buffer.from(await data.arrayBuffer());
+              filesToProcess.push({
+                path: `regulations/${f.name}`,
+                fullPath: "",
+                buffer: buf,
+              });
+            }
+          }
+        }
+      }
+    } catch {
+      // 버킷 없으면 무시
+    }
+
+    const allChunks: Array<{
+      title: string
+      content: string
+      section?: string
+      chunkIndex: number
+      source_file?: string
+    }> = []
+    for (const file of filesToProcess) {
+      try {
+        const { content, title } = await extractTextFromFile(
+          file.fullPath || file.path,
+          file.buffer
+        );
+        const trimmed = content.trim();
+        if (!trimmed) continue;
+
+        const chs =
+          file.path.endsWith(".md") && trimmed.includes("#")
+            ? chunkMarkdownBySections(trimmed, 200, 1000)
+            : chunkTextBySize(trimmed, title, 200, 1000);
+
+        const srcName = file.path.split("/").pop() || file.path
+        for (let i = 0; i < chs.length; i++) {
+          allChunks.push({
+            title: chs[i].title,
+            content: chs[i].content,
+            section: chs[i].section,
+            chunkIndex: allChunks.length + i,
+            source_file: srcName,
+          })
+        }
+      } catch (err) {
+        console.error(`[RAG Actions] 파일 처리 실패 ${file.path}:`, err);
+      }
+    }
+
+    const chunks = allChunks;
     console.log(`[RAG Actions] ${chunks.length}개의 청크 생성`);
 
     const supabase = await createClient();
@@ -161,7 +295,7 @@ export async function embedRegulations(): Promise<{
         const category = classifyCategory(chunk.title, chunk.content);
 
         // 데이터베이스에 저장
-        // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
+        // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
         const { error } = await supabase.from("regulations").insert({
           title: chunk.title,
           content: chunk.content,
@@ -171,6 +305,7 @@ export async function embedRegulations(): Promise<{
           embedding_model: "text-embedding-004",
           chunk_index: chunk.chunkIndex,
           chunk_size: chunk.content.length,
+          source_file: chunk.source_file,
         });
 
         if (error) {
