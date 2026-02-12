@@ -70,7 +70,17 @@ export async function getReusableDevices(limit: number = 20): Promise<ReusableDe
     return []
   }
 
-  return data || []
+  return (data || []).map((row) => ({
+    id: row.id,
+    name: row.name,
+    category: row.category,
+    asset_code: row.asset_code,
+    manufacturer: row.manufacturer,
+    model: row.model,
+    purchase_date: row.purchase_date,
+    status: row.status ?? "보관",
+    is_rental_available: row.is_rental_available ?? true,
+  }))
 }
 
 /**
@@ -186,7 +196,7 @@ export async function getInventoryList(
 
     return {
       success: true,
-      items: data || [],
+      items: (data || []) as InventoryItem[],
       total: count || 0,
     }
   } catch (error) {
@@ -223,7 +233,7 @@ export async function getInventoryItem(id: string): Promise<{
       return { success: false, error: "재고 정보를 찾을 수 없습니다" }
     }
 
-    return { success: true, item: data }
+    return { success: true, item: data as InventoryItem }
   } catch (error) {
     console.error("[Inventory Actions] 재고 상세 조회 중 오류:", error)
     return {
@@ -257,7 +267,6 @@ export async function createInventoryItem(
 
     const { data: newItem, error } = await supabase
       .from("inventory")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
       .insert({
         name: data.name,
         asset_code: data.asset_code || null,
@@ -327,7 +336,6 @@ export async function updateInventoryItem(
 
     const { data: updatedItem, error } = await supabase
       .from("inventory")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         ...data,
         updated_at: new Date().toISOString(),
@@ -353,7 +361,7 @@ export async function updateInventoryItem(
 
     console.log("[Inventory Actions] 재고 수정 성공:", id)
 
-    return { success: true, item: updatedItem }
+    return { success: true, item: updatedItem as InventoryItem }
   } catch (error) {
     console.error("[Inventory Actions] 재고 수정 중 오류:", error)
     return {
@@ -426,7 +434,6 @@ export async function updateInventoryStatus(
 
     const { data: updatedItem, error } = await supabase
       .from("inventory")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         status,
         updated_at: new Date().toISOString(),
@@ -442,7 +449,7 @@ export async function updateInventoryStatus(
 
     console.log("[Inventory Actions] 재고 상태 변경 성공:", { id, status })
 
-    return { success: true, item: updatedItem }
+    return { success: true, item: updatedItem as InventoryItem }
   } catch (error) {
     console.error("[Inventory Actions] 재고 상태 변경 중 오류:", error)
     return {
@@ -477,7 +484,7 @@ export async function getInventoryByQRCode(qrCode: string): Promise<{
       return { success: false, error: "QR 코드에 해당하는 재고를 찾을 수 없습니다" }
     }
 
-    return { success: true, item: data }
+    return { success: true, item: data as InventoryItem }
   } catch (error) {
     console.error("[Inventory Actions] QR 코드로 재고 조회 중 오류:", error)
     return {

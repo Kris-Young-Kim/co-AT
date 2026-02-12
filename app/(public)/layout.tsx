@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { PublicHeader } from "@/components/layout/public-header"
 import { PublicFooter } from "@/components/layout/public-footer"
+import { SupportServiceChatbotFloating } from "@/components/features/chat/SupportServiceChatbotFloating"
 
 export default function PublicLayout({
   children,
@@ -12,6 +13,7 @@ export default function PublicLayout({
       <PublicHeader />
       <main className="flex-1">{children}</main>
       <PublicFooter />
+      <SupportServiceChatbotFloating />
     </div>
   )
 }

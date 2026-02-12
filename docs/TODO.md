@@ -156,10 +156,10 @@
 
 1. **모니터링 및 로깅 시스템**
 
-   - [ ] Sentry 통합 (에러 추적)
-   - [ ] 구조화된 로깅 (JSON, 로그 레벨 관리)
-   - [ ] Vercel Analytics (페이지 로딩, Core Web Vitals)
-   - [ ] Supabase Monitoring (DB 쿼리 성능)
+   - [x] Sentry 통합 (에러 추적) — `instrumentation-client.ts`, `sentry.server.config.ts`, `global-error.tsx`, `next.config.mjs` (NEXT_PUBLIC_SENTRY_DSN 설정 시 활성화)
+   - [x] 구조화된 로깅 (pino, JSON, 로그 레벨) — `lib/utils/logger.ts`, LOG_LEVEL 환경변수
+   - [x] Vercel Analytics (페이지 로딩, Core Web Vitals) — `@vercel/analytics`, `@vercel/speed-insights`, 루트 레이아웃 포함
+   - [x] Supabase Monitoring (DB 쿼리 성능) — Dashboard Reports 활용, `docs/MONITORING_GUIDE.md` 가이드 제공
 
 2. **에러 처리 및 복구 메커니즘**
 

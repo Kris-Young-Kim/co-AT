@@ -4,6 +4,8 @@ import { ClerkProvider } from "@/components/providers/clerk-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { AccessibilityToolbar } from "@/components/accessibility/accessibility-toolbar";
 import { KeyboardNavigator } from "@/components/accessibility/keyboard-navigator";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app";
@@ -91,6 +93,8 @@ export default function RootLayout({
             {children}
             <AccessibilityToolbar />
             <KeyboardNavigator />
+            <Analytics />
+            <SpeedInsights />
           </body>
         </html>
       </QueryProvider>

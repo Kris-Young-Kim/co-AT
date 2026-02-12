@@ -264,7 +264,6 @@ export async function createNotice(
 
     const { data, error } = await supabase
       .from("notices")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
       .insert(insertData as any)
       .select("id")
       .single()
@@ -331,7 +330,7 @@ export async function updateNotice(
 
     const { error } = await supabase
       .from("notices")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+      // @ts-expect-error - notices 테이블 attachments 타입 불일치
       .update(updateData as any)
       .eq("id", input.id)
 
