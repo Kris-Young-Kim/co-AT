@@ -1,20 +1,9 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import dynamic from "next/dynamic";
 import { ClerkProvider } from "@/components/providers/clerk-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
-import { VercelAnalyticsProvider } from "@/components/providers/vercel-analytics-provider";
+import { ClientOnlyProviders } from "@/components/layout/client-only-providers";
 import "./globals.css";
-
-const AccessibilityToolbar = dynamic(
-  () => import("@/components/accessibility/accessibility-toolbar").then((m) => ({ default: m.AccessibilityToolbar })),
-  { ssr: false }
-);
-
-const KeyboardNavigator = dynamic(
-  () => import("@/components/accessibility/keyboard-navigator").then((m) => ({ default: m.KeyboardNavigator })),
-  { ssr: false }
-);
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app";
 const siteName = "GWATC 보조기기센터";
@@ -99,9 +88,7 @@ export default function RootLayout({
         <html lang="ko" suppressHydrationWarning>
           <body suppressHydrationWarning>
             {children}
-            <AccessibilityToolbar />
-            <KeyboardNavigator />
-            <VercelAnalyticsProvider />
+            <ClientOnlyProviders />
           </body>
         </html>
       </QueryProvider>
