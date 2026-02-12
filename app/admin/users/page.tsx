@@ -2,6 +2,8 @@ import { hasManagerPermission } from "@/lib/utils/permissions"
 import { UserManagementTable } from "@/components/features/admin/UserManagementTable"
 import { PermissionDeniedModal } from "@/components/features/admin/PermissionDeniedModal"
 
+export const dynamic = "force-dynamic"
+
 export default async function UsersPage() {
   // admin, manager만 접근 가능
   const hasPermission = await hasManagerPermission()
