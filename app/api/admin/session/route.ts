@@ -11,8 +11,9 @@ import { cookies } from "next/headers"
  */
 export async function POST() {
   try {
+    dbgLog('api/admin/session/POST:start', 'POST 핸들러 시작', {})
     const { userId } = await auth()
-    
+    dbgLog('api/admin/session/POST:auth', 'auth() 완료', { hasUserId: !!userId })
     if (!userId) {
       return NextResponse.json(
         { error: "로그인이 필요합니다" },
@@ -23,6 +24,7 @@ export async function POST() {
     // 권한 확인
     console.log("[Admin Session] 권한 확인 시작 - userId:", userId)
     const hasPermission = await hasAdminOrStaffPermission()
+    dbgLog('api/admin/session/POST:permission', '권한 확인 완료', { hasPermission })
     console.log("[Admin Session] 권한 확인 결과:", hasPermission)
     
     if (!hasPermission) {
@@ -64,14 +66,21 @@ export async function POST() {
   }
 }
 
+/** 로그 헬퍼 - debug 모드 */
+function dbgLog(location: string, message: string, data: object) {
+  fetch('http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ location, message, data, hypothesisId: 'H4', timestamp: Date.now() }) }).catch(() => {})
+}
+
 /**
  * 관리자 세션 쿠키 확인
  */
 export async function GET() {
   try {
+    dbgLog('api/admin/session/GET:start', 'GET 핸들러 시작', {})
     const cookieStore = await cookies()
     const adminSession = cookieStore.get('admin_session')?.value
-    
+    dbgLog('api/admin/session/GET:cookies', '쿠키 확인', { hasAdminSession: !!adminSession })
+
     if (!adminSession) {
       return NextResponse.json({
         hasAdminSession: false,
@@ -81,6 +90,7 @@ export async function GET() {
 
     // 세션이 있으면 권한도 확인
     const { userId } = await auth()
+    dbgLog('api/admin/session/GET:auth', 'auth() 완료', { hasUserId: !!userId })
     if (!userId) {
       return NextResponse.json({
         hasAdminSession: false,
@@ -89,13 +99,14 @@ export async function GET() {
     }
 
     const hasPermission = await hasAdminOrStaffPermission()
-    
+    dbgLog('api/admin/session/GET:permission', '권한 확인 완료', { hasPermission })
     return NextResponse.json({
       hasAdminSession: true,
       hasPermission,
       message: hasPermission ? "관리자 세션이 유효합니다" : "권한이 없습니다"
     })
   } catch (error) {
+    dbgLog('api/admin/session/GET:error', 'GET 예외', { error: String(error) })
     console.error("관리자 세션 확인 실패:", error)
     return NextResponse.json(
       { error: "세션 확인에 실패했습니다" },

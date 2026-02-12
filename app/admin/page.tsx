@@ -29,39 +29,65 @@ function AdminSignInForm() {
     if (user) {
       // 이미 로그인된 상태라면 관리자 세션 쿠키만 설정
       setIsCheckingSession(true)
-      
-      // 타임아웃 설정 (10초)
+      // #region agent log
+      fetch('http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'admin/page.tsx:useEffect',message:'세션확인 시작',data:{userLoaded,hasUser:!!user,redirectUrl},hypothesisId:'H1,H2,H3',timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
+
+      // 타임아웃 설정 (15초) - GET·POST·프로필생성 등 전체 흐름 커버
       const timeoutId = setTimeout(() => {
+        // #region agent log
+        fetch('http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'admin/page.tsx:timeout',message:'10초 타임아웃 발생',data:{},hypothesisId:'H1',timestamp:Date.now()})}).catch(()=>{});
+        // #endregion
         console.error('[Admin Login] 세션 확인 타임아웃')
         setError('세션 확인 시간이 초과되었습니다. 페이지를 새로고침해주세요.')
         setIsCheckingSession(false)
-      }, 10000)
-      
+      }, 15000)
+
       // 먼저 현재 세션 확인
+      // #region agent log
+      fetch('http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'admin/page.tsx:fetchGET',message:'GET /api/admin/session 호출',data:{},hypothesisId:'H1,H4',timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
       fetch('/api/admin/session', {
         method: 'GET',
       })
         .then(async (getResponse) => {
-          clearTimeout(timeoutId)
-          
+          const sessionData = getResponse.ok ? await getResponse.json() : {}
+          // #region agent log
+          fetch('http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'admin/page.tsx:GET_response',message:'GET 응답 수신',data:{status:getResponse.status,ok:getResponse.ok,sessionData},hypothesisId:'H1,H2,H4',timestamp:Date.now()})}).catch(()=>{});
+          // #endregion
+
           if (getResponse.ok) {
-            const sessionData = await getResponse.json()
             console.log('[Admin Login] 세션 확인 결과:', sessionData)
             
             if (sessionData.hasAdminSession && sessionData.hasPermission) {
               // 이미 관리자 세션이 있고 권한이 있으면 바로 리다이렉트
+              clearTimeout(timeoutId)
+              // #region agent log
+              fetch('http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'admin/page.tsx:router_push',message:'GET성공 후 리다이렉트',data:{redirectUrl},hypothesisId:'H2',timestamp:Date.now()})}).catch(()=>{});
+              // #endregion
               router.push(redirectUrl)
               return
             }
           }
-          
+
           // 세션이 없거나 권한이 없으면 새로 설정 시도
+          // #region agent log
+          fetch('http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'admin/page.tsx:fetchPOST',message:'POST /api/admin/session 호출',data:{},hypothesisId:'H1,H4',timestamp:Date.now()})}).catch(()=>{});
+          // #endregion
           const postResponse = await fetch('/api/admin/session', {
             method: 'POST',
           })
-          
+
+          // #region agent log
+          fetch('http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'admin/page.tsx:POST_response',message:'POST 응답 수신',data:{status:postResponse.status,ok:postResponse.ok},hypothesisId:'H1,H3,H4',timestamp:Date.now()})}).catch(()=>{});
+          // #endregion
+
           if (postResponse.ok) {
             // 세션 설정 성공 시 리다이렉트
+            clearTimeout(timeoutId)
+            // #region agent log
+            fetch('http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'admin/page.tsx:router_push',message:'POST성공 후 리다이렉트',data:{redirectUrl},hypothesisId:'H2',timestamp:Date.now()})}).catch(()=>{});
+            // #endregion
             router.push(redirectUrl)
           } else {
             const data = await postResponse.json()
@@ -97,6 +123,7 @@ function AdminSignInForm() {
                     })
                     
                     if (retryResponse.ok) {
+                      clearTimeout(timeoutId)
                       router.push(redirectUrl)
                       return
                     }
@@ -111,11 +138,18 @@ function AdminSignInForm() {
             }
             
             setError(data.error || "관리자 권한이 없습니다. 관리자 계정으로 로그인해주세요.")
+            clearTimeout(timeoutId)
+            // #region agent log
+            fetch('http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'admin/page.tsx:setIsCheckingSession_false',message:'POST 실패 후 로딩 종료',data:{error:data?.error},hypothesisId:'H3',timestamp:Date.now()})}).catch(()=>{});
+            // #endregion
             setIsCheckingSession(false)
           }
         })
         .catch((error) => {
           clearTimeout(timeoutId)
+          // #region agent log
+          fetch('http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'admin/page.tsx:catch',message:'fetch catch 도달',data:{error:String(error)},hypothesisId:'H5',timestamp:Date.now()})}).catch(()=>{});
+          // #endregion
           console.error('[Admin Login] 세션 설정 중 오류:', error)
           setError('세션 설정 중 오류가 발생했습니다. 네트워크 연결을 확인해주세요.')
           setIsCheckingSession(false)
@@ -126,6 +160,9 @@ function AdminSignInForm() {
         clearTimeout(timeoutId)
       }
     } else {
+      // #region agent log
+      fetch('http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'admin/page.tsx:user_null',message:'user 없음, 로딩 종료',data:{},hypothesisId:'H1',timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
       setIsCheckingSession(false)
     }
   }, [user, userLoaded, router, redirectUrl])

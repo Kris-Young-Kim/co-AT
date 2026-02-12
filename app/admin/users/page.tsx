@@ -1,10 +1,10 @@
-import { hasAdminPermission } from "@/lib/utils/permissions"
+import { hasManagerPermission } from "@/lib/utils/permissions"
 import { UserManagementTable } from "@/components/features/admin/UserManagementTable"
 import { PermissionDeniedModal } from "@/components/features/admin/PermissionDeniedModal"
 
 export default async function UsersPage() {
-  // admin만 접근 가능
-  const hasPermission = await hasAdminPermission()
+  // admin, manager만 접근 가능
+  const hasPermission = await hasManagerPermission()
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">

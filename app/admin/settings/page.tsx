@@ -2,7 +2,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { User, Bell, Shield, Database } from "lucide-react"
+import { User, Bell, Shield, Database, MessageSquare } from "lucide-react"
+import { RegulationEmbedButton } from "@/components/features/chat/RegulationEmbedButton"
 
 export default function SettingsPage() {
   return (
@@ -104,6 +105,23 @@ export default function SettingsPage() {
               <Input id="confirm-password" type="password" placeholder="비밀번호 확인" />
             </div>
             <Button>비밀번호 변경</Button>
+          </CardContent>
+        </Card>
+
+        {/* 규정 챗봇 데이터 */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5 text-primary" />
+              <CardTitle>규정 챗봇 데이터</CardTitle>
+            </div>
+            <CardDescription>
+              보조기기센터 운영 지침서를 벡터화하여 챗봇이 검색할 수 있게 합니다.
+              챗봇에서 &quot;저장된 규정이 없습니다&quot;가 뜨면 아래 버튼을 실행하세요.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RegulationEmbedButton />
           </CardContent>
         </Card>
 

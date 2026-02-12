@@ -26,12 +26,19 @@ const menuItems = [
   { href: "/admin/custom-makes", label: "맞춤제작 관리", icon: Package },
   { href: "/admin/equipment", label: "장비 관리", icon: Wrench },
   { href: "/admin/schedule", label: "일정 관리", icon: Calendar },
-  { href: "/admin/users", label: "사용자 관리", icon: Users },
+  { href: "/admin/users", label: "사용자 관리", icon: Users, managerOnly: true },
   { href: "/admin/settings", label: "설정", icon: Settings },
 ];
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  showUsersManagement?: boolean
+}
+
+export function AdminSidebar({ showUsersManagement = false }: AdminSidebarProps) {
   const pathname = usePathname();
+  const filteredItems = menuItems.filter(
+    (item) => !("managerOnly" in item && item.managerOnly) || showUsersManagement
+  );
 
   return (
     <aside className="hidden w-64 border-r bg-gradient-to-b from-background to-muted/20 md:block">
@@ -47,7 +54,7 @@ export function AdminSidebar() {
         </div>
       </div>
       <nav className="flex flex-col gap-1 p-3 sm:p-4">
-        {menuItems.map((item) => {
+        {filteredItems.map((item) => {
           const Icon = item.icon;
           const isActive =
             pathname === item.href || pathname?.startsWith(item.href + "/");

@@ -9,7 +9,11 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { AdminMobileSidebar } from "@/components/layout/admin-mobile-sidebar"
 
-export function AdminHeader() {
+interface AdminHeaderProps {
+  showUsersManagement?: boolean
+}
+
+export function AdminHeader({ showUsersManagement = false }: AdminHeaderProps) {
   const router = useRouter()
   const { user } = useUser()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -76,7 +80,7 @@ export function AdminHeader() {
           </nav>
         </div>
       </header>
-      <AdminMobileSidebar open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen} />
+      <AdminMobileSidebar open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen} showUsersManagement={showUsersManagement} />
     </>
   )
 }

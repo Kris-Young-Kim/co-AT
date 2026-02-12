@@ -31,9 +31,9 @@ export function PermissionDeniedModal() {
             <DialogTitle>접근 권한 없음</DialogTitle>
           </div>
           <DialogDescription className="pt-2">
-            이 페이지는 관리자(admin)만 접근할 수 있습니다.
+            이 페이지는 관리자(admin) 또는 매니저(manager)만 접근할 수 있습니다.
             <br />
-            현재 계정에는 관리자 권한이 없습니다.
+            현재 계정에는 해당 권한이 없습니다.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
