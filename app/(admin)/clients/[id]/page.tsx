@@ -39,6 +39,11 @@ const SoapNoteEditor = dynamic(
   }
 )
 
+const ClientVocTab = dynamic(
+  () => import("@/components/features/crm/ClientVocTab").then((mod) => ({ default: mod.ClientVocTab })),
+  { loading: () => <div className="py-8 text-center text-muted-foreground">VoC 로딩 중...</div> }
+)
+
 interface ClientDetailPageProps {
   params: Promise<{ id: string }>
 }
@@ -88,6 +93,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
           <TabsTrigger value="soap">SOAP 노트</TabsTrigger>
           <TabsTrigger value="assessment">평가</TabsTrigger>
           <TabsTrigger value="process">서비스 진행 기록</TabsTrigger>
+          <TabsTrigger value="voc">VoC</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile" className="space-y-6">
@@ -133,6 +139,10 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
             clientId={id}
             applicationId={undefined}
           />
+        </TabsContent>
+
+        <TabsContent value="voc">
+          <ClientVocTab clientId={clientResult.client.id} />
         </TabsContent>
       </Tabs>
     </div>
