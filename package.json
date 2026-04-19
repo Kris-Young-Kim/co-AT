@@ -12,6 +12,7 @@
     ]
   },
   "scripts": {
+    "prebuild": "node -e \"try{require('fs').rmSync('.next',{recursive:true,force:true});console.log('[prebuild] .next removed');}catch(e){}\"",
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",

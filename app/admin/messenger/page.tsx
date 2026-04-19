@@ -1,5 +1,7 @@
 import { ChatLayout } from '@/components/features/chat/team/ChatLayout'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
   title: '업무 메신저 | Co-AT',
 }
