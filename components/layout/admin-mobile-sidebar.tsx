@@ -29,6 +29,7 @@ const menuItems = [
   { href: "/admin/inventory", label: "재고 관리", icon: Package },
   { href: "/admin/rentals", label: "대여 관리", icon: Package },
   { href: "/admin/custom-makes", label: "맞춤제작 관리", icon: Package },
+  { href: "/admin/supplies", label: "소모품 관리", icon: Package },
   { href: "/admin/schedule", label: "일정 관리", icon: Calendar },
   { href: "/admin/agent-chat", label: "AI 업무 도우미", icon: Bot },
   { href: "/admin/users", label: "사용자 관리", icon: Users, managerOnly: true },
