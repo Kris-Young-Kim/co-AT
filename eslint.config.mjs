@@ -32,6 +32,16 @@ export default [
     rules: {
       "react/react-in-jsx-scope": "off",
       "@next/next/no-img-element": "warn",
+      // TS 타입 위치의 매개변수까지 core no-unused-vars가 오탐하므로 TS 규칙으로 대체
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
     },
   },
 ];

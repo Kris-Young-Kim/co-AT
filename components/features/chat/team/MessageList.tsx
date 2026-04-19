@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, type UIEvent } from 'react'
 import { format, isSameDay } from 'date-fns'
 import { ko } from 'date-fns/locale'
 import { Loader2 } from 'lucide-react'
@@ -32,7 +32,7 @@ export function MessageList({ roomId, onReply, staffProfiles }: MessageListProps
     }
   }, [messages.length])
 
-  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+  const handleScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
     if (e.currentTarget.scrollTop < 100) {
       loadMore()
     }
