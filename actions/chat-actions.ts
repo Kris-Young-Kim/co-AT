@@ -1,10 +1,9 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { auth } from '@clerk/nextjs/server'
 import type { ChatRoom, ChatMessage, SendMessageInput, CreateRoomInput } from '@/types/chat.types'
 
-// 새 테이블은 DB 마이그레이션 실행 후 타입 재생성(gen:types) 전까지 DB 스키마에 없어 any 클라이언트로 조회
 type AnyClient = any
 
 async function getCurrentUserClerkId(): Promise<string> {
@@ -20,7 +19,7 @@ export async function getChatRooms(): Promise<{
 }> {
   try {
     const clerkUserId = await getCurrentUserClerkId()
-    const supabase = await createClient() as AnyClient
+    const supabase = createAdminClient() as AnyClient
 
     const { data: rooms, error } = await supabase
       .from('chat_rooms')
@@ -87,7 +86,7 @@ export async function getChatMessages(
 ): Promise<{ success: boolean; messages?: ChatMessage[]; error?: string }> {
   try {
     await getCurrentUserClerkId()
-    const supabase = await createClient() as AnyClient
+    const supabase = createAdminClient() as AnyClient
 
     let query = supabase
       .from('chat_messages')
@@ -131,7 +130,7 @@ export async function sendChatMessage(input: SendMessageInput): Promise<{
 }> {
   try {
     const clerkUserId = await getCurrentUserClerkId()
-    const supabase = await createClient() as AnyClient
+    const supabase = createAdminClient() as AnyClient
 
     if (!input.content && !input.file_url) {
       throw new Error('내용 또는 파일이 필요합니다')
@@ -169,7 +168,7 @@ export async function sendChatMessage(input: SendMessageInput): Promise<{
 export async function markRoomAsRead(roomId: string): Promise<{ success: boolean }> {
   try {
     const clerkUserId = await getCurrentUserClerkId()
-    const supabase = await createClient() as AnyClient
+    const supabase = createAdminClient() as AnyClient
 
     await supabase
       .from('chat_message_reads')
@@ -192,7 +191,7 @@ export async function createChatRoom(input: CreateRoomInput): Promise<{
 }> {
   try {
     const clerkUserId = await getCurrentUserClerkId()
-    const supabase = await createClient() as AnyClient
+    const supabase = createAdminClient() as AnyClient
 
     const { data: room, error } = await supabase
       .from('chat_rooms')
@@ -226,7 +225,7 @@ export async function updateChatRoom(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await getCurrentUserClerkId()
-    const supabase = await createClient() as AnyClient
+    const supabase = createAdminClient() as AnyClient
 
     const { error } = await supabase
       .from('chat_rooms')
@@ -246,7 +245,7 @@ export async function deleteChatRoom(roomId: string): Promise<{
 }> {
   try {
     await getCurrentUserClerkId()
-    const supabase = await createClient() as AnyClient
+    const supabase = createAdminClient() as AnyClient
 
     const { error } = await supabase
       .from('chat_rooms')
@@ -266,7 +265,7 @@ export async function deleteChatMessage(messageId: string): Promise<{
 }> {
   try {
     const clerkUserId = await getCurrentUserClerkId()
-    const supabase = await createClient() as AnyClient
+    const supabase = createAdminClient() as AnyClient
 
     const { error } = await supabase
       .from('chat_messages')
@@ -287,7 +286,7 @@ export async function searchChatMessages(
 ): Promise<{ success: boolean; messages?: ChatMessage[]; error?: string }> {
   try {
     await getCurrentUserClerkId()
-    const supabase = await createClient() as AnyClient
+    const supabase = createAdminClient() as AnyClient
 
     const { data, error } = await supabase
       .from('chat_messages')
@@ -327,7 +326,7 @@ export async function getStaffProfiles(): Promise<{
 }> {
   try {
     await getCurrentUserClerkId()
-    const supabase = await createClient() as AnyClient
+    const supabase = createAdminClient() as AnyClient
 
     const { data, error } = await supabase
       .from('profiles')
