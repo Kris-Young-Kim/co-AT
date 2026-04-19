@@ -37,7 +37,8 @@
       "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" add components/features/admin/notices/NoticeReadStatusModal.tsx components/features/admin/notices/NoticeList.tsx)",
       "Bash(git -C:*)",
       "Bash(git:*)",
-      "Bash(ls \"D:\\\\AILeader1\\\\project\\\\valuewith\\\\co-AT\\\\app\\\\\\(admin\\)\\\\\")"
+      "Bash(ls \"D:\\\\AILeader1\\\\project\\\\valuewith\\\\co-AT\\\\app\\\\\\(admin\\)\\\\\")",
+      "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" add \"components/features/budget/\" \"app/\\(admin\\)/budget/\" components/layout/admin-sidebar.tsx components/layout/admin-mobile-sidebar.tsx lib/budget-constants.ts actions/budget-actions.ts)"
     ]
   }
 }
