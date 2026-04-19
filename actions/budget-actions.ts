@@ -4,46 +4,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { auth } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
-
-export interface Budget {
-  id: string
-  year: number
-  month: number | null
-  category: string
-  planned_amount: number
-  notes: string | null
-  created_by: string
-  created_at: string
-  updated_at: string
-}
-
-export interface BudgetWithActual extends Budget {
-  actual_amount: number
-  variance: number  // planned - actual (양수 = 절감, 음수 = 초과)
-  utilization_rate: number  // actual / planned * 100
-}
-
-export interface CreateBudgetInput {
-  year: number
-  month?: number | null
-  category: string
-  planned_amount: number
-  notes?: string
-}
-
-// 서비스 카테고리 레이블 (service_logs.service_type과 매핑)
-export const BUDGET_CATEGORIES = [
-  { value: 'repair', label: '수리' },
-  { value: 'custom_make', label: '맞춤제작' },
-  { value: 'rental', label: '대여' },
-  { value: 'education', label: '교육' },
-  { value: 'maintenance', label: '유지보수' },
-  { value: 'inspection', label: '점검' },
-  { value: 'cleaning', label: '소독' },
-  { value: 'reuse', label: '재활용' },
-  { value: 'supplies', label: '소모품' },
-  { value: 'other', label: '기타' },
-]
+import type { Budget, BudgetWithActual, CreateBudgetInput } from '@/lib/budget-constants'
 
 export async function getBudgets(year: number): Promise<{
   success: boolean
