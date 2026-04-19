@@ -9,6 +9,11 @@ const nextConfig = {
         destination: "/admin/messenger",
         permanent: true,
       },
+      {
+        source: "/agent-chat",
+        destination: "/admin/agent-chat",
+        permanent: true,
+      },
     ]
   },
   images: {
