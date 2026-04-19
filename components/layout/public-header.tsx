@@ -13,6 +13,8 @@ import { SignInButton, UserButton, useUser, ClerkLoaded, ClerkLoading, ClerkFail
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { LayoutDashboard } from "lucide-react"
 
 const headerMenuItems = [
   {
@@ -82,7 +84,15 @@ export function PublicHeader() {
   const { isSignedIn } = useUser()
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
   useEffect(() => setMounted(true), [])
+  useEffect(() => {
+    if (isSignedIn) {
+      hasAdminOrStaffPermission().then(setIsAdmin)
+    } else {
+      setIsAdmin(false)
+    }
+  }, [isSignedIn])
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

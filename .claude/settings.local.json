@@ -41,7 +41,11 @@
       "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" add \"components/features/budget/\" \"app/\\(admin\\)/budget/\" components/layout/admin-sidebar.tsx components/layout/admin-mobile-sidebar.tsx lib/budget-constants.ts actions/budget-actions.ts)",
       "Bash(head -20 find D:/AILeader1/project/valuewith/co-AT/components -name *chat* -o -name *messenger* -o -name *Channel* -o -name *Message*)",
       "Bash(find \"D:/AILeader1/project/valuewith/co-AT/app/\\(admin\\)/messenger\" -type f)",
-      "Bash(ls \"D:/AILeader1/project/valuewith/co-AT/app/\\(admin\\)/messenger/\")"
+      "Bash(ls \"D:/AILeader1/project/valuewith/co-AT/app/\\(admin\\)/messenger/\")",
+      "Bash(ls \"D:/AILeader1/project/valuewith/co-AT/app/\\(admin\\)/budget/\")",
+      "Bash(ls \"D:/AILeader1/project/valuewith/co-AT/app/\\(admin\\)/work-tasks/\")",
+      "Bash(pnpm test:*)",
+      "Bash(/dev/null ls:*)"
     ]
   }
 }
