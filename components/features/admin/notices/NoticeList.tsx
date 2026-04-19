@@ -17,8 +17,9 @@ import { ko } from "date-fns/locale"
 import type { Notice } from "@/actions/notice-actions"
 import { deleteNotice } from "@/actions/notice-actions"
 import { useRouter } from "next/navigation"
-import { Pin, Calendar, Edit, Trash2, AlertTriangle } from "lucide-react"
+import { Pin, Calendar, Edit, Trash2, AlertTriangle, Users } from "lucide-react"
 import { NoticeEditDialog } from "./NoticeEditDialog"
+import { NoticeReadStatusModal } from "./NoticeReadStatusModal"
 
 interface NoticeListProps {
   initialNotices: Notice[]
@@ -30,6 +31,11 @@ export function NoticeList({ initialNotices }: NoticeListProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [noticeToDelete, setNoticeToDelete] = useState<Notice | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [readStatusModal, setReadStatusModal] = useState<{ open: boolean; noticeId: string; noticeTitle: string }>({
+    open: false,
+    noticeId: '',
+    noticeTitle: '',
+  })
 
   const handleDeleteClick = (notice: Notice) => {
     setNoticeToDelete(notice)
@@ -114,6 +120,14 @@ export function NoticeList({ initialNotices }: NoticeListProps) {
                   {notice.content}
                 </p>
                 <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setReadStatusModal({ open: true, noticeId: notice.id, noticeTitle: notice.title })}
+                    title="읽음 현황"
+                  >
+                    <Users className="h-4 w-4" />
+                  </Button>
                   <NoticeEditDialog notice={notice} onSuccess={handleUpdateSuccess}>
                     <Button variant="outline" size="sm">
                       <Edit className="mr-2 h-4 w-4" />
@@ -182,6 +196,13 @@ export function NoticeList({ initialNotices }: NoticeListProps) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <NoticeReadStatusModal
+        noticeId={readStatusModal.noticeId}
+        noticeTitle={readStatusModal.noticeTitle}
+        open={readStatusModal.open}
+        onClose={() => setReadStatusModal(prev => ({ ...prev, open: false }))}
+      />
     </>
   )
 }
