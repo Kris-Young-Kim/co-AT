@@ -20,7 +20,24 @@
       "Bash(wc -l \"D:/AILeader1/project/valuewith/co-AT/components/features/chat/team/\"*.tsx)",
       "Bash(CI=true pnpm build)",
       "Bash(pnpm dlx:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(grep -r \"voc\\\\|complaint\\\\|feedback\\\\|불만\" /d/AILeader1/project/valuewith/co-AT/components --include=*.tsx --include=*.ts)",
+      "Bash(grep -r \"partner\\\\|협력기관\\\\|협업\" /d/AILeader1/project/valuewith/co-AT/components --include=*.tsx --include=*.ts)",
+      "Bash(grep -r \"recruitment\\\\|hiring\\\\|채용\" /d/AILeader1/project/valuewith/co-AT/components --include=*.tsx --include=*.ts)",
+      "Bash(xargs grep:*)",
+      "Bash(grep:*)",
+      "Bash(xargs basename:*)",
+      "Bash(ls /d/AILeader1/project/valuewith/co-AT/app/\\\\\\(admin\\\\\\)/)",
+      "Bash(ls -la /d/AILeader1/project/valuewith/co-AT/app/\\\\\\(admin\\\\\\)/)",
+      "Bash(xargs head:*)",
+      "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" add migrations/022_create_notice_reads.sql)",
+      "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" commit -m \"feat: notice_reads 테이블 마이그레이션 추가\")",
+      "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" add actions/notice-actions.ts)",
+      "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" commit -m \"feat: 공지 읽음 server actions 추가\")",
+      "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" add components/features/admin/notices/NoticeReadStatusModal.tsx components/features/admin/notices/NoticeList.tsx)",
+      "Bash(git -C:*)",
+      "Bash(git:*)",
+      "Bash(ls \"D:\\\\AILeader1\\\\project\\\\valuewith\\\\co-AT\\\\app\\\\\\(admin\\)\\\\\")"
     ]
   }
 }
