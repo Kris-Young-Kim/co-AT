@@ -2,9 +2,10 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Plus, Trash2, Edit } from "lucide-react"
+import { Plus, Trash2, Edit, FileText } from "lucide-react"
 import { ScheduleForm } from "./ScheduleForm"
 import { CalendarView } from "./CalendarView"
+import { MeetingMinutesModal } from "./MeetingMinutesModal"
 import { type Schedule, deleteSchedule } from "@/actions/schedule-actions"
 import { useRouter } from "next/navigation"
 import {
@@ -30,6 +31,7 @@ export function ScheduleManagementContent({
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Schedule | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [meetingModal, setMeetingModal] = useState<{ scheduleId: string; scheduleName: string } | null>(null)
 
   // 일정 폼 열기 (신규)
   const handleCreateClick = () => {
@@ -86,8 +88,12 @@ export function ScheduleManagementContent({
 
   // 캘린더에서 일정 클릭
   const handleScheduleClick = (schedule: Schedule) => {
-    setSelectedSchedule(schedule)
-    setIsFormOpen(true)
+    if (schedule.schedule_type === 'meeting') {
+      setMeetingModal({ scheduleId: schedule.id, scheduleName: schedule.notes ?? '회의' })
+    } else {
+      setSelectedSchedule(schedule)
+      setIsFormOpen(true)
+    }
   }
 
   return (
@@ -159,6 +165,12 @@ export function ScheduleManagementContent({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <MeetingMinutesModal
+        scheduleId={meetingModal?.scheduleId ?? null}
+        scheduleName={meetingModal?.scheduleName ?? ''}
+        onClose={() => setMeetingModal(null)}
+      />
     </div>
   )
 }
