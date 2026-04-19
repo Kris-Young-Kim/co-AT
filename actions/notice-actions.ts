@@ -1,5 +1,6 @@
 "use server"
 
+import { auth } from "@clerk/nextjs/server"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission, getCurrentUserProfileId } from "@/lib/utils/permissions"
@@ -453,3 +454,67 @@ export async function getAllNotices(): Promise<{
   }
 }
 
+// ─── 공지 읽음 확인 ───────────────────────────────────────────
+
+export async function markNoticeAsRead(noticeId: string): Promise<{ success: boolean }> {
+  try {
+    const { userId } = await auth()
+    if (!userId) return { success: false }
+
+    const supabase = createAdminClient()
+    await (supabase as any)
+      .from('notice_reads')
+      .upsert(
+        { notice_id: noticeId, clerk_user_id: userId, read_at: new Date().toISOString() },
+        { onConflict: 'notice_id,clerk_user_id' }
+      )
+
+    return { success: true }
+  } catch {
+    return { success: false }
+  }
+}
+
+export async function getNoticeReadStatus(noticeId: string): Promise<{
+  success: boolean
+  reads?: { clerk_user_id: string; read_at: string }[]
+  readCount?: number
+  error?: string
+}> {
+  try {
+    const supabase = createAdminClient()
+
+    const { data, error } = await (supabase as any)
+      .from('notice_reads')
+      .select('clerk_user_id, read_at')
+      .eq('notice_id', noticeId)
+      .order('read_at', { ascending: false })
+
+    if (error) throw error
+    return { success: true, reads: data ?? [], readCount: data?.length ?? 0 }
+  } catch (err) {
+    return { success: false, error: String(err) }
+  }
+}
+
+export async function getMyUnreadNoticeCount(): Promise<number> {
+  try {
+    const { userId } = await auth()
+    if (!userId) return 0
+
+    const supabase = createAdminClient()
+
+    const { count: totalCount } = await (supabase as any)
+      .from('notices')
+      .select('*', { count: 'exact', head: true })
+
+    const { count: readCount } = await (supabase as any)
+      .from('notice_reads')
+      .select('*', { count: 'exact', head: true })
+      .eq('clerk_user_id', userId)
+
+    return Math.max(0, (totalCount ?? 0) - (readCount ?? 0))
+  } catch {
+    return 0
+  }
+}
