@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
 import { auth } from '@clerk/nextjs/server'
 import type { ChatRoom, ChatMessage, SendMessageInput, CreateRoomInput } from '@/types/chat.types'
 
-// 새 테이블은 DB 마이그레이션 실행 후 타입 재생성 전까지 any 캐스팅
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// 새 테이블은 DB 마이그레이션 실행 후 타입 재생성(gen:types) 전까지 DB 스키마에 없어 any 클라이언트로 조회
 type AnyClient = any
 
 async function getCurrentUserClerkId(): Promise<string> {

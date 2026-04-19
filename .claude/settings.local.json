@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(npx tsc:*)",
+      "Read(//c/Users/rehab/**)",
+      "Bash(cat /c/Users/rehab/.claude/plugins/marketplaces/everything-claude-code/manifests/*.yaml)",
+      "Bash(CI=true pnpm install)",
+      "Bash(CI=true pnpm approve-builds)",
+      "Bash(gh repo:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(ls \"app/\\(admin\\)/\")",
+      "WebFetch(domain:home.flarelane.co.kr)",
+      "WebFetch(domain:pro.samq.co.kr)",
+      "WebFetch(domain:crew.you)",
+      "WebFetch(domain:welcome.clap.company)",
+      "WebFetch(domain:ai-team.kr)",
+      "WebFetch(domain:www.jandi.com)",
+      "Bash(wc -l \"D:/AILeader1/project/valuewith/co-AT/components/features/chat/team/\"*.tsx)",
+      "Bash(CI=true pnpm build)",
+      "Bash(pnpm dlx:*)",
+      "Bash(cd:*)"
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { hasAdminOrStaffPermission, getCurrentUserProfileId } from "@/lib/utils/permissions"
 
 export interface DashboardStats {
   newToday: number

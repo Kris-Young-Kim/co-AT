@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, type ChangeEvent, type KeyboardEvent } from 'react'
 import { Paperclip, Send, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -48,7 +48,7 @@ export function MessageInput({
     textareaRef.current?.focus()
   }, [content])
 
-  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
@@ -97,7 +97,7 @@ export function MessageInput({
     textareaRef.current?.focus()
   }, [content, isPending, roomId, replyTo, onCancelReply, sendMessage, staffProfiles])
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
