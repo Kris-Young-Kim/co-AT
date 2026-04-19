@@ -1,4 +1,4 @@
-// app/(admin)/agent-chat/page.tsx
+// app/admin/agent-chat/page.tsx
 // AI 업무 도우미 관리자 페이지
 
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
@@ -19,7 +19,6 @@ export default async function AgentChatPage() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-      {/* 페이지 헤더 */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-1">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
@@ -34,7 +33,6 @@ export default async function AgentChatPage() {
         </div>
       </div>
 
-      {/* AI 채팅 컴포넌트 */}
       <AgentChat className="h-[calc(100vh-14rem)] sm:h-[calc(100vh-13rem)]" />
     </div>
   )
