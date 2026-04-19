@@ -6,7 +6,7 @@ import {
   deleteInventoryItem,
 } from '@/actions/inventory-actions'
 import { mockHasAdminOrStaffPermission } from '../../tests/setup'
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 // 재고 관리 플로우 테스트
 describe('재고 관리 플로우', () => {
@@ -50,7 +50,7 @@ describe('재고 관리 플로우', () => {
       from: vi.fn(() => mockQuery),
     }
 
-    vi.mocked(createClient).mockReturnValueOnce(mockSupabase as any)
+    vi.mocked(createAdminClient).mockReturnValueOnce(mockSupabase as any)
 
     const result = await getInventoryList({})
 
@@ -79,7 +79,7 @@ describe('재고 관리 플로우', () => {
       })),
     }
 
-    vi.mocked(createClient).mockReturnValueOnce(mockSupabase as any)
+    vi.mocked(createAdminClient).mockReturnValueOnce(mockSupabase as any)
 
     const result = await createInventoryItem({
       name: '새 기기',
@@ -114,7 +114,7 @@ describe('재고 관리 플로우', () => {
       })),
     }
 
-    vi.mocked(createClient).mockReturnValueOnce(mockSupabase as any)
+    vi.mocked(createAdminClient).mockReturnValueOnce(mockSupabase as any)
 
     const result = await updateInventoryItem('item-1', {
       name: '수정된 기기',
@@ -143,7 +143,7 @@ describe('재고 관리 플로우', () => {
       })),
     }
 
-    vi.mocked(createClient).mockReturnValueOnce(mockSupabase as any)
+    vi.mocked(createAdminClient).mockReturnValueOnce(mockSupabase as any)
 
     const result = await deleteInventoryItem('item-1')
 

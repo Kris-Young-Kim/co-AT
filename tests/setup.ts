@@ -123,21 +123,35 @@ vi.mock('@/lib/gemini/client', () => ({
   })),
 }))
 
+const createMockAdminChain = (result = { data: null, error: null }): any => {
+  const chain: any = {
+    select: vi.fn(() => chain),
+    insert: vi.fn(() => chain),
+    update: vi.fn(() => chain),
+    delete: vi.fn(() => chain),
+    upsert: vi.fn(() => chain),
+    eq: vi.fn(() => chain),
+    neq: vi.fn(() => chain),
+    gt: vi.fn(() => chain),
+    gte: vi.fn(() => chain),
+    lt: vi.fn(() => chain),
+    lte: vi.fn(() => chain),
+    in: vi.fn(() => chain),
+    not: vi.fn(() => chain),
+    or: vi.fn(() => chain),
+    order: vi.fn(() => chain),
+    limit: vi.fn(() => chain),
+    range: vi.fn(() => Promise.resolve(result)),
+    single: vi.fn(() => Promise.resolve({ data: { id: 'test-id' }, error: null })),
+    maybeSingle: vi.fn(() => Promise.resolve(result)),
+  }
+  chain.then = (resolve: any) => Promise.resolve(result).then(resolve)
+  return chain
+}
+
 vi.mock('@/lib/supabase/admin', () => ({
   createAdminClient: vi.fn(() => ({
-    from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          single: vi.fn(() => Promise.resolve({ data: null, error: null })),
-          maybeSingle: vi.fn(() => Promise.resolve({ data: null, error: null })),
-        })),
-      })),
-      insert: vi.fn(() => ({
-        select: vi.fn(() => ({
-          single: vi.fn(() => Promise.resolve({ data: { id: 'test-id' }, error: null })),
-        })),
-      })),
-    })),
+    from: vi.fn(() => createMockAdminChain()),
   })),
 }))
 
