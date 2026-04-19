@@ -2,6 +2,15 @@ import { withSentryConfig } from "@sentry/nextjs"
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/messenger",
+        destination: "/admin/messenger",
+        permanent: true,
+      },
+    ]
+  },
   images: {
     // 이미지 품질 설정
     qualities: [75, 90],
