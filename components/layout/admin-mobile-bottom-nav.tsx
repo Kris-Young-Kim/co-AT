@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, FileText, Users, Package, Calendar } from "lucide-react"
+import { LayoutDashboard, FileText, Users, Package, Calendar, Bot, MessageSquare } from "lucide-react"
 
 const navItems = [
   { href: "/admin/dashboard", label: "대시보드", icon: LayoutDashboard },
@@ -11,6 +11,8 @@ const navItems = [
   { href: "/admin/clients", label: "대상자", icon: Users },
   { href: "/admin/inventory", label: "재고", icon: Package },
   { href: "/admin/schedule", label: "일정", icon: Calendar },
+  { href: "/admin/messenger", label: "메신저", icon: MessageSquare },
+  { href: "/admin/agent-chat", label: "AI도우미", icon: Bot },
 ]
 
 export function AdminMobileBottomNav() {
