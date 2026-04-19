@@ -2,10 +2,11 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Plus, Trash2, Edit, FileText } from "lucide-react"
+import { Plus, Trash2, Edit, FileText, Users } from "lucide-react"
 import { ScheduleForm } from "./ScheduleForm"
 import { CalendarView } from "./CalendarView"
 import { MeetingMinutesModal } from "./MeetingMinutesModal"
+import { EventRoleModal } from "./EventRoleModal"
 import { type Schedule, deleteSchedule } from "@/actions/schedule-actions"
 import { useRouter } from "next/navigation"
 import {
@@ -32,6 +33,7 @@ export function ScheduleManagementContent({
   const [deleteTarget, setDeleteTarget] = useState<Schedule | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
   const [meetingModal, setMeetingModal] = useState<{ scheduleId: string; scheduleName: string } | null>(null)
+  const [eventRoleModal, setEventRoleModal] = useState<{ scheduleId: string; scheduleName: string } | null>(null)
 
   // 일정 폼 열기 (신규)
   const handleCreateClick = () => {
@@ -90,6 +92,11 @@ export function ScheduleManagementContent({
   const handleScheduleClick = (schedule: Schedule) => {
     if (schedule.schedule_type === 'meeting') {
       setMeetingModal({ scheduleId: schedule.id, scheduleName: schedule.notes ?? '회의' })
+    } else if (schedule.schedule_type === 'exhibition' || schedule.schedule_type === 'education') {
+      setEventRoleModal({
+        scheduleId: schedule.id,
+        scheduleName: schedule.notes ?? (schedule.schedule_type === 'exhibition' ? '견학' : '교육')
+      })
     } else {
       setSelectedSchedule(schedule)
       setIsFormOpen(true)
@@ -170,6 +177,12 @@ export function ScheduleManagementContent({
         scheduleId={meetingModal?.scheduleId ?? null}
         scheduleName={meetingModal?.scheduleName ?? ''}
         onClose={() => setMeetingModal(null)}
+      />
+
+      <EventRoleModal
+        scheduleId={eventRoleModal?.scheduleId ?? null}
+        scheduleName={eventRoleModal?.scheduleName ?? ''}
+        onClose={() => setEventRoleModal(null)}
       />
     </div>
   )
