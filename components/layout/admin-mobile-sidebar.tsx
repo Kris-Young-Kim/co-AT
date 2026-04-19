@@ -12,6 +12,7 @@ import {
   FileText,
   Sparkles,
   X,
+  Bot,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -29,6 +30,7 @@ const menuItems = [
   { href: "/admin/rentals", label: "대여 관리", icon: Package },
   { href: "/admin/custom-makes", label: "맞춤제작 관리", icon: Package },
   { href: "/admin/schedule", label: "일정 관리", icon: Calendar },
+  { href: "/admin/agent-chat", label: "AI 업무 도우미", icon: Bot },
   { href: "/admin/users", label: "사용자 관리", icon: Users, managerOnly: true },
   { href: "/admin/settings", label: "설정", icon: Settings },
 ]
