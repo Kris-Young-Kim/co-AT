@@ -14,12 +14,14 @@ import {
 import { Badge } from "@/components/ui/badge"
 import {
   getInventoryList,
+  getInventoryItemByBarcode,
   type InventoryItem,
   type InventoryListResult,
 } from "@/actions/inventory-actions"
 import { InventoryList } from "./InventoryList"
 import { InventoryFormDialog } from "./InventoryFormDialog"
 import { QRCodeScanner } from "./QRCodeScanner"
+import { BarcodeScanInput } from "./BarcodeScanInput"
 import {
   Plus,
   Search,
@@ -32,6 +34,7 @@ import {
   QrCode,
   Grid3x3,
   List,
+  Barcode,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -62,6 +65,10 @@ export function InventoryManagementContent({
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null)
   const [isScannerOpen, setIsScannerOpen] = useState(false)
+
+  // 바코드 상태
+  const [isBarcodeMode, setIsBarcodeMode] = useState(false)
+  const [barcodeLoading, setBarcodeLoading] = useState(false)
 
   // 통계 계산
   const stats = {
@@ -127,6 +134,25 @@ export function InventoryManagementContent({
   const handleCreate = () => {
     setEditingItem(null)
     setIsFormDialogOpen(true)
+  }
+
+  // 바코드 스캔 처리
+  const handleBarcodeScan = async (barcode: string) => {
+    setBarcodeLoading(true)
+    try {
+      const result = await getInventoryItemByBarcode(barcode)
+      if (result.success && result.item) {
+        setEditingItem(result.item)
+        setIsFormDialogOpen(true)
+      } else {
+        if (confirm(`바코드 "${barcode}" 는 미등록 기기입니다.\n새로 등록하시겠습니까?`)) {
+          setEditingItem(null)
+          setIsFormDialogOpen(true)
+        }
+      }
+    } finally {
+      setBarcodeLoading(false)
+    }
   }
 
   return (
@@ -233,6 +259,15 @@ export function InventoryManagementContent({
                   </>
                 )}
               </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsBarcodeMode(!isBarcodeMode)}
+                className="gap-2"
+              >
+                <Barcode className="h-4 w-4" />
+                바코드 스캔
+              </Button>
               <Button onClick={handleCreate} className="gap-2">
                 <Plus className="h-4 w-4" />
                 재고 등록
@@ -297,6 +332,13 @@ export function InventoryManagementContent({
           </div>
         </CardContent>
       </Card>
+
+      {/* 바코드 스캔 패널 */}
+      {isBarcodeMode && (
+        <div className="p-4 border rounded-lg bg-muted/30">
+          <BarcodeScanInput onScan={handleBarcodeScan} isLoading={barcodeLoading} />
+        </div>
+      )}
 
       {/* 재고 목록 */}
       <InventoryList
