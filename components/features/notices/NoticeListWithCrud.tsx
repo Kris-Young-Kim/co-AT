@@ -11,7 +11,6 @@ import { Pin, Calendar, Pencil, Trash2, Plus } from "lucide-react"
 import { type Notice, deleteNotice } from "@/actions/notice-actions"
 import { NoticeEditDialog } from "@/components/features/admin/notices/NoticeEditDialog"
 import { NoticeCreateDialog } from "@/components/features/admin/notices/NoticeCreateDialog"
-import { useRouter } from "next/navigation"
 
 interface NoticeListWithCrudProps {
   notices: Notice[]
@@ -31,7 +30,6 @@ export function NoticeListWithCrud({
   isStaff,
   emptyMessage = "등록된 공지사항이 없습니다",
 }: NoticeListWithCrudProps) {
-  const router = useRouter()
   const [notices, setNotices] = useState<Notice[]>(initialNotices)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
@@ -44,7 +42,6 @@ export function NoticeListWithCrud({
       const result = await deleteNotice(id)
       if (result.success) {
         setNotices((prev) => prev.filter((n) => n.id !== id))
-        router.refresh()
       } else {
         alert(result.error || "삭제에 실패했습니다")
       }
@@ -95,9 +92,7 @@ export function NoticeListWithCrud({
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm sm:text-base text-muted-foreground line-clamp-3">
-                      {typeof notice.content === "string"
-                        ? notice.content.replace(/<[^>]*>/g, "").substring(0, 200)
-                        : notice.content}
+                      {notice.content.replace(/<[^>]*>/g, "").substring(0, 200)}
                     </p>
                   </CardContent>
                 </Card>
@@ -105,16 +100,14 @@ export function NoticeListWithCrud({
 
               {/* staff 전용 편집 버튼 — Link 바깥에 absolute 배치 */}
               {isStaff && (
-                <div
-                  className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                  onClick={(e) => e.preventDefault()}
-                >
+                <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                   <NoticeEditDialog notice={notice}>
                     <Button
                       size="sm"
                       variant="outline"
                       className="h-8 w-8 p-0 bg-background"
                       title="수정"
+                      aria-label="수정"
                     >
                       <Pencil className="h-3 w-3" />
                     </Button>
@@ -126,6 +119,7 @@ export function NoticeListWithCrud({
                     onClick={(e) => handleDelete(e, notice.id)}
                     disabled={deletingId === notice.id}
                     title="삭제"
+                    aria-label="삭제"
                   >
                     <Trash2 className="h-3 w-3" />
                   </Button>
@@ -144,6 +138,7 @@ export function NoticeListWithCrud({
               size="lg"
               className="rounded-full shadow-lg h-14 w-14 p-0"
               title="새 글 작성"
+              aria-label="새 글 작성"
             >
               <Plus className="h-6 w-6" />
             </Button>
