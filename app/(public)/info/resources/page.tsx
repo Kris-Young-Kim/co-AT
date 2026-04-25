@@ -6,6 +6,8 @@ import { ResourceListWithCrud } from "@/components/features/resources/ResourceLi
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
 
+export const revalidate = 300
+
 export const metadata: Metadata = {
   title: "자료실",
   description: "보조기기 관련 영상자료 및 문서자료를 제공합니다.",

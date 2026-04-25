@@ -5,6 +5,8 @@ import { Breadcrumb } from "@/components/common/breadcrumb"
 import { ChevronLeft } from "lucide-react"
 import { getResourceById } from "@/actions/resource-actions"
 
+export const dynamic = "force-dynamic"
+
 export async function generateMetadata({
   params,
 }: {
