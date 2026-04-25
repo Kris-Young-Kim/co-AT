@@ -1,0 +1,28 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - main [ref=e4]:
+      - generic [ref=e5]:
+        - navigation "브레드크럼" [ref=e6]:
+          - link "홈으로 이동" [ref=e7] [cursor=pointer]:
+            - /url: /
+            - img [ref=e8]
+          - generic [ref=e11]:
+            - img [ref=e12]
+            - link "센터소개" [ref=e14] [cursor=pointer]:
+              - /url: /about
+          - generic [ref=e15]:
+            - img [ref=e16]
+            - generic [ref=e18]: 조직도
+        - heading "조직도" [level=1] [ref=e19]
+        - paragraph [ref=e21]: 조직도 페이지입니다.
+    - contentinfo [ref=e22]:
+      - generic [ref=e24]:
+        - generic [ref=e25]:
+          - generic [ref=e26]:
+            - generic [ref=e28]: GW
+            - generic [ref=e29]: GWATC
+          - paragraph [ref=e30]: 강원특별자치도 보조기기센터
+        - paragraph [ref=e32]: © 2025 GWATC. All rights reserved.
+  - alert [ref=e33]
+  - button "접근성 도구 열기" [ref=e34] [cursor=pointer]:
+    - img [ref=e35]
