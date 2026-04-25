@@ -28,6 +28,7 @@ export interface InventoryItem {
   purchase_date: string | null
   purchase_price: number | null
   qr_code: string | null
+  barcode: string | null
   image_url: string | null
   created_at: string | null
   updated_at: string | null
@@ -492,4 +493,93 @@ export async function getInventoryByQRCode(qrCode: string): Promise<{
       error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
     }
   }
+}
+
+export interface GroupedDevice {
+  name: string
+  category: string | null
+  manufacturer: string | null
+  model: string | null
+  image_url: string | null
+  total: number
+  stored: number    // 보관 (대여가능)
+  rented: number    // 대여중
+  repairing: number // 수리중
+  cleaning: number  // 소독중
+}
+
+/**
+ * 공개 페이지용 — 동일 기종을 묶어 수량별 재고 현황 반환
+ * 폐기 항목 제외, 기종별(name + manufacturer + model) 그룹화
+ */
+export async function getGroupedInventoryForPublic(): Promise<GroupedDevice[]> {
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from("inventory")
+    .select("name, category, manufacturer, model, image_url, status")
+    .neq("status", "폐기")
+    .order("name")
+
+  if (error) {
+    console.error("[Inventory Actions] 그룹 재고 조회 실패:", error)
+    return []
+  }
+
+  const groupMap = new Map<string, GroupedDevice>()
+
+  for (const item of data || []) {
+    const key = `${item.name}__${item.manufacturer ?? ""}__${item.model ?? ""}`
+
+    if (!groupMap.has(key)) {
+      groupMap.set(key, {
+        name: item.name,
+        category: item.category,
+        manufacturer: item.manufacturer,
+        model: item.model,
+        image_url: item.image_url,
+        total: 0,
+        stored: 0,
+        rented: 0,
+        repairing: 0,
+        cleaning: 0,
+      })
+    }
+
+    const group = groupMap.get(key)!
+    group.total++
+    if (item.status === "보관") group.stored++
+    else if (item.status === "대여중") group.rented++
+    else if (item.status === "수리중") group.repairing++
+    else if (item.status === "소독중") group.cleaning++
+  }
+
+  return Array.from(groupMap.values()).sort((a, b) =>
+    a.name.localeCompare(b.name, "ko")
+  )
+}
+
+/**
+ * 바코드로 단일 재고 항목 조회 (admin 바코드 스캔용)
+ */
+export async function getInventoryItemByBarcode(
+  barcode: string
+): Promise<{ success: boolean; item?: InventoryItem; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+
+  const supabase = createAdminClient()
+
+  const { data, error } = await supabase
+    .from("inventory")
+    .select("*")
+    .eq("barcode", barcode)
+    .maybeSingle()
+
+  if (error) {
+    console.error("[Inventory Actions] 바코드 조회 실패:", error)
+    return { success: false, error: error.message }
+  }
+
+  return { success: true, item: data as InventoryItem | undefined }
 }
