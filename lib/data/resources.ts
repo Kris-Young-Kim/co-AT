@@ -1,3 +1,22 @@
+export type DocumentResource = {
+  id: number
+  title: string
+  date: string
+}
+
+export const documentResources: DocumentResource[] = [
+  { id: 35, title: "강원특별자치도 보조기기센터 통계자료집", date: "2023-12-15" },
+  { id: 32, title: "2023 보조기기 행복드림 - 중앙 및 지역 보조기기센터 소식지", date: "2023-07-05" },
+  { id: 31, title: "2023 장애인보조기기 교부사업 안내 포스터", date: "2023-06-08" },
+  { id: 30, title: "2023년 장애인보조기기교부사업 담당자 역량강화교육 교재(4.7)", date: "2023-04-21" },
+  { id: 29, title: "장애인보조기기교부사업 그림으로 보는 보조기기 안내서", date: "2023-02-21" },
+  { id: 27, title: "2022년 강원도 장애인보조기기교부사업 담당자교육자료", date: "2022-08-31" },
+  { id: 26, title: "2022 보조기기교부사업 표준교육자료(중앙보조기기센터)", date: "2022-04-18" },
+  { id: 25, title: "2021 춘천시 커뮤니티케어 장애인재활보조기기지원사업 결과보고서", date: "2022-02-25" },
+  { id: 24, title: "보조기기센터 홍보 소식지 희망드림 2021.12. (VOL.9)", date: "2021-12-31" },
+  { id: 23, title: "개소 3주년 기념 온라인 세미나 교재 - 4차 산업혁명과 지역보조기기센터의 역할", date: "2021-11-17" },
+]
+
 export type VideoResource = {
   id: number
   title: string
