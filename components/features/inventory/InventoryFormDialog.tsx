@@ -53,6 +53,7 @@ export function InventoryFormDialog({
   const [formData, setFormData] = useState({
     name: "",
     asset_code: "",
+    barcode: "",
     category: "",
     status: "보관",
     is_rental_available: true,
@@ -69,6 +70,7 @@ export function InventoryFormDialog({
       setFormData({
         name: item.name || "",
         asset_code: item.asset_code || "",
+        barcode: item.barcode || "",
         category: item.category || "",
         status: item.status || "보관",
         is_rental_available: item.is_rental_available ?? true,
@@ -83,6 +85,7 @@ export function InventoryFormDialog({
       setFormData({
         name: "",
         asset_code: "",
+        barcode: "",
         category: "",
         status: "보관",
         is_rental_available: true,
@@ -158,7 +161,7 @@ export function InventoryFormDialog({
         purchase_date: formData.purchase_date || null,
         purchase_price: formData.purchase_price ? parseFloat(formData.purchase_price) : null,
         qr_code: formData.qr_code || null,
-        barcode: null,
+        barcode: formData.barcode || null,
         image_url: imageUrl || null,
       }
 
@@ -231,6 +234,16 @@ export function InventoryFormDialog({
                   placeholder="예: ASSET-2024-001"
                 />
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="barcode">바코드</Label>
+              <Input
+                id="barcode"
+                value={formData.barcode}
+                onChange={(e) => setFormData({ ...formData, barcode: e.target.value })}
+                placeholder="바코드 번호 (스캐너 또는 직접 입력)"
+              />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
