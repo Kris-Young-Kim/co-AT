@@ -1,12 +1,7 @@
 import type { Metadata } from "next"
-import dynamic from "next/dynamic"
 import { Breadcrumb } from "@/components/common/breadcrumb"
+import { LocationMapClient } from "@/components/features/location/LocationMapClient"
 import { Train, Bus, Car, MapPin } from "lucide-react"
-
-const KakaoMap = dynamic(
-  () => import("@/components/features/location/KakaoMap").then((m) => ({ default: m.KakaoMap })),
-  { ssr: false, loading: () => <div className="w-full rounded-xl border bg-muted animate-pulse" style={{ height: "420px" }} /> }
-)
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
 
@@ -73,7 +68,7 @@ export default function LocationPage() {
 
       <div className="space-y-8 max-w-4xl">
         {/* 지도 */}
-        <KakaoMap />
+        <LocationMapClient />
 
         {/* 주소 */}
         <div className="flex items-start gap-3 bg-primary/5 border border-primary/20 rounded-xl px-5 py-4">
@@ -85,7 +80,7 @@ export default function LocationPage() {
             <p className="text-sm text-muted-foreground mt-0.5">강원특별자치도 재활병원 2층</p>
           </div>
           <a
-            href="https://map.kakao.com/link/to/강원특별자치도보조기기센터,37.903616,127.741245"
+            href="https://map.naver.com/v5/directions/-/127.741245,37.903616,%EA%B0%95%EC%9B%90%ED%8A%B9%EB%B3%84%EC%9E%90%EC%B9%98%EB%8F%84%EB%B3%B4%EC%A1%B0%EA%B8%B0%EA%B8%B0%EC%84%BC%ED%84%B0,,/walk"
             target="_blank"
             rel="noopener noreferrer"
             className="ml-auto shrink-0 text-xs font-medium text-primary border border-primary/30 rounded-md px-3 py-1.5 hover:bg-primary hover:text-primary-foreground transition-colors"
