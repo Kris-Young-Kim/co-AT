@@ -49,7 +49,6 @@ const headerMenuItems = [
     subItems: [
       { label: "보유 보조기기", href: "/info/devices" },
       { label: "재사용 보조기기", href: "/info/reusable-devices" },
-      { label: "나에게 맞는 보조기기", href: "/info/recommendation" },
       { label: "보조기기 수리센터 안내", href: "/info/repair-center" },
       { label: "정부지원사업안내", href: "/info/government-support" },
       { label: "자료실", href: "/info/resources" },
