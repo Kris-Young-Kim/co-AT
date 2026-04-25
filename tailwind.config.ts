@@ -67,6 +67,15 @@ const config: Config = {
           'sans-serif',
         ],
       },
+      animation: {
+        marquee: "marquee 30s linear infinite",
+      },
+      keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-33.333%)" },
+        },
+      },
       fontSize: {
         // 반응형 폰트 크기 (모바일 우선)
         'xs': ['0.75rem', { lineHeight: '1rem' }],

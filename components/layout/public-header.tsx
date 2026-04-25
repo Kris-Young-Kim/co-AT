@@ -127,7 +127,7 @@ export function PublicHeader() {
                         }
                       }}
                       className={cn(
-                        "px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap relative",
+                        "inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap relative",
                         isActive
                           ? "text-primary"
                           : "text-foreground hover:text-primary"
@@ -168,7 +168,7 @@ export function PublicHeader() {
                 key={item.id}
                 href={item.href}
                 className={cn(
-                  "px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap relative",
+                  "inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap relative",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"

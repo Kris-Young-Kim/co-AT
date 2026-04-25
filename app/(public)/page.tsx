@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { HomeHeroSection } from "@/components/features/landing/HomeHeroSection"
 import { HomeQuickMenuGrid } from "@/components/features/landing/HomeQuickMenuGrid"
 import { HomePageClientSections } from "@/components/features/landing/HomePageClientSections"
+import { HomePartnerMarquee } from "@/components/features/landing/HomePartnerMarquee"
 import { getRecentNotices, getNoticesByCategory } from "@/actions/notice-actions"
 import { getPublicSchedules } from "@/actions/schedule-actions"
 import { getPublicYouTubeVideos } from "@/actions/youtube-actions"
@@ -69,6 +70,9 @@ export default async function Home() {
         schedules={schedules}
         videos={videos}
       />
+
+      {/* 협력기관 마퀴 */}
+      <HomePartnerMarquee />
     </div>
     </>
   )
