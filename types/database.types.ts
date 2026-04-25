@@ -646,9 +646,11 @@ export type Database = {
       inventory: {
         Row: {
           asset_code: string | null
+          barcode: string | null
           category: string | null
           created_at: string | null
           id: string
+          image_url: string | null
           is_rental_available: boolean | null
           manufacturer: string | null
           model: string | null
@@ -661,9 +663,11 @@ export type Database = {
         }
         Insert: {
           asset_code?: string | null
+          barcode?: string | null
           category?: string | null
           created_at?: string | null
           id?: string
+          image_url?: string | null
           is_rental_available?: boolean | null
           manufacturer?: string | null
           model?: string | null
@@ -676,9 +680,11 @@ export type Database = {
         }
         Update: {
           asset_code?: string | null
+          barcode?: string | null
           category?: string | null
           created_at?: string | null
           id?: string
+          image_url?: string | null
           is_rental_available?: boolean | null
           manufacturer?: string | null
           model?: string | null
