@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { Breadcrumb } from "@/components/common/breadcrumb"
-import { ResourcesClient } from "./ResourcesClient"
+import { getResources } from "@/actions/resource-actions"
+import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { ResourceListWithCrud } from "@/components/features/resources/ResourceListWithCrud"
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
 
@@ -18,7 +20,12 @@ export const metadata: Metadata = {
   },
 }
 
-export default function ResourcesPage() {
+export default async function ResourcesPage() {
+  const [resources, isStaff] = await Promise.all([
+    getResources(),
+    hasAdminOrStaffPermission(),
+  ])
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <Breadcrumb
@@ -29,7 +36,7 @@ export default function ResourcesPage() {
         className="mb-6"
       />
       <h1 className="text-responsive-xl font-bold text-foreground mb-8">자료실</h1>
-      <ResourcesClient />
+      <ResourceListWithCrud resources={resources} isStaff={isStaff} />
     </div>
   )
 }

@@ -3,11 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Breadcrumb } from "@/components/common/breadcrumb"
 import { ChevronLeft } from "lucide-react"
-import { videoResources } from "@/lib/data/resources"
-
-export function generateStaticParams() {
-  return videoResources.map((v) => ({ id: String(v.id) }))
-}
+import { getResourceById } from "@/actions/resource-actions"
 
 export async function generateMetadata({
   params,
@@ -15,9 +11,9 @@ export async function generateMetadata({
   params: Promise<{ id: string }>
 }): Promise<Metadata> {
   const { id } = await params
-  const video = videoResources.find((v) => v.id === Number(id))
-  if (!video) return {}
-  return { title: video.title }
+  const resource = await getResourceById(id)
+  if (!resource) return {}
+  return { title: resource.title }
 }
 
 export default async function VideoDetailPage({
@@ -26,8 +22,9 @@ export default async function VideoDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const video = videoResources.find((v) => v.id === Number(id))
-  if (!video) notFound()
+  const resource = await getResourceById(id)
+
+  if (!resource || resource.type !== "video") notFound()
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -35,23 +32,25 @@ export default async function VideoDetailPage({
         items={[
           { label: "보조기기 정보", href: "/info" },
           { label: "자료실", href: "/info/resources" },
-          { label: video.title, href: `/info/resources/video/${video.id}` },
+          { label: resource.title, href: `/info/resources/video/${resource.id}` },
         ]}
         className="mb-6"
       />
 
       <div className="max-w-3xl">
-        <h1 className="text-responsive-xl font-bold text-foreground mb-2">{video.title}</h1>
-        <p className="text-sm text-muted-foreground mb-8">{video.date}</p>
+        <h1 className="text-responsive-xl font-bold text-foreground mb-2">{resource.title}</h1>
+        {resource.resource_date && (
+          <p className="text-sm text-muted-foreground mb-8">{resource.resource_date}</p>
+        )}
 
         <div className="space-y-6">
-          {video.youtubeIds.map((ytId, i) => (
+          {(resource.youtube_ids || []).map((ytId, i) => (
             <div key={ytId + i} className="rounded-xl overflow-hidden border bg-black">
               <div className="relative w-full" style={{ paddingTop: "56.25%" }}>
                 <iframe
                   className="absolute inset-0 w-full h-full"
                   src={`https://www.youtube.com/embed/${ytId}`}
-                  title={video.title}
+                  title={resource.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                 />
@@ -60,8 +59,8 @@ export default async function VideoDetailPage({
           ))}
         </div>
 
-        {video.desc && (
-          <p className="mt-6 text-sm text-gray-700 leading-relaxed">{video.desc}</p>
+        {resource.description && (
+          <p className="mt-6 text-sm text-gray-700 leading-relaxed">{resource.description}</p>
         )}
 
         <div className="mt-12 flex justify-center">
