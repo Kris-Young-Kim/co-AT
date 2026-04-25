@@ -44,15 +44,6 @@ export default function InfoPage() {
           </p>
         </a>
         <a
-          href="/info/recommendation"
-          className="p-6 rounded-lg border bg-card hover:bg-accent transition-colors"
-        >
-          <h2 className="text-lg font-semibold mb-2">나에게 맞는 보조기기</h2>
-          <p className="text-sm text-muted-foreground">
-            개인에게 맞는 보조기기를 추천받으세요.
-          </p>
-        </a>
-        <a
           href="/info/repair-center"
           className="p-6 rounded-lg border bg-card hover:bg-accent transition-colors"
         >
