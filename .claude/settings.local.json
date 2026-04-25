@@ -46,7 +46,8 @@
       "Bash(ls \"D:/AILeader1/project/valuewith/co-AT/app/\\(admin\\)/work-tasks/\")",
       "Bash(pnpm test:*)",
       "Bash(/dev/null ls:*)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(find D:/AILeader1/project/valuewith/co-AT/components -type f \\\\\\(-name *nav* -o -name *header* -o -name *top* \\\\\\))"
     ]
   }
 }
