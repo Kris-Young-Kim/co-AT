@@ -6,6 +6,8 @@ import { NoticeListWithCrud } from "@/components/features/notices/NoticeListWith
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
 
+export const revalidate = 300
+
 export const metadata: Metadata = {
   title: "활동갤러리",
   description: "강원특별자치도 보조기기센터의 다양한 활동 소식을 확인하세요. 교육, 홍보, 서비스 제공 활동을 만나보세요.",

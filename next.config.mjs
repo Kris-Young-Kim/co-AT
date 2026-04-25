@@ -72,5 +72,7 @@ export default withSentryConfig(nextConfig, {
   project: process.env.SENTRY_PROJECT || "",
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: !process.env.CI,
+  // Preview 배포에서 소스맵 업로드 생략 → 빌드 시간 단축
+  disableSourceMapUpload: process.env.VERCEL_ENV !== "production",
 });
 
