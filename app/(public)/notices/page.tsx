@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import { getNoticesByCategory } from "@/actions/notice-actions"
+import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { Breadcrumb } from "@/components/common/breadcrumb"
-import { NoticeList } from "@/components/features/notices/NoticeList"
+import { NoticeListWithCrud } from "@/components/features/notices/NoticeListWithCrud"
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
 
@@ -20,23 +21,19 @@ export const metadata: Metadata = {
 }
 
 export default async function NoticesPage() {
-  // 공지사항만 조회
-  const notices = await getNoticesByCategory("notice", 50)
-  
+  const [notices, isStaff] = await Promise.all([
+    getNoticesByCategory("notice", 50),
+    hasAdminOrStaffPermission(),
+  ])
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <Breadcrumb items={[{ label: "공지사항", href: "/notices" }]} className="mb-6" />
       <div className="mb-8">
-        <h1 className="text-responsive-xl font-bold text-foreground mb-2">
-          공지사항
-        </h1>
-        <p className="text-muted-foreground">
-          센터의 주요 공지사항을 확인하실 수 있습니다
-        </p>
+        <h1 className="text-responsive-xl font-bold text-foreground mb-2">공지사항</h1>
+        <p className="text-muted-foreground">센터의 주요 공지사항을 확인하실 수 있습니다</p>
       </div>
-
-      <NoticeList notices={notices} emptyMessage="등록된 공지사항이 없습니다" />
+      <NoticeListWithCrud notices={notices} isStaff={isStaff} emptyMessage="등록된 공지사항이 없습니다" />
     </div>
   )
 }
-
