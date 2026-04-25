@@ -2,13 +2,12 @@
 
 import { useEffect, useRef } from "react"
 
-const KAKAO_APP_KEY = "7b1e46835619f4a875191c14e64b6476"
 const LAT = 37.903616
 const LNG = 127.741245
 
 declare global {
   interface Window {
-    kakao: any
+    naver: any
   }
 }
 
@@ -16,43 +15,60 @@ export function KakaoMap() {
   const mapRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    const clientId = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID
+
     const initMap = () => {
-      if (!mapRef.current || !window.kakao?.maps) return
-      const { kakao } = window
-      const mapOption = {
-        center: new kakao.maps.LatLng(LAT, LNG),
-        level: 3,
-      }
-      const map = new kakao.maps.Map(mapRef.current, mapOption)
+      if (!mapRef.current || !window.naver?.maps) return
+      const { naver } = window
 
-      const markerPosition = new kakao.maps.LatLng(LAT, LNG)
-      const marker = new kakao.maps.Marker({ position: markerPosition })
-      marker.setMap(map)
+      const map = new naver.maps.Map(mapRef.current, {
+        center: new naver.maps.LatLng(LAT, LNG),
+        zoom: 16,
+      })
 
-      const iwContent = `
-        <div style="padding:10px 14px;font-size:13px;line-height:1.6;min-width:220px;">
-          <strong style="display:block;margin-bottom:4px;">강원특별자치도 보조기기센터</strong>
-          <span style="color:#666;font-size:12px;">강원특별자치도 재활병원 2층</span>
-        </div>
-      `
-      const infowindow = new kakao.maps.InfoWindow({ content: iwContent, removable: true })
-      kakao.maps.event.addListener(marker, "click", () => infowindow.open(map, marker))
-      infowindow.open(map, marker)
+      const marker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(LAT, LNG),
+        map,
+      })
+
+      const infoWindow = new naver.maps.InfoWindow({
+        content: `
+          <div style="padding:12px 16px;font-size:13px;line-height:1.6;min-width:200px;">
+            <strong style="display:block;margin-bottom:2px;">강원특별자치도 보조기기센터</strong>
+            <span style="color:#666;font-size:12px;">강원특별자치도 재활병원 2층</span>
+          </div>
+        `,
+        borderWidth: 1,
+        borderColor: "#ddd",
+        anchorSize: new naver.maps.Size(10, 10),
+      })
+
+      infoWindow.open(map, marker)
+
+      naver.maps.Event.addListener(marker, "click", () => {
+        if (infoWindow.getMap()) {
+          infoWindow.close()
+        } else {
+          infoWindow.open(map, marker)
+        }
+      })
     }
 
-    if (window.kakao?.maps) {
+    if (window.naver?.maps) {
       initMap()
       return
     }
 
     const script = document.createElement("script")
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_APP_KEY}&autoload=false`
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${clientId}`
     script.async = true
-    script.onload = () => window.kakao.maps.load(initMap)
+    script.onload = initMap
     document.head.appendChild(script)
 
     return () => {
-      document.head.removeChild(script)
+      if (document.head.contains(script)) {
+        document.head.removeChild(script)
+      }
     }
   }, [])
 

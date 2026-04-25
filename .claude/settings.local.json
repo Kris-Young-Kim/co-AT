@@ -45,7 +45,8 @@
       "Bash(ls \"D:/AILeader1/project/valuewith/co-AT/app/\\(admin\\)/budget/\")",
       "Bash(ls \"D:/AILeader1/project/valuewith/co-AT/app/\\(admin\\)/work-tasks/\")",
       "Bash(pnpm test:*)",
-      "Bash(/dev/null ls:*)"
+      "Bash(/dev/null ls:*)",
+      "Bash(npx next:*)"
     ]
   }
 }
