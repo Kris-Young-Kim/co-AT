@@ -1175,6 +1175,59 @@ export type Database = {
           },
         ]
       }
+      resources: {
+        Row: {
+          id: string
+          type: string
+          title: string
+          description: string | null
+          file_url: string | null
+          file_name: string | null
+          file_size: number | null
+          youtube_ids: string[] | null
+          resource_date: string | null
+          created_by: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          type: string
+          title: string
+          description?: string | null
+          file_url?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          youtube_ids?: string[] | null
+          resource_date?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          type?: string
+          title?: string
+          description?: string | null
+          file_url?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          youtube_ids?: string[] | null
+          resource_date?: string | null
+          created_by?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resources_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
