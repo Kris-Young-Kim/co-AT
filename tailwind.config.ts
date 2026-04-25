@@ -76,6 +76,10 @@ const config: Config = {
           "100%": { transform: "translateX(-33.333%)" },
         },
       },
+      boxShadow: {
+        'depth': '0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04)',
+        'depth-hover': '0 2px 4px rgba(0,0,0,0.06), 0 8px 20px rgba(0,0,0,0.08), 0 16px 32px rgba(0,0,0,0.06)',
+      },
       fontSize: {
         // 반응형 폰트 크기 (모바일 우선)
         'xs': ['0.75rem', { lineHeight: '1rem' }],
