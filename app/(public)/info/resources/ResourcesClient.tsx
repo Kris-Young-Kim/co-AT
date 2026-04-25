@@ -2,16 +2,20 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Search } from "lucide-react"
-import { videoResources } from "@/lib/data/resources"
+import { Search, FileText } from "lucide-react"
+import { videoResources, documentResources } from "@/lib/data/resources"
 import { cn } from "@/lib/utils"
 
 export function ResourcesClient() {
   const [tab, setTab] = useState<"video" | "document">("video")
   const [query, setQuery] = useState("")
 
-  const filtered = videoResources.filter((v) =>
+  const filteredVideos = videoResources.filter((v) =>
     v.title.replace(/\s/g, "").toLowerCase().includes(query.replace(/\s/g, "").toLowerCase())
+  )
+
+  const filteredDocs = documentResources.filter((d) =>
+    d.title.replace(/\s/g, "").toLowerCase().includes(query.replace(/\s/g, "").toLowerCase())
   )
 
   return (
@@ -50,9 +54,9 @@ export function ResourcesClient() {
 
       {/* 영상자료 */}
       {tab === "video" && (
-        filtered.length > 0 ? (
+        filteredVideos.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filtered.map((video) => (
+            {filteredVideos.map((video) => (
               <Link
                 key={video.id}
                 href={`/info/resources/video/${video.id}`}
@@ -95,9 +99,36 @@ export function ResourcesClient() {
 
       {/* 문서자료 */}
       {tab === "document" && (
-        <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-          <p className="text-sm">문서자료를 준비 중입니다.</p>
-        </div>
+        filteredDocs.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filteredDocs.map((doc) => (
+              <div
+                key={doc.id}
+                className="border rounded-xl overflow-hidden bg-white hover:shadow-md transition-shadow"
+              >
+                {/* 아이콘 영역 */}
+                <div
+                  className="bg-gradient-to-br from-indigo-50 to-blue-50 flex items-center justify-center"
+                  style={{ height: "160px" }}
+                >
+                  <FileText className="h-12 w-12 text-indigo-300" />
+                </div>
+                {/* 정보 */}
+                <div className="p-3">
+                  <p className="text-xs sm:text-sm font-medium text-foreground leading-snug line-clamp-2 mb-1.5">
+                    {doc.title}
+                  </p>
+                  <p className="text-xs text-muted-foreground">{doc.date}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+            <Search className="h-10 w-10 mb-3 opacity-30" />
+            <p className="text-sm">검색 결과가 없습니다.</p>
+          </div>
+        )
       )}
     </>
   )
