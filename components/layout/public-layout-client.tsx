@@ -15,6 +15,11 @@ const SupportServiceChatbotFloating = dynamic(
   { ssr: false }
 )
 
+const QuickMenu = dynamic(
+  () => import("@/components/layout/quick-menu").then((m) => ({ default: m.QuickMenu })),
+  { ssr: false }
+)
+
 interface PublicLayoutClientProps {
   children: React.ReactNode
 }
@@ -24,6 +29,7 @@ export function PublicLayoutClient({ children }: PublicLayoutClientProps) {
     <>
       <PublicHeader />
       <main className="flex-1">{children}</main>
+      <QuickMenu />
       <SupportServiceChatbotFloating />
     </>
   )
