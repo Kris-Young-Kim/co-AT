@@ -1,0 +1,273 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - link [ref=e10] [cursor=pointer]:
+      - /url: /
+    - navigation [ref=e11]:
+      - list [ref=e12]:
+        - listitem [ref=e13]:
+          - link "주요사업" [ref=e15] [cursor=pointer]:
+            - /url: /business/service.php
+        - listitem [ref=e16]:
+          - link "커뮤니티" [ref=e18] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e19]:
+          - link "보조기기 정보" [ref=e21] [cursor=pointer]:
+            - /url: /dataroom/equipment_list.php
+        - listitem [ref=e22]:
+          - link "서비스 신청" [ref=e24] [cursor=pointer]:
+            - /url: /apply/introduce.php
+        - listitem [ref=e25]:
+          - link "센터소개" [ref=e27] [cursor=pointer]:
+            - /url: /company/greetings.php
+  - generic [ref=e29]:
+    - heading "커뮤니티" [level=2] [ref=e30]
+    - paragraph [ref=e31]: Gangwon Assistive Technology Center
+  - generic [ref=e32]:
+    - generic [ref=e33]:
+      - heading "공지사항" [level=3] [ref=e34]: 공지사항
+      - list [ref=e36]:
+        - listitem [ref=e37]:
+          - link "공지사항" [ref=e38] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e39]:
+          - link "활동갤러리" [ref=e40] [cursor=pointer]:
+            - /url: /bbs/?so_table=gallery
+        - listitem [ref=e41]:
+          - link "보조기기 서비스 사례" [ref=e42] [cursor=pointer]:
+            - /url: /bbs/?so_table=case
+    - generic [ref=e43]:
+      - generic [ref=e44]: 공지사항
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - generic:
+            - paragraph [ref=e49]:
+              - text: "- 총 게시물"
+              - generic [ref=e50]: "126"
+              - text: ", 페이지"
+              - generic [ref=e51]: "07"
+              - text: /
+              - generic [ref=e52]: "09"
+            - combobox [ref=e54]:
+              - option "제목+내용" [selected]
+              - option "제목"
+              - option "내용"
+            - generic [ref=e55]:
+              - textbox "검색어를 입력해 주세요" [ref=e56]
+              - button "검색" [ref=e58] [cursor=pointer]
+        - generic [ref=e59]:
+          - link "전체" [ref=e60] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice
+          - link "지원사업" [ref=e61] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=지원사업
+          - link "센터소식" [ref=e62] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=센터소식
+        - table "공지사항 목록" [ref=e64]:
+          - rowgroup [ref=e71]:
+            - row "번호 분류 제목 등록일 첨부파일" [ref=e72]:
+              - columnheader "번호" [ref=e73]
+              - columnheader "분류" [ref=e74]
+              - columnheader "제목" [ref=e75]
+              - columnheader "등록일" [ref=e76]
+              - columnheader "첨부파일" [ref=e77]
+          - rowgroup [ref=e78]:
+            - row "36 마감 [신청마감] MOVE WITH SKYLIFE 휠체어 지원사업 신청 안내(~8.27) 2021-08-12 첨부파일 아이콘 이미지" [ref=e79]:
+              - cell "36" [ref=e80]
+              - cell "마감" [ref=e81]
+              - cell "[신청마감] MOVE WITH SKYLIFE 휠체어 지원사업 신청 안내(~8.27)" [ref=e82]:
+                - link "[신청마감] MOVE WITH SKYLIFE 휠체어 지원사업 신청 안내(~8.27)" [ref=e83] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=79&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-08-12" [ref=e84]
+              - cell "첨부파일 아이콘 이미지" [ref=e85]:
+                - link "첨부파일 아이콘 이미지" [ref=e86] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=79&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+                  - img "첨부파일 아이콘 이미지" [ref=e87]
+            - row "35 마감 [신청마감] 2021년 장애아동용 휠체어 지원사업 안내(~9.2.) 2021-08-06 첨부파일 아이콘 이미지" [ref=e88]:
+              - cell "35" [ref=e89]
+              - cell "마감" [ref=e90]
+              - cell "[신청마감] 2021년 장애아동용 휠체어 지원사업 안내(~9.2.)" [ref=e91]:
+                - link "[신청마감] 2021년 장애아동용 휠체어 지원사업 안내(~9.2.)" [ref=e92] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=78&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-08-06" [ref=e93]
+              - cell "첨부파일 아이콘 이미지" [ref=e94]:
+                - link "첨부파일 아이콘 이미지" [ref=e95] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=78&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+                  - img "첨부파일 아이콘 이미지" [ref=e96]
+            - row "34 마감 [신청마감] 청각 장애 중·고등학교 문자통역 서비스 2기 모집·신청 안내(~8.30) 2021-08-04 첨부파일 아이콘 이미지" [ref=e97]:
+              - cell "34" [ref=e98]
+              - cell "마감" [ref=e99]
+              - cell "[신청마감] 청각 장애 중·고등학교 문자통역 서비스 2기 모집·신청 안내(~8.30)" [ref=e100]:
+                - link "[신청마감] 청각 장애 중·고등학교 문자통역 서비스 2기 모집·신청 안내(~8.30)" [ref=e101] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=76&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-08-04" [ref=e102]
+              - cell "첨부파일 아이콘 이미지" [ref=e103]:
+                - link "첨부파일 아이콘 이미지" [ref=e104] [cursor=pointer]:
+                  - /url: /bbs/data/notice/67d74de0_ECB2ADEAB081EC9EA5EC95A0+ECA491_EAB3A0EB93B1ED9599EC839D+EBACB8EC9E90ED86B5EC97ADEC849CEBB984EC8AA4+2EAB8B0+EBAAA8ECA791_EC8BA0ECB2AD+EC9588EB82B4.pdf
+                  - img "첨부파일 아이콘 이미지" [ref=e105]
+            - row "33 결과 [선정결과] 2021년 저소득 희귀질환아동 맞춤형보조기기 지원사업 최종지원대상자 발표 2021-07-30" [ref=e106]:
+              - cell "33" [ref=e107]
+              - cell "결과" [ref=e108]
+              - cell "[선정결과] 2021년 저소득 희귀질환아동 맞춤형보조기기 지원사업 최종지원대상자 발표" [ref=e109]:
+                - link "[선정결과] 2021년 저소득 희귀질환아동 맞춤형보조기기 지원사업 최종지원대상자 발표" [ref=e110] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=73&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-07-30" [ref=e111]
+              - cell [ref=e112]
+            - row "32 결과 [선정결과] 2021년도 코스콤 맞춤형 IT 보조기기 지원사업 최종지원대상자 발표 2021-07-30" [ref=e113]:
+              - cell "32" [ref=e114]
+              - cell "결과" [ref=e115]
+              - cell "[선정결과] 2021년도 코스콤 맞춤형 IT 보조기기 지원사업 최종지원대상자 발표" [ref=e116]:
+                - link "[선정결과] 2021년도 코스콤 맞춤형 IT 보조기기 지원사업 최종지원대상자 발표" [ref=e117] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=72&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-07-30" [ref=e118]
+              - cell [ref=e119]
+            - row "31 결과 [선정결과] 2021 현대모비스 장애아동이동편의 보조기구 지원 대상자 선정 알림 2021-06-29" [ref=e120]:
+              - cell "31" [ref=e121]
+              - cell "결과" [ref=e122]
+              - cell "[선정결과] 2021 현대모비스 장애아동이동편의 보조기구 지원 대상자 선정 알림" [ref=e123]:
+                - link "[선정결과] 2021 현대모비스 장애아동이동편의 보조기구 지원 대상자 선정 알림" [ref=e124] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=71&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-06-29" [ref=e125]
+              - cell [ref=e126]
+            - row "30 공지 [정보안내] 수동휠체어 전동화 키트 무료대여 사업 2021-06-21 첨부파일 아이콘 이미지" [ref=e127]:
+              - cell "30" [ref=e128]
+              - cell "공지" [ref=e129]
+              - cell "[정보안내] 수동휠체어 전동화 키트 무료대여 사업" [ref=e130]:
+                - link "[정보안내] 수동휠체어 전동화 키트 무료대여 사업" [ref=e131] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=70&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-06-21" [ref=e132]
+              - cell "첨부파일 아이콘 이미지" [ref=e133]:
+                - link "첨부파일 아이콘 이미지" [ref=e134] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=70&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+                  - img "첨부파일 아이콘 이미지" [ref=e135]
+            - row "29 마감 [접수마감] 2021 신용카드사회공헌재단 희귀난치어린이 지원사업 (2차) 안내 2021-06-10 첨부파일 아이콘 이미지" [ref=e136]:
+              - cell "29" [ref=e137]
+              - cell "마감" [ref=e138]
+              - cell "[접수마감] 2021 신용카드사회공헌재단 희귀난치어린이 지원사업 (2차) 안내" [ref=e139]:
+                - link "[접수마감] 2021 신용카드사회공헌재단 희귀난치어린이 지원사업 (2차) 안내" [ref=e140] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=68&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-06-10" [ref=e141]
+              - cell "첨부파일 아이콘 이미지" [ref=e142]:
+                - link "첨부파일 아이콘 이미지" [ref=e143] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=68&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+                  - img "첨부파일 아이콘 이미지" [ref=e144]
+            - row "28 평가 [현장평가] 2021년 월드비전과 함께하는 저소득 희귀질환아동 맞춤형 보조기기 지원사업 현장평가 대상자 공지 2021-05-17" [ref=e145]:
+              - cell "28" [ref=e146]
+              - cell "평가" [ref=e147]
+              - cell "[현장평가] 2021년 월드비전과 함께하는 저소득 희귀질환아동 맞춤형 보조기기 지원사업 현장평가 대상자 공지" [ref=e148]:
+                - link "[현장평가] 2021년 월드비전과 함께하는 저소득 희귀질환아동 맞춤형 보조기기 지원사업 현장평가 대상자 공지" [ref=e149] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=67&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-05-17" [ref=e150]
+              - cell [ref=e151]
+            - row "27 평가 [현장평가] 2021년 코스콤 맞춤형 IT 보조기기 지원사업 현장평가 대상자 공지 2021-05-17" [ref=e152]:
+              - cell "27" [ref=e153]
+              - cell "평가" [ref=e154]
+              - cell "[현장평가] 2021년 코스콤 맞춤형 IT 보조기기 지원사업 현장평가 대상자 공지" [ref=e155]:
+                - link "[현장평가] 2021년 코스콤 맞춤형 IT 보조기기 지원사업 현장평가 대상자 공지" [ref=e156] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=66&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-05-17" [ref=e157]
+              - cell [ref=e158]
+            - row "26 평가 [현장평가] 2021년 롯데복지재단 장애아동·청소년 보조기기 지원사업 현장평가 대상자 공지 2021-05-17" [ref=e159]:
+              - cell "26" [ref=e160]
+              - cell "평가" [ref=e161]
+              - cell "[현장평가] 2021년 롯데복지재단 장애아동·청소년 보조기기 지원사업 현장평가 대상자 공지" [ref=e162]:
+                - link "[현장평가] 2021년 롯데복지재단 장애아동·청소년 보조기기 지원사업 현장평가 대상자 공지" [ref=e163] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=65&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-05-17" [ref=e164]
+              - cell [ref=e165]
+            - row "25 마감 [접수마감] 2021 정보통신보조기기보급사업(5.1~6.18) 신청 안내 2021-04-26 첨부파일 아이콘 이미지" [ref=e166]:
+              - cell "25" [ref=e167]
+              - cell "마감" [ref=e168]
+              - cell "[접수마감] 2021 정보통신보조기기보급사업(5.1~6.18) 신청 안내" [ref=e169]:
+                - link "[접수마감] 2021 정보통신보조기기보급사업(5.1~6.18) 신청 안내" [ref=e170] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=64&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-04-26" [ref=e171]
+              - cell "첨부파일 아이콘 이미지" [ref=e172]:
+                - link "첨부파일 아이콘 이미지" [ref=e173] [cursor=pointer]:
+                  - /url: /bbs/data/notice/
+                  - img "첨부파일 아이콘 이미지" [ref=e174]
+            - row "24 마감 [접수마감] 2021 현대모비스 장애아동이동편의 보조기구 지원사업 신청 안내(~5.28) 2021-04-16 첨부파일 아이콘 이미지" [ref=e175]:
+              - cell "24" [ref=e176]
+              - cell "마감" [ref=e177]
+              - cell "[접수마감] 2021 현대모비스 장애아동이동편의 보조기구 지원사업 신청 안내(~5.28)" [ref=e178]:
+                - link "[접수마감] 2021 현대모비스 장애아동이동편의 보조기구 지원사업 신청 안내(~5.28)" [ref=e179] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=63&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-04-16" [ref=e180]
+              - cell "첨부파일 아이콘 이미지" [ref=e181]:
+                - link "첨부파일 아이콘 이미지" [ref=e182] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=63&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+                  - img "첨부파일 아이콘 이미지" [ref=e183]
+            - row "23 마감 [접수마감] 2021 코스콤 맞춤형 IT 보조기기 지원사업 신청안내(~4.30) 2021-04-06 첨부파일 아이콘 이미지" [ref=e184]:
+              - cell "23" [ref=e185]
+              - cell "마감" [ref=e186]
+              - cell "[접수마감] 2021 코스콤 맞춤형 IT 보조기기 지원사업 신청안내(~4.30)" [ref=e187]:
+                - link "[접수마감] 2021 코스콤 맞춤형 IT 보조기기 지원사업 신청안내(~4.30)" [ref=e188] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=62&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-04-06" [ref=e189]
+              - cell "첨부파일 아이콘 이미지" [ref=e190]:
+                - link "첨부파일 아이콘 이미지" [ref=e191] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=62&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+                  - img "첨부파일 아이콘 이미지" [ref=e192]
+            - row "22 마감 [접수마감] 2021년 월드비전과 함께하는 저소득 희귀질환아동 맞춤형 보조기기 지원사업(~4.30) 2021-03-30 첨부파일 아이콘 이미지" [ref=e193]:
+              - cell "22" [ref=e194]
+              - cell "마감" [ref=e195]
+              - cell "[접수마감] 2021년 월드비전과 함께하는 저소득 희귀질환아동 맞춤형 보조기기 지원사업(~4.30)" [ref=e196]:
+                - link "[접수마감] 2021년 월드비전과 함께하는 저소득 희귀질환아동 맞춤형 보조기기 지원사업(~4.30)" [ref=e197] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=61&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+              - cell "2021-03-30" [ref=e198]
+              - cell "첨부파일 아이콘 이미지" [ref=e199]:
+                - link "첨부파일 아이콘 이미지" [ref=e200] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=61&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+                  - img "첨부파일 아이콘 이미지" [ref=e201]
+        - generic [ref=e203]:
+          - link [ref=e204] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=1
+            - img [ref=e205]
+          - link "1" [ref=e206] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=1
+          - link "2" [ref=e207] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=2
+          - link "3" [ref=e208] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=3
+          - link "4" [ref=e209] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+          - link "5" [ref=e210] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=5
+          - link "6" [ref=e211] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=6
+          - generic [ref=e212]: "7"
+          - link "8" [ref=e213] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+          - link "9" [ref=e214] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=9
+          - link [ref=e215] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=9
+            - img [ref=e216]
+  - generic [ref=e218]:
+    - button
+    - list [ref=e219]:
+      - listitem [ref=e220]:
+        - link "개인정보처리방침" [ref=e221] [cursor=pointer]:
+          - /url: /policy/privacy.php
+          - generic [ref=e222]: 개인정보처리방침
+        - link "이메일무단수집거부" [ref=e223] [cursor=pointer]:
+          - /url: /policy/email_collection.php
+      - listitem [ref=e224]:
+        - paragraph [ref=e225]:
+          - generic [ref=e226]: 강원특별자치도 보조기기센터
+          - generic [ref=e227]: 강원특별자치도 춘천시 충열로 142번길 24-16(우두동 291-2)강원특별자치도재활병원 2층
+          - generic [ref=e228]: "대표 : 이승준"
+        - paragraph [ref=e229]:
+          - generic [ref=e230]: "사업자 등록번호 : 221-82-10983"
+          - generic [ref=e231]: "대표전화 : 033-248-7751~4"
+          - generic [ref=e232]: "Fax : 033-248-7755"
+          - generic [ref=e233]: "Email : gatc2019@naver.com"
+      - listitem [ref=e234]:
+        - heading "Copyright(c) 강원특별자치도보조기기센터 All rights reserved." [level=2] [ref=e235]
+    - list [ref=e236]:
+      - listitem [ref=e237]:
+        - generic [ref=e240]: 패밀리 사이트
+      - listitem [ref=e242]:
+        - link [ref=e243] [cursor=pointer]:
+          - /url: http://pf.kakao.com/_hjxmRxb
+        - link [ref=e244] [cursor=pointer]:
+          - /url: https://www.facebook.com/GATC2019
+        - img "카카오톡 아이콘 카카오QR코드 페이스북 아이콘 페이스북 QR코드 이미지" [ref=e245]

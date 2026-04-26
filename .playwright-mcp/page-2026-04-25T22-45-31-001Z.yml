@@ -1,0 +1,286 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - link [ref=e10] [cursor=pointer]:
+      - /url: /
+    - navigation [ref=e11]:
+      - list [ref=e12]:
+        - listitem [ref=e13]:
+          - link "주요사업" [ref=e15] [cursor=pointer]:
+            - /url: /business/service.php
+        - listitem [ref=e16]:
+          - link "커뮤니티" [ref=e18] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e19]:
+          - link "보조기기 정보" [ref=e21] [cursor=pointer]:
+            - /url: /dataroom/equipment_list.php
+        - listitem [ref=e22]:
+          - link "서비스 신청" [ref=e24] [cursor=pointer]:
+            - /url: /apply/introduce.php
+        - listitem [ref=e25]:
+          - link "센터소개" [ref=e27] [cursor=pointer]:
+            - /url: /company/greetings.php
+  - generic [ref=e29]:
+    - heading "커뮤니티" [level=2] [ref=e30]
+    - paragraph [ref=e31]: Gangwon Assistive Technology Center
+  - generic [ref=e32]:
+    - generic [ref=e33]:
+      - heading "공지사항" [level=3] [ref=e34]: 공지사항
+      - list [ref=e36]:
+        - listitem [ref=e37]:
+          - link "공지사항" [ref=e38] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e39]:
+          - link "활동갤러리" [ref=e40] [cursor=pointer]:
+            - /url: /bbs/?so_table=gallery
+        - listitem [ref=e41]:
+          - link "보조기기 서비스 사례" [ref=e42] [cursor=pointer]:
+            - /url: /bbs/?so_table=case
+    - generic [ref=e43]:
+      - generic [ref=e44]: 공지사항
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - generic:
+            - paragraph [ref=e49]:
+              - text: "- 총 게시물"
+              - generic [ref=e50]: "221"
+              - text: ", 페이지"
+              - generic [ref=e51]: "01"
+              - text: /
+              - generic [ref=e52]: "15"
+            - combobox [ref=e54]:
+              - option "제목+내용" [selected]
+              - option "제목"
+              - option "내용"
+            - generic [ref=e55]:
+              - textbox "검색어를 입력해 주세요" [ref=e56]
+              - button "검색" [ref=e58] [cursor=pointer]
+        - generic [ref=e59]:
+          - link "전체" [ref=e60] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice
+          - link "지원사업" [ref=e61] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=지원사업
+          - link "센터소식" [ref=e62] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=센터소식
+        - table "공지사항 목록" [ref=e64]:
+          - rowgroup [ref=e71]:
+            - row "번호 분류 제목 등록일 첨부파일" [ref=e72]:
+              - columnheader "번호" [ref=e73]
+              - columnheader "분류" [ref=e74]
+              - columnheader "제목" [ref=e75]
+              - columnheader "등록일" [ref=e76]
+              - columnheader "첨부파일" [ref=e77]
+          - rowgroup [ref=e78]:
+            - row "공지 [지원사업] 월드비전과 함께하는 2026 저소득 희귀질환아동 맞춤형보조기기 지원사업 안내 2026-04-21 첨부파일 아이콘 이미지" [ref=e79]:
+              - cell [ref=e80]:
+                - img [ref=e81]
+              - cell "공지" [ref=e82]
+              - cell "[지원사업] 월드비전과 함께하는 2026 저소득 희귀질환아동 맞춤형보조기기 지원사업 안내" [ref=e83]:
+                - link "[지원사업] 월드비전과 함께하는 2026 저소득 희귀질환아동 맞춤형보조기기 지원사업 안내" [ref=e84] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=262&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-04-21" [ref=e85]
+              - cell "첨부파일 아이콘 이미지" [ref=e86]:
+                - link "첨부파일 아이콘 이미지" [ref=e87] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=262&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+                  - img "첨부파일 아이콘 이미지" [ref=e88]
+            - row "공지 [지원사업]「THE좋은세상만들기」주거환경개선사업 신청 안내 2026-04-10 첨부파일 아이콘 이미지" [ref=e89]:
+              - cell [ref=e90]:
+                - img [ref=e91]
+              - cell "공지" [ref=e92]
+              - cell "[지원사업]「THE좋은세상만들기」주거환경개선사업 신청 안내" [ref=e93]:
+                - link "[지원사업]「THE좋은세상만들기」주거환경개선사업 신청 안내" [ref=e94] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=261&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-04-10" [ref=e95]
+              - cell "첨부파일 아이콘 이미지" [ref=e96]:
+                - link "첨부파일 아이콘 이미지" [ref=e97] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=261&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+                  - img "첨부파일 아이콘 이미지" [ref=e98]
+            - row "공지 [지원사업] 2026 롯데재단 장애인 보조기기 지원사업 안내 2026-04-06 첨부파일 아이콘 이미지" [ref=e99]:
+              - cell [ref=e100]:
+                - img [ref=e101]
+              - cell "공지" [ref=e102]
+              - cell "[지원사업] 2026 롯데재단 장애인 보조기기 지원사업 안내" [ref=e103]:
+                - link "[지원사업] 2026 롯데재단 장애인 보조기기 지원사업 안내" [ref=e104] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=260&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-04-06" [ref=e105]
+              - cell "첨부파일 아이콘 이미지" [ref=e106]:
+                - link "첨부파일 아이콘 이미지" [ref=e107] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=260&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+                  - img "첨부파일 아이콘 이미지" [ref=e108]
+            - row "정보 [센터사업] 2026년 보조기기 무상 대여 서비스 2026-03-23" [ref=e109]:
+              - cell [ref=e110]:
+                - img [ref=e111]
+              - cell "정보" [ref=e112]
+              - cell "[센터사업] 2026년 보조기기 무상 대여 서비스" [ref=e113]:
+                - link "[센터사업] 2026년 보조기기 무상 대여 서비스" [ref=e114] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=259&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-03-23" [ref=e115]
+              - cell [ref=e116]
+            - row "정보 [정보제공] 한소네 6 카카오톡 사용방법 2025-09-18 첨부파일 아이콘 이미지" [ref=e117]:
+              - cell [ref=e118]:
+                - img [ref=e119]
+              - cell "정보" [ref=e120]
+              - cell "[정보제공] 한소네 6 카카오톡 사용방법" [ref=e121]:
+                - link "[정보제공] 한소네 6 카카오톡 사용방법" [ref=e122] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=242&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2025-09-18" [ref=e123]
+              - cell "첨부파일 아이콘 이미지" [ref=e124]:
+                - link "첨부파일 아이콘 이미지" [ref=e125] [cursor=pointer]:
+                  - /url: /bbs/data/notice/45c8f6af_ED959CEC868CEB84A46+ECB9B4ECB9B4EC98A4ED86A1+EC82ACEC9AA9EBB0A9EBB295.pdf
+                  - img "첨부파일 아이콘 이미지" [ref=e126]
+            - row "216 채용 [합격자발표]강원특별자치도 보조기기센터 국비계약직 최종합격자 발표 및 채용후보등록 공고 2026-03-16 첨부파일 아이콘 이미지" [ref=e127]:
+              - cell "216" [ref=e128]
+              - cell "채용" [ref=e129]
+              - cell "[합격자발표]강원특별자치도 보조기기센터 국비계약직 최종합격자 발표 및 채용후보등록 공고" [ref=e130]:
+                - link "[합격자발표]강원특별자치도 보조기기센터 국비계약직 최종합격자 발표 및 채용후보등록 공고" [ref=e131] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=258&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-03-16" [ref=e132]
+              - cell "첨부파일 아이콘 이미지" [ref=e133]:
+                - link "첨부파일 아이콘 이미지" [ref=e134] [cursor=pointer]:
+                  - /url: /bbs/data/notice/eaad67dc_EAB384EC95BDECA781+EAB3B5EAB09CECB184EC9AA9+ECB59CECA285ED95A9EAB2A9EC9E90+EBB09CED919C+EBB08F+ECB184EC9AA9ED9B84EBB3B4EB93B1EBA19D+EAB3B5EAB3A0_2026.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e135]
+            - row "215 채용 [서류발표]강원특별자치도보조기기센터 서류전형 합격자 발표 및 면접일정 안내 2026-03-10 첨부파일 아이콘 이미지" [ref=e136]:
+              - cell "215" [ref=e137]
+              - cell "채용" [ref=e138]
+              - cell "[서류발표]강원특별자치도보조기기센터 서류전형 합격자 발표 및 면접일정 안내" [ref=e139]:
+                - link "[서류발표]강원특별자치도보조기기센터 서류전형 합격자 발표 및 면접일정 안내" [ref=e140] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=257&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-03-10" [ref=e141]
+              - cell "첨부파일 아이콘 이미지" [ref=e142]:
+                - link "첨부파일 아이콘 이미지" [ref=e143] [cursor=pointer]:
+                  - /url: /bbs/data/notice/1c35f851_2026-02.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e144]
+            - row "214 공지 [휴관안내] 26.03.02 대체 휴무로 인한 센터 휴관 안내 2026-03-01" [ref=e145]:
+              - cell "214" [ref=e146]
+              - cell "공지" [ref=e147]
+              - cell "[휴관안내] 26.03.02 대체 휴무로 인한 센터 휴관 안내" [ref=e148]:
+                - link "[휴관안내] 26.03.02 대체 휴무로 인한 센터 휴관 안내" [ref=e149] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=256&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-03-01" [ref=e150]
+              - cell [ref=e151]
+            - row "213 마감 [지원사업] 2026 현대모비스 장애아동 이동편의 지원사업 신청안내 2026-02-26 첨부파일 아이콘 이미지" [ref=e152]:
+              - cell "213" [ref=e153]
+              - cell "마감" [ref=e154]
+              - cell "[지원사업] 2026 현대모비스 장애아동 이동편의 지원사업 신청안내" [ref=e155]:
+                - link "[지원사업] 2026 현대모비스 장애아동 이동편의 지원사업 신청안내" [ref=e156] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=255&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-02-26" [ref=e157]
+              - cell "첨부파일 아이콘 이미지" [ref=e158]:
+                - link "첨부파일 아이콘 이미지" [ref=e159] [cursor=pointer]:
+                  - /url: /bbs/data/notice/5992eb93_2026EAB09CEC9DB8ECA095EBB3B4EB8F99EC9D98EC849C.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e160]
+            - row "212 공지 [지원사업] 현대모비스 장애아동·청소년 보조기구 지원사업 신청 안내 2026-02-24 첨부파일 아이콘 이미지" [ref=e161]:
+              - cell "212" [ref=e162]
+              - cell "공지" [ref=e163]
+              - cell "[지원사업] 현대모비스 장애아동·청소년 보조기구 지원사업 신청 안내" [ref=e164]:
+                - link "[지원사업] 현대모비스 장애아동·청소년 보조기구 지원사업 신청 안내" [ref=e165] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=254&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-02-24" [ref=e166]
+              - cell "첨부파일 아이콘 이미지" [ref=e167]:
+                - link "첨부파일 아이콘 이미지" [ref=e168] [cursor=pointer]:
+                  - /url: /bbs/data/notice/2b719eed_2026EAB09CEC9DB8ECA095EBB3B4EB8F99EC9D98EC849C.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e169]
+            - row "211 채용 [채용공고]강원특별자치도 보조기기센터 국비계약직 채용모집공고 2026-02-24 첨부파일 아이콘 이미지" [ref=e170]:
+              - cell "211" [ref=e171]
+              - cell "채용" [ref=e172]
+              - cell "[채용공고]강원특별자치도 보조기기센터 국비계약직 채용모집공고" [ref=e173]:
+                - link "[채용공고]강원특별자치도 보조기기센터 국비계약직 채용모집공고" [ref=e174] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=253&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-02-24" [ref=e175]
+              - cell "첨부파일 아이콘 이미지" [ref=e176]:
+                - link "첨부파일 아이콘 이미지" [ref=e177] [cursor=pointer]:
+                  - /url: /bbs/data/notice/e113ad1f_EAB095EC9B90ED8AB9EBB384EC9E90ECB998EB8F84+EBB3B4ECA1B0EAB8B0EAB8B0EC84BCED84B0+EAB384EC95BDECA781+ECB184EC9AA9+EBAAA8ECA791EAB3B5EAB3A0+EAB384ED9A8D28EC958829_2026-02ED98B8.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e178]
+            - row "210 채용 [서류발표]강원특별자치도보조기기센터 서류전형 합격자 발표 2026-02-23" [ref=e179]:
+              - cell "210" [ref=e180]
+              - cell "채용" [ref=e181]
+              - cell "[서류발표]강원특별자치도보조기기센터 서류전형 합격자 발표" [ref=e182]:
+                - link "[서류발표]강원특별자치도보조기기센터 서류전형 합격자 발표" [ref=e183] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=252&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-02-23" [ref=e184]
+              - cell [ref=e185]
+            - row "209 공지 [공지사항] 설날 휴관 안내(26. 2. 16 ~ 2. 18.) 2026-02-12" [ref=e186]:
+              - cell "209" [ref=e187]
+              - cell "공지" [ref=e188]
+              - cell "[공지사항] 설날 휴관 안내(26. 2. 16 ~ 2. 18.)" [ref=e189]:
+                - link "[공지사항] 설날 휴관 안내(26. 2. 16 ~ 2. 18.)" [ref=e190] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=251&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-02-12" [ref=e191]
+              - cell [ref=e192]
+            - row "208 채용 [채용공고]강원특별자치도 보조기기센터 계약직 채용모집(26. 2. 2.) 2026-02-02 첨부파일 아이콘 이미지" [ref=e193]:
+              - cell "208" [ref=e194]
+              - cell "채용" [ref=e195]
+              - cell "[채용공고]강원특별자치도 보조기기센터 계약직 채용모집(26. 2. 2.)" [ref=e196]:
+                - link "[채용공고]강원특별자치도 보조기기센터 계약직 채용모집(26. 2. 2.)" [ref=e197] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=249&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-02-02" [ref=e198]
+              - cell "첨부파일 아이콘 이미지" [ref=e199]:
+                - link "첨부파일 아이콘 이미지" [ref=e200] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=249&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+                  - img "첨부파일 아이콘 이미지" [ref=e201]
+            - row "207 마감 [지원사업] 2026 EY한영 장애아동‧청소년 보조기구 지원사업 신청 안내 2026-01-13 첨부파일 아이콘 이미지" [ref=e202]:
+              - cell "207" [ref=e203]
+              - cell "마감" [ref=e204]
+              - cell "[지원사업] 2026 EY한영 장애아동‧청소년 보조기구 지원사업 신청 안내" [ref=e205]:
+                - link "[지원사업] 2026 EY한영 장애아동‧청소년 보조기구 지원사업 신청 안내" [ref=e206] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=248&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+              - cell "2026-01-13" [ref=e207]
+              - cell "첨부파일 아이콘 이미지" [ref=e208]:
+                - link "첨부파일 아이콘 이미지" [ref=e209] [cursor=pointer]:
+                  - /url: /bbs/data/notice/dca2e616_EAB09CEC9DB8ECA095EBB3B4EB8F99EC9D98EC849C.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e210]
+        - generic [ref=e212]:
+          - generic [ref=e213]: "1"
+          - link "2" [ref=e214] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=2
+          - link "3" [ref=e215] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+          - link "4" [ref=e216] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+          - link "5" [ref=e217] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+          - link "6" [ref=e218] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=6
+          - link "7" [ref=e219] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=7
+          - link "8" [ref=e220] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=8
+          - link "9" [ref=e221] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+          - link "10" [ref=e222] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=10
+          - link [ref=e223] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=11
+            - img [ref=e224]
+          - link [ref=e225] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=15
+            - img [ref=e226]
+  - generic [ref=e228]:
+    - button
+    - list [ref=e229]:
+      - listitem [ref=e230]:
+        - link "개인정보처리방침" [ref=e231] [cursor=pointer]:
+          - /url: /policy/privacy.php
+          - generic [ref=e232]: 개인정보처리방침
+        - link "이메일무단수집거부" [ref=e233] [cursor=pointer]:
+          - /url: /policy/email_collection.php
+      - listitem [ref=e234]:
+        - paragraph [ref=e235]:
+          - generic [ref=e236]: 강원특별자치도 보조기기센터
+          - generic [ref=e237]: 강원특별자치도 춘천시 충열로 142번길 24-16(우두동 291-2)강원특별자치도재활병원 2층
+          - generic [ref=e238]: "대표 : 이승준"
+        - paragraph [ref=e239]:
+          - generic [ref=e240]: "사업자 등록번호 : 221-82-10983"
+          - generic [ref=e241]: "대표전화 : 033-248-7751~4"
+          - generic [ref=e242]: "Fax : 033-248-7755"
+          - generic [ref=e243]: "Email : gatc2019@naver.com"
+      - listitem [ref=e244]:
+        - heading "Copyright(c) 강원특별자치도보조기기센터 All rights reserved." [level=2] [ref=e245]
+    - list [ref=e246]:
+      - listitem [ref=e247]:
+        - generic [ref=e250]: 패밀리 사이트
+      - listitem [ref=e252]:
+        - link [ref=e253] [cursor=pointer]:
+          - /url: http://pf.kakao.com/_hjxmRxb
+        - link [ref=e254] [cursor=pointer]:
+          - /url: https://www.facebook.com/GATC2019
+        - img "카카오톡 아이콘 카카오QR코드 페이스북 아이콘 페이스북 QR코드 이미지" [ref=e255]
