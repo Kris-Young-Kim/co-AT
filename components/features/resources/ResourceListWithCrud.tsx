@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Search, FileText, Pencil, Trash2, Plus } from "lucide-react"
@@ -21,6 +21,10 @@ export function ResourceListWithCrud({ resources: initialResources, isStaff }: R
   const [tab, setTab] = useState<"video" | "document">("video")
   const [query, setQuery] = useState("")
   const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  useEffect(() => {
+    setResources(initialResources)
+  }, [initialResources])
 
   const filtered = resources.filter(
     (r) =>

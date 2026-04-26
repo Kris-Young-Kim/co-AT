@@ -285,6 +285,9 @@ export async function createNotice(
     }
 
     revalidatePath("/notices")
+    revalidatePath("/notices/support")
+    revalidatePath("/community/gallery")
+    revalidatePath("/community/cases")
     revalidatePath("/admin/notices-management")
 
     return { success: true, noticeId: (data as { id: string }).id }
@@ -306,7 +309,7 @@ export async function updateNotice(
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     const updateData: {
       title?: string
@@ -341,7 +344,10 @@ export async function updateNotice(
     }
 
     revalidatePath("/notices")
+    revalidatePath("/notices/support")
     revalidatePath(`/notices/${input.id}`)
+    revalidatePath("/community/gallery")
+    revalidatePath("/community/cases")
     revalidatePath("/admin/notices")
 
     return { success: true }
@@ -363,7 +369,7 @@ export async function deleteNotice(
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     const { error } = await supabase.from("notices").delete().eq("id", id)
 
@@ -373,6 +379,9 @@ export async function deleteNotice(
     }
 
     revalidatePath("/notices")
+    revalidatePath("/notices/support")
+    revalidatePath("/community/gallery")
+    revalidatePath("/community/cases")
     revalidatePath("/admin/notices-management")
 
     return { success: true }

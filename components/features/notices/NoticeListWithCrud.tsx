@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -32,6 +32,10 @@ export function NoticeListWithCrud({
 }: NoticeListWithCrudProps) {
   const [notices, setNotices] = useState<Notice[]>(initialNotices)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  useEffect(() => {
+    setNotices(initialNotices)
+  }, [initialNotices])
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.preventDefault()
