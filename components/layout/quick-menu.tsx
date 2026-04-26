@@ -15,7 +15,7 @@ const quickItems = [
   },
   {
     label: "온라인\n신청",
-    href: "/portal/apply",
+    href: "/apply",
     icon: ClipboardList,
     external: false,
     color: "bg-[#2E7D32] hover:bg-[#1B5E20]",

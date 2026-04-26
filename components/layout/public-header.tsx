@@ -61,7 +61,7 @@ const headerMenuItems = [
     hasDropdown: true,
     subItems: [
       { label: "서비스 이용 안내", href: "/apply/guide" },
-      { label: "온라인 신청", href: "/portal/apply" },
+      { label: "온라인 신청", href: "/apply" },
     ],
   },
   {
