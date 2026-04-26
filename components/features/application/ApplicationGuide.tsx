@@ -263,7 +263,7 @@ export function ApplicationGuide() {
       {/* 신청하기 버튼 */}
       <div className="flex justify-center pt-4">
         <Button size="lg" className="text-lg px-8" asChild>
-          <Link href="/portal/apply/wizard">
+          <Link href="/apply/wizard">
             <span>신청하기</span>
             <ArrowRight className="ml-2 h-5 w-5" />
           </Link>

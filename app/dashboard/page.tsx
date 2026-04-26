@@ -46,7 +46,7 @@ export default async function CustomerDashboardPage() {
                 <div className="flex items-center justify-between">
                   <CardTitle>서비스 신청 이력</CardTitle>
                   <Button asChild size="sm">
-                    <Link href="/portal/apply">
+                    <Link href="/apply">
                       <Plus className="mr-2 h-4 w-4" />
                       새 신청
                     </Link>

@@ -40,7 +40,7 @@ const contactCards = [
     title: "온라인 신청",
     value: "www.gatc.or.kr",
     color: "#6A1B9A",
-    href: "/portal/apply",
+    href: "/apply",
   },
 ]
 

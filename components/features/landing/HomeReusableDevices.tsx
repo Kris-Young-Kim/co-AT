@@ -93,7 +93,7 @@ export function HomeReusableDevices({ devices }: HomeReusableDevicesProps) {
                 </div>
 
                 <div className="mt-4 pt-4 border-t">
-                  <Link href={`/portal/apply?category=custom&device_id=${device.id}`}>
+                  <Link href={`/apply?category=custom&device_id=${device.id}`}>
                     <Button className="w-full" size="sm">
                       대여 신청
                     </Button>

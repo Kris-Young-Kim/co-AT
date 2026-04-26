@@ -15,7 +15,7 @@ const serviceCategories = [
     label: "상담",
     description: "보조기기 상담 및 평가",
     icon: MessageSquare,
-    href: "/portal/apply?category=consult",
+    href: "/apply?category=consult",
     color: "bg-blue-500",
   },
   {
@@ -23,7 +23,7 @@ const serviceCategories = [
     label: "체험",
     description: "보조기기 체험 및 견학",
     icon: Eye,
-    href: "/portal/apply?category=experience",
+    href: "/apply?category=experience",
     color: "bg-purple-500",
   },
   {
@@ -31,7 +31,7 @@ const serviceCategories = [
     label: "맞춤형",
     description: "맞춤 제작 및 대여",
     icon: Wrench,
-    href: "/portal/apply?category=custom",
+    href: "/apply?category=custom",
     color: "bg-green-500",
   },
   {
@@ -39,7 +39,7 @@ const serviceCategories = [
     label: "사후관리",
     description: "수리 및 세척 서비스",
     icon: Package,
-    href: "/portal/apply?category=aftercare",
+    href: "/apply?category=aftercare",
     color: "bg-orange-500",
   },
   {
@@ -47,7 +47,7 @@ const serviceCategories = [
     label: "교육홍보",
     description: "교육 프로그램 신청",
     icon: GraduationCap,
-    href: "/portal/apply?category=education",
+    href: "/apply?category=education",
     color: "bg-pink-500",
   },
 ]
