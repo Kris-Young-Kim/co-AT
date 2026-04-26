@@ -1,0 +1,281 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - link [ref=e10] [cursor=pointer]:
+      - /url: /
+    - navigation [ref=e11]:
+      - list [ref=e12]:
+        - listitem [ref=e13]:
+          - link "주요사업" [ref=e15] [cursor=pointer]:
+            - /url: /business/service.php
+        - listitem [ref=e16]:
+          - link "커뮤니티" [ref=e18] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e19]:
+          - link "보조기기 정보" [ref=e21] [cursor=pointer]:
+            - /url: /dataroom/equipment_list.php
+        - listitem [ref=e22]:
+          - link "서비스 신청" [ref=e24] [cursor=pointer]:
+            - /url: /apply/introduce.php
+        - listitem [ref=e25]:
+          - link "센터소개" [ref=e27] [cursor=pointer]:
+            - /url: /company/greetings.php
+  - generic [ref=e29]:
+    - heading "커뮤니티" [level=2] [ref=e30]
+    - paragraph [ref=e31]: Gangwon Assistive Technology Center
+  - generic [ref=e32]:
+    - generic [ref=e33]:
+      - heading "공지사항" [level=3] [ref=e34]: 공지사항
+      - list [ref=e36]:
+        - listitem [ref=e37]:
+          - link "공지사항" [ref=e38] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e39]:
+          - link "활동갤러리" [ref=e40] [cursor=pointer]:
+            - /url: /bbs/?so_table=gallery
+        - listitem [ref=e41]:
+          - link "보조기기 서비스 사례" [ref=e42] [cursor=pointer]:
+            - /url: /bbs/?so_table=case
+    - generic [ref=e43]:
+      - generic [ref=e44]: 공지사항
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - generic:
+            - paragraph [ref=e49]:
+              - text: "- 총 게시물"
+              - generic [ref=e50]: "221"
+              - text: ", 페이지"
+              - generic [ref=e51]: "03"
+              - text: /
+              - generic [ref=e52]: "15"
+            - combobox [ref=e54]:
+              - option "제목+내용" [selected]
+              - option "제목"
+              - option "내용"
+            - generic [ref=e55]:
+              - textbox "검색어를 입력해 주세요" [ref=e56]
+              - button "검색" [ref=e58] [cursor=pointer]
+        - generic [ref=e59]:
+          - link "전체" [ref=e60] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice
+          - link "지원사업" [ref=e61] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=지원사업
+          - link "센터소식" [ref=e62] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=센터소식
+        - table "공지사항 목록" [ref=e64]:
+          - rowgroup [ref=e71]:
+            - row "번호 분류 제목 등록일 첨부파일" [ref=e72]:
+              - columnheader "번호" [ref=e73]
+              - columnheader "분류" [ref=e74]
+              - columnheader "제목" [ref=e75]
+              - columnheader "등록일" [ref=e76]
+              - columnheader "첨부파일" [ref=e77]
+          - rowgroup [ref=e78]:
+            - row "191 공지 [현장평가] 2025 롯데재단 장애인 보조기기 지원사업 현장평가 대상자 발표 2025-06-09" [ref=e79]:
+              - cell "191" [ref=e80]
+              - cell "공지" [ref=e81]
+              - cell "[현장평가] 2025 롯데재단 장애인 보조기기 지원사업 현장평가 대상자 발표" [ref=e82]:
+                - link "[현장평가] 2025 롯데재단 장애인 보조기기 지원사업 현장평가 대상자 발표" [ref=e83] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=231&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-06-09" [ref=e84]
+              - cell [ref=e85]
+            - row "190 공지 [공지사항] 6월 센터 휴관 안내 2025-05-28" [ref=e86]:
+              - cell "190" [ref=e87]
+              - cell "공지" [ref=e88]
+              - cell "[공지사항] 6월 센터 휴관 안내" [ref=e89]:
+                - link "[공지사항] 6월 센터 휴관 안내" [ref=e90] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=230&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-05-28" [ref=e91]
+              - cell [ref=e92]
+            - row "189 마감 [지원사업] 2025 MG새마을금고지역희망나눔재단 시각·청각 장애어린이 및 청소년 보조기구 지원사업 신청 안내 2025-05-27 첨부파일 아이콘 이미지" [ref=e93]:
+              - cell "189" [ref=e94]
+              - cell "마감" [ref=e95]
+              - cell "[지원사업] 2025 MG새마을금고지역희망나눔재단 시각·청각 장애어린이 및 청소년 보조기구 지원사업 신청 안내" [ref=e96]:
+                - link "[지원사업] 2025 MG새마을금고지역희망나눔재단 시각·청각 장애어린이 및 청소년 보조기구 지원사업 신청 안내" [ref=e97] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=228&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-05-27" [ref=e98]
+              - cell "첨부파일 아이콘 이미지" [ref=e99]:
+                - link "첨부파일 아이콘 이미지" [ref=e100] [cursor=pointer]:
+                  - /url: /bbs/data/notice/55c25584_5BEC8B9CECB2ADEAB081_EC8BA0ECB2ADEC849C5D2025+MGEC8388EBA788EC9D84EAB888EAB3A0ECA780EC97ADED9DACEBA79DEB8298EB8894EC9EACEB8BA8+EC8B9CECB2ADEAB081+EBB3B4ECA1B0EAB8B0EAB5AC+ECA780EC9B90EC82ACEC9785+EC8BA0ECB2ADEC849C.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e101]
+            - row "188 마감 [지원사업] 2025 월드비전 저소득 희귀질환아동 맞춤형보조기기 지원사업 안내 2025-05-12 첨부파일 아이콘 이미지" [ref=e102]:
+              - cell "188" [ref=e103]
+              - cell "마감" [ref=e104]
+              - cell "[지원사업] 2025 월드비전 저소득 희귀질환아동 맞춤형보조기기 지원사업 안내" [ref=e105]:
+                - link "[지원사업] 2025 월드비전 저소득 희귀질환아동 맞춤형보조기기 지원사업 안내" [ref=e106] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=227&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-05-12" [ref=e107]
+              - cell "첨부파일 아이콘 이미지" [ref=e108]:
+                - link "첨부파일 아이콘 이미지" [ref=e109] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=227&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+                  - img "첨부파일 아이콘 이미지" [ref=e110]
+            - row "187 마감 [신청안내] 2025년 정보통신보조기기 신청 안내(5.7.~6.23.) 2025-05-12 첨부파일 아이콘 이미지" [ref=e111]:
+              - cell "187" [ref=e112]
+              - cell "마감" [ref=e113]
+              - cell "[신청안내] 2025년 정보통신보조기기 신청 안내(5.7.~6.23.)" [ref=e114]:
+                - link "[신청안내] 2025년 정보통신보조기기 신청 안내(5.7.~6.23.)" [ref=e115] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=226&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-05-12" [ref=e116]
+              - cell "첨부파일 아이콘 이미지" [ref=e117]:
+                - link "첨부파일 아이콘 이미지" [ref=e118] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=226&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+                  - img "첨부파일 아이콘 이미지" [ref=e119]
+            - row "186 공지 [공지사항] 5월 센터 휴관 안내 2025-04-29" [ref=e120]:
+              - cell "186" [ref=e121]
+              - cell "공지" [ref=e122]
+              - cell "[공지사항] 5월 센터 휴관 안내" [ref=e123]:
+                - link "[공지사항] 5월 센터 휴관 안내" [ref=e124] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=225&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-04-29" [ref=e125]
+              - cell [ref=e126]
+            - row "185 공지 [공지사항] 25. 04. 30 (수) 임시 휴관 안내 2025-04-29" [ref=e127]:
+              - cell "185" [ref=e128]
+              - cell "공지" [ref=e129]
+              - cell "[공지사항] 25. 04. 30 (수) 임시 휴관 안내" [ref=e130]:
+                - link "[공지사항] 25. 04. 30 (수) 임시 휴관 안내" [ref=e131] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=224&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-04-29" [ref=e132]
+              - cell [ref=e133]
+            - row "184 정보 2025년 장애인보조기기교부사업 품목안내 2025-04-28 첨부파일 아이콘 이미지" [ref=e134]:
+              - cell "184" [ref=e135]
+              - cell "정보" [ref=e136]
+              - cell "2025년 장애인보조기기교부사업 품목안내" [ref=e137]:
+                - link "2025년 장애인보조기기교부사업 품목안내" [ref=e138] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=223&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-04-28" [ref=e139]
+              - cell "첨부파일 아이콘 이미지" [ref=e140]:
+                - link "첨부파일 아이콘 이미지" [ref=e141] [cursor=pointer]:
+                  - /url: /bbs/data/notice/e60d87c0_2025EB8584+EBB3B4ECA1B0EAB8B0EAB8B0EAB590EBB680EC82ACEC9785+ED9288EBAAA9EC9588EB82B4.pdf
+                  - img "첨부파일 아이콘 이미지" [ref=e142]
+            - row "183 채용 [합격자 발표] 계약직 최종합격자 발표 및 최종후보자 등록 공고 (25.4.22) 2025-04-22 첨부파일 아이콘 이미지" [ref=e143]:
+              - cell "183" [ref=e144]
+              - cell "채용" [ref=e145]
+              - cell "[합격자 발표] 계약직 최종합격자 발표 및 최종후보자 등록 공고 (25.4.22)" [ref=e146]:
+                - link "[합격자 발표] 계약직 최종합격자 발표 및 최종후보자 등록 공고 (25.4.22)" [ref=e147] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=221&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-04-22" [ref=e148]
+              - cell "첨부파일 아이콘 이미지" [ref=e149]:
+                - link "첨부파일 아이콘 이미지" [ref=e150] [cursor=pointer]:
+                  - /url: /bbs/data/notice/e728f9d6_EAB384EC95BDECA781+EAB3B5EAB09CECB184EC9AA9+ECB59CECA285ED95A9EAB2A9EC9E90+EBB09CED919C+EBB08F+ECB184EC9AA9ED9B84EBB3B4EB93B1EBA19D+EAB3B5EAB3A0.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e151]
+            - row "182 접수 [지원사업] 2025 롯데재단 장애인 보조기기 지원사업 안내 2025-04-21 첨부파일 아이콘 이미지" [ref=e152]:
+              - cell "182" [ref=e153]
+              - cell "접수" [ref=e154]
+              - cell "[지원사업] 2025 롯데재단 장애인 보조기기 지원사업 안내" [ref=e155]:
+                - link "[지원사업] 2025 롯데재단 장애인 보조기기 지원사업 안내" [ref=e156] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=220&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-04-21" [ref=e157]
+              - cell "첨부파일 아이콘 이미지" [ref=e158]:
+                - link "첨부파일 아이콘 이미지" [ref=e159] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=220&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+                  - img "첨부파일 아이콘 이미지" [ref=e160]
+            - row "181 채용 [면접공고]계약직 공개채용 서류전협 합격자 발표 및 면접일정 안내 2025-04-18 첨부파일 아이콘 이미지" [ref=e161]:
+              - cell "181" [ref=e162]
+              - cell "채용" [ref=e163]
+              - cell "[면접공고]계약직 공개채용 서류전협 합격자 발표 및 면접일정 안내" [ref=e164]:
+                - link "[면접공고]계약직 공개채용 서류전협 합격자 발표 및 면접일정 안내" [ref=e165] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=219&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-04-18" [ref=e166]
+              - cell "첨부파일 아이콘 이미지" [ref=e167]:
+                - link "첨부파일 아이콘 이미지" [ref=e168] [cursor=pointer]:
+                  - /url: /bbs/data/notice/dd42d2ba_28EBB699EC9E8429EAB384EC95BDECA781+EAB3B5EAB09CECB184EC9AA9+EC849CEBA598+ED95A9EAB2A9EC9E90+EBB09CED919C+EBB08F+EBA9B4ECA091EC9DBCECA095.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e169]
+            - row "180 공지 [공지사항] 25.04.17 (목) 임시 휴관 안내 2025-04-16" [ref=e170]:
+              - cell "180" [ref=e171]
+              - cell "공지" [ref=e172]
+              - cell "[공지사항] 25.04.17 (목) 임시 휴관 안내" [ref=e173]:
+                - link "[공지사항] 25.04.17 (목) 임시 휴관 안내" [ref=e174] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=218&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-04-16" [ref=e175]
+              - cell [ref=e176]
+            - row "179 공지 [합격자 발표] 육아휴직 대체인력 최종합격자 발표 및 최종후보자 등록 공고 (25.4.4) 2025-04-04 첨부파일 아이콘 이미지" [ref=e177]:
+              - cell "179" [ref=e178]
+              - cell "공지" [ref=e179]
+              - cell "[합격자 발표] 육아휴직 대체인력 최종합격자 발표 및 최종후보자 등록 공고 (25.4.4)" [ref=e180]:
+                - link "[합격자 발표] 육아휴직 대체인력 최종합격자 발표 및 최종후보자 등록 공고 (25.4.4)" [ref=e181] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=217&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-04-04" [ref=e182]
+              - cell "첨부파일 아이콘 이미지" [ref=e183]:
+                - link "첨부파일 아이콘 이미지" [ref=e184] [cursor=pointer]:
+                  - /url: /bbs/data/notice/f69de0e6_28EBB699EC9E8429EC9CA1EC9584ED9CB4ECA781+EB8C80ECB2B4EC9DB8EBA0A5+ECB59CECA285ED95A9EAB2A9EC9E90+EBB09CED919C+EBB08F+ED9B84EBB3B4EB93B1EBA19D.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e185]
+            - row "178 접수 [신청안내] 2025 현대모비스 장애아동이동편의 보조기구 지원사업 안내 2025-04-01 첨부파일 아이콘 이미지" [ref=e186]:
+              - cell "178" [ref=e187]
+              - cell "접수" [ref=e188]
+              - cell "[신청안내] 2025 현대모비스 장애아동이동편의 보조기구 지원사업 안내" [ref=e189]:
+                - link "[신청안내] 2025 현대모비스 장애아동이동편의 보조기구 지원사업 안내" [ref=e190] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=216&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-04-01" [ref=e191]
+              - cell "첨부파일 아이콘 이미지" [ref=e192]:
+                - link "첨부파일 아이콘 이미지" [ref=e193] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=216&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+                  - img "첨부파일 아이콘 이미지" [ref=e194]
+            - row "177 마감 [지원사업]2025 하나금융그룹 장애아동•청소년 학습 보조기구 지원사업 신청 안내 2025-03-24 첨부파일 아이콘 이미지" [ref=e195]:
+              - cell "177" [ref=e196]
+              - cell "마감" [ref=e197]
+              - cell "[지원사업]2025 하나금융그룹 장애아동•청소년 학습 보조기구 지원사업 신청 안내" [ref=e198]:
+                - link "[지원사업]2025 하나금융그룹 장애아동•청소년 학습 보조기구 지원사업 신청 안내" [ref=e199] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=214&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+              - cell "2025-03-24" [ref=e200]
+              - cell "첨부파일 아이콘 이미지" [ref=e201]:
+                - link "첨부파일 아이콘 이미지" [ref=e202] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=214&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+                  - img "첨부파일 아이콘 이미지" [ref=e203]
+        - generic [ref=e205]:
+          - link [ref=e206] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+            - img [ref=e207]
+          - link "1" [ref=e208] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+          - link "2" [ref=e209] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=2
+          - generic [ref=e210]: "3"
+          - link "4" [ref=e211] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+          - link "5" [ref=e212] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+          - link "6" [ref=e213] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=6
+          - link "7" [ref=e214] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=7
+          - link "8" [ref=e215] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=8
+          - link "9" [ref=e216] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+          - link "10" [ref=e217] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=10
+          - link [ref=e218] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=11
+            - img [ref=e219]
+          - link [ref=e220] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=15
+            - img [ref=e221]
+  - generic [ref=e223]:
+    - button
+    - list [ref=e224]:
+      - listitem [ref=e225]:
+        - link "개인정보처리방침" [ref=e226] [cursor=pointer]:
+          - /url: /policy/privacy.php
+          - generic [ref=e227]: 개인정보처리방침
+        - link "이메일무단수집거부" [ref=e228] [cursor=pointer]:
+          - /url: /policy/email_collection.php
+      - listitem [ref=e229]:
+        - paragraph [ref=e230]:
+          - generic [ref=e231]: 강원특별자치도 보조기기센터
+          - generic [ref=e232]: 강원특별자치도 춘천시 충열로 142번길 24-16(우두동 291-2)강원특별자치도재활병원 2층
+          - generic [ref=e233]: "대표 : 이승준"
+        - paragraph [ref=e234]:
+          - generic [ref=e235]: "사업자 등록번호 : 221-82-10983"
+          - generic [ref=e236]: "대표전화 : 033-248-7751~4"
+          - generic [ref=e237]: "Fax : 033-248-7755"
+          - generic [ref=e238]: "Email : gatc2019@naver.com"
+      - listitem [ref=e239]:
+        - heading "Copyright(c) 강원특별자치도보조기기센터 All rights reserved." [level=2] [ref=e240]
+    - list [ref=e241]:
+      - listitem [ref=e242]:
+        - generic [ref=e245]: 패밀리 사이트
+      - listitem [ref=e247]:
+        - link [ref=e248] [cursor=pointer]:
+          - /url: http://pf.kakao.com/_hjxmRxb
+        - link [ref=e249] [cursor=pointer]:
+          - /url: https://www.facebook.com/GATC2019
+        - img "카카오톡 아이콘 카카오QR코드 페이스북 아이콘 페이스북 QR코드 이미지" [ref=e250]

@@ -47,7 +47,8 @@
       "Bash(pnpm test:*)",
       "Bash(/dev/null ls:*)",
       "Bash(npx next:*)",
-      "Bash(find D:/AILeader1/project/valuewith/co-AT/components -type f \\\\\\(-name *nav* -o -name *header* -o -name *top* \\\\\\))"
+      "Bash(find D:/AILeader1/project/valuewith/co-AT/components -type f \\\\\\(-name *nav* -o -name *header* -o -name *top* \\\\\\))",
+      "mcp__plugin_playwright_playwright__browser_evaluate"
     ]
   }
 }

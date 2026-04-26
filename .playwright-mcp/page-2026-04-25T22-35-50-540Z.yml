@@ -1,0 +1,279 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - link [ref=e10] [cursor=pointer]:
+      - /url: /
+    - navigation [ref=e11]:
+      - list [ref=e12]:
+        - listitem [ref=e13]:
+          - link "주요사업" [ref=e15] [cursor=pointer]:
+            - /url: /business/service.php
+        - listitem [ref=e16]:
+          - link "커뮤니티" [ref=e18] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e19]:
+          - link "보조기기 정보" [ref=e21] [cursor=pointer]:
+            - /url: /dataroom/equipment_list.php
+        - listitem [ref=e22]:
+          - link "서비스 신청" [ref=e24] [cursor=pointer]:
+            - /url: /apply/introduce.php
+        - listitem [ref=e25]:
+          - link "센터소개" [ref=e27] [cursor=pointer]:
+            - /url: /company/greetings.php
+  - generic [ref=e29]:
+    - heading "커뮤니티" [level=2] [ref=e30]
+    - paragraph [ref=e31]: Gangwon Assistive Technology Center
+  - generic [ref=e32]:
+    - generic [ref=e33]:
+      - heading "공지사항" [level=3] [ref=e34]: 공지사항
+      - list [ref=e36]:
+        - listitem [ref=e37]:
+          - link "공지사항" [ref=e38] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e39]:
+          - link "활동갤러리" [ref=e40] [cursor=pointer]:
+            - /url: /bbs/?so_table=gallery
+        - listitem [ref=e41]:
+          - link "보조기기 서비스 사례" [ref=e42] [cursor=pointer]:
+            - /url: /bbs/?so_table=case
+    - generic [ref=e43]:
+      - generic [ref=e44]: 공지사항
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - generic:
+            - paragraph [ref=e49]:
+              - text: "- 총 게시물"
+              - generic [ref=e50]: "126"
+              - text: ", 페이지"
+              - generic [ref=e51]: "08"
+              - text: /
+              - generic [ref=e52]: "09"
+            - combobox [ref=e54]:
+              - option "제목+내용" [selected]
+              - option "제목"
+              - option "내용"
+            - generic [ref=e55]:
+              - textbox "검색어를 입력해 주세요" [ref=e56]
+              - button "검색" [ref=e58] [cursor=pointer]
+        - generic [ref=e59]:
+          - link "전체" [ref=e60] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice
+          - link "지원사업" [ref=e61] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=지원사업
+          - link "센터소식" [ref=e62] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=센터소식
+        - table "공지사항 목록" [ref=e64]:
+          - rowgroup [ref=e71]:
+            - row "번호 분류 제목 등록일 첨부파일" [ref=e72]:
+              - columnheader "번호" [ref=e73]
+              - columnheader "분류" [ref=e74]
+              - columnheader "제목" [ref=e75]
+              - columnheader "등록일" [ref=e76]
+              - columnheader "첨부파일" [ref=e77]
+          - rowgroup [ref=e78]:
+            - row "21 마감 [접수마감] 2021 롯데복지재단 장애아동 청소년 보조기기 지원사업 안내(~4.23) 2021-03-23 첨부파일 아이콘 이미지" [ref=e79]:
+              - cell "21" [ref=e80]
+              - cell "마감" [ref=e81]
+              - cell "[접수마감] 2021 롯데복지재단 장애아동 청소년 보조기기 지원사업 안내(~4.23)" [ref=e82]:
+                - link "[접수마감] 2021 롯데복지재단 장애아동 청소년 보조기기 지원사업 안내(~4.23)" [ref=e83] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=60&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2021-03-23" [ref=e84]
+              - cell "첨부파일 아이콘 이미지" [ref=e85]:
+                - link "첨부파일 아이콘 이미지" [ref=e86] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=60&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+                  - img "첨부파일 아이콘 이미지" [ref=e87]
+            - row "20 마감 [접수신청] 2021 SPC 장애 어린이·청소년 보조기구 지원사업 안내 2021-02-26 첨부파일 아이콘 이미지" [ref=e88]:
+              - cell "20" [ref=e89]
+              - cell "마감" [ref=e90]
+              - cell "[접수신청] 2021 SPC 장애 어린이·청소년 보조기구 지원사업 안내" [ref=e91]:
+                - link "[접수신청] 2021 SPC 장애 어린이·청소년 보조기구 지원사업 안내" [ref=e92] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=56&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2021-02-26" [ref=e93]
+              - cell "첨부파일 아이콘 이미지" [ref=e94]:
+                - link "첨부파일 아이콘 이미지" [ref=e95] [cursor=pointer]:
+                  - /url: /bbs/data/notice/9a1f2db0_SPC+EBB3B4ECA1B0EAB8B0EAB5AC+ECA780EC9B90EC82ACEC9785+EC8BA0ECB2ADEC849C.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e96]
+            - row "19 공지 [정보안내] 책나래 서비스 이용 안내 2021-02-05 첨부파일 아이콘 이미지" [ref=e97]:
+              - cell "19" [ref=e98]
+              - cell "공지" [ref=e99]
+              - cell "[정보안내] 책나래 서비스 이용 안내" [ref=e100]:
+                - link "[정보안내] 책나래 서비스 이용 안내" [ref=e101] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=55&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2021-02-05" [ref=e102]
+              - cell "첨부파일 아이콘 이미지" [ref=e103]:
+                - link "첨부파일 아이콘 이미지" [ref=e104] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=55&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+                  - img "첨부파일 아이콘 이미지" [ref=e105]
+            - row "18 결과 [선정결과]2020 볼보자동차코리아 장애인 보조기기 지원대상자 명단 2021-01-04 첨부파일 아이콘 이미지" [ref=e106]:
+              - cell "18" [ref=e107]
+              - cell "결과" [ref=e108]
+              - cell "[선정결과]2020 볼보자동차코리아 장애인 보조기기 지원대상자 명단" [ref=e109]:
+                - link "[선정결과]2020 볼보자동차코리아 장애인 보조기기 지원대상자 명단" [ref=e110] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=54&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2021-01-04" [ref=e111]
+              - cell "첨부파일 아이콘 이미지" [ref=e112]:
+                - link "첨부파일 아이콘 이미지" [ref=e113] [cursor=pointer]:
+                  - /url: /bbs/data/notice/7e39a0e3_EBB3BCEBB3B4EC9E90EB8F99ECB0A8+ECBD94EBA6ACEC9584+EC84A0ECA095EC9E90.jpg
+                  - img "첨부파일 아이콘 이미지" [ref=e114]
+            - row "17 접수 [접수신청] 춘천시 지역사회통합돌봄선도사업(~2021.6.) 2020-12-17 첨부파일 아이콘 이미지" [ref=e115]:
+              - cell "17" [ref=e116]
+              - cell "접수" [ref=e117]
+              - cell "[접수신청] 춘천시 지역사회통합돌봄선도사업(~2021.6.)" [ref=e118]:
+                - link "[접수신청] 춘천시 지역사회통합돌봄선도사업(~2021.6.)" [ref=e119] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=52&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2020-12-17" [ref=e120]
+              - cell "첨부파일 아이콘 이미지" [ref=e121]:
+                - link "첨부파일 아이콘 이미지" [ref=e122] [cursor=pointer]:
+                  - /url: /bbs/data/notice/ab6ac4b6_EC8AACEB9DBCEC9DB4EB939C1.PNG
+                  - img "첨부파일 아이콘 이미지" [ref=e123]
+            - row "16 마감 [접수마감]2021 신용카드사회공헌재단 희귀난치어린이 지원사업 안내 2020-12-14 첨부파일 아이콘 이미지" [ref=e124]:
+              - cell "16" [ref=e125]
+              - cell "마감" [ref=e126]
+              - cell "[접수마감]2021 신용카드사회공헌재단 희귀난치어린이 지원사업 안내" [ref=e127]:
+                - link "[접수마감]2021 신용카드사회공헌재단 희귀난치어린이 지원사업 안내" [ref=e128] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=49&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2020-12-14" [ref=e129]
+              - cell "첨부파일 아이콘 이미지" [ref=e130]:
+                - link "첨부파일 아이콘 이미지" [ref=e131] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=49&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+                  - img "첨부파일 아이콘 이미지" [ref=e132]
+            - row "15 마감 [접수마감]2020 볼보자동차코리아 장애어린이 지원사업(11.2.~12.4.) 2020-11-04 첨부파일 아이콘 이미지" [ref=e133]:
+              - cell "15" [ref=e134]
+              - cell "마감" [ref=e135]
+              - cell "[접수마감]2020 볼보자동차코리아 장애어린이 지원사업(11.2.~12.4.)" [ref=e136]:
+                - link "[접수마감]2020 볼보자동차코리아 장애어린이 지원사업(11.2.~12.4.)" [ref=e137] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=44&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2020-11-04" [ref=e138]
+              - cell "첨부파일 아이콘 이미지" [ref=e139]:
+                - link "첨부파일 아이콘 이미지" [ref=e140] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=44&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+                  - img "첨부파일 아이콘 이미지" [ref=e141]
+            - row "14 마감 [접수마감] 2020년도 장애인 보조기구(장애아동용 휠체어) 지원사업 2020-08-13 첨부파일 아이콘 이미지" [ref=e142]:
+              - cell "14" [ref=e143]
+              - cell "마감" [ref=e144]
+              - cell "[접수마감] 2020년도 장애인 보조기구(장애아동용 휠체어) 지원사업" [ref=e145]:
+                - link "[접수마감] 2020년도 장애인 보조기구(장애아동용 휠체어) 지원사업" [ref=e146] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=41&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2020-08-13" [ref=e147]
+              - cell "첨부파일 아이콘 이미지" [ref=e148]:
+                - link "첨부파일 아이콘 이미지" [ref=e149] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=41&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+                  - img "첨부파일 아이콘 이미지" [ref=e150]
+            - row "13 결과 [선정결과] 희귀난치어린이 지원사업(2차) 대상자 선정 결과 2020-07-13" [ref=e151]:
+              - cell "13" [ref=e152]
+              - cell "결과" [ref=e153]
+              - cell "[선정결과] 희귀난치어린이 지원사업(2차) 대상자 선정 결과" [ref=e154]:
+                - link "[선정결과] 희귀난치어린이 지원사업(2차) 대상자 선정 결과" [ref=e155] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=40&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2020-07-13" [ref=e156]
+              - cell [ref=e157]
+            - row "12 결과 [선정결과]STAND WITH HUG 장애아동 청소년 보조기기 지원사업 최종 지원 대상자 발표 2020-06-30" [ref=e158]:
+              - cell "12" [ref=e159]
+              - cell "결과" [ref=e160]
+              - cell "[선정결과]STAND WITH HUG 장애아동 청소년 보조기기 지원사업 최종 지원 대상자 발표" [ref=e161]:
+                - link "[선정결과]STAND WITH HUG 장애아동 청소년 보조기기 지원사업 최종 지원 대상자 발표" [ref=e162] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=39&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2020-06-30" [ref=e163]
+              - cell [ref=e164]
+            - row "11 결과 [선정결과]2020 롯데복지재단 장애아동 및 청소년보조기기 지원사업 최종지원 대상자 안내 2020-06-30" [ref=e165]:
+              - cell "11" [ref=e166]
+              - cell "결과" [ref=e167]
+              - cell "[선정결과]2020 롯데복지재단 장애아동 및 청소년보조기기 지원사업 최종지원 대상자 안내" [ref=e168]:
+                - link "[선정결과]2020 롯데복지재단 장애아동 및 청소년보조기기 지원사업 최종지원 대상자 안내" [ref=e169] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=38&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2020-06-30" [ref=e170]
+              - cell [ref=e171]
+            - row "10 결과 [선정결과] 2020 현대모비스 장애아동이동편의 보조기구지원사업 선정자 알림 2020-06-24" [ref=e172]:
+              - cell "10" [ref=e173]
+              - cell "결과" [ref=e174]
+              - cell "[선정결과] 2020 현대모비스 장애아동이동편의 보조기구지원사업 선정자 알림" [ref=e175]:
+                - link "[선정결과] 2020 현대모비스 장애아동이동편의 보조기구지원사업 선정자 알림" [ref=e176] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=37&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2020-06-24" [ref=e177]
+              - cell [ref=e178]
+            - row "9 평가 [현장평가] 장애 아동·청소년 보조기기 지원사업 STAND WITH HUG 현장평가 대상자 공지 2020-05-21 첨부파일 아이콘 이미지" [ref=e179]:
+              - cell "9" [ref=e180]
+              - cell "평가" [ref=e181]
+              - cell "[현장평가] 장애 아동·청소년 보조기기 지원사업 STAND WITH HUG 현장평가 대상자 공지" [ref=e182]:
+                - link "[현장평가] 장애 아동·청소년 보조기기 지원사업 STAND WITH HUG 현장평가 대상자 공지" [ref=e183] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=33&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2020-05-21" [ref=e184]
+              - cell "첨부파일 아이콘 이미지" [ref=e185]:
+                - link "첨부파일 아이콘 이미지" [ref=e186] [cursor=pointer]:
+                  - /url: /bbs/data/notice/fe9a0c10_ECB488EBA19DEC96B4EBA6B0EC9DB4+ED9884EC9EA5ED8F89EAB080+EB8C80EC8381+EAB3B5ECA780.jpg
+                  - img "첨부파일 아이콘 이미지" [ref=e187]
+            - row "8 마감 [접수안내] 2020 신용카드사회공헌재단 희귀난치어린이 지원사업 안내(2차) (~6.19) 2020-05-07 첨부파일 아이콘 이미지" [ref=e188]:
+              - cell "8" [ref=e189]
+              - cell "마감" [ref=e190]
+              - cell "[접수안내] 2020 신용카드사회공헌재단 희귀난치어린이 지원사업 안내(2차) (~6.19)" [ref=e191]:
+                - link "[접수안내] 2020 신용카드사회공헌재단 희귀난치어린이 지원사업 안내(2차) (~6.19)" [ref=e192] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=32&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2020-05-07" [ref=e193]
+              - cell "첨부파일 아이콘 이미지" [ref=e194]:
+                - link "첨부파일 아이콘 이미지" [ref=e195] [cursor=pointer]:
+                  - /url: /bbs/data/notice/36e8adb6_5BEC8BA0ECB2ADEC849C5D2020+ED9DACEAB780EB829CECB998EC96B4EBA6B0EC9DB4+ECA780EC9B90EC82ACEC9785+EC8BA0ECB2ADEC849C.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e196]
+            - row "7 평가 [현장평가] 2020년도 롯데복지재단 장애아동 및 청소년 보조기기 지원사업 현장평가 대상자 공지 2020-04-28 첨부파일 아이콘 이미지" [ref=e197]:
+              - cell "7" [ref=e198]
+              - cell "평가" [ref=e199]
+              - cell "[현장평가] 2020년도 롯데복지재단 장애아동 및 청소년 보조기기 지원사업 현장평가 대상자 공지" [ref=e200]:
+                - link "[현장평가] 2020년도 롯데복지재단 장애아동 및 청소년 보조기기 지원사업 현장평가 대상자 공지" [ref=e201] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=30&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+              - cell "2020-04-28" [ref=e202]
+              - cell "첨부파일 아이콘 이미지" [ref=e203]:
+                - link "첨부파일 아이콘 이미지" [ref=e204] [cursor=pointer]:
+                  - /url: /bbs/data/notice/bf16beb7_20202BEBA1AFEB8DB0EBB3B5ECA780EC9EACEB8BA82BED9884EC9EA5ED8F89EAB0802BEB8C80EC8381EC9E902BEBAA85EB8BA8_0428.pdf
+                  - img "첨부파일 아이콘 이미지" [ref=e205]
+        - generic [ref=e207]:
+          - link [ref=e208] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=1
+            - img [ref=e209]
+          - link "1" [ref=e210] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=1
+          - link "2" [ref=e211] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=2
+          - link "3" [ref=e212] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=3
+          - link "4" [ref=e213] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+          - link "5" [ref=e214] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=5
+          - link "6" [ref=e215] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=6
+          - link "7" [ref=e216] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+          - generic [ref=e217]: "8"
+          - link "9" [ref=e218] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=9
+          - link [ref=e219] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=9
+            - img [ref=e220]
+  - generic [ref=e222]:
+    - button
+    - list [ref=e223]:
+      - listitem [ref=e224]:
+        - link "개인정보처리방침" [ref=e225] [cursor=pointer]:
+          - /url: /policy/privacy.php
+          - generic [ref=e226]: 개인정보처리방침
+        - link "이메일무단수집거부" [ref=e227] [cursor=pointer]:
+          - /url: /policy/email_collection.php
+      - listitem [ref=e228]:
+        - paragraph [ref=e229]:
+          - generic [ref=e230]: 강원특별자치도 보조기기센터
+          - generic [ref=e231]: 강원특별자치도 춘천시 충열로 142번길 24-16(우두동 291-2)강원특별자치도재활병원 2층
+          - generic [ref=e232]: "대표 : 이승준"
+        - paragraph [ref=e233]:
+          - generic [ref=e234]: "사업자 등록번호 : 221-82-10983"
+          - generic [ref=e235]: "대표전화 : 033-248-7751~4"
+          - generic [ref=e236]: "Fax : 033-248-7755"
+          - generic [ref=e237]: "Email : gatc2019@naver.com"
+      - listitem [ref=e238]:
+        - heading "Copyright(c) 강원특별자치도보조기기센터 All rights reserved." [level=2] [ref=e239]
+    - list [ref=e240]:
+      - listitem [ref=e241]:
+        - generic [ref=e244]: 패밀리 사이트
+      - listitem [ref=e246]:
+        - link [ref=e247] [cursor=pointer]:
+          - /url: http://pf.kakao.com/_hjxmRxb
+        - link [ref=e248] [cursor=pointer]:
+          - /url: https://www.facebook.com/GATC2019
+        - img "카카오톡 아이콘 카카오QR코드 페이스북 아이콘 페이스북 QR코드 이미지" [ref=e249]

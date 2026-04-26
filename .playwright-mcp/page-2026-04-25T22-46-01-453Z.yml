@@ -1,0 +1,293 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - link [ref=e10] [cursor=pointer]:
+      - /url: /
+    - navigation [ref=e11]:
+      - list [ref=e12]:
+        - listitem [ref=e13]:
+          - link "주요사업" [ref=e15] [cursor=pointer]:
+            - /url: /business/service.php
+        - listitem [ref=e16]:
+          - link "커뮤니티" [ref=e18] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e19]:
+          - link "보조기기 정보" [ref=e21] [cursor=pointer]:
+            - /url: /dataroom/equipment_list.php
+        - listitem [ref=e22]:
+          - link "서비스 신청" [ref=e24] [cursor=pointer]:
+            - /url: /apply/introduce.php
+        - listitem [ref=e25]:
+          - link "센터소개" [ref=e27] [cursor=pointer]:
+            - /url: /company/greetings.php
+  - generic [ref=e29]:
+    - heading "커뮤니티" [level=2] [ref=e30]
+    - paragraph [ref=e31]: Gangwon Assistive Technology Center
+  - generic [ref=e32]:
+    - generic [ref=e33]:
+      - heading "공지사항" [level=3] [ref=e34]: 공지사항
+      - list [ref=e36]:
+        - listitem [ref=e37]:
+          - link "공지사항" [ref=e38] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e39]:
+          - link "활동갤러리" [ref=e40] [cursor=pointer]:
+            - /url: /bbs/?so_table=gallery
+        - listitem [ref=e41]:
+          - link "보조기기 서비스 사례" [ref=e42] [cursor=pointer]:
+            - /url: /bbs/?so_table=case
+    - generic [ref=e43]:
+      - generic [ref=e44]: 공지사항
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - generic:
+            - paragraph [ref=e49]:
+              - text: "- 총 게시물"
+              - generic [ref=e50]: "221"
+              - text: ", 페이지"
+              - generic [ref=e51]: "04"
+              - text: /
+              - generic [ref=e52]: "15"
+            - combobox [ref=e54]:
+              - option "제목+내용" [selected]
+              - option "제목"
+              - option "내용"
+            - generic [ref=e55]:
+              - textbox "검색어를 입력해 주세요" [ref=e56]
+              - button "검색" [ref=e58] [cursor=pointer]
+        - generic [ref=e59]:
+          - link "전체" [ref=e60] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice
+          - link "지원사업" [ref=e61] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=지원사업
+          - link "센터소식" [ref=e62] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=센터소식
+        - table "공지사항 목록" [ref=e64]:
+          - rowgroup [ref=e71]:
+            - row "번호 분류 제목 등록일 첨부파일" [ref=e72]:
+              - columnheader "번호" [ref=e73]
+              - columnheader "분류" [ref=e74]
+              - columnheader "제목" [ref=e75]
+              - columnheader "등록일" [ref=e76]
+              - columnheader "첨부파일" [ref=e77]
+          - rowgroup [ref=e78]:
+            - row "176 마감 [채용공고] 강원특별자치도보조기기센터 국비계약직 채용공고 (03.17.) 2025-03-19 첨부파일 아이콘 이미지" [ref=e79]:
+              - cell "176" [ref=e80]
+              - cell "마감" [ref=e81]
+              - cell "[채용공고] 강원특별자치도보조기기센터 국비계약직 채용공고 (03.17.)" [ref=e82]:
+                - link "[채용공고] 강원특별자치도보조기기센터 국비계약직 채용공고 (03.17.)" [ref=e83] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=212&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2025-03-19" [ref=e84]
+              - cell "첨부파일 아이콘 이미지" [ref=e85]:
+                - link "첨부파일 아이콘 이미지" [ref=e86] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=212&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e87]
+            - row "175 공지 [채용공고] 강원특별자치도보조기기센터(육아휴직 대체) 채용공고 (03.17.) 2025-03-19 첨부파일 아이콘 이미지" [ref=e88]:
+              - cell "175" [ref=e89]
+              - cell "공지" [ref=e90]
+              - cell "[채용공고] 강원특별자치도보조기기센터(육아휴직 대체) 채용공고 (03.17.)" [ref=e91]:
+                - link "[채용공고] 강원특별자치도보조기기센터(육아휴직 대체) 채용공고 (03.17.)" [ref=e92] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=211&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2025-03-19" [ref=e93]
+              - cell "첨부파일 아이콘 이미지" [ref=e94]:
+                - link "첨부파일 아이콘 이미지" [ref=e95] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=211&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e96]
+            - row "174 접수 [지원사업]2025 EY한영 장애어린이 보조기구 지원사업 신청 안내 2025-02-14 첨부파일 아이콘 이미지" [ref=e97]:
+              - cell "174" [ref=e98]
+              - cell "접수" [ref=e99]
+              - cell "[지원사업]2025 EY한영 장애어린이 보조기구 지원사업 신청 안내" [ref=e100]:
+                - link "[지원사업]2025 EY한영 장애어린이 보조기구 지원사업 신청 안내" [ref=e101] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=208&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2025-02-14" [ref=e102]
+              - cell "첨부파일 아이콘 이미지" [ref=e103]:
+                - link "첨부파일 아이콘 이미지" [ref=e104] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=208&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e105]
+            - row "173 채용 [채용공고] 강원특별자치도 보조기기센터 계약직 채용 모집(육아휴직 대체)(25.2.3.) 2025-02-04 첨부파일 아이콘 이미지" [ref=e106]:
+              - cell "173" [ref=e107]
+              - cell "채용" [ref=e108]
+              - cell "[채용공고] 강원특별자치도 보조기기센터 계약직 채용 모집(육아휴직 대체)(25.2.3.)" [ref=e109]:
+                - link "[채용공고] 강원특별자치도 보조기기센터 계약직 채용 모집(육아휴직 대체)(25.2.3.)" [ref=e110] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=207&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2025-02-04" [ref=e111]
+              - cell "첨부파일 아이콘 이미지" [ref=e112]:
+                - link "첨부파일 아이콘 이미지" [ref=e113] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=207&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e114]
+            - row "172 채용 [채용공고] 강원특별자치도 보조기기센터 계약직 채용 모집(25.2.3.) 2025-02-04 첨부파일 아이콘 이미지" [ref=e115]:
+              - cell "172" [ref=e116]
+              - cell "채용" [ref=e117]
+              - cell "[채용공고] 강원특별자치도 보조기기센터 계약직 채용 모집(25.2.3.)" [ref=e118]:
+                - link "[채용공고] 강원특별자치도 보조기기센터 계약직 채용 모집(25.2.3.)" [ref=e119] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=206&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2025-02-04" [ref=e120]
+              - cell "첨부파일 아이콘 이미지" [ref=e121]:
+                - link "첨부파일 아이콘 이미지" [ref=e122] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=206&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e123]
+            - row "171 채용 [채용공고] 강원특별자치도 보조기기센터 계약직 채용 모집(25.1.14) 2025-01-14 첨부파일 아이콘 이미지" [ref=e124]:
+              - cell "171" [ref=e125]
+              - cell "채용" [ref=e126]
+              - cell "[채용공고] 강원특별자치도 보조기기센터 계약직 채용 모집(25.1.14)" [ref=e127]:
+                - link "[채용공고] 강원특별자치도 보조기기센터 계약직 채용 모집(25.1.14)" [ref=e128] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=205&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2025-01-14" [ref=e129]
+              - cell "첨부파일 아이콘 이미지" [ref=e130]:
+                - link "첨부파일 아이콘 이미지" [ref=e131] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=205&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e132]
+            - row "170 채용 [합격자 발표] 계약직 최종합격자 발표 및 최종후보자 등록 공고 (25.1.13) 2025-01-13 첨부파일 아이콘 이미지" [ref=e133]:
+              - cell "170" [ref=e134]
+              - cell "채용" [ref=e135]
+              - cell "[합격자 발표] 계약직 최종합격자 발표 및 최종후보자 등록 공고 (25.1.13)" [ref=e136]:
+                - link "[합격자 발표] 계약직 최종합격자 발표 및 최종후보자 등록 공고 (25.1.13)" [ref=e137] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=204&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2025-01-13" [ref=e138]
+              - cell "첨부파일 아이콘 이미지" [ref=e139]:
+                - link "첨부파일 아이콘 이미지" [ref=e140] [cursor=pointer]:
+                  - /url: /bbs/data/notice/86e8788e_28EBB09CED919C29+EAB384EC95BDECA781+EAB3B5EAB09CECB184EC9AA9+EAB2B0EAB3BC+EBB09CED919C.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e141]
+            - row "169 채용 [면접공고] 계약직 서류전형 합격자 발표 및 면접일정 공고 2025-01-08 첨부파일 아이콘 이미지" [ref=e142]:
+              - cell "169" [ref=e143]
+              - cell "채용" [ref=e144]
+              - cell "[면접공고] 계약직 서류전형 합격자 발표 및 면접일정 공고" [ref=e145]:
+                - link "[면접공고] 계약직 서류전형 합격자 발표 및 면접일정 공고" [ref=e146] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=203&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2025-01-08" [ref=e147]
+              - cell "첨부파일 아이콘 이미지" [ref=e148]:
+                - link "첨부파일 아이콘 이미지" [ref=e149] [cursor=pointer]:
+                  - /url: /bbs/data/notice/de8fa49a_5BEBB699EC9E845D+EAB384EC95BDECA781+EC849CEBA598ECA084ED9895ED95A9EAB2A9EC9E90+EBB09CED919C+EBB08F+EBA9B4ECA091+EC9DBCECA095+EC9588EB82B4_20241225.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e150]
+            - row "168 접수 [신청안내] 2025 신용카드사회공헌재단 희귀난치어린이 지원사업 안내 2025-01-02 첨부파일 아이콘 이미지" [ref=e151]:
+              - cell "168" [ref=e152]
+              - cell "접수" [ref=e153]
+              - cell "[신청안내] 2025 신용카드사회공헌재단 희귀난치어린이 지원사업 안내" [ref=e154]:
+                - link "[신청안내] 2025 신용카드사회공헌재단 희귀난치어린이 지원사업 안내" [ref=e155] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=202&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2025-01-02" [ref=e156]
+              - cell "첨부파일 아이콘 이미지" [ref=e157]:
+                - link "첨부파일 아이콘 이미지" [ref=e158] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=202&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e159]
+            - row "167 마감 [마감] 강원특별자치도 보조기기센터 계약직 채용 모집 공고 2024-12-24 첨부파일 아이콘 이미지" [ref=e160]:
+              - cell "167" [ref=e161]
+              - cell "마감" [ref=e162]
+              - cell "[마감] 강원특별자치도 보조기기센터 계약직 채용 모집 공고" [ref=e163]:
+                - link "[마감] 강원특별자치도 보조기기센터 계약직 채용 모집 공고" [ref=e164] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=201&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2024-12-24" [ref=e165]
+              - cell "첨부파일 아이콘 이미지" [ref=e166]:
+                - link "첨부파일 아이콘 이미지" [ref=e167] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=201&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e168]
+            - row "166 채용 [마감] 강원특별자치도 보조기기센터 계약직 채용 모집 재공고 2024-12-13 첨부파일 아이콘 이미지" [ref=e169]:
+              - cell "166" [ref=e170]
+              - cell "채용" [ref=e171]
+              - cell "[마감] 강원특별자치도 보조기기센터 계약직 채용 모집 재공고" [ref=e172]:
+                - link "[마감] 강원특별자치도 보조기기센터 계약직 채용 모집 재공고" [ref=e173] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=200&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2024-12-13" [ref=e174]
+              - cell "첨부파일 아이콘 이미지" [ref=e175]:
+                - link "첨부파일 아이콘 이미지" [ref=e176] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=200&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e177]
+            - row "165 채용 [채용공고] 계약직 채용 최종 합격자 안내 2024-12-13" [ref=e178]:
+              - cell "165" [ref=e179]
+              - cell "채용" [ref=e180]
+              - cell "[채용공고] 계약직 채용 최종 합격자 안내" [ref=e181]:
+                - link "[채용공고] 계약직 채용 최종 합격자 안내" [ref=e182] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=198&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2024-12-13" [ref=e183]
+              - cell [ref=e184]
+            - row "164 채용 [면접공고] 계약직 서류전형 합격자 발표 및 면접일정 공고 2024-12-10 첨부파일 아이콘 이미지" [ref=e185]:
+              - cell "164" [ref=e186]
+              - cell "채용" [ref=e187]
+              - cell "[면접공고] 계약직 서류전형 합격자 발표 및 면접일정 공고" [ref=e188]:
+                - link "[면접공고] 계약직 서류전형 합격자 발표 및 면접일정 공고" [ref=e189] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=197&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2024-12-10" [ref=e190]
+              - cell "첨부파일 아이콘 이미지" [ref=e191]:
+                - link "첨부파일 아이콘 이미지" [ref=e192] [cursor=pointer]:
+                  - /url: /bbs/data/notice/624f2b3a_EAB384EC95BDECA781+EC849CEBA598ECA084ED9895ED95A9EAB2A9EC9E90+EBB09CED919C+EBB08F+EBA9B4ECA091+EC9DBCECA095+EC9588EB82B4.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e193]
+            - row "163 채용 [채용공고] 강원특별자치도 보조기기센터 계약직 채용 모집 공고 2024-11-28 첨부파일 아이콘 이미지" [ref=e194]:
+              - cell "163" [ref=e195]
+              - cell "채용" [ref=e196]
+              - cell "[채용공고] 강원특별자치도 보조기기센터 계약직 채용 모집 공고" [ref=e197]:
+                - link "[채용공고] 강원특별자치도 보조기기센터 계약직 채용 모집 공고" [ref=e198] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=196&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2024-11-28" [ref=e199]
+              - cell "첨부파일 아이콘 이미지" [ref=e200]:
+                - link "첨부파일 아이콘 이미지" [ref=e201] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=196&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e202]
+            - row "162 마감 [마감] 2024 푸르매 장애어린이 지원사업 with 볼보자동차코리아 2024-11-26 첨부파일 아이콘 이미지" [ref=e203]:
+              - cell "162" [ref=e204]
+              - cell "마감" [ref=e205]
+              - cell "[마감] 2024 푸르매 장애어린이 지원사업 with 볼보자동차코리아" [ref=e206]:
+                - link "[마감] 2024 푸르매 장애어린이 지원사업 with 볼보자동차코리아" [ref=e207] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=195&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+              - cell "2024-11-26" [ref=e208]
+              - cell "첨부파일 아이콘 이미지" [ref=e209]:
+                - link "첨부파일 아이콘 이미지" [ref=e210] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=195&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e211]
+        - generic [ref=e213]:
+          - link [ref=e214] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+            - img [ref=e215]
+          - link "1" [ref=e216] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+          - link "2" [ref=e217] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=2
+          - link "3" [ref=e218] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+          - generic [ref=e219]: "4"
+          - link "5" [ref=e220] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+          - link "6" [ref=e221] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=6
+          - link "7" [ref=e222] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=7
+          - link "8" [ref=e223] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=8
+          - link "9" [ref=e224] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+          - link "10" [ref=e225] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=10
+          - link [ref=e226] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=11
+            - img [ref=e227]
+          - link [ref=e228] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=15
+            - img [ref=e229]
+  - generic [ref=e231]:
+    - button
+    - list [ref=e232]:
+      - listitem [ref=e233]:
+        - link "개인정보처리방침" [ref=e234] [cursor=pointer]:
+          - /url: /policy/privacy.php
+          - generic [ref=e235]: 개인정보처리방침
+        - link "이메일무단수집거부" [ref=e236] [cursor=pointer]:
+          - /url: /policy/email_collection.php
+      - listitem [ref=e237]:
+        - paragraph [ref=e238]:
+          - generic [ref=e239]: 강원특별자치도 보조기기센터
+          - generic [ref=e240]: 강원특별자치도 춘천시 충열로 142번길 24-16(우두동 291-2)강원특별자치도재활병원 2층
+          - generic [ref=e241]: "대표 : 이승준"
+        - paragraph [ref=e242]:
+          - generic [ref=e243]: "사업자 등록번호 : 221-82-10983"
+          - generic [ref=e244]: "대표전화 : 033-248-7751~4"
+          - generic [ref=e245]: "Fax : 033-248-7755"
+          - generic [ref=e246]: "Email : gatc2019@naver.com"
+      - listitem [ref=e247]:
+        - heading "Copyright(c) 강원특별자치도보조기기센터 All rights reserved." [level=2] [ref=e248]
+    - list [ref=e249]:
+      - listitem [ref=e250]:
+        - generic [ref=e253]: 패밀리 사이트
+      - listitem [ref=e255]:
+        - link [ref=e256] [cursor=pointer]:
+          - /url: http://pf.kakao.com/_hjxmRxb
+        - link [ref=e257] [cursor=pointer]:
+          - /url: https://www.facebook.com/GATC2019
+        - img "카카오톡 아이콘 카카오QR코드 페이스북 아이콘 페이스북 QR코드 이미지" [ref=e258]

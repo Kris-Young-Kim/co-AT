@@ -1,0 +1,287 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - link [ref=e10] [cursor=pointer]:
+      - /url: /
+    - navigation [ref=e11]:
+      - list [ref=e12]:
+        - listitem [ref=e13]:
+          - link "주요사업" [ref=e15] [cursor=pointer]:
+            - /url: /business/service.php
+        - listitem [ref=e16]:
+          - link "커뮤니티" [ref=e18] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e19]:
+          - link "보조기기 정보" [ref=e21] [cursor=pointer]:
+            - /url: /dataroom/equipment_list.php
+        - listitem [ref=e22]:
+          - link "서비스 신청" [ref=e24] [cursor=pointer]:
+            - /url: /apply/introduce.php
+        - listitem [ref=e25]:
+          - link "센터소개" [ref=e27] [cursor=pointer]:
+            - /url: /company/greetings.php
+  - generic [ref=e29]:
+    - heading "커뮤니티" [level=2] [ref=e30]
+    - paragraph [ref=e31]: Gangwon Assistive Technology Center
+  - generic [ref=e32]:
+    - generic [ref=e33]:
+      - heading "공지사항" [level=3] [ref=e34]: 공지사항
+      - list [ref=e36]:
+        - listitem [ref=e37]:
+          - link "공지사항" [ref=e38] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e39]:
+          - link "활동갤러리" [ref=e40] [cursor=pointer]:
+            - /url: /bbs/?so_table=gallery
+        - listitem [ref=e41]:
+          - link "보조기기 서비스 사례" [ref=e42] [cursor=pointer]:
+            - /url: /bbs/?so_table=case
+    - generic [ref=e43]:
+      - generic [ref=e44]: 공지사항
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - generic:
+            - paragraph [ref=e49]:
+              - text: "- 총 게시물"
+              - generic [ref=e50]: "221"
+              - text: ", 페이지"
+              - generic [ref=e51]: "09"
+              - text: /
+              - generic [ref=e52]: "15"
+            - combobox [ref=e54]:
+              - option "제목+내용" [selected]
+              - option "제목"
+              - option "내용"
+            - generic [ref=e55]:
+              - textbox "검색어를 입력해 주세요" [ref=e56]
+              - button "검색" [ref=e58] [cursor=pointer]
+        - generic [ref=e59]:
+          - link "전체" [ref=e60] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice
+          - link "지원사업" [ref=e61] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=지원사업
+          - link "센터소식" [ref=e62] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=센터소식
+        - table "공지사항 목록" [ref=e64]:
+          - rowgroup [ref=e71]:
+            - row "번호 분류 제목 등록일 첨부파일" [ref=e72]:
+              - columnheader "번호" [ref=e73]
+              - columnheader "분류" [ref=e74]
+              - columnheader "제목" [ref=e75]
+              - columnheader "등록일" [ref=e76]
+              - columnheader "첨부파일" [ref=e77]
+          - rowgroup [ref=e78]:
+            - row "101 접수 [신청안내] 2023년 정보통신보조기기 임대사업 신청 안내 2023-02-14 첨부파일 아이콘 이미지" [ref=e79]:
+              - cell "101" [ref=e80]
+              - cell "접수" [ref=e81]
+              - cell "[신청안내] 2023년 정보통신보조기기 임대사업 신청 안내" [ref=e82]:
+                - link "[신청안내] 2023년 정보통신보조기기 임대사업 신청 안내" [ref=e83] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=131&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2023-02-14" [ref=e84]
+              - cell "첨부파일 아이콘 이미지" [ref=e85]:
+                - link "첨부파일 아이콘 이미지" [ref=e86] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=131&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+                  - img "첨부파일 아이콘 이미지" [ref=e87]
+            - row "100 마감 [신청안내] 2023 신용카드공헌재단 희귀난치어린이지원사업 신청 안내(~2.6.) 2023-01-27 첨부파일 아이콘 이미지" [ref=e88]:
+              - cell "100" [ref=e89]
+              - cell "마감" [ref=e90]
+              - cell "[신청안내] 2023 신용카드공헌재단 희귀난치어린이지원사업 신청 안내(~2.6.)" [ref=e91]:
+                - link "[신청안내] 2023 신용카드공헌재단 희귀난치어린이지원사업 신청 안내(~2.6.)" [ref=e92] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=128&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2023-01-27" [ref=e93]
+              - cell "첨부파일 아이콘 이미지" [ref=e94]:
+                - link "첨부파일 아이콘 이미지" [ref=e95] [cursor=pointer]:
+                  - /url: /bbs/data/notice/ea4f9eb6_5BEC8BA0ECB2ADEC849C5D2023+ED9DACEAB780EB829CECB998EC96B4EBA6B0EC9DB4+ECA780EC9B90EC82ACEC9785+EC8BA0ECB2ADEC849C.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e96]
+            - row "99 결과 [선정결과] 2022 볼보자동차코리아 장애 어린이 보조기구 지원사업 선정자 안내 2023-01-18" [ref=e97]:
+              - cell "99" [ref=e98]
+              - cell "결과" [ref=e99]
+              - cell "[선정결과] 2022 볼보자동차코리아 장애 어린이 보조기구 지원사업 선정자 안내" [ref=e100]:
+                - link "[선정결과] 2022 볼보자동차코리아 장애 어린이 보조기구 지원사업 선정자 안내" [ref=e101] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=127&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2023-01-18" [ref=e102]
+              - cell [ref=e103]
+            - row "98 공지 [새해인사] 2023년 새해 복 많이 받으세요. 2022-12-30 첨부파일 아이콘 이미지" [ref=e104]:
+              - cell "98" [ref=e105]
+              - cell "공지" [ref=e106]
+              - cell "[새해인사] 2023년 새해 복 많이 받으세요." [ref=e107]:
+                - link "[새해인사] 2023년 새해 복 많이 받으세요." [ref=e108] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=126&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2022-12-30" [ref=e109]
+              - cell "첨부파일 아이콘 이미지" [ref=e110]:
+                - link "첨부파일 아이콘 이미지" [ref=e111] [cursor=pointer]:
+                  - /url: /bbs/data/notice/1824f797_2023EB8584+EC8388ED95B4EC9DB8EC82AC.png
+                  - img "첨부파일 아이콘 이미지" [ref=e112]
+            - row "97 마감 [신청안내] 2022 보조기기 리싸이클 드림사업 신청 안내(~12.2..까지 연장) 2022-11-17" [ref=e113]:
+              - cell "97" [ref=e114]
+              - cell "마감" [ref=e115]
+              - cell "[신청안내] 2022 보조기기 리싸이클 드림사업 신청 안내(~12.2..까지 연장)" [ref=e116]:
+                - link "[신청안내] 2022 보조기기 리싸이클 드림사업 신청 안내(~12.2..까지 연장)" [ref=e117] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=125&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2022-11-17" [ref=e118]
+              - cell [ref=e119]
+            - row "96 마감 [신청안내] 2022 볼보자동차코리아 장애 어린이 보조기구 지원사업 신청 안내(~22.12.15.) 2022-11-09 첨부파일 아이콘 이미지" [ref=e120]:
+              - cell "96" [ref=e121]
+              - cell "마감" [ref=e122]
+              - cell "[신청안내] 2022 볼보자동차코리아 장애 어린이 보조기구 지원사업 신청 안내(~22.12.15.)" [ref=e123]:
+                - link "[신청안내] 2022 볼보자동차코리아 장애 어린이 보조기구 지원사업 신청 안내(~22.12.15.)" [ref=e124] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=124&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2022-11-09" [ref=e125]
+              - cell "첨부파일 아이콘 이미지" [ref=e126]:
+                - link "첨부파일 아이콘 이미지" [ref=e127] [cursor=pointer]:
+                  - /url: /bbs/data/notice/887040d6_5BEC8BA0ECB2ADEC849CEC8B9D5D+2022+EBB3BCEBB3B4EC9E90EB8F99ECB0A8ECBD94EBA6ACEC9584+EC9EA5EC95A0EC96B4EBA6B0EC9DB4+EBB3B4ECA1B0EAB8B0EAB5AC+ECA780EC9B90EC82ACEC9785+EC8BA0ECB2ADEC849C28ECB59CECA285EBB3B8_29.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e128]
+            - row "95 마감 [신청안내] 보조기기 클린데이 신청(~10.12.) 2022-10-05 첨부파일 아이콘 이미지" [ref=e129]:
+              - cell "95" [ref=e130]
+              - cell "마감" [ref=e131]
+              - cell "[신청안내] 보조기기 클린데이 신청(~10.12.)" [ref=e132]:
+                - link "[신청안내] 보조기기 클린데이 신청(~10.12.)" [ref=e133] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=123&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2022-10-05" [ref=e134]
+              - cell "첨부파일 아이콘 이미지" [ref=e135]:
+                - link "첨부파일 아이콘 이미지" [ref=e136] [cursor=pointer]:
+                  - /url: /bbs/data/notice/28b7daab_ED81B4EBA6B0EB8DB0EC9DB4+ED998DEBB3B4EC9AA9.PNG
+                  - img "첨부파일 아이콘 이미지" [ref=e137]
+            - row "94 마감 [신청안내] 보조기기 리사이클 드림 사업 대상자 모집(~10.31.) 2022-09-27 첨부파일 아이콘 이미지" [ref=e138]:
+              - cell "94" [ref=e139]
+              - cell "마감" [ref=e140]
+              - cell "[신청안내] 보조기기 리사이클 드림 사업 대상자 모집(~10.31.)" [ref=e141]:
+                - link "[신청안내] 보조기기 리사이클 드림 사업 대상자 모집(~10.31.)" [ref=e142] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=122&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2022-09-27" [ref=e143]
+              - cell "첨부파일 아이콘 이미지" [ref=e144]:
+                - link "첨부파일 아이콘 이미지" [ref=e145] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=122&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+                  - img "첨부파일 아이콘 이미지" [ref=e146]
+            - row "93 공지 [채용공고] 춘천시장애인보장구수리지원센터 수리기사(계약직) 채용 공고 2022-08-08 첨부파일 아이콘 이미지" [ref=e147]:
+              - cell "93" [ref=e148]
+              - cell "공지" [ref=e149]
+              - cell "[채용공고] 춘천시장애인보장구수리지원센터 수리기사(계약직) 채용 공고" [ref=e150]:
+                - link "[채용공고] 춘천시장애인보장구수리지원센터 수리기사(계약직) 채용 공고" [ref=e151] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=121&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2022-08-08" [ref=e152]
+              - cell "첨부파일 아이콘 이미지" [ref=e153]:
+                - link "첨부파일 아이콘 이미지" [ref=e154] [cursor=pointer]:
+                  - /url: /bbs/data/notice/644cf445_28EAB3B5EAB3A029+ECB698ECB29CEC8B9CEC9EA5EC95A0EC9DB8EBB3B4EC9EA5EAB5ACEC8898EBA6ACECA780EC9B90EC84BCED84B0+EC8898EBA6ACEAB8B0EC82AC+ECB184EC9AA9EAB3B5EAB3A0288.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e155]
+            - row "92 공지 [신청안내] 2022년 하반기 <아이들 의료지원> 대상자 모집 (~8.17.) 2022-08-08 첨부파일 아이콘 이미지" [ref=e156]:
+              - cell "92" [ref=e157]
+              - cell "공지" [ref=e158]
+              - cell "[신청안내] 2022년 하반기 <아이들 의료지원> 대상자 모집 (~8.17.)" [ref=e159]:
+                - link "[신청안내] 2022년 하반기 <아이들 의료지원> 대상자 모집 (~8.17.)" [ref=e160] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=120&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2022-08-08" [ref=e161]
+              - cell "첨부파일 아이콘 이미지" [ref=e162]:
+                - link "첨부파일 아이콘 이미지" [ref=e163] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=120&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+                  - img "첨부파일 아이콘 이미지" [ref=e164]
+            - row "91 접수 [신청안내] 2022년 하반기 아이들 의료지원 대상자 모집(8.17) 2022-08-08 첨부파일 아이콘 이미지" [ref=e165]:
+              - cell "91" [ref=e166]
+              - cell "접수" [ref=e167]
+              - cell "[신청안내] 2022년 하반기 아이들 의료지원 대상자 모집(8.17)" [ref=e168]:
+                - link "[신청안내] 2022년 하반기 아이들 의료지원 대상자 모집(8.17)" [ref=e169] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=119&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2022-08-08" [ref=e170]
+              - cell "첨부파일 아이콘 이미지" [ref=e171]:
+                - link "첨부파일 아이콘 이미지" [ref=e172] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=119&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+                  - img "첨부파일 아이콘 이미지" [ref=e173]
+            - row "90 공지 [정보안내] 장애인 인턴지원 시범 사업 참여자 (경증장애인) 추가 모집 2022-07-27 첨부파일 아이콘 이미지" [ref=e174]:
+              - cell "90" [ref=e175]
+              - cell "공지" [ref=e176]
+              - cell "[정보안내] 장애인 인턴지원 시범 사업 참여자 (경증장애인) 추가 모집" [ref=e177]:
+                - link "[정보안내] 장애인 인턴지원 시범 사업 참여자 (경증장애인) 추가 모집" [ref=e178] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=118&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2022-07-27" [ref=e179]
+              - cell "첨부파일 아이콘 이미지" [ref=e180]:
+                - link "첨부파일 아이콘 이미지" [ref=e181] [cursor=pointer]:
+                  - /url: /bbs/data/notice/3aeec3ca_EC9EA5EC95A0EC9DB8+EC9DB8ED84B4ECA780EC9B90+EC8B9CEBB294+EC82ACEC9785+ECB0B8EC97ACEC9E9028EAB2BDECA69DEC9EA5EC95A0EC9DB829+ECB694EAB080+EBAAA8ECA791+EAB3B5EAB3A0.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e182]
+            - row "89 공지 [공모] 2022 3D프린터 활용 보조기기 공모전(~9.4.) 2022-07-27 첨부파일 아이콘 이미지" [ref=e183]:
+              - cell "89" [ref=e184]
+              - cell "공지" [ref=e185]
+              - cell "[공모] 2022 3D프린터 활용 보조기기 공모전(~9.4.)" [ref=e186]:
+                - link "[공모] 2022 3D프린터 활용 보조기기 공모전(~9.4.)" [ref=e187] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=117&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2022-07-27" [ref=e188]
+              - cell "첨부파일 아이콘 이미지" [ref=e189]:
+                - link "첨부파일 아이콘 이미지" [ref=e190] [cursor=pointer]:
+                  - /url: /bbs/data/notice/13b07e2e_5BEAB3B5EAB3A0EBACB85D+2022+3D+ED9484EBA6B0ED84B0+ED999CEC9AA9+EBB3B4ECA1B0EAB8B0EAB8B0+EAB3B5EBAAA8ECA084.pdf
+                  - img "첨부파일 아이콘 이미지" [ref=e191]
+            - row "88 공지 [공모] 국립재활원 '제3회 보조기기 해커톤' 시행(~7.29.) 2022-07-13 첨부파일 아이콘 이미지" [ref=e192]:
+              - cell "88" [ref=e193]
+              - cell "공지" [ref=e194]
+              - cell "[공모] 국립재활원 '제3회 보조기기 해커톤' 시행(~7.29.)" [ref=e195]:
+                - link "[공모] 국립재활원 '제3회 보조기기 해커톤' 시행(~7.29.)" [ref=e196] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=116&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2022-07-13" [ref=e197]
+              - cell "첨부파일 아이콘 이미지" [ref=e198]:
+                - link "첨부파일 아이콘 이미지" [ref=e199] [cursor=pointer]:
+                  - /url: /bbs/data/notice/7f8ff62c_ECA09C3ED9A8C+EAB5ADEBA6BDEC9EACED999CEC9B90+ED95B4ECBBA4ED86A4+ED8FACEC8AA4ED84B0_1.png
+                  - img "첨부파일 아이콘 이미지" [ref=e200]
+            - row "87 결과 [선정결과] 2022 월드비전 희귀난치질환아동 맞춤형보조기기 지원사업 선정자 알림 2022-07-11" [ref=e201]:
+              - cell "87" [ref=e202]
+              - cell "결과" [ref=e203]
+              - cell "[선정결과] 2022 월드비전 희귀난치질환아동 맞춤형보조기기 지원사업 선정자 알림" [ref=e204]:
+                - link "[선정결과] 2022 월드비전 희귀난치질환아동 맞춤형보조기기 지원사업 선정자 알림" [ref=e205] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=115&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+              - cell "2022-07-11" [ref=e206]
+              - cell [ref=e207]
+        - generic [ref=e209]:
+          - link [ref=e210] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+            - img [ref=e211]
+          - link "1" [ref=e212] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+          - link "2" [ref=e213] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=2
+          - link "3" [ref=e214] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+          - link "4" [ref=e215] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+          - link "5" [ref=e216] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+          - link "6" [ref=e217] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=6
+          - link "7" [ref=e218] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=7
+          - link "8" [ref=e219] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=8
+          - generic [ref=e220]: "9"
+          - link "10" [ref=e221] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=10
+          - link [ref=e222] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=11
+            - img [ref=e223]
+          - link [ref=e224] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=15
+            - img [ref=e225]
+  - generic [ref=e227]:
+    - button
+    - list [ref=e228]:
+      - listitem [ref=e229]:
+        - link "개인정보처리방침" [ref=e230] [cursor=pointer]:
+          - /url: /policy/privacy.php
+          - generic [ref=e231]: 개인정보처리방침
+        - link "이메일무단수집거부" [ref=e232] [cursor=pointer]:
+          - /url: /policy/email_collection.php
+      - listitem [ref=e233]:
+        - paragraph [ref=e234]:
+          - generic [ref=e235]: 강원특별자치도 보조기기센터
+          - generic [ref=e236]: 강원특별자치도 춘천시 충열로 142번길 24-16(우두동 291-2)강원특별자치도재활병원 2층
+          - generic [ref=e237]: "대표 : 이승준"
+        - paragraph [ref=e238]:
+          - generic [ref=e239]: "사업자 등록번호 : 221-82-10983"
+          - generic [ref=e240]: "대표전화 : 033-248-7751~4"
+          - generic [ref=e241]: "Fax : 033-248-7755"
+          - generic [ref=e242]: "Email : gatc2019@naver.com"
+      - listitem [ref=e243]:
+        - heading "Copyright(c) 강원특별자치도보조기기센터 All rights reserved." [level=2] [ref=e244]
+    - list [ref=e245]:
+      - listitem [ref=e246]:
+        - generic [ref=e249]: 패밀리 사이트
+      - listitem [ref=e251]:
+        - link [ref=e252] [cursor=pointer]:
+          - /url: http://pf.kakao.com/_hjxmRxb
+        - link [ref=e253] [cursor=pointer]:
+          - /url: https://www.facebook.com/GATC2019
+        - img "카카오톡 아이콘 카카오QR코드 페이스북 아이콘 페이스북 QR코드 이미지" [ref=e254]

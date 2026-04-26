@@ -1,0 +1,275 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - link [ref=e10] [cursor=pointer]:
+      - /url: /
+    - navigation [ref=e11]:
+      - list [ref=e12]:
+        - listitem [ref=e13]:
+          - link "주요사업" [ref=e15] [cursor=pointer]:
+            - /url: /business/service.php
+        - listitem [ref=e16]:
+          - link "커뮤니티" [ref=e18] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e19]:
+          - link "보조기기 정보" [ref=e21] [cursor=pointer]:
+            - /url: /dataroom/equipment_list.php
+        - listitem [ref=e22]:
+          - link "서비스 신청" [ref=e24] [cursor=pointer]:
+            - /url: /apply/introduce.php
+        - listitem [ref=e25]:
+          - link "센터소개" [ref=e27] [cursor=pointer]:
+            - /url: /company/greetings.php
+  - generic [ref=e29]:
+    - heading "커뮤니티" [level=2] [ref=e30]
+    - paragraph [ref=e31]: Gangwon Assistive Technology Center
+  - generic [ref=e32]:
+    - generic [ref=e33]:
+      - heading "공지사항" [level=3] [ref=e34]: 공지사항
+      - list [ref=e36]:
+        - listitem [ref=e37]:
+          - link "공지사항" [ref=e38] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e39]:
+          - link "활동갤러리" [ref=e40] [cursor=pointer]:
+            - /url: /bbs/?so_table=gallery
+        - listitem [ref=e41]:
+          - link "보조기기 서비스 사례" [ref=e42] [cursor=pointer]:
+            - /url: /bbs/?so_table=case
+    - generic [ref=e43]:
+      - generic [ref=e44]: 공지사항
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - generic:
+            - paragraph [ref=e49]:
+              - text: "- 총 게시물"
+              - generic [ref=e50]: "221"
+              - text: ", 페이지"
+              - generic [ref=e51]: "05"
+              - text: /
+              - generic [ref=e52]: "15"
+            - combobox [ref=e54]:
+              - option "제목+내용" [selected]
+              - option "제목"
+              - option "내용"
+            - generic [ref=e55]:
+              - textbox "검색어를 입력해 주세요" [ref=e56]
+              - button "검색" [ref=e58] [cursor=pointer]
+        - generic [ref=e59]:
+          - link "전체" [ref=e60] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice
+          - link "지원사업" [ref=e61] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=지원사업
+          - link "센터소식" [ref=e62] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=센터소식
+        - table "공지사항 목록" [ref=e64]:
+          - rowgroup [ref=e71]:
+            - row "번호 분류 제목 등록일 첨부파일" [ref=e72]:
+              - columnheader "번호" [ref=e73]
+              - columnheader "분류" [ref=e74]
+              - columnheader "제목" [ref=e75]
+              - columnheader "등록일" [ref=e76]
+              - columnheader "첨부파일" [ref=e77]
+          - rowgroup [ref=e78]:
+            - row "161 공지 맞춤형 보조기기 지원사업 성과보고회 안내 2024-10-31 첨부파일 아이콘 이미지" [ref=e79]:
+              - cell "161" [ref=e80]
+              - cell "공지" [ref=e81]
+              - cell "맞춤형 보조기기 지원사업 성과보고회 안내" [ref=e82]:
+                - link "맞춤형 보조기기 지원사업 성과보고회 안내" [ref=e83] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=194&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-10-31" [ref=e84]
+              - cell "첨부파일 아이콘 이미지" [ref=e85]:
+                - link "첨부파일 아이콘 이미지" [ref=e86] [cursor=pointer]:
+                  - /url: /bbs/data/notice/55280b6d_EC84B1EAB3BCEBB3B4EAB3A0ED9A8C.jpg
+                  - img "첨부파일 아이콘 이미지" [ref=e87]
+            - row "160 공지 2024년 신규보조기기 무상 대여 서비스 안내문 2024-10-29 첨부파일 아이콘 이미지" [ref=e88]:
+              - cell "160" [ref=e89]
+              - cell "공지" [ref=e90]
+              - cell "2024년 신규보조기기 무상 대여 서비스 안내문" [ref=e91]:
+                - link "2024년 신규보조기기 무상 대여 서비스 안내문" [ref=e92] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=193&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-10-29" [ref=e93]
+              - cell "첨부파일 아이콘 이미지" [ref=e94]:
+                - link "첨부파일 아이콘 이미지" [ref=e95] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=193&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+                  - img "첨부파일 아이콘 이미지" [ref=e96]
+            - row "159 정보 「장애인 보조기기 급여제품 및 결정가격 고시」일부개정 2024-10-15 첨부파일 아이콘 이미지" [ref=e97]:
+              - cell "159" [ref=e98]
+              - cell "정보" [ref=e99]
+              - cell "「장애인 보조기기 급여제품 및 결정가격 고시」일부개정" [ref=e100]:
+                - link "「장애인 보조기기 급여제품 및 결정가격 고시」일부개정" [ref=e101] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=192&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-10-15" [ref=e102]
+              - cell "첨부파일 아이콘 이미지" [ref=e103]:
+                - link "첨부파일 아이콘 이미지" [ref=e104] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=192&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+                  - img "첨부파일 아이콘 이미지" [ref=e105]
+            - row "158 접수 [신청안내 ] 2024년 브리지스쿨 보조기기 지원 프로그램 2024-10-07 첨부파일 아이콘 이미지" [ref=e106]:
+              - cell "158" [ref=e107]
+              - cell "접수" [ref=e108]
+              - cell "[신청안내 ] 2024년 브리지스쿨 보조기기 지원 프로그램" [ref=e109]:
+                - link "[신청안내 ] 2024년 브리지스쿨 보조기기 지원 프로그램" [ref=e110] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=191&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-10-07" [ref=e111]
+              - cell "첨부파일 아이콘 이미지" [ref=e112]:
+                - link "첨부파일 아이콘 이미지" [ref=e113] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=191&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+                  - img "첨부파일 아이콘 이미지" [ref=e114]
+            - row "157 결과 [선정결과 ]2024 맞춤형 IT보조기기 지원사업 선정 결과 2024-09-10" [ref=e115]:
+              - cell "157" [ref=e116]
+              - cell "결과" [ref=e117]
+              - cell "[선정결과 ]2024 맞춤형 IT보조기기 지원사업 선정 결과" [ref=e118]:
+                - link "[선정결과 ]2024 맞춤형 IT보조기기 지원사업 선정 결과" [ref=e119] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=190&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-09-10" [ref=e120]
+              - cell [ref=e121]
+            - row "156 접수 2024년 강원특별자치도재활병원 · 사랑의 열매 취약계층 장애 아동을 위한 보조기기 구입 지원사업 2024-08-08 첨부파일 아이콘 이미지" [ref=e122]:
+              - cell "156" [ref=e123]
+              - cell "접수" [ref=e124]
+              - cell "2024년 강원특별자치도재활병원 · 사랑의 열매 취약계층 장애 아동을 위한 보조기기 구입 지원사업" [ref=e125]:
+                - link "2024년 강원특별자치도재활병원 · 사랑의 열매 취약계층 장애 아동을 위한 보조기기 구입 지원사업" [ref=e126] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=189&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-08-08" [ref=e127]
+              - cell "첨부파일 아이콘 이미지" [ref=e128]:
+                - link "첨부파일 아이콘 이미지" [ref=e129] [cursor=pointer]:
+                  - /url: /bbs/data/notice/236f3583_5BEC8BA0ECB2ADEC849C5D+2024EB8584+EC82ACEB9E91EC9D98+EC97B4EBA7A4+ECB7A8EC95BDEAB384ECB8B5+EC9EA5EC95A0+EC9584EB8F99EC9D84+EC9C84ED959C+EBB3B4ECA1B0EAB8B0EAB8B0+EAB5ACEC9E85+ECA780EC9B90EC82ACEC9785.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e130]
+            - row "155 결과 [선정결과] 2024 월드비전 희귀질환아동 맞춤형 보조기기 지원대상자 선정 명단 2024-07-15" [ref=e131]:
+              - cell "155" [ref=e132]
+              - cell "결과" [ref=e133]
+              - cell "[선정결과] 2024 월드비전 희귀질환아동 맞춤형 보조기기 지원대상자 선정 명단" [ref=e134]:
+                - link "[선정결과] 2024 월드비전 희귀질환아동 맞춤형 보조기기 지원대상자 선정 명단" [ref=e135] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=188&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-07-15" [ref=e136]
+              - cell [ref=e137]
+            - row "154 결과 [선정결과] 2024 현대모비스 장애아동이동편의 보조기구 지원대상자 선정 명단 2024-07-15" [ref=e138]:
+              - cell "154" [ref=e139]
+              - cell "결과" [ref=e140]
+              - cell "[선정결과] 2024 현대모비스 장애아동이동편의 보조기구 지원대상자 선정 명단" [ref=e141]:
+                - link "[선정결과] 2024 현대모비스 장애아동이동편의 보조기구 지원대상자 선정 명단" [ref=e142] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=187&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-07-15" [ref=e143]
+              - cell [ref=e144]
+            - row "153 결과 [선정결과] 2024년 롯데복지재단 장애 아동·청소년 보조기기 지원사업 최종 선정자 알림 2024-07-05" [ref=e145]:
+              - cell "153" [ref=e146]
+              - cell "결과" [ref=e147]
+              - cell "[선정결과] 2024년 롯데복지재단 장애 아동·청소년 보조기기 지원사업 최종 선정자 알림" [ref=e148]:
+                - link "[선정결과] 2024년 롯데복지재단 장애 아동·청소년 보조기기 지원사업 최종 선정자 알림" [ref=e149] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=186&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-07-05" [ref=e150]
+              - cell [ref=e151]
+            - row "152 공지 [공지사항] 6월 6일 현충일 휴관 안내 2024-06-05" [ref=e152]:
+              - cell "152" [ref=e153]
+              - cell "공지" [ref=e154]
+              - cell "[공지사항] 6월 6일 현충일 휴관 안내" [ref=e155]:
+                - link "[공지사항] 6월 6일 현충일 휴관 안내" [ref=e156] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=185&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-06-05" [ref=e157]
+              - cell [ref=e158]
+            - row "151 평가 [현장평가] 2024년 롯데복재재단 장애인 아동·청소년 보조기기 지원사업 현장평가 대상자 발표 2024-05-16" [ref=e159]:
+              - cell "151" [ref=e160]
+              - cell "평가" [ref=e161]
+              - cell "[현장평가] 2024년 롯데복재재단 장애인 아동·청소년 보조기기 지원사업 현장평가 대상자 발표" [ref=e162]:
+                - link "[현장평가] 2024년 롯데복재재단 장애인 아동·청소년 보조기기 지원사업 현장평가 대상자 발표" [ref=e163] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=184&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-05-16" [ref=e164]
+              - cell [ref=e165]
+            - row "150 채용 [합격자 발표] 계약직 최종합격자 발표 및 최종후보자 등록 공고(5.13) 2024-05-13 첨부파일 아이콘 이미지" [ref=e166]:
+              - cell "150" [ref=e167]
+              - cell "채용" [ref=e168]
+              - cell "[합격자 발표] 계약직 최종합격자 발표 및 최종후보자 등록 공고(5.13)" [ref=e169]:
+                - link "[합격자 발표] 계약직 최종합격자 발표 및 최종후보자 등록 공고(5.13)" [ref=e170] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=183&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-05-13" [ref=e171]
+              - cell "첨부파일 아이콘 이미지" [ref=e172]:
+                - link "첨부파일 아이콘 이미지" [ref=e173] [cursor=pointer]:
+                  - /url: /bbs/data/notice/63a08206_5B2024-35D+EAB384EC95BDECA781+EAB3B5EAB09CECB184EC9AA9+ECB59CECA285ED95A9EAB2A9EC9E90+EBB09CED919C+EBB08F+ECB184EC9AA9ED9B84EBB3B4EB93B1EBA19D+EAB3B5EAB3A0.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e174]
+            - row "149 공지 [신청안내] 2024 맞춤형 IT보조기기 지원사업 신청 기간 연장 안내( ~ 6.24) 2024-05-10 첨부파일 아이콘 이미지" [ref=e175]:
+              - cell "149" [ref=e176]
+              - cell "공지" [ref=e177]
+              - cell "[신청안내] 2024 맞춤형 IT보조기기 지원사업 신청 기간 연장 안내( ~ 6.24)" [ref=e178]:
+                - link "[신청안내] 2024 맞춤형 IT보조기기 지원사업 신청 기간 연장 안내( ~ 6.24)" [ref=e179] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=182&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-05-10" [ref=e180]
+              - cell "첨부파일 아이콘 이미지" [ref=e181]:
+                - link "첨부파일 아이콘 이미지" [ref=e182] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=182&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+                  - img "첨부파일 아이콘 이미지" [ref=e183]
+            - row "148 채용 [면접공고] 계약직 서류전형 합격자 발표 및 면접일정 공고 2024-05-07 첨부파일 아이콘 이미지" [ref=e184]:
+              - cell "148" [ref=e185]
+              - cell "채용" [ref=e186]
+              - cell "[면접공고] 계약직 서류전형 합격자 발표 및 면접일정 공고" [ref=e187]:
+                - link "[면접공고] 계약직 서류전형 합격자 발표 및 면접일정 공고" [ref=e188] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=181&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-05-07" [ref=e189]
+              - cell "첨부파일 아이콘 이미지" [ref=e190]:
+                - link "첨부파일 아이콘 이미지" [ref=e191] [cursor=pointer]:
+                  - /url: /bbs/data/notice/d25d6438_5BEBB699EC9E845D+EAB384EC95BDECA781+EC849CEBA598ECA084ED9895ED95A9EAB2A9EC9E90+EBB09CED919C+EBB08F+EBA9B4ECA091+EC9DBCECA095+EC9588EB82B4.hwp
+                  - img "첨부파일 아이콘 이미지" [ref=e192]
+            - row "147 공지 [공지사항] 5월 휴관 안내 2024-04-30" [ref=e193]:
+              - cell "147" [ref=e194]
+              - cell "공지" [ref=e195]
+              - cell "[공지사항] 5월 휴관 안내" [ref=e196]:
+                - link "[공지사항] 5월 휴관 안내" [ref=e197] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=180&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=5
+              - cell "2024-04-30" [ref=e198]
+              - cell [ref=e199]
+        - generic [ref=e201]:
+          - link [ref=e202] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+            - img [ref=e203]
+          - link "1" [ref=e204] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=1
+          - link "2" [ref=e205] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=2
+          - link "3" [ref=e206] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=3
+          - link "4" [ref=e207] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=4
+          - generic [ref=e208]: "5"
+          - link "6" [ref=e209] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=6
+          - link "7" [ref=e210] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=7
+          - link "8" [ref=e211] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=8
+          - link "9" [ref=e212] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=9
+          - link "10" [ref=e213] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=10
+          - link [ref=e214] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=11
+            - img [ref=e215]
+          - link [ref=e216] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=&page=15
+            - img [ref=e217]
+  - generic [ref=e219]:
+    - button
+    - list [ref=e220]:
+      - listitem [ref=e221]:
+        - link "개인정보처리방침" [ref=e222] [cursor=pointer]:
+          - /url: /policy/privacy.php
+          - generic [ref=e223]: 개인정보처리방침
+        - link "이메일무단수집거부" [ref=e224] [cursor=pointer]:
+          - /url: /policy/email_collection.php
+      - listitem [ref=e225]:
+        - paragraph [ref=e226]:
+          - generic [ref=e227]: 강원특별자치도 보조기기센터
+          - generic [ref=e228]: 강원특별자치도 춘천시 충열로 142번길 24-16(우두동 291-2)강원특별자치도재활병원 2층
+          - generic [ref=e229]: "대표 : 이승준"
+        - paragraph [ref=e230]:
+          - generic [ref=e231]: "사업자 등록번호 : 221-82-10983"
+          - generic [ref=e232]: "대표전화 : 033-248-7751~4"
+          - generic [ref=e233]: "Fax : 033-248-7755"
+          - generic [ref=e234]: "Email : gatc2019@naver.com"
+      - listitem [ref=e235]:
+        - heading "Copyright(c) 강원특별자치도보조기기센터 All rights reserved." [level=2] [ref=e236]
+    - list [ref=e237]:
+      - listitem [ref=e238]:
+        - generic [ref=e241]: 패밀리 사이트
+      - listitem [ref=e243]:
+        - link [ref=e244] [cursor=pointer]:
+          - /url: http://pf.kakao.com/_hjxmRxb
+        - link [ref=e245] [cursor=pointer]:
+          - /url: https://www.facebook.com/GATC2019
+        - img "카카오톡 아이콘 카카오QR코드 페이스북 아이콘 페이스북 QR코드 이미지" [ref=e246]

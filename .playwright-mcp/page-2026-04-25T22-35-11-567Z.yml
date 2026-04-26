@@ -1,0 +1,270 @@
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - link [ref=e10] [cursor=pointer]:
+      - /url: /
+    - navigation [ref=e11]:
+      - list [ref=e12]:
+        - listitem [ref=e13]:
+          - link "주요사업" [ref=e15] [cursor=pointer]:
+            - /url: /business/service.php
+        - listitem [ref=e16]:
+          - link "커뮤니티" [ref=e18] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e19]:
+          - link "보조기기 정보" [ref=e21] [cursor=pointer]:
+            - /url: /dataroom/equipment_list.php
+        - listitem [ref=e22]:
+          - link "서비스 신청" [ref=e24] [cursor=pointer]:
+            - /url: /apply/introduce.php
+        - listitem [ref=e25]:
+          - link "센터소개" [ref=e27] [cursor=pointer]:
+            - /url: /company/greetings.php
+  - generic [ref=e29]:
+    - heading "커뮤니티" [level=2] [ref=e30]
+    - paragraph [ref=e31]: Gangwon Assistive Technology Center
+  - generic [ref=e32]:
+    - generic [ref=e33]:
+      - heading "공지사항" [level=3] [ref=e34]: 공지사항
+      - list [ref=e36]:
+        - listitem [ref=e37]:
+          - link "공지사항" [ref=e38] [cursor=pointer]:
+            - /url: /bbs/?so_table=notice
+        - listitem [ref=e39]:
+          - link "활동갤러리" [ref=e40] [cursor=pointer]:
+            - /url: /bbs/?so_table=gallery
+        - listitem [ref=e41]:
+          - link "보조기기 서비스 사례" [ref=e42] [cursor=pointer]:
+            - /url: /bbs/?so_table=case
+    - generic [ref=e43]:
+      - generic [ref=e44]: 공지사항
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - generic:
+            - paragraph [ref=e49]:
+              - text: "- 총 게시물"
+              - generic [ref=e50]: "126"
+              - text: ", 페이지"
+              - generic [ref=e51]: "04"
+              - text: /
+              - generic [ref=e52]: "09"
+            - combobox [ref=e54]:
+              - option "제목+내용" [selected]
+              - option "제목"
+              - option "내용"
+            - generic [ref=e55]:
+              - textbox "검색어를 입력해 주세요" [ref=e56]
+              - button "검색" [ref=e58] [cursor=pointer]
+        - generic [ref=e59]:
+          - link "전체" [ref=e60] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice
+          - link "지원사업" [ref=e61] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=지원사업
+          - link "센터소식" [ref=e62] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&b_type=센터소식
+        - table "공지사항 목록" [ref=e64]:
+          - rowgroup [ref=e71]:
+            - row "번호 분류 제목 등록일 첨부파일" [ref=e72]:
+              - columnheader "번호" [ref=e73]
+              - columnheader "분류" [ref=e74]
+              - columnheader "제목" [ref=e75]
+              - columnheader "등록일" [ref=e76]
+              - columnheader "첨부파일" [ref=e77]
+          - rowgroup [ref=e78]:
+            - row "81 마감 [신청안내] 2023 현대제철 장애어린이 보조기구 지원사업 안내 (~9.18.) 2023-08-18 첨부파일 아이콘 이미지" [ref=e79]:
+              - cell "81" [ref=e80]
+              - cell "마감" [ref=e81]
+              - cell "[신청안내] 2023 현대제철 장애어린이 보조기구 지원사업 안내 (~9.18.)" [ref=e82]:
+                - link "[신청안내] 2023 현대제철 장애어린이 보조기구 지원사업 안내 (~9.18.)" [ref=e83] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=157&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-08-18" [ref=e84]
+              - cell "첨부파일 아이콘 이미지" [ref=e85]:
+                - link "첨부파일 아이콘 이미지" [ref=e86] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=157&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e87]
+            - row "80 결과 [선정결과] IoT 리모컨 도어락 지원사업 최종 선정자 알림 2023-08-08" [ref=e88]:
+              - cell "80" [ref=e89]
+              - cell "결과" [ref=e90]
+              - cell "[선정결과] IoT 리모컨 도어락 지원사업 최종 선정자 알림" [ref=e91]:
+                - link "[선정결과] IoT 리모컨 도어락 지원사업 최종 선정자 알림" [ref=e92] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=155&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-08-08" [ref=e93]
+              - cell [ref=e94]
+            - row "79 공지 2023 중증장애인을 위한 IoT 리모컨 도어락 지원사업 선정결과 지연 안내 2023-07-31" [ref=e95]:
+              - cell "79" [ref=e96]
+              - cell "공지" [ref=e97]
+              - cell "2023 중증장애인을 위한 IoT 리모컨 도어락 지원사업 선정결과 지연 안내" [ref=e98]:
+                - link "2023 중증장애인을 위한 IoT 리모컨 도어락 지원사업 선정결과 지연 안내" [ref=e99] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=154&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-07-31" [ref=e100]
+              - cell [ref=e101]
+            - row "78 결과 [선정결과] 롯데복지재단, 코스콤 지원사업 최종선정자 발표 2023-07-20" [ref=e102]:
+              - cell "78" [ref=e103]
+              - cell "결과" [ref=e104]
+              - cell "[선정결과] 롯데복지재단, 코스콤 지원사업 최종선정자 발표" [ref=e105]:
+                - link "[선정결과] 롯데복지재단, 코스콤 지원사업 최종선정자 발표" [ref=e106] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=151&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-07-20" [ref=e107]
+              - cell [ref=e108]
+            - row "77 마감 [신청안내] 2023년 중증장애인을 위한 IoT 리모컨 도어락 지원사업 (~7.21.) 2023-07-17 첨부파일 아이콘 이미지" [ref=e109]:
+              - cell "77" [ref=e110]
+              - cell "마감" [ref=e111]
+              - cell "[신청안내] 2023년 중증장애인을 위한 IoT 리모컨 도어락 지원사업 (~7.21.)" [ref=e112]:
+                - link "[신청안내] 2023년 중증장애인을 위한 IoT 리모컨 도어락 지원사업 (~7.21.)" [ref=e113] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=149&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-07-17" [ref=e114]
+              - cell "첨부파일 아이콘 이미지" [ref=e115]:
+                - link "첨부파일 아이콘 이미지" [ref=e116] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=149&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e117]
+            - row "76 결과 [선정결과] 2023 현대모비스 장애아동 이동편의 보조기기 지원사업 최종 선정자 알림 2023-07-05" [ref=e118]:
+              - cell "76" [ref=e119]
+              - cell "결과" [ref=e120]
+              - cell "[선정결과] 2023 현대모비스 장애아동 이동편의 보조기기 지원사업 최종 선정자 알림" [ref=e121]:
+                - link "[선정결과] 2023 현대모비스 장애아동 이동편의 보조기기 지원사업 최종 선정자 알림" [ref=e122] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=147&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-07-05" [ref=e123]
+              - cell [ref=e124]
+            - row "75 평가 전동휠체어 후방카메라 보조기기 평가 및 지급(~7.7.) 2023-07-04" [ref=e125]:
+              - cell "75" [ref=e126]
+              - cell "평가" [ref=e127]
+              - cell "전동휠체어 후방카메라 보조기기 평가 및 지급(~7.7.)" [ref=e128]:
+                - link "전동휠체어 후방카메라 보조기기 평가 및 지급(~7.7.)" [ref=e129] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=146&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-07-04" [ref=e130]
+              - cell [ref=e131]
+            - row "74 접수 [신청안내] 2023년 중증장애인을 위한 IoT 리모컨 도어락 지원사업 (6.26~7.14.) 2023-06-30 첨부파일 아이콘 이미지" [ref=e132]:
+              - cell "74" [ref=e133]
+              - cell "접수" [ref=e134]
+              - cell "[신청안내] 2023년 중증장애인을 위한 IoT 리모컨 도어락 지원사업 (6.26~7.14.)" [ref=e135]:
+                - link "[신청안내] 2023년 중증장애인을 위한 IoT 리모컨 도어락 지원사업 (6.26~7.14.)" [ref=e136] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=145&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-06-30" [ref=e137]
+              - cell "첨부파일 아이콘 이미지" [ref=e138]:
+                - link "첨부파일 아이콘 이미지" [ref=e139] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=145&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e140]
+            - row "73 공지 춘천시장애인보조기기수리지원센터 - 찾아가는 이동 보조기기 수리 서비스 2023-06-20 첨부파일 아이콘 이미지" [ref=e141]:
+              - cell "73" [ref=e142]
+              - cell "공지" [ref=e143]
+              - cell "춘천시장애인보조기기수리지원센터 - 찾아가는 이동 보조기기 수리 서비스" [ref=e144]:
+                - link "춘천시장애인보조기기수리지원센터 - 찾아가는 이동 보조기기 수리 서비스" [ref=e145] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=143&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-06-20" [ref=e146]
+              - cell "첨부파일 아이콘 이미지" [ref=e147]:
+                - link "첨부파일 아이콘 이미지" [ref=e148] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=143&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e149]
+            - row "72 결과 [선정결과] 2023 월드비전 저소득 희귀난치질환아동 맞춤형보조기기 지원사업 최종 선정자 알림 2023-06-19" [ref=e150]:
+              - cell "72" [ref=e151]
+              - cell "결과" [ref=e152]
+              - cell "[선정결과] 2023 월드비전 저소득 희귀난치질환아동 맞춤형보조기기 지원사업 최종 선정자 알림" [ref=e153]:
+                - link "[선정결과] 2023 월드비전 저소득 희귀난치질환아동 맞춤형보조기기 지원사업 최종 선정자 알림" [ref=e154] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=142&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-06-19" [ref=e155]
+              - cell [ref=e156]
+            - row "71 공지 [신청안내] 2023년 정보통신보조기기 신청 안내(5.8.~6.23.) 2023-05-30" [ref=e157]:
+              - cell "71" [ref=e158]
+              - cell "공지" [ref=e159]
+              - cell "[신청안내] 2023년 정보통신보조기기 신청 안내(5.8.~6.23.)" [ref=e160]:
+                - link "[신청안내] 2023년 정보통신보조기기 신청 안내(5.8.~6.23.)" [ref=e161] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=141&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-05-30" [ref=e162]
+              - cell [ref=e163]
+            - row "70 평가 [현장평가] 2023년 롯데복재재단 장애인 아동·청소년 보조기기 지원사업 현장평가 대상자 발표 2023-05-12 첨부파일 아이콘 이미지" [ref=e164]:
+              - cell "70" [ref=e165]
+              - cell "평가" [ref=e166]
+              - cell "[현장평가] 2023년 롯데복재재단 장애인 아동·청소년 보조기기 지원사업 현장평가 대상자 발표" [ref=e167]:
+                - link "[현장평가] 2023년 롯데복재재단 장애인 아동·청소년 보조기기 지원사업 현장평가 대상자 발표" [ref=e168] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=139&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-05-12" [ref=e169]
+              - cell "첨부파일 아이콘 이미지" [ref=e170]:
+                - link "첨부파일 아이콘 이미지" [ref=e171] [cursor=pointer]:
+                  - /url: /bbs/data/notice/3fae7baa_EBA1AFEB8DB0EBB3B5ECA780EC9EACEB8BA8+ED9884EC9EA5ED8F89EAB080+EB8C80EC8381EC9E90+EC84A0ECA095.png
+                  - img "첨부파일 아이콘 이미지" [ref=e172]
+            - row "69 접수 [신청안내] 2023년 현대모비스 장애아동 이동편의 지원사업(~5.22.) 2023-04-13 첨부파일 아이콘 이미지" [ref=e173]:
+              - cell "69" [ref=e174]
+              - cell "접수" [ref=e175]
+              - cell "[신청안내] 2023년 현대모비스 장애아동 이동편의 지원사업(~5.22.)" [ref=e176]:
+                - link "[신청안내] 2023년 현대모비스 장애아동 이동편의 지원사업(~5.22.)" [ref=e177] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=137&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-04-13" [ref=e178]
+              - cell "첨부파일 아이콘 이미지" [ref=e179]:
+                - link "첨부파일 아이콘 이미지" [ref=e180] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=137&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e181]
+            - row "68 접수 [신청마감] 2023년 코스콤 맞춤형 IT 보조기기 지원사업(~5.4.) 2023-04-03 첨부파일 아이콘 이미지" [ref=e182]:
+              - cell "68" [ref=e183]
+              - cell "접수" [ref=e184]
+              - cell "[신청마감] 2023년 코스콤 맞춤형 IT 보조기기 지원사업(~5.4.)" [ref=e185]:
+                - link "[신청마감] 2023년 코스콤 맞춤형 IT 보조기기 지원사업(~5.4.)" [ref=e186] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=136&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-04-03" [ref=e187]
+              - cell "첨부파일 아이콘 이미지" [ref=e188]:
+                - link "첨부파일 아이콘 이미지" [ref=e189] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=136&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e190]
+            - row "67 마감 [신청마감] 2023 롯데복지재단 장애아동 청소년 보조기기 지원사업 안내(~4.23.) 2023-03-10 첨부파일 아이콘 이미지" [ref=e191]:
+              - cell "67" [ref=e192]
+              - cell "마감" [ref=e193]
+              - cell "[신청마감] 2023 롯데복지재단 장애아동 청소년 보조기기 지원사업 안내(~4.23.)" [ref=e194]:
+                - link "[신청마감] 2023 롯데복지재단 장애아동 청소년 보조기기 지원사업 안내(~4.23.)" [ref=e195] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=135&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+              - cell "2023-03-10" [ref=e196]
+              - cell "첨부파일 아이콘 이미지" [ref=e197]:
+                - link "첨부파일 아이콘 이미지" [ref=e198] [cursor=pointer]:
+                  - /url: /bbs/?so_table=notice&mode=VIEW&num=135&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=4
+                  - img "첨부파일 아이콘 이미지" [ref=e199]
+        - generic [ref=e201]:
+          - link [ref=e202] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=1
+            - img [ref=e203]
+          - link "1" [ref=e204] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=1
+          - link "2" [ref=e205] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=2
+          - link "3" [ref=e206] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=3
+          - generic [ref=e207]: "4"
+          - link "5" [ref=e208] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=5
+          - link "6" [ref=e209] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=6
+          - link "7" [ref=e210] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=7
+          - link "8" [ref=e211] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=8
+          - link "9" [ref=e212] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=9
+          - link [ref=e213] [cursor=pointer]:
+            - /url: /bbs/index.php?so_table=notice&&category=&findType=&findWord=&sort1=&sort2=&b_type=지원사업&page=9
+            - img [ref=e214]
+  - generic [ref=e216]:
+    - button
+    - list [ref=e217]:
+      - listitem [ref=e218]:
+        - link "개인정보처리방침" [ref=e219] [cursor=pointer]:
+          - /url: /policy/privacy.php
+          - generic [ref=e220]: 개인정보처리방침
+        - link "이메일무단수집거부" [ref=e221] [cursor=pointer]:
+          - /url: /policy/email_collection.php
+      - listitem [ref=e222]:
+        - paragraph [ref=e223]:
+          - generic [ref=e224]: 강원특별자치도 보조기기센터
+          - generic [ref=e225]: 강원특별자치도 춘천시 충열로 142번길 24-16(우두동 291-2)강원특별자치도재활병원 2층
+          - generic [ref=e226]: "대표 : 이승준"
+        - paragraph [ref=e227]:
+          - generic [ref=e228]: "사업자 등록번호 : 221-82-10983"
+          - generic [ref=e229]: "대표전화 : 033-248-7751~4"
+          - generic [ref=e230]: "Fax : 033-248-7755"
+          - generic [ref=e231]: "Email : gatc2019@naver.com"
+      - listitem [ref=e232]:
+        - heading "Copyright(c) 강원특별자치도보조기기센터 All rights reserved." [level=2] [ref=e233]
+    - list [ref=e234]:
+      - listitem [ref=e235]:
+        - generic [ref=e238]: 패밀리 사이트
+      - listitem [ref=e240]:
+        - link [ref=e241] [cursor=pointer]:
+          - /url: http://pf.kakao.com/_hjxmRxb
+        - link [ref=e242] [cursor=pointer]:
+          - /url: https://www.facebook.com/GATC2019
+        - img "카카오톡 아이콘 카카오QR코드 페이스북 아이콘 페이스북 QR코드 이미지" [ref=e243]
