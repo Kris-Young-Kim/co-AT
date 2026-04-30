@@ -334,7 +334,6 @@ export async function updateNotice(
 
     const { error } = await supabase
       .from("notices")
-      // @ts-expect-error - notices 테이블 attachments 타입 불일치
       .update(updateData as any)
       .eq("id", input.id)
 
