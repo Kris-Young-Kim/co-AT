@@ -25,7 +25,8 @@ interface HomePublicCalendarProps {
 }
 
 export function HomePublicCalendar({ initialSchedules = [] }: HomePublicCalendarProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
+  const [mounted, setMounted] = useState(false)
   const [schedules, setSchedules] = useState<PublicSchedule[]>(initialSchedules)
   const [selectedSchedules, setSelectedSchedules] = useState<PublicSchedule[]>([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -33,6 +34,12 @@ export function HomePublicCalendar({ initialSchedules = [] }: HomePublicCalendar
   const [bookingSchedule, setBookingSchedule] = useState<PublicSchedule | null>(null)
   const { userId } = useAuth()
   const isSignedIn = !!userId
+
+  // 마운트 시 현재 날짜 설정
+  useEffect(() => {
+    setMounted(true)
+    setSelectedDate(new Date())
+  }, [])
 
   // 날짜 선택 시 해당 날짜의 일정 조회
   useEffect(() => {
@@ -105,6 +112,8 @@ export function HomePublicCalendar({ initialSchedules = [] }: HomePublicCalendar
       alert("예약 중 오류가 발생했습니다")
     }
   }
+
+  if (!mounted) return null
 
   return (
     <section id="calendar" className="py-12 sm:py-16 md:py-24 bg-muted/30 scroll-mt-16">

@@ -21,16 +21,20 @@ import { format, startOfYear, endOfYear, subYears } from "date-fns"
 import { ko } from "date-fns/locale"
 
 export function StatsDashboardContent() {
-  const currentYear = new Date().getFullYear()
-  const [selectedYear, setSelectedYear] = useState(currentYear)
-  const [startYear, setStartYear] = useState(currentYear - 2)
-  const [endYear, setEndYear] = useState(currentYear)
+  const [mounted, setMounted] = useState(false)
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+  const [startYear, setStartYear] = useState(new Date().getFullYear() - 2)
+  const [endYear, setEndYear] = useState(new Date().getFullYear())
 
   const [monthlyStats, setMonthlyStats] = useState<MonthlyStats[] | undefined>()
   const [yearlyStats, setYearlyStats] = useState<YearlyStats[] | undefined>()
   const [summary, setSummary] = useState<StatsSummary | undefined>()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // 월별 통계 로드
   const loadMonthlyStats = async (year: number) => {
@@ -98,10 +102,11 @@ export function StatsDashboardContent() {
     loadData()
   }, [selectedYear, startYear, endYear])
 
-  // 연도 선택 옵션 생성
+  // 연도 선택 옵션 생성 (하이드레이션 오류 방지를 위해 mounted 후에만 정상적으로 계산됨)
+  const currentYear = new Date().getFullYear()
   const yearOptions = Array.from({ length: 5 }, (_, i) => currentYear - i)
 
-  if (loading) {
+  if (!mounted || loading) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
