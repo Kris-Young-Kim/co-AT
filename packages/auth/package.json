@@ -1,0 +1,15 @@
+{
+  "name": "@co-at/auth",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@co-at/types": "workspace:*"
+  },
+  "peerDependencies": {
+    "@clerk/nextjs": "^6",
+    "next": "^16"
+  }
+}
