@@ -5,8 +5,30 @@ import { type ApplicationForm } from "@/lib/validators"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { Database } from "@/types/database.types"
+import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 
 type ClientInsert = Database["public"]["Tables"]["clients"]["Insert"]
+
+export type Application = Database["public"]["Tables"]["applications"]["Row"]
+
+export async function getApplicationsByClientId(clientId: string): Promise<{
+  success: boolean
+  applications?: Application[]
+  error?: string
+}> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('applications')
+    .select('*')
+    .eq('client_id', clientId)
+    .order('created_at', { ascending: false })
+
+  if (error) return { success: false, error: '신청서 조회에 실패했습니다' }
+  return { success: true, applications: data ?? [] }
+}
 
 export async function createApplication(
   formData: ApplicationForm
