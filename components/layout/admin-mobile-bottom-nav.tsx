@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import { LayoutDashboard, FileText, Users, Package, Calendar, Bot, MessageSquare } from "lucide-react"
 
 const navItems = [
-  { href: "/dashboard", label: "대시보드", icon: LayoutDashboard },
+  { href: "/", label: "대시보드", icon: LayoutDashboard },
   { href: "/notices-management", label: "공지", icon: FileText },
   { href: "/clients", label: "대상자", icon: Users },
   { href: "/inventory", label: "재고", icon: Package },
