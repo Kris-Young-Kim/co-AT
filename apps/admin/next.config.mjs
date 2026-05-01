@@ -3,18 +3,7 @@ import { withSentryConfig } from "@sentry/nextjs"
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async redirects() {
-    return [
-      {
-        source: "/messenger",
-        destination: "/admin/messenger",
-        permanent: true,
-      },
-      {
-        source: "/agent-chat",
-        destination: "/admin/agent-chat",
-        permanent: true,
-      },
-    ]
+    return []
   },
   images: {
     // 이미지 품질 설정
@@ -55,6 +44,8 @@ const nextConfig = {
   },
   // 실험적 기능
   experimental: {
+    // 모노레포: 앱 디렉토리 외부(루트 components, lib, actions) 파일 컴파일 허용
+    externalDir: true,
     // 최적화된 패키지 임포트
     optimizePackageImports: [
       '@radix-ui/react-dialog',

@@ -205,7 +205,7 @@ export function PublicHeader() {
                   size="sm"
                   className="hidden sm:flex items-center gap-2 text-primary border-primary/20 hover:bg-primary/5 h-9"
                 >
-                  <Link href={process.env.NEXT_PUBLIC_ADMIN_URL || "/admin"}>
+                  <Link href={process.env.NEXT_PUBLIC_ADMIN_URL || "https://co-at-admin.vercel.app"}>
                     <LayoutDashboard className="h-4 w-4" />
                     <span>관리자 모드</span>
                   </Link>
