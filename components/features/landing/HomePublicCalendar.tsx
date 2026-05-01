@@ -176,11 +176,15 @@ export function HomePublicCalendar({ initialSchedules = [] }: HomePublicCalendar
                                       variant={
                                         schedule.schedule_type === "exhibition"
                                           ? "default"
+                                          : schedule.schedule_type === "external_event"
+                                          ? "outline"
                                           : "secondary"
                                       }
                                     >
                                       {schedule.schedule_type === "exhibition"
                                         ? "견학"
+                                        : schedule.schedule_type === "external_event"
+                                        ? "외부행사"
                                         : "교육"}
                                     </Badge>
                                   </div>
@@ -238,10 +242,16 @@ export function HomePublicCalendar({ initialSchedules = [] }: HomePublicCalendar
                     variant={
                       schedule.schedule_type === "exhibition"
                         ? "default"
+                        : schedule.schedule_type === "external_event"
+                        ? "outline"
                         : "secondary"
                     }
                   >
-                    {schedule.schedule_type === "exhibition" ? "견학" : "교육"}
+                    {schedule.schedule_type === "exhibition"
+                      ? "견학"
+                      : schedule.schedule_type === "external_event"
+                      ? "외부행사"
+                      : "교육"}
                   </Badge>
                 </div>
                 {schedule.scheduled_time && (
@@ -290,8 +300,20 @@ export function HomePublicCalendar({ initialSchedules = [] }: HomePublicCalendar
             <div className="space-y-4">
               <div>
                 <p className="text-sm font-medium text-foreground mb-1">일정 유형</p>
-                <Badge>
-                  {bookingSchedule.schedule_type === "exhibition" ? "견학" : "교육"}
+                <Badge
+                  variant={
+                    bookingSchedule.schedule_type === "exhibition"
+                      ? "default"
+                      : bookingSchedule.schedule_type === "external_event"
+                      ? "outline"
+                      : "secondary"
+                  }
+                >
+                  {bookingSchedule.schedule_type === "exhibition"
+                    ? "견학"
+                    : bookingSchedule.schedule_type === "external_event"
+                    ? "외부행사"
+                    : "교육"}
                 </Badge>
               </div>
               <div>

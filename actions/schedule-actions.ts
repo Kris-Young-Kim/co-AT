@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache"
 
 export interface PublicSchedule {
   id: string
-  schedule_type: "exhibition" | "education"
+  schedule_type: "exhibition" | "education" | "external_event"
   scheduled_date: string
   scheduled_time: string | null
   address: string | null
@@ -29,7 +29,7 @@ export async function getPublicSchedules(
   let query = supabase
     .from("schedules")
     .select("id, schedule_type, scheduled_date, scheduled_time, address, notes, status")
-    .in("schedule_type", ["exhibition", "education"])
+    .in("schedule_type", ["exhibition", "education", "external_event"])
     .eq("status", "scheduled")
     .order("scheduled_date", { ascending: true })
 
@@ -65,7 +65,7 @@ export async function getPublicSchedulesByDate(
   const { data, error } = await supabase
     .from("schedules")
     .select("id, schedule_type, scheduled_date, scheduled_time, address, notes, status")
-    .in("schedule_type", ["exhibition", "education"])
+    .in("schedule_type", ["exhibition", "education", "external_event"])
     .eq("scheduled_date", dateStr)
     .eq("status", "scheduled")
     .order("scheduled_time", { ascending: true })
@@ -84,7 +84,7 @@ export interface Schedule {
   application_id: string | null
   staff_id: string
   client_id: string | null
-  schedule_type: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make" | "meeting"
+  schedule_type: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make" | "meeting" | "external_event"
   scheduled_date: string
   scheduled_time: string | null
   address: string | null
@@ -97,7 +97,7 @@ export interface Schedule {
 export interface CreateScheduleInput {
   application_id?: string | null
   client_id?: string | null
-  schedule_type: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make" | "meeting"
+  schedule_type: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make" | "meeting" | "external_event"
   scheduled_date: string
   scheduled_time?: string | null
   address?: string | null
@@ -109,7 +109,7 @@ export interface UpdateScheduleInput {
   id: string
   application_id?: string | null
   client_id?: string | null
-  schedule_type?: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make" | "meeting"
+  schedule_type?: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make" | "meeting" | "external_event"
   scheduled_date?: string
   scheduled_time?: string | null
   address?: string | null

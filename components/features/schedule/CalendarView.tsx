@@ -28,6 +28,7 @@ const scheduleTypeLabels: Record<string, string> = {
   education: "교육",
   custom_make: "맞춤제작",
   meeting: "회의",
+  external_event: "외부행사",
 }
 
 const scheduleTypeColors: Record<string, string> = {
@@ -40,6 +41,7 @@ const scheduleTypeColors: Record<string, string> = {
   education: "bg-indigo-100 text-indigo-800",
   custom_make: "bg-teal-100 text-teal-800",
   meeting: "bg-slate-100 text-slate-800",
+  external_event: "bg-cyan-100 text-cyan-800",
 }
 
 export function CalendarView({ initialSchedules = [], onScheduleClick, onDateClick }: CalendarViewProps) {
