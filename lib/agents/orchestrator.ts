@@ -280,7 +280,7 @@ async function streamGeneralAnswer(
   encoder: TextEncoder,
   controller: ReadableStreamDefaultController
 ): Promise<void> {
-  const model = getGeminiModel("gemini-1.5-flash")
+  const model = getGeminiModel("gemini-2.0-flash")
 
   const stream = await model.generateContentStream({
     systemInstruction: DOMAIN_SYSTEM_PROMPTS.general,
@@ -313,7 +313,7 @@ export async function runOrchestratorStream(
 ): Promise<void> {
   try {
     // ── STEP 1: 라우팅 결정 ─────────────────────────────────────────────────
-    const routingModel = getGeminiModel("gemini-1.5-flash")
+    const routingModel = getGeminiModel("gemini-2.0-flash")
 
     const routingResponse = await routingModel.generateContent({
       contents: [
@@ -364,7 +364,7 @@ export async function runOrchestratorStream(
     }
 
     // ── STEP 3: 도메인 에이전트 도구 실행 ───────────────────────────────────
-    const agentModel = getGeminiModel("gemini-1.5-flash")
+    const agentModel = getGeminiModel("gemini-2.0-flash")
     const geminiFunctionDeclarations = agent.getToolDeclarations().map(toGeminiFunctionDeclaration)
     const systemPrompt = DOMAIN_SYSTEM_PROMPTS[selectedDomain]
 

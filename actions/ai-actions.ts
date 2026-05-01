@@ -65,7 +65,7 @@ export async function generateSoapNote(
     }
 
     // Gemini 모델 가져오기
-    const model = getGeminiModel("gemini-1.5-flash")
+    const model = getGeminiModel("gemini-2.0-flash")
 
     // 프롬프트 구성
     const prompt = `${SOAP_SYSTEM_PROMPT}\n\n상담 내용:\n${text}`
