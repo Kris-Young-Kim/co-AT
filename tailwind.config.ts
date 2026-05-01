@@ -69,11 +69,15 @@ const config: Config = {
       },
       animation: {
         marquee: "marquee 30s linear infinite",
+        shine: "shine 1.5s ease-out infinite",
       },
       keyframes: {
         marquee: {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-33.333%)" },
+        },
+        shine: {
+          "100%": { left: "125%" },
         },
       },
       boxShadow: {
