@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { format, startOfMonth, endOfMonth } from "date-fns"
 import { hasAdminOrStaffPermission, getCurrentUserProfileId } from "@/lib/utils/permissions"
 import { revalidatePath } from "next/cache"
+import { PUBLIC_SCHEDULE_TYPES } from "@/lib/schedule-constants"
 
 export interface PublicSchedule {
   id: string
@@ -17,8 +18,8 @@ export interface PublicSchedule {
 }
 
 /**
- * 공개 일정 조회 (견학, 교육 일정만)
- * schedule_type이 'exhibition' 또는 'education'인 일정만 반환
+ * 공개 일정 조회 (견학, 교육, 외부행사 일정)
+ * schedule_type이 'exhibition', 'education', 'external_event'인 일정만 반환
  */
 export async function getPublicSchedules(
   year?: number,
@@ -29,7 +30,7 @@ export async function getPublicSchedules(
   let query = supabase
     .from("schedules")
     .select("id, schedule_type, scheduled_date, scheduled_time, address, notes, status")
-    .in("schedule_type", ["exhibition", "education", "external_event"])
+    .in("schedule_type", PUBLIC_SCHEDULE_TYPES)
     .eq("status", "scheduled")
     .order("scheduled_date", { ascending: true })
 
@@ -65,7 +66,7 @@ export async function getPublicSchedulesByDate(
   const { data, error } = await supabase
     .from("schedules")
     .select("id, schedule_type, scheduled_date, scheduled_time, address, notes, status")
-    .in("schedule_type", ["exhibition", "education", "external_event"])
+    .in("schedule_type", PUBLIC_SCHEDULE_TYPES)
     .eq("scheduled_date", dateStr)
     .eq("status", "scheduled")
     .order("scheduled_time", { ascending: true })

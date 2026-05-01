@@ -18,31 +18,8 @@ interface CalendarViewProps {
   onDateClick?: (date: Date) => void
 }
 
-const scheduleTypeLabels: Record<string, string> = {
-  visit: "방문",
-  consult: "상담",
-  assessment: "평가",
-  delivery: "배송",
-  pickup: "픽업",
-  exhibition: "견학",
-  education: "교육",
-  custom_make: "맞춤제작",
-  meeting: "회의",
-  external_event: "외부행사",
-}
-
-const scheduleTypeColors: Record<string, string> = {
-  visit: "bg-blue-100 text-blue-800",
-  consult: "bg-green-100 text-green-800",
-  assessment: "bg-purple-100 text-purple-800",
-  delivery: "bg-orange-100 text-orange-800",
-  pickup: "bg-yellow-100 text-yellow-800",
-  exhibition: "bg-pink-100 text-pink-800",
-  education: "bg-indigo-100 text-indigo-800",
-  custom_make: "bg-teal-100 text-teal-800",
-  meeting: "bg-slate-100 text-slate-800",
-  external_event: "bg-cyan-100 text-cyan-800",
-}
+import { SCHEDULE_TYPE_LABELS, SCHEDULE_TYPE_COLORS, getScheduleColorClass } from "@/lib/schedule-constants"
+import { ScheduleBadge } from "./ScheduleBadge"
 
 export function CalendarView({ initialSchedules = [], onScheduleClick, onDateClick }: CalendarViewProps) {
   const [viewMode, setViewMode] = useState<"month" | "week" | "day">("month")
@@ -344,7 +321,7 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                               key={schedule.id}
                               className={cn(
                                 "p-2 rounded-md border cursor-pointer hover:bg-accent transition-colors text-xs",
-                                scheduleTypeColors[schedule.schedule_type] || "bg-gray-100"
+                                getScheduleColorClass(schedule.schedule_type)
                               )}
                               onClick={() => {
                                 setSelectedDate(day)
@@ -352,10 +329,7 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                               }}
                             >
                               <div className="flex items-center justify-between">
-                                <Badge variant="secondary" className="text-xs">
-                                  {scheduleTypeLabels[schedule.schedule_type] ||
-                                    schedule.schedule_type}
-                                </Badge>
+                                <ScheduleBadge type={schedule.schedule_type} className="px-1 py-0 h-4" />
                                 {schedule.scheduled_time && (
                                   <span className="text-muted-foreground">
                                     {schedule.scheduled_time.substring(0, 5)}
@@ -407,14 +381,12 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                       key={schedule.id}
                       className={cn(
                         "p-4 rounded-md border cursor-pointer hover:bg-accent transition-colors",
-                        scheduleTypeColors[schedule.schedule_type] || "bg-gray-100"
+                        getScheduleColorClass(schedule.schedule_type)
                       )}
                       onClick={() => onScheduleClick?.(schedule)}
                     >
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <Badge variant="secondary">
-                          {scheduleTypeLabels[schedule.schedule_type] || schedule.schedule_type}
-                        </Badge>
+                        <ScheduleBadge type={schedule.schedule_type} />
                         <Badge
                           variant={
                             schedule.status === "completed"

@@ -19,6 +19,8 @@ import { ko } from "date-fns/locale"
 import { useAuth } from "@clerk/nextjs"
 import { Calendar as CalendarIcon, MapPin, Clock, BookOpen } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ScheduleBadge } from "@/components/features/schedule/ScheduleBadge"
+import { getScheduleLabel } from "@/lib/schedule-constants"
 
 interface HomePublicCalendarProps {
   initialSchedules?: PublicSchedule[]
@@ -172,21 +174,7 @@ export function HomePublicCalendar({ initialSchedules = [] }: HomePublicCalendar
                               <div className="flex items-start justify-between gap-4">
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2 mb-2">
-                                    <Badge
-                                      variant={
-                                        schedule.schedule_type === "exhibition"
-                                          ? "default"
-                                          : schedule.schedule_type === "external_event"
-                                          ? "outline"
-                                          : "secondary"
-                                      }
-                                    >
-                                      {schedule.schedule_type === "exhibition"
-                                        ? "견학"
-                                        : schedule.schedule_type === "external_event"
-                                        ? "외부행사"
-                                        : "교육"}
-                                    </Badge>
+                                    <ScheduleBadge type={schedule.schedule_type} />
                                   </div>
                                   {schedule.scheduled_time && (
                                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
@@ -238,21 +226,7 @@ export function HomePublicCalendar({ initialSchedules = [] }: HomePublicCalendar
             {selectedSchedules.map((schedule) => (
               <div key={schedule.id} className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Badge
-                    variant={
-                      schedule.schedule_type === "exhibition"
-                        ? "default"
-                        : schedule.schedule_type === "external_event"
-                        ? "outline"
-                        : "secondary"
-                    }
-                  >
-                    {schedule.schedule_type === "exhibition"
-                      ? "견학"
-                      : schedule.schedule_type === "external_event"
-                      ? "외부행사"
-                      : "교육"}
-                  </Badge>
+                  <ScheduleBadge type={schedule.schedule_type} />
                 </div>
                 {schedule.scheduled_time && (
                   <div className="flex items-center gap-2 text-sm">
@@ -300,21 +274,7 @@ export function HomePublicCalendar({ initialSchedules = [] }: HomePublicCalendar
             <div className="space-y-4">
               <div>
                 <p className="text-sm font-medium text-foreground mb-1">일정 유형</p>
-                <Badge
-                  variant={
-                    bookingSchedule.schedule_type === "exhibition"
-                      ? "default"
-                      : bookingSchedule.schedule_type === "external_event"
-                      ? "outline"
-                      : "secondary"
-                  }
-                >
-                  {bookingSchedule.schedule_type === "exhibition"
-                    ? "견학"
-                    : bookingSchedule.schedule_type === "external_event"
-                    ? "외부행사"
-                    : "교육"}
-                </Badge>
+                <ScheduleBadge type={bookingSchedule.schedule_type} />
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground mb-1">날짜</p>

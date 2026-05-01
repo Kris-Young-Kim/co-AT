@@ -36,17 +36,7 @@ interface ScheduleFormProps {
   onSuccess?: () => void
 }
 
-const scheduleTypeLabels: Record<string, string> = {
-  visit: "방문",
-  consult: "상담",
-  assessment: "평가",
-  delivery: "배송",
-  pickup: "픽업",
-  exhibition: "견학",
-  education: "교육",
-  meeting: "회의",
-  external_event: "외부행사",
-}
+import { SCHEDULE_TYPE_LABELS, type ScheduleType } from "@/lib/schedule-constants"
 
 // 강원특별자치도 18개 시군 목록
 const gangwonRegions = [
@@ -263,7 +253,7 @@ export function ScheduleForm({
                 <SelectValue placeholder="일정 유형 선택" />
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(scheduleTypeLabels).map(([value, label]) => (
+                {Object.entries(SCHEDULE_TYPE_LABELS).map(([value, label]) => (
                   <SelectItem key={value} value={value}>
                     {label}
                   </SelectItem>

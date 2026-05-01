@@ -10,6 +10,7 @@ import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 import { Calendar as CalendarIcon, Clock, MapPin } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ScheduleBadge } from "@/components/features/schedule/ScheduleBadge"
 
 interface HomeCalendarCompactProps {
   initialSchedules?: PublicSchedule[]
@@ -117,22 +118,7 @@ export function HomeCalendarCompact({ initialSchedules = [] }: HomeCalendarCompa
                     className="p-3 rounded-md border bg-card hover:bg-accent transition-colors"
                   >
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <Badge
-                        variant={
-                          schedule.schedule_type === "exhibition"
-                            ? "default"
-                            : schedule.schedule_type === "external_event"
-                            ? "outline"
-                            : "secondary"
-                        }
-                        className="text-xs"
-                      >
-                        {schedule.schedule_type === "exhibition"
-                          ? "견학"
-                          : schedule.schedule_type === "external_event"
-                          ? "외부행사"
-                          : "교육"}
-                      </Badge>
+                      <ScheduleBadge type={schedule.schedule_type} />
                       {schedule.scheduled_time && (
                         <div className="flex items-center gap-1 text-xs text-muted-foreground">
                           <Clock className="h-3 w-3" aria-hidden="true" />
