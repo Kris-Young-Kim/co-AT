@@ -274,7 +274,6 @@ const proxy = clerkMiddleware(async (auth, req) => {
     }
 
     // 관리자 전용 앱이므로 모든 경로에 대해 관리자 세션 확인 (공개 경로 제외)
-    const { pathname } = url
     const isPublic = isPublicRoute(req) || pathname.startsWith('/_next') || pathname.startsWith('/api/') || pathname.includes('.')
     const isCreateProfilePath = pathname === '/create-profile'
     const isAdminRootPath = pathname === '/' // 루트 페이지 (대시보드)
