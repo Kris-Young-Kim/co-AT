@@ -201,13 +201,18 @@ export function PublicHeader() {
               {isAdmin && (
                 <Button
                   asChild
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
-                  className="hidden sm:flex items-center gap-2 text-primary border-primary/20 hover:bg-primary/5 h-9"
+                  className="hidden sm:flex items-center gap-2 h-9 px-4 rounded-full bg-slate-900/5 hover:bg-slate-900/10 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 font-medium transition-all duration-300 border border-slate-200/50 dark:border-white/10 hover:border-primary/30 group relative overflow-hidden"
                 >
-                  <Link href={process.env.NEXT_PUBLIC_ADMIN_URL || "https://co-at-admin.vercel.app"}>
-                    <LayoutDashboard className="h-4 w-4" />
-                    <span>관리자 모드</span>
+                  <Link href={process.env.NEXT_PUBLIC_ADMIN_URL || "https://admin.gwatc.cloud"}>
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className="absolute -inset-full top-0 h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:animate-shine" />
+                    
+                    <LayoutDashboard className="h-4 w-4 text-primary/70 group-hover:text-primary transition-colors duration-300 group-hover:rotate-12 transform" />
+                    <span className="relative z-10 group-hover:tracking-tight transition-all duration-300">관리자 모드</span>
+                    
+                    <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                   </Link>
                 </Button>
               )}

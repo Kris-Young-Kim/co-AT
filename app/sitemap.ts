@@ -1,11 +1,10 @@
 import { MetadataRoute } from "next"
 import { getRecentNotices } from "@/actions/notice-actions"
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gwatc.cloud"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // 정적 페이지들
-  const staticPages: MetadataRoute.Sitemap = [
+  // ?�적 ?�이지??  const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -86,10 +85,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  // 동적 페이지: 공지사항
+  // ?�적 ?�이지: 공�??�항
   let noticePages: MetadataRoute.Sitemap = []
   try {
-    const notices = await getRecentNotices(100) // 최대 100개 공지사항 포함
+    const notices = await getRecentNotices(100) // 최�? 100�?공�??�항 ?�함
     noticePages = notices.map((notice) => ({
       url: `${baseUrl}/notices/${notice.id}`,
       lastModified: new Date(notice.created_at),
@@ -97,7 +96,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: notice.is_pinned ? 0.8 : 0.6,
     }))
   } catch (error) {
-    console.error("[Sitemap] 공지사항 조회 실패:", error)
+    console.error("[Sitemap] 공�??�항 조회 ?�패:", error)
   }
 
   return [...staticPages, ...noticePages]

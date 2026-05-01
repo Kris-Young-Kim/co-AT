@@ -12,11 +12,11 @@ import { RegulationChatbotFloating } from "@/components/features/chat/Regulation
 import { hasManagerPermission } from "@/lib/utils/permissions";
 import "./globals.css";
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app";
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://admin.gwatc.cloud";
 
 export const metadata: Metadata = {
-  title: "GWATC 어드민",
-  description: "GWATC 통합 관리 시스템",
+  title: "GWATC ?�드�?,
+  description: "GWATC ?�합 관�??�스??,
 };
 
 export default async function RootLayout({
