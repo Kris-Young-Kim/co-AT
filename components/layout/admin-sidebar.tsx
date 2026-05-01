@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 
 const menuItems = [
-  { href: "/dashboard", label: "대시보드", icon: LayoutDashboard },
+  { href: "/", label: "대시보드", icon: LayoutDashboard },
   { href: "/stats", label: "통계 대시보드", icon: BarChart3 },
   { href: "/notices-management", label: "새 글 관리", icon: FileText },
   { href: "/clients", label: "대상자 관리", icon: Users },

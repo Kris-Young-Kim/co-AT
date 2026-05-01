@@ -273,15 +273,14 @@ const proxy = clerkMiddleware(async (auth, req) => {
       return NextResponse.redirect(signInUrl)
     }
 
-    // 관리자 경로 접근 시 관리자 세션 확인
-    const adminPaths = ['/admin', '/notices-management', '/dashboard']
-    const isAdminPath = adminPaths.some(path => url.pathname.startsWith(path))
-    const isCreateProfilePath = url.pathname === '/create-profile' || url.pathname === '/admin/create-profile'
-    const isAdminRootPath = url.pathname === '/admin' // 관리자 로그인 페이지
-    const isAdminSessionApi = url.pathname === '/api/admin/session'
+    // 관리자 전용 앱이므로 모든 경로에 대해 관리자 세션 확인 (공개 경로 제외)
+    const { pathname } = url
+    const isPublic = isPublicRoute(req) || pathname.startsWith('/_next') || pathname.startsWith('/api/') || pathname.includes('.')
+    const isCreateProfilePath = pathname === '/create-profile'
+    const isAdminRootPath = pathname === '/' // 루트 페이지 (대시보드)
 
-    // 관리자 경로 접근 시
-    if (isAdminPath && !isCreateProfilePath && !isAdminSessionApi) {
+    // 공개 경로가 아니고, 프로필 생성 중이 아니며, 세션 API가 아닌 경우
+    if (!isPublic && !isCreateProfilePath && pathname !== '/api/admin/session') {
       // 로그인하지 않은 경우
       if (!userId) {
         const signInUrl = new URL('/sign-in', req.url)
@@ -298,43 +297,21 @@ const proxy = clerkMiddleware(async (auth, req) => {
 
         if (hasPermission) {
           // 권한이 있으면 자동으로 관리자 세션 설정
-          // 관리자 로그인 페이지가 아닌 경우에만 리다이렉트
-          if (isAdminRootPath) {
-            // 관리자 로그인 페이지에서 권한이 있으면 대시보드로 리다이렉트
-            const redirectUrl = url.searchParams.get('redirect_url') || '/admin/dashboard'
-            const response = NextResponse.redirect(new URL(redirectUrl, req.url))
-            response.cookies.set('admin_session', 'true', {
-              httpOnly: true,
-              secure: process.env.NODE_ENV === 'production',
-              sameSite: 'lax',
-              maxAge: 60 * 60 * 24, // 24시간
-              path: '/',
-            })
-            return response
-          } else {
-            // 다른 관리자 페이지인 경우 세션만 설정하고 계속 진행
-            const response = NextResponse.next()
-            response.cookies.set('admin_session', 'true', {
-              httpOnly: true,
-              secure: process.env.NODE_ENV === 'production',
-              sameSite: 'lax',
-              maxAge: 60 * 60 * 24, // 24시간
-              path: '/',
-            })
-            return response
-          }
+          const response = NextResponse.next()
+          response.cookies.set('admin_session', 'true', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 24, // 24시간
+            path: '/',
+          })
+          return response
         } else {
-          // 권한이 없으면 관리자 로그인 페이지로 리다이렉트 (이미 있는 경우 제외)
-          if (!isAdminRootPath) {
-            const adminSignInUrl = new URL('/admin', req.url)
-            adminSignInUrl.searchParams.set('redirect_url', req.url)
-            return NextResponse.redirect(adminSignInUrl)
-          }
+          // 권한이 없으면 프로필 생성 페이지로 유도하거나 접근 차단
+          // (여기서는 일단 메인 웹 사이트로 리다이렉트하는 것이 안전할 수 있음)
+          const mainSiteUrl = new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://gwatc.cloud')
+          return NextResponse.redirect(mainSiteUrl)
         }
-      } else if (isAdminRootPath) {
-        // 관리자 세션이 있고 관리자 로그인 페이지에 접근한 경우 대시보드로 리다이렉트
-        const redirectUrl = url.searchParams.get('redirect_url') || '/admin/dashboard'
-        return NextResponse.redirect(new URL(redirectUrl, req.url))
       }
     }
 
