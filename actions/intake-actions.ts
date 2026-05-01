@@ -118,3 +118,37 @@ export async function createIntakeRecord(
   }
 }
 
+export interface IntakeRecord {
+  id: string
+  application_id: string
+  consult_date: string
+  consultation_content: string | null
+  body_function_data: unknown
+  cognitive_sensory_check: string[] | null
+  current_devices: Array<{ name: string; in_use: boolean; source: string; year: string }> | null
+  main_activity_place: string | null
+  activity_posture: string | null
+  main_supporter: string | null
+  environment_limitations: string | null
+  created_at: string | null
+  updated_at: string | null
+}
+
+export async function getIntakeRecordsByApplication(applicationId: string): Promise<{
+  success: boolean
+  records?: IntakeRecord[]
+  error?: string
+}> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('intake_records')
+    .select('*')
+    .eq('application_id', applicationId)
+    .order('consult_date', { ascending: false })
+
+  if (error) return { success: false, error: '상담 기록 조회에 실패했습니다' }
+  return { success: true, records: (data ?? []) as IntakeRecord[] }
+}
