@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { redirect } from "next/navigation"
 import { getSchedules } from "@/actions/schedule-actions"
