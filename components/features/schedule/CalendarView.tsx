@@ -192,13 +192,13 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                           key={schedule.id}
                           className={cn(
                             "p-3 rounded-md border cursor-pointer hover:bg-accent transition-colors",
-                            scheduleTypeColors[schedule.schedule_type] || "bg-gray-100"
+                            SCHEDULE_TYPE_COLORS[schedule.schedule_type] || "bg-gray-100"
                           )}
                           onClick={() => onScheduleClick?.(schedule)}
                         >
                           <div className="flex items-start justify-between gap-2 mb-2">
                             <Badge variant="secondary" className="text-xs">
-                              {scheduleTypeLabels[schedule.schedule_type] || schedule.schedule_type}
+                              {SCHEDULE_TYPE_LABELS[schedule.schedule_type] || schedule.schedule_type}
                             </Badge>
                             <Badge
                               variant={
