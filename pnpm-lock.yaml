@@ -431,6 +431,454 @@ importers:
         specifier: ^1.0.4
         version: 1.6.1(@types/node@20.19.27)(jsdom@23.2.0)(terser@5.46.0)
 
+  apps/approval:
+    dependencies:
+      '@clerk/nextjs':
+        specifier: ^6.36.3
+        version: 6.36.3(next@16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@co-at/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@co-at/lib':
+        specifier: workspace:*
+        version: link:../../packages/lib
+      '@co-at/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@co-at/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      clsx:
+        specifier: ^2.1.0
+        version: 2.1.1
+      lucide-react:
+        specifier: ^0.344.0
+        version: 0.344.0(react@19.2.1)
+      next:
+        specifier: ^16.1.1
+        version: 16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.1(react@19.2.1)
+      tailwind-merge:
+        specifier: ^2.2.1
+        version: 2.6.0
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.27
+      '@types/react':
+        specifier: ^19
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.7)
+      autoprefixer:
+        specifier: ^10.0.1
+        version: 10.4.22(postcss@8.5.6)
+      eslint:
+        specifier: ^9
+        version: 9.39.2(jiti@1.21.7)
+      eslint-config-next:
+        specifier: ^16.1.1
+        version: 16.1.1(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3)
+      postcss:
+        specifier: ^8
+        version: 8.5.6
+      tailwindcss:
+        specifier: ^3.4.1
+        version: 3.4.18
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  apps/automation:
+    dependencies:
+      '@clerk/nextjs':
+        specifier: ^6.36.3
+        version: 6.36.3(next@16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@co-at/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@co-at/lib':
+        specifier: workspace:*
+        version: link:../../packages/lib
+      '@co-at/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@co-at/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      clsx:
+        specifier: ^2.1.0
+        version: 2.1.1
+      lucide-react:
+        specifier: ^0.344.0
+        version: 0.344.0(react@19.2.1)
+      next:
+        specifier: ^16.1.1
+        version: 16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.1(react@19.2.1)
+      tailwind-merge:
+        specifier: ^2.2.1
+        version: 2.6.0
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.27
+      '@types/react':
+        specifier: ^19
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.7)
+      autoprefixer:
+        specifier: ^10.0.1
+        version: 10.4.22(postcss@8.5.6)
+      eslint:
+        specifier: ^9
+        version: 9.39.2(jiti@1.21.7)
+      eslint-config-next:
+        specifier: ^16.1.1
+        version: 16.1.1(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3)
+      postcss:
+        specifier: ^8
+        version: 8.5.6
+      tailwindcss:
+        specifier: ^3.4.1
+        version: 3.4.18
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  apps/eval:
+    dependencies:
+      '@clerk/nextjs':
+        specifier: ^6.36.3
+        version: 6.36.3(next@16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@co-at/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@co-at/lib':
+        specifier: workspace:*
+        version: link:../../packages/lib
+      '@co-at/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@co-at/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      clsx:
+        specifier: ^2.1.0
+        version: 2.1.1
+      lucide-react:
+        specifier: ^0.344.0
+        version: 0.344.0(react@19.2.1)
+      next:
+        specifier: ^16.1.1
+        version: 16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.1(react@19.2.1)
+      tailwind-merge:
+        specifier: ^2.2.1
+        version: 2.6.0
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.27
+      '@types/react':
+        specifier: ^19
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.7)
+      autoprefixer:
+        specifier: ^10.0.1
+        version: 10.4.22(postcss@8.5.6)
+      eslint:
+        specifier: ^9
+        version: 9.39.2(jiti@1.21.7)
+      eslint-config-next:
+        specifier: ^16.1.1
+        version: 16.1.1(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3)
+      postcss:
+        specifier: ^8
+        version: 8.5.6
+      tailwindcss:
+        specifier: ^3.4.1
+        version: 3.4.18
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  apps/finance:
+    dependencies:
+      '@clerk/nextjs':
+        specifier: ^6.36.3
+        version: 6.36.3(next@16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@co-at/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@co-at/lib':
+        specifier: workspace:*
+        version: link:../../packages/lib
+      '@co-at/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@co-at/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      clsx:
+        specifier: ^2.1.0
+        version: 2.1.1
+      lucide-react:
+        specifier: ^0.344.0
+        version: 0.344.0(react@19.2.1)
+      next:
+        specifier: ^16.1.1
+        version: 16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.1(react@19.2.1)
+      tailwind-merge:
+        specifier: ^2.2.1
+        version: 2.6.0
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.27
+      '@types/react':
+        specifier: ^19
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.7)
+      autoprefixer:
+        specifier: ^10.0.1
+        version: 10.4.22(postcss@8.5.6)
+      eslint:
+        specifier: ^9
+        version: 9.39.2(jiti@1.21.7)
+      eslint-config-next:
+        specifier: ^16.1.1
+        version: 16.1.1(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3)
+      postcss:
+        specifier: ^8
+        version: 8.5.6
+      tailwindcss:
+        specifier: ^3.4.1
+        version: 3.4.18
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  apps/hr:
+    dependencies:
+      '@clerk/nextjs':
+        specifier: ^6.36.3
+        version: 6.36.3(next@16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@co-at/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@co-at/lib':
+        specifier: workspace:*
+        version: link:../../packages/lib
+      '@co-at/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@co-at/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      clsx:
+        specifier: ^2.1.0
+        version: 2.1.1
+      lucide-react:
+        specifier: ^0.344.0
+        version: 0.344.0(react@19.2.1)
+      next:
+        specifier: ^16.1.1
+        version: 16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.1(react@19.2.1)
+      tailwind-merge:
+        specifier: ^2.2.1
+        version: 2.6.0
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.27
+      '@types/react':
+        specifier: ^19
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.7)
+      autoprefixer:
+        specifier: ^10.0.1
+        version: 10.4.22(postcss@8.5.6)
+      eslint:
+        specifier: ^9
+        version: 9.39.2(jiti@1.21.7)
+      eslint-config-next:
+        specifier: ^16.1.1
+        version: 16.1.1(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3)
+      postcss:
+        specifier: ^8
+        version: 8.5.6
+      tailwindcss:
+        specifier: ^3.4.1
+        version: 3.4.18
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  apps/inventory:
+    dependencies:
+      '@clerk/nextjs':
+        specifier: ^6.36.3
+        version: 6.36.3(next@16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@co-at/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@co-at/lib':
+        specifier: workspace:*
+        version: link:../../packages/lib
+      '@co-at/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@co-at/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      clsx:
+        specifier: ^2.1.0
+        version: 2.1.1
+      lucide-react:
+        specifier: ^0.344.0
+        version: 0.344.0(react@19.2.1)
+      next:
+        specifier: ^16.1.1
+        version: 16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.1(react@19.2.1)
+      tailwind-merge:
+        specifier: ^2.2.1
+        version: 2.6.0
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.27
+      '@types/react':
+        specifier: ^19
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.7)
+      autoprefixer:
+        specifier: ^10.0.1
+        version: 10.4.22(postcss@8.5.6)
+      eslint:
+        specifier: ^9
+        version: 9.39.2(jiti@1.21.7)
+      eslint-config-next:
+        specifier: ^16.1.1
+        version: 16.1.1(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3)
+      postcss:
+        specifier: ^8
+        version: 8.5.6
+      tailwindcss:
+        specifier: ^3.4.1
+        version: 3.4.18
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
+  apps/stats:
+    dependencies:
+      '@clerk/nextjs':
+        specifier: ^6.36.3
+        version: 6.36.3(next@16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@co-at/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@co-at/lib':
+        specifier: workspace:*
+        version: link:../../packages/lib
+      '@co-at/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@co-at/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      clsx:
+        specifier: ^2.1.0
+        version: 2.1.1
+      lucide-react:
+        specifier: ^0.344.0
+        version: 0.344.0(react@19.2.1)
+      next:
+        specifier: ^16.1.1
+        version: 16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.1(react@19.2.1)
+      tailwind-merge:
+        specifier: ^2.2.1
+        version: 2.6.0
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.27
+      '@types/react':
+        specifier: ^19
+        version: 19.2.7
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.7)
+      autoprefixer:
+        specifier: ^10.0.1
+        version: 10.4.22(postcss@8.5.6)
+      eslint:
+        specifier: ^9
+        version: 9.39.2(jiti@1.21.7)
+      eslint-config-next:
+        specifier: ^16.1.1
+        version: 16.1.1(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3)
+      postcss:
+        specifier: ^8
+        version: 8.5.6
+      tailwindcss:
+        specifier: ^3.4.1
+        version: 3.4.18
+      typescript:
+        specifier: ^5
+        version: 5.9.3
+
   apps/web:
     dependencies:
       '@clerk/nextjs':
@@ -642,6 +1090,18 @@ importers:
         specifier: ^1.0.4
         version: 1.6.1(@types/node@20.19.27)(jsdom@23.2.0)(terser@5.46.0)
 
+  packages/auth:
+    dependencies:
+      '@clerk/nextjs':
+        specifier: ^6
+        version: 6.36.3(next@16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@co-at/types':
+        specifier: workspace:*
+        version: link:../types
+      next:
+        specifier: ^16
+        version: 16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+
   packages/lib:
     dependencies:
       '@supabase/ssr':
@@ -650,6 +1110,12 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.89.0
         version: 2.89.0
+
+  packages/types:
+    dependencies:
+      typescript:
+        specifier: ^5
+        version: 5.9.3
 
   packages/ui:
     dependencies:
@@ -775,6 +1241,7 @@ packages:
   '@clerk/clerk-react@5.59.0':
     resolution: {integrity: sha512-AlI0KShOA/rdMnHUXRL+RKUiWOuK4lItgk3gswGip+BJTTT0C5DrJ28Yzsrlcayhk5rKD+J+sal6df3rDhRBAQ==}
     engines: {node: '>=18.17.0'}
+    deprecated: 'This package is no longer supported. Please use @clerk/react instead. See the upgrade guide for more info: https://clerk.com/docs/guides/development/upgrading/upgrade-guides/core-3'
     peerDependencies:
       react: ^18.0.0 || ^19.0.0 || ^19.0.0-0
       react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-0
@@ -802,6 +1269,7 @@ packages:
   '@clerk/types@4.101.7':
     resolution: {integrity: sha512-1l1FUziIGozg8YRI1UOklR1PmS6HV7IJB3CAA10MOheZEJkQ2sEnjG8E/DObstIX7Zq/HB0OHViNt6c7nyTeRg==}
     engines: {node: '>=18.17.0'}
+    deprecated: 'This package is no longer supported. Please import types from @clerk/shared/types instead. See the upgrade guide for more info: https://clerk.com/docs/guides/development/upgrading/upgrade-guides/core-3'
 
   '@csstools/color-helpers@5.1.0':
     resolution: {integrity: sha512-S11EXWJyy0Mz5SYvRmY8nJYTFFd1LCNV+7cXyAgQtOOuzb4EsgfqDufL+9esx72/eLhsRdGZwaldu/h+E4t4BA==}
@@ -999,12 +1467,6 @@ packages:
     engines: {node: '>=12'}
     cpu: [x64]
     os: [win32]
-
-  '@eslint-community/eslint-utils@4.9.0':
-    resolution: {integrity: sha512-ayVFHdtZ+hsq1t2Dy24wCmGXGe4q9Gu3smhLYALJrr473ZH27MsnSL+LKUlimp4BWJqMDMLmPpx/Q9R3OAlL4g==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    peerDependencies:
-      eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
 
   '@eslint-community/eslint-utils@4.9.1':
     resolution: {integrity: sha512-phrYmNiYppR7znFEdqgfWHXR6NCkZEK7hwWDHZUjit/2/U0r6XvkDl0SYnoM51Hq7FhCGdLDT6zxCCOY1hexsQ==}
@@ -3122,9 +3584,6 @@ packages:
   camelcase-css@2.0.1:
     resolution: {integrity: sha512-QOSvevhslijgYwRx6Rv7zKdMF8lbRmx+uQGx2+vDc+KI/eBnsy9kit5aj23AgGu3pa4t9AgwbnXWqS+iOY+2aA==}
     engines: {node: '>= 6'}
-
-  caniuse-lite@1.0.30001759:
-    resolution: {integrity: sha512-Pzfx9fOKoKvevQf8oCXoyNRQ5QyxJj+3O0Rqx2V5oxT61KGx8+n6hV/IUyJeifUci2clnmmKVpvtiqRzgiWjSw==}
 
   caniuse-lite@1.0.30001762:
     resolution: {integrity: sha512-PxZwGNvH7Ak8WX5iXzoK1KPZttBXNPuaOvI2ZYU7NrlM+d9Ov+TUvlLOBNGzVXAntMSMMlJPd+jY6ovrVjSmUw==}
@@ -5737,11 +6196,6 @@ snapshots:
   '@esbuild/win32-x64@0.21.5':
     optional: true
 
-  '@eslint-community/eslint-utils@4.9.0(eslint@9.39.2(jiti@1.21.7))':
-    dependencies:
-      eslint: 9.39.2(jiti@1.21.7)
-      eslint-visitor-keys: 3.4.3
-
   '@eslint-community/eslint-utils@4.9.1(eslint@9.39.2(jiti@1.21.7))':
     dependencies:
       eslint: 9.39.2(jiti@1.21.7)
@@ -7500,7 +7954,7 @@ snapshots:
 
   '@typescript-eslint/utils@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.0(eslint@9.39.2(jiti@1.21.7))
+      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.2(jiti@1.21.7))
       '@typescript-eslint/scope-manager': 8.50.0
       '@typescript-eslint/types': 8.50.0
       '@typescript-eslint/typescript-estree': 8.50.0(typescript@5.9.3)
@@ -7896,7 +8350,7 @@ snapshots:
   autoprefixer@10.4.22(postcss@8.5.6):
     dependencies:
       browserslist: 4.28.1
-      caniuse-lite: 1.0.30001759
+      caniuse-lite: 1.0.30001762
       fraction.js: 5.3.4
       normalize-range: 0.1.2
       picocolors: 1.1.1
@@ -7937,7 +8391,7 @@ snapshots:
   browserslist@4.28.1:
     dependencies:
       baseline-browser-mapping: 2.9.11
-      caniuse-lite: 1.0.30001759
+      caniuse-lite: 1.0.30001762
       electron-to-chromium: 1.5.266
       node-releases: 2.0.27
       update-browserslist-db: 1.2.2(browserslist@4.28.1)
@@ -7966,8 +8420,6 @@ snapshots:
   callsites@3.1.0: {}
 
   camelcase-css@2.0.1: {}
-
-  caniuse-lite@1.0.30001759: {}
 
   caniuse-lite@1.0.30001762: {}
 
@@ -8396,7 +8848,7 @@ snapshots:
       eslint: 9.39.2(jiti@1.21.7)
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@1.21.7))
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint@9.39.2(jiti@1.21.7))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@1.21.7))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.2(jiti@1.21.7))
       eslint-plugin-react: 7.37.5(eslint@9.39.2(jiti@1.21.7))
       eslint-plugin-react-hooks: 7.0.1(eslint@9.39.2(jiti@1.21.7))
@@ -8416,7 +8868,7 @@ snapshots:
       eslint: 9.39.2(jiti@1.21.7)
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@1.21.7))
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@1.21.7)))(eslint@9.39.2(jiti@1.21.7))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@1.21.7))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.2(jiti@1.21.7))
       eslint-plugin-react: 7.37.5(eslint@9.39.2(jiti@1.21.7))
       eslint-plugin-react-hooks: 7.0.1(eslint@9.39.2(jiti@1.21.7))
@@ -8449,7 +8901,7 @@ snapshots:
       tinyglobby: 0.2.15
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint@9.39.2(jiti@1.21.7))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@1.21.7))
     transitivePeerDependencies:
       - supports-color
 
@@ -8464,7 +8916,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@1.21.7)))(eslint@9.39.2(jiti@1.21.7)):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@1.21.7)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -8475,7 +8927,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint@9.39.2(jiti@1.21.7)):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@1.21.7)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -8504,7 +8956,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@1.21.7)))(eslint@9.39.2(jiti@1.21.7)):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@1.21.7)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -8515,7 +8967,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.39.2(jiti@1.21.7)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.2(jiti@1.21.7)))(eslint@9.39.2(jiti@1.21.7))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.52.0(eslint@9.39.2(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2(jiti@1.21.7))
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -8601,7 +9053,7 @@ snapshots:
 
   eslint@9.39.2(jiti@1.21.7):
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.0(eslint@9.39.2(jiti@1.21.7))
+      '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.2(jiti@1.21.7))
       '@eslint-community/regexpp': 4.12.2
       '@eslint/config-array': 0.21.1
       '@eslint/config-helpers': 0.4.2
