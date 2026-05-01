@@ -22,9 +22,9 @@ import { ko } from "date-fns/locale"
 
 export function StatsDashboardContent() {
   const [mounted, setMounted] = useState(false)
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
-  const [startYear, setStartYear] = useState(new Date().getFullYear() - 2)
-  const [endYear, setEndYear] = useState(new Date().getFullYear())
+  const [selectedYear, setSelectedYear] = useState<number | undefined>()
+  const [startYear, setStartYear] = useState<number | undefined>()
+  const [endYear, setEndYear] = useState<number | undefined>()
 
   const [monthlyStats, setMonthlyStats] = useState<MonthlyStats[] | undefined>()
   const [yearlyStats, setYearlyStats] = useState<YearlyStats[] | undefined>()
@@ -33,6 +33,11 @@ export function StatsDashboardContent() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    const now = new Date()
+    const currentYear = now.getFullYear()
+    setSelectedYear(currentYear)
+    setStartYear(currentYear - 2)
+    setEndYear(currentYear)
     setMounted(true)
   }, [])
 
@@ -83,30 +88,40 @@ export function StatsDashboardContent() {
 
   // 초기 로드 및 연도 변경 시 재로드
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true)
-      setError(null)
+    if (mounted && selectedYear && startYear && endYear) {
+      const loadData = async () => {
+        setLoading(true)
+        setError(null)
 
-      const yearStart = new Date(selectedYear, 0, 1)
-      const yearEnd = new Date(selectedYear, 11, 31, 23, 59, 59, 999)
+        const yearStart = new Date(selectedYear, 0, 1)
+        const yearEnd = new Date(selectedYear, 11, 31, 23, 59, 59, 999)
 
-      await Promise.all([
-        loadMonthlyStats(selectedYear),
-        loadYearlyStats(startYear, endYear),
-        loadSummary(yearStart.toISOString(), yearEnd.toISOString()),
-      ])
+        await Promise.all([
+          loadMonthlyStats(selectedYear),
+          loadYearlyStats(startYear, endYear),
+          loadSummary(yearStart.toISOString(), yearEnd.toISOString()),
+        ])
 
-      setLoading(false)
+        setLoading(false)
+      }
+
+      loadData()
     }
-
-    loadData()
-  }, [selectedYear, startYear, endYear])
+  }, [mounted, selectedYear, startYear, endYear])
 
   // 연도 선택 옵션 생성 (하이드레이션 오류 방지를 위해 mounted 후에만 정상적으로 계산됨)
   const currentYear = new Date().getFullYear()
   const yearOptions = Array.from({ length: 5 }, (_, i) => currentYear - i)
 
-  if (!mounted || loading) {
+  if (!mounted || selectedYear === undefined || startYear === undefined || endYear === undefined) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    )
+  }
+
+  if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
