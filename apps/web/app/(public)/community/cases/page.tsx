@@ -6,7 +6,7 @@ import { NoticeListWithCrud } from "@/components/features/notices/NoticeListWith
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
 
-export const revalidate = 300
+export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
   title: "보조기기 서비스 사례",
