@@ -14,7 +14,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
-import { LayoutDashboard } from "lucide-react"
+import { LayoutDashboard, Search } from "lucide-react"
+import { Input } from "@/components/ui/input"
 
 const headerMenuItems = [
   {
@@ -186,6 +187,31 @@ export function PublicHeader() {
             <div className="h-9 w-20" aria-hidden />
           ) : (
             <>
+              {/* 사이트 검색창 */}
+              <div className="hidden lg:flex items-center relative w-40 xl:w-60">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="검색..."
+                  className="pl-9 h-9 w-full bg-muted/50 border-none focus-visible:ring-1 text-sm"
+                />
+              </div>
+
+              {/* 관리자 모드 버튼 (권한이 있을 때만 표시) */}
+              {isAdmin && (
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="hidden sm:flex items-center gap-2 text-primary border-primary/20 hover:bg-primary/5 h-9"
+                >
+                  <Link href={process.env.NEXT_PUBLIC_ADMIN_URL || "/admin"}>
+                    <LayoutDashboard className="h-4 w-4" />
+                    <span>관리자 모드</span>
+                  </Link>
+                </Button>
+              )}
+
               <ClerkLoading>
                 <Button variant="ghost" size="sm" className="text-xs sm:text-sm" disabled>
                   로딩 중...
