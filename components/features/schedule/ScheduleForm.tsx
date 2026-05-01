@@ -45,6 +45,7 @@ const scheduleTypeLabels: Record<string, string> = {
   exhibition: "견학",
   education: "교육",
   meeting: "회의",
+  external_event: "외부행사",
 }
 
 // 강원특별자치도 18개 시군 목록

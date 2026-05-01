@@ -121,11 +121,17 @@ export function HomeCalendarCompact({ initialSchedules = [] }: HomeCalendarCompa
                         variant={
                           schedule.schedule_type === "exhibition"
                             ? "default"
+                            : schedule.schedule_type === "external_event"
+                            ? "outline"
                             : "secondary"
                         }
                         className="text-xs"
                       >
-                        {schedule.schedule_type === "exhibition" ? "견학" : "교육"}
+                        {schedule.schedule_type === "exhibition"
+                          ? "견학"
+                          : schedule.schedule_type === "external_event"
+                          ? "외부행사"
+                          : "교육"}
                       </Badge>
                       {schedule.scheduled_time && (
                         <div className="flex items-center gap-1 text-xs text-muted-foreground">
