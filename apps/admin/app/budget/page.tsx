@@ -1,4 +1,5 @@
-// app/(admin)/budget/page.tsx
+export const dynamic = 'force-dynamic'
+
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { redirect } from "next/navigation"
 import { getBudgetsWithActual } from "@/actions/budget-actions"

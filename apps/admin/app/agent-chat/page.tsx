@@ -1,5 +1,4 @@
-// app/admin/agent-chat/page.tsx
-// AI 업무 도우미 관리자 페이지
+export const dynamic = 'force-dynamic'
 
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { redirect } from "next/navigation"
