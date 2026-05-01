@@ -2,15 +2,7 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@clerk/shared",
-      "@sentry/cli",
-      "esbuild",
-      "sharp",
-      "unrs-resolver"
-    ]
-  },
+
   "scripts": {
     "prebuild": "node -e \"try{require('fs').rmSync('.next',{recursive:true,force:true});console.log('[prebuild] .next removed');}catch(e){}\"",
     "dev": "next dev -p 3000 --webpack",
