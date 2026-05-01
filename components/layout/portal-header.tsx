@@ -21,7 +21,7 @@ export function PortalHeader() {
             </Link>
           </Button>
           <Button asChild variant="ghost" size="sm" className="text-xs sm:text-sm">
-            <Link href="/portal/settings">
+            <Link href="/settings">
               <Settings className="h-4 w-4 mr-2" />
               설정
             </Link>

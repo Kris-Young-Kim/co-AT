@@ -53,7 +53,7 @@ export function AdminHeader({ showUsersManagement = false }: AdminHeaderProps) {
             >
               <Menu className="h-5 w-5" />
             </Button>
-            <Link href="/admin/dashboard" className="flex items-center">
+            <Link href="/dashboard" className="flex items-center">
               <Logo />
             </Link>
           </div>

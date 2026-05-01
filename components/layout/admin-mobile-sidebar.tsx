@@ -25,18 +25,18 @@ import {
 } from "@/components/ui/dialog"
 
 const menuItems = [
-  { href: "/admin/dashboard", label: "대시보드", icon: LayoutDashboard },
-  { href: "/admin/notices-management", label: "새 글 관리", icon: FileText },
-  { href: "/admin/clients", label: "대상자 관리", icon: Users },
-  { href: "/admin/inventory", label: "재고 관리", icon: Package },
-  { href: "/admin/rentals", label: "대여 관리", icon: Package },
-  { href: "/admin/custom-makes", label: "맞춤제작 관리", icon: Package },
-  { href: "/admin/budget", label: "예산 계획", icon: PiggyBank },
-  { href: "/admin/schedule", label: "일정 관리", icon: Calendar },
-  { href: "/admin/work-tasks", label: "업무 관리", icon: ClipboardList },
-  { href: "/admin/agent-chat", label: "AI 업무 도우미", icon: Bot },
-  { href: "/admin/users", label: "사용자 관리", icon: Users, managerOnly: true },
-  { href: "/admin/settings", label: "설정", icon: Settings },
+  { href: "/dashboard", label: "대시보드", icon: LayoutDashboard },
+  { href: "/notices-management", label: "새 글 관리", icon: FileText },
+  { href: "/clients", label: "대상자 관리", icon: Users },
+  { href: "/inventory", label: "재고 관리", icon: Package },
+  { href: "/rentals", label: "대여 관리", icon: Package },
+  { href: "/custom-makes", label: "맞춤제작 관리", icon: Package },
+  { href: "/budget", label: "예산 계획", icon: PiggyBank },
+  { href: "/schedule", label: "일정 관리", icon: Calendar },
+  { href: "/work-tasks", label: "업무 관리", icon: ClipboardList },
+  { href: "/agent-chat", label: "AI 업무 도우미", icon: Bot },
+  { href: "/users", label: "사용자 관리", icon: Users, managerOnly: true },
+  { href: "/settings", label: "설정", icon: Settings },
 ]
 
 interface AdminMobileSidebarProps {

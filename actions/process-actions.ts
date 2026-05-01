@@ -76,8 +76,8 @@ export async function createProcessLog(input: ProcessLogInput): Promise<{
       };
     }
 
-    revalidatePath("/admin/clients");
-    revalidatePath(`/admin/clients/${input.client_id}`);
+    revalidatePath("/clients");
+    revalidatePath(`/clients/${input.client_id}`);
     revalidatePath("/clients");
     revalidatePath(`/clients/${input.client_id}`);
 

@@ -288,7 +288,7 @@ export async function createNotice(
     revalidatePath("/notices/support")
     revalidatePath("/community/gallery")
     revalidatePath("/community/cases")
-    revalidatePath("/admin/notices-management")
+    revalidatePath("/notices-management")
 
     return { success: true, noticeId: (data as { id: string }).id }
   } catch (error) {
@@ -347,7 +347,7 @@ export async function updateNotice(
     revalidatePath(`/notices/${input.id}`)
     revalidatePath("/community/gallery")
     revalidatePath("/community/cases")
-    revalidatePath("/admin/notices")
+    revalidatePath("/notices")
 
     return { success: true }
   } catch (error) {
@@ -381,7 +381,7 @@ export async function deleteNotice(
     revalidatePath("/notices/support")
     revalidatePath("/community/gallery")
     revalidatePath("/community/cases")
-    revalidatePath("/admin/notices-management")
+    revalidatePath("/notices-management")
 
     return { success: true }
   } catch (error) {

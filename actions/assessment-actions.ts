@@ -99,9 +99,9 @@ export async function createDomainAssessment(
 
     const clientId = applicationTyped?.client_id;
 
-    revalidatePath("/admin/clients");
+    revalidatePath("/clients");
     if (clientId) {
-      revalidatePath(`/admin/clients/${clientId}`);
+      revalidatePath(`/clients/${clientId}`);
       revalidatePath(`/clients/${clientId}`);
     }
     revalidatePath("/clients");
@@ -231,7 +231,7 @@ export async function updateDomainAssessment(
       return { success: false, error: "평가 수정에 실패했습니다" };
     }
 
-    revalidatePath("/admin/clients");
+    revalidatePath("/clients");
     revalidatePath("/clients");
     revalidatePath("/clients", "layout");
 

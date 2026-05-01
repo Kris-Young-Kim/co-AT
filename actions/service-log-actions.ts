@@ -198,8 +198,8 @@ export async function createServiceLog(
       description: `서비스 로그 생성: ${input.service_type || ""} - ${input.item_name || ""}`,
     })
 
-    revalidatePath("/admin/clients")
-    revalidatePath(`/admin/clients/${clientId}`)
+    revalidatePath("/clients")
+    revalidatePath(`/clients/${clientId}`)
     revalidatePath("/clients")
     revalidatePath(`/clients/${clientId}`)
 
@@ -339,8 +339,8 @@ export async function updateServiceLog(
       description: `서비스 로그 수정: ${id} (변경 필드: ${changedFields.join(", ")})`,
     })
 
-    revalidatePath("/admin/clients")
-    revalidatePath(`/admin/clients/${clientId}`)
+    revalidatePath("/clients")
+    revalidatePath(`/clients/${clientId}`)
     revalidatePath("/clients")
     revalidatePath(`/clients/${clientId}`)
 

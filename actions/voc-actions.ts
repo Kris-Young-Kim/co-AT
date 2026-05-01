@@ -67,7 +67,7 @@ export async function createClientVoc(input: CreateVocInput): Promise<{
       .single()
 
     if (error) throw error
-    revalidatePath(`/admin/clients/${input.client_id}`)
+    revalidatePath(`/clients/${input.client_id}`)
     return { success: true, voc: data as ClientVoc }
   } catch (err) {
     return { success: false, error: String(err) }
@@ -90,7 +90,7 @@ export async function resolveClientVoc(
       .eq('id', vocId)
 
     if (error) throw error
-    revalidatePath(`/admin/clients/${clientId}`)
+    revalidatePath(`/clients/${clientId}`)
     return { success: true }
   } catch (err) {
     return { success: false, error: String(err) }
@@ -109,7 +109,7 @@ export async function deleteClientVoc(
     const { error } = await (supabase as any).from('client_voc').delete().eq('id', vocId)
 
     if (error) throw error
-    revalidatePath(`/admin/clients/${clientId}`)
+    revalidatePath(`/clients/${clientId}`)
     return { success: true }
   } catch (err) {
     return { success: false, error: String(err) }

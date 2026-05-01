@@ -57,7 +57,7 @@ export function RentalAlerts() {
             대여 알림
           </CardTitle>
           <Button asChild variant="ghost" size="sm">
-            <Link href="/admin/rentals">
+            <Link href="/rentals">
               전체 보기
               <ArrowRight className="h-4 w-4 ml-1" />
             </Link>

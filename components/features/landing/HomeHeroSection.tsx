@@ -66,7 +66,7 @@ export function HomeHeroSection({ featuredVideo }: HomeHeroSectionProps) {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button asChild size="lg" className="text-base sm:text-lg px-6 sm:px-8">
-            <Link href="/portal/mypage" aria-label="서비스 이용하기 페이지로 이동">
+            <Link href="/mypage" aria-label="서비스 이용하기 페이지로 이동">
               서비스 이용하기
               <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
             </Link>

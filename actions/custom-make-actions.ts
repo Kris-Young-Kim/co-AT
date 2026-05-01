@@ -230,9 +230,9 @@ export async function createCustomMake(input: CreateCustomMakeInput): Promise<{
 
     console.log("[Custom Make Actions] 맞춤제작 프로젝트 생성 성공:", customMakeData.id);
 
-    revalidatePath("/admin/custom-makes");
-    revalidatePath("/admin/schedule");
-    revalidatePath(`/admin/clients/${input.client_id}`);
+    revalidatePath("/custom-makes");
+    revalidatePath("/schedule");
+    revalidatePath(`/clients/${input.client_id}`);
     revalidatePath("/clients");
     revalidatePath(`/clients/${input.client_id}`);
 
@@ -415,9 +415,9 @@ export async function updateCustomMakeProgress(
 
     console.log("[Custom Make Actions] 진행도 업데이트 성공:", customMakeId);
 
-    revalidatePath("/admin/custom-makes");
-    revalidatePath("/admin/schedule");
-    revalidatePath(`/admin/custom-makes/${customMakeId}`);
+    revalidatePath("/custom-makes");
+    revalidatePath("/schedule");
+    revalidatePath(`/custom-makes/${customMakeId}`);
 
     return { success: true, customMake: updatedCustomMakeTyped };
   } catch (error) {
@@ -509,8 +509,8 @@ export async function assignEquipment(
 
     console.log("[Custom Make Actions] 장비 배정 성공:", customMakeId);
 
-    revalidatePath("/admin/custom-makes");
-    revalidatePath(`/admin/custom-makes/${customMakeId}`);
+    revalidatePath("/custom-makes");
+    revalidatePath(`/custom-makes/${customMakeId}`);
 
     return { success: true, customMake: updatedCustomMakeTyped };
   } catch (error) {
