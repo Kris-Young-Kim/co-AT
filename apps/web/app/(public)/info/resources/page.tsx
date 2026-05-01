@@ -6,7 +6,7 @@ import { ResourceListWithCrud } from "@/components/features/resources/ResourceLi
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
 
-export const revalidate = 300
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: "자료실",
