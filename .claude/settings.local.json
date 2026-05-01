@@ -1,28 +1,5 @@
 {
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cd D:/AILeader1/project/valuewith/co-AT && npx tsc --noEmit --skipLibCheck 2>&1 | head -20 || true",
-            "statusMessage": "TypeScript 타입 검사 중...",
-            "async": true
-          }
-        ]
-      }
-    ]
-  },
   "permissions": {
-    "deny": [
-      "Edit(.env)",
-      "Edit(.env.local)",
-      "Edit(.env.production)",
-      "Edit(.env.development)",
-      "Write(.env)",
-      "Write(.env.local)"
-    ],
     "allow": [
       "Bash(find:*)",
       "Bash(ls:*)",
@@ -59,7 +36,54 @@
       "Bash(node:*)",
       "Bash(where curl:*)",
       "Bash(curl --version)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(claude mcp:*)"
+    ],
+    "deny": [
+      "Edit(.env)",
+      "Edit(.env.local)",
+      "Edit(.env.production)",
+      "Edit(.env.development)",
+      "Write(.env)",
+      "Write(.env.local)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd D:/AILeader1/project/valuewith/co-AT && npx tsc --noEmit --skipLibCheck 2>&1 | head -20 || true",
+            "statusMessage": "TypeScript 타입 검사 중...",
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd D:/AILeader1/project/valuewith/co-AT && node -e \"const p=process.env.CLAUDE_TOOL_INPUT_FILE_PATH||''; if(p.match(/\\\\.(ts|tsx)$/)) { try { require('child_process').execSync('npx eslint --fix \\\"'+p+'\\\" 2>&1', {stdio:'inherit'}); } catch(e) {} }\"",
+            "statusMessage": "ESLint 자동 수정 중...",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"const p=process.env.CLAUDE_TOOL_INPUT_FILE_PATH||''; if(p.includes('migrations/') && p.endsWith('.sql')) { console.error('BLOCKED: Migration files are immutable after creation. Create a new migration instead.'); process.exit(1); }\"",
+            "statusMessage": "Migration 파일 보호 중..."
+          }
+        ]
+      }
     ]
   }
 }
