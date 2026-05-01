@@ -3,7 +3,7 @@ import { ClientProfileCard } from "@/components/features/crm/ClientProfileCard"
 import { ClientHistoryTable } from "@/components/features/crm/ClientHistoryTable"
 import { IntakeRecordForm } from "@/components/features/intake/IntakeRecordForm"
 import { ProcessLogForm } from "@/components/features/process/ProcessLogForm"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { hasAdminOrStaffPermission } from "@co-at/auth"
 import { redirect, notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -15,22 +15,22 @@ interface ClientDetailPageProps {
 }
 
 export default async function ClientDetailPage({ params }: ClientDetailPageProps) {
-  // 권한 확인
+  // 권한 ?�인
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) {
-    console.log("[대상자 상세] 권한 없음 - 홈으로 리다이렉트")
+    console.log("[?�?�자 ?�세] 권한 ?�음 - ?�으�?리다?�렉??)
     redirect("/")
   }
 
   const { id } = await params
 
-  // 대상자 정보 조회
+  // ?�?�자 ?�보 조회
   const clientResult = await getClientById(id)
   if (!clientResult.success || !clientResult.client) {
     notFound()
   }
 
-  // 서비스 이력 조회
+  // ?�비???�력 조회
   const historyResult = await getClientHistory(id)
   const history = historyResult.success ? historyResult.history || [] : []
 
@@ -40,23 +40,23 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
         <Button asChild variant="ghost" className="mb-4">
           <Link href="/clients">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            목록으로
+            목록?�로
           </Link>
         </Button>
         <h1 className="text-responsive-xl font-bold text-foreground mb-2">
-          대상자 상세 정보
+          ?�?�자 ?�세 ?�보
         </h1>
         <p className="text-muted-foreground">
-          {clientResult.client.name}님의 상세 정보 및 서비스 이용 이력
+          {clientResult.client.name}?�의 ?�세 ?�보 �??�비???�용 ?�력
         </p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="profile">기본 정보</TabsTrigger>
-          <TabsTrigger value="history">서비스 이력</TabsTrigger>
-          <TabsTrigger value="intake">상담 기록</TabsTrigger>
-          <TabsTrigger value="process">서비스 진행 기록</TabsTrigger>
+          <TabsTrigger value="profile">기본 ?�보</TabsTrigger>
+          <TabsTrigger value="history">?�비???�력</TabsTrigger>
+          <TabsTrigger value="intake">?�담 기록</TabsTrigger>
+          <TabsTrigger value="process">?�비??진행 기록</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile" className="space-y-6">
@@ -71,7 +71,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
           <IntakeRecordForm
             clientId={id}
             onSuccess={() => {
-              // 성공 시 처리 (예: 페이지 새로고침)
+              // ?�공 ??처리 (?? ?�이지 ?�로고침)
               window.location.reload()
             }}
           />
@@ -81,7 +81,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
           <ProcessLogForm
             clientId={id}
             onSuccess={() => {
-              // 성공 시 처리 (예: 페이지 새로고침)
+              // ?�공 ??처리 (?? ?�이지 ?�로고침)
               window.location.reload()
             }}
           />

@@ -1,20 +1,20 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { hasAdminOrStaffPermission } from "@co-at/auth"
 
 /**
- * 백업 상태 조회 API
+ * 백업 ?�태 조회 API
  * GET /api/backup/status?type=daily|weekly|monthly&limit=10
  */
 export async function GET(request: Request) {
   try {
-    console.log("[Backup Status API] 백업 상태 조회")
+    console.log("[Backup Status API] 백업 ?�태 조회")
 
-    // 권한 확인
+    // 권한 ?�인
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) {
       return NextResponse.json(
-        { error: "권한이 없습니다" },
+        { error: "권한???�습?�다" },
         { status: 403 }
       )
     }
@@ -39,14 +39,14 @@ export async function GET(request: Request) {
     const { data: backups, error } = await query
 
     if (error) {
-      console.error("[Backup Status API] 백업 로그 조회 실패:", error)
+      console.error("[Backup Status API] 백업 로그 조회 ?�패:", error)
       return NextResponse.json(
-        { error: "백업 로그 조회에 실패했습니다", details: error.message },
+        { error: "백업 로그 조회???�패?�습?�다", details: error.message },
         { status: 500 }
       )
     }
 
-    // 통계 정보 계산
+    // ?�계 ?�보 계산
     const stats = {
       total: backups?.length || 0,
       byType: {
@@ -68,7 +68,7 @@ export async function GET(request: Request) {
       },
     }
 
-    console.log("[Backup Status API] 백업 상태 조회 성공:", stats)
+    console.log("[Backup Status API] 백업 ?�태 조회 ?�공:", stats)
 
     return NextResponse.json({
       backups: backups || [],
@@ -76,9 +76,9 @@ export async function GET(request: Request) {
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error("[Backup Status API] 백업 상태 조회 실패:", error)
+    console.error("[Backup Status API] 백업 ?�태 조회 ?�패:", error)
     return NextResponse.json(
-      { error: "백업 상태 조회에 실패했습니다", details: String(error) },
+      { error: "백업 ?�태 조회???�패?�습?�다", details: String(error) },
       { status: 500 }
     )
   }
