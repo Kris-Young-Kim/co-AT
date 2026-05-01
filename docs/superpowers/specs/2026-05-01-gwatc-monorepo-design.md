@@ -2,7 +2,7 @@
 
 **작성일:** 2026-05-01
 **도메인:** gwatc.cloud (추후 gwatc.or.kr 전환, 시기 미정)
-**스택:** Next.js 16 · React 19 · TypeScript · Supabase · Clerk · Tailwind/shadcn · Turbo · pnpm · Vercel
+**스택:** Next.js 16 · React 19 · TypeScript · Supabase · Clerk · Tailwind/shadcn · Turbo · pnpm · Vercel · Cloudflare
 
 ---
 
@@ -127,7 +127,37 @@ apps/<name>/
 - **Turbo** 빌드 파이프라인: `packages/*` 빌드 후 `apps/*` 빌드
 - **Vercel**: 앱별 독립 프로젝트, 서브도메인 연결
 - **환경변수**: 공통 변수(Supabase URL, Clerk Key)는 각 Vercel 프로젝트에 동일 설정
-- **도메인 전환**: `gwatc.cloud` → `gwatc.or.kr` 시 Vercel 커스텀 도메인 설정만 변경
+- **도메인 전환**: `gwatc.cloud` → `gwatc.or.kr` 시 Cloudflare DNS + Vercel 커스텀 도메인 설정 변경
+
+---
+
+## 8-1. Cloudflare 보안 레이어
+
+```
+사용자 요청
+    ↓
+Cloudflare (DNS · WAF · DDoS 보호 · Bot 차단)
+    ↓
+Vercel (앱별 서브도메인)
+    ↓
+Next.js 앱 (Clerk 인증 · Supabase)
+```
+
+### Cloudflare 역할
+| 기능 | 설정 |
+|---|---|
+| DNS 관리 | `gwatc.cloud` 및 서브도메인 CNAME → Vercel |
+| WAF (Web Application Firewall) | OWASP 룰셋, SQL Injection·XSS 차단 |
+| DDoS 보호 | 자동 (무료 플랜 포함) |
+| Bot 차단 | 악성 봇 자동 차단 |
+| SSL/TLS | Full(strict) 모드 — Cloudflare ↔ Vercel 구간도 암호화 |
+| 캐싱 | 정적 에셋 엣지 캐싱 (내부 앱은 Cache-Control: no-store) |
+
+### 주의사항
+- Vercel 커스텀 도메인 추가 시 **Cloudflare Proxy(주황 구름) ON** 유지
+- Vercel SSL 인증서와 충돌 방지: TLS 모드는 반드시 **Full(strict)**
+- 내부 앱(`eval`, `hr`, `approval` 등)은 Cloudflare Access로 추가 IP/이메일 제한 가능 (Zero Trust 무료 플랜: 최대 50명)
+- `gwatc.or.kr` 전환 시 Cloudflare에서 도메인 추가 후 동일 설정 적용
 
 ---
 
