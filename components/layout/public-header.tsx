@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { SignInButton, UserButton, useUser, ClerkLoaded, ClerkLoading, ClerkFailed } from "@clerk/nextjs"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { LayoutDashboard, Search } from "lucide-react"
@@ -81,11 +81,20 @@ const headerMenuItems = [
 
 export function PublicHeader() {
   const pathname = usePathname()
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const { isSignedIn } = useUser()
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "")
+
   useEffect(() => setMounted(true), [])
+  
+  useEffect(() => {
+    setSearchQuery(searchParams.get("q") || "")
+  }, [searchParams])
+
   useEffect(() => {
     if (isSignedIn) {
       hasAdminOrStaffPermission().then(setIsAdmin)
@@ -93,6 +102,13 @@ export function PublicHeader() {
       setIsAdmin(false)
     }
   }, [isSignedIn])
+
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60 shadow-sm">
@@ -188,14 +204,19 @@ export function PublicHeader() {
           ) : (
             <>
               {/* 사이트 검색창 */}
-              <div className="hidden lg:flex items-center relative w-40 xl:w-60">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <form onSubmit={handleSearch} className="hidden lg:flex items-center relative w-40 xl:w-60">
+                <Search 
+                  className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground cursor-pointer hover:text-primary transition-colors" 
+                  onClick={() => handleSearch()}
+                />
                 <Input
                   type="search"
                   placeholder="검색..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9 h-9 w-full bg-muted/50 border-none focus-visible:ring-1 text-sm"
                 />
-              </div>
+              </form>
 
               {/* 관리자 모드 버튼 (권한이 있을 때만 표시) */}
               {isAdmin && (
