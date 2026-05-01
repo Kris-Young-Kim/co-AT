@@ -1,5 +1,28 @@
 {
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd D:/AILeader1/project/valuewith/co-AT && npx tsc --noEmit --skipLibCheck 2>&1 | head -20 || true",
+            "statusMessage": "TypeScript 타입 검사 중...",
+            "async": true
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
+    "deny": [
+      "Edit(.env)",
+      "Edit(.env.local)",
+      "Edit(.env.production)",
+      "Edit(.env.development)",
+      "Write(.env)",
+      "Write(.env.local)"
+    ],
     "allow": [
       "Bash(find:*)",
       "Bash(ls:*)",
@@ -21,33 +44,17 @@
       "Bash(CI=true pnpm build)",
       "Bash(pnpm dlx:*)",
       "Bash(cd:*)",
-      "Bash(grep -r \"voc\\\\|complaint\\\\|feedback\\\\|불만\" /d/AILeader1/project/valuewith/co-AT/components --include=*.tsx --include=*.ts)",
-      "Bash(grep -r \"partner\\\\|협력기관\\\\|협업\" /d/AILeader1/project/valuewith/co-AT/components --include=*.tsx --include=*.ts)",
-      "Bash(grep -r \"recruitment\\\\|hiring\\\\|채용\" /d/AILeader1/project/valuewith/co-AT/components --include=*.tsx --include=*.ts)",
+      "Bash(grep -r \"voc\\|complaint\\|feedback\\|불만\" /d/AILeader1/project/valuewith/co-AT/components --include=*.tsx --include=*.ts)",
+      "Bash(grep -r \"partner\\|협력기관\\|협업\" /d/AILeader1/project/valuewith/co-AT/components --include=*.tsx --include=*.ts)",
+      "Bash(grep -r \"recruitment\\|hiring\\|채용\" /d/AILeader1/project/valuewith/co-AT/components --include=*.tsx --include=*.ts)",
       "Bash(xargs grep:*)",
       "Bash(grep:*)",
       "Bash(xargs basename:*)",
-      "Bash(ls /d/AILeader1/project/valuewith/co-AT/app/\\\\\\(admin\\\\\\)/)",
-      "Bash(ls -la /d/AILeader1/project/valuewith/co-AT/app/\\\\\\(admin\\\\\\)/)",
       "Bash(xargs head:*)",
-      "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" add migrations/022_create_notice_reads.sql)",
-      "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" commit -m \"feat: notice_reads 테이블 마이그레이션 추가\")",
-      "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" add actions/notice-actions.ts)",
-      "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" commit -m \"feat: 공지 읽음 server actions 추가\")",
-      "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" add components/features/admin/notices/NoticeReadStatusModal.tsx components/features/admin/notices/NoticeList.tsx)",
       "Bash(git -C:*)",
       "Bash(git:*)",
-      "Bash(ls \"D:\\\\AILeader1\\\\project\\\\valuewith\\\\co-AT\\\\app\\\\\\(admin\\)\\\\\")",
-      "Bash(git -C \"D:/AILeader1/project/valuewith/co-AT\" add \"components/features/budget/\" \"app/\\(admin\\)/budget/\" components/layout/admin-sidebar.tsx components/layout/admin-mobile-sidebar.tsx lib/budget-constants.ts actions/budget-actions.ts)",
-      "Bash(head -20 find D:/AILeader1/project/valuewith/co-AT/components -name *chat* -o -name *messenger* -o -name *Channel* -o -name *Message*)",
-      "Bash(find \"D:/AILeader1/project/valuewith/co-AT/app/\\(admin\\)/messenger\" -type f)",
-      "Bash(ls \"D:/AILeader1/project/valuewith/co-AT/app/\\(admin\\)/messenger/\")",
-      "Bash(ls \"D:/AILeader1/project/valuewith/co-AT/app/\\(admin\\)/budget/\")",
-      "Bash(ls \"D:/AILeader1/project/valuewith/co-AT/app/\\(admin\\)/work-tasks/\")",
       "Bash(pnpm test:*)",
-      "Bash(/dev/null ls:*)",
       "Bash(npx next:*)",
-      "Bash(find D:/AILeader1/project/valuewith/co-AT/components -type f \\\\\\(-name *nav* -o -name *header* -o -name *top* \\\\\\))",
       "mcp__plugin_playwright_playwright__browser_evaluate",
       "Bash(node:*)",
       "Bash(where curl:*)",
