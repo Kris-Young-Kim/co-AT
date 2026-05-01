@@ -9,14 +9,14 @@ import { AdminSidebar } from "@/components/layout/admin-sidebar";
 import { AdminHeader } from "@/components/layout/admin-header";
 import { AdminMobileBottomNav } from "@/components/layout/admin-mobile-bottom-nav";
 import { RegulationChatbotFloating } from "@/components/features/chat/RegulationChatbotFloating";
-import { hasManagerPermission } from "@/lib/utils/permissions";
+import { hasManagerPermission } from "@co-at/auth";
 import "./globals.css";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app";
 
 export const metadata: Metadata = {
-  title: "GWATC 어드민",
-  description: "GWATC 통합 관리 시스템",
+  title: "GWATC ?�드�?,
+  description: "GWATC ?�합 관�??�스??,
 };
 
 export default async function RootLayout({

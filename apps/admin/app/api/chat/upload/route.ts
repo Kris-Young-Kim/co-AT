@@ -5,18 +5,18 @@ import { createAdminClient } from '@/lib/supabase/admin'
 export async function POST(request: NextRequest) {
   const { userId } = await auth()
   if (!userId) {
-    return NextResponse.json({ error: '인증 필요' }, { status: 401 })
+    return NextResponse.json({ error: '?�증 ?�요' }, { status: 401 })
   }
 
   const formData = await request.formData()
   const file = formData.get('file') as File | null
 
   if (!file) {
-    return NextResponse.json({ error: '파일이 없습니다' }, { status: 400 })
+    return NextResponse.json({ error: '?�일???�습?�다' }, { status: 400 })
   }
 
   if (file.size > 20 * 1024 * 1024) {
-    return NextResponse.json({ error: '파일 크기는 20MB 이하여야 합니다' }, { status: 400 })
+    return NextResponse.json({ error: '?�일 ?�기??20MB ?�하?�야 ?�니?? }, { status: 400 })
   }
 
   const supabase = createAdminClient()

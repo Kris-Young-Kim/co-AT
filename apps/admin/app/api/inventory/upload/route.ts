@@ -1,15 +1,15 @@
 import { auth } from "@clerk/nextjs/server"
 import { createAdminClient } from "@/lib/supabase/admin"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { hasAdminOrStaffPermission } from "@co-at/auth"
 import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
   try {
-    // 권한 확인
+    // 권한 ?�인
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) {
       return NextResponse.json(
-        { error: "권한이 없습니다" },
+        { error: "권한???�습?�다" },
         { status: 403 }
       )
     }
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const { userId } = await auth()
     if (!userId) {
       return NextResponse.json(
-        { error: "로그인이 필요합니다" },
+        { error: "로그?�이 ?�요?�니?? },
         { status: 401 }
       )
     }
@@ -27,41 +27,40 @@ export async function POST(req: Request) {
 
     if (!file) {
       return NextResponse.json(
-        { error: "파일이 없습니다" },
+        { error: "?�일???�습?�다" },
         { status: 400 }
       )
     }
 
-    // 파일 타입 확인 (이미지만)
+    // ?�일 ?�???�인 (?��?지�?
     const fileType = file.type
     if (!fileType.startsWith("image/")) {
       return NextResponse.json(
-        { error: "이미지 파일만 업로드 가능합니다" },
+        { error: "?��?지 ?�일�??�로??가?�합?�다" },
         { status: 400 }
       )
     }
 
-    // 파일 크기 제한 (5MB)
+    // ?�일 ?�기 ?�한 (5MB)
     const maxSize = 5 * 1024 * 1024
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: "파일 크기는 5MB를 초과할 수 없습니다" },
+        { error: "?�일 ?�기??5MB�?초과?????�습?�다" },
         { status: 400 }
       )
     }
 
-    // RLS를 우회하기 위해 서비스 역할 사용
+    // RLS�??�회?�기 ?�해 ?�비????�� ?�용
     const supabase = createAdminClient()
 
-    // 파일명 생성 (타임스탬프 + 원본 파일명)
+    // ?�일�??�성 (?�?�스?�프 + ?�본 ?�일�?
     const timestamp = Date.now()
     const fileName = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`
     const filePath = `inventory/${userId}/${fileName}`
 
-    // Supabase Storage에 업로드
-    const fileBuffer = await file.arrayBuffer()
+    // Supabase Storage???�로??    const fileBuffer = await file.arrayBuffer()
     
-    console.log("[재고 이미지 업로드] 시도:", {
+    console.log("[?�고 ?��?지 ?�로?? ?�도:", {
       fileName: file.name,
       fileSize: file.size,
       fileType: fileType,
@@ -77,14 +76,14 @@ export async function POST(req: Request) {
       })
 
     if (uploadError) {
-      console.error("[재고 이미지 업로드] 실패:", {
+      console.error("[?�고 ?��?지 ?�로?? ?�패:", {
         error: uploadError,
         message: uploadError.message,
         statusCode: (uploadError as any).statusCode,
         errorCode: (uploadError as any).error,
       })
       
-      // 버킷이 없는 경우 더 명확한 에러 메시지
+      // 버킷???�는 경우 ??명확???�러 메시지
       const errorMessage = uploadError.message || String(uploadError)
       if (
         errorMessage.includes("Bucket") || 
@@ -94,7 +93,7 @@ export async function POST(req: Request) {
       ) {
         return NextResponse.json(
           { 
-            error: "Storage 버킷이 설정되지 않았습니다. Supabase 대시보드에서 'inventory' 버킷을 생성해주세요.",
+            error: "Storage 버킷???�정?��? ?�았?�니?? Supabase ?�?�보?�에??'inventory' 버킷???�성?�주?�요.",
             details: errorMessage,
             code: "BUCKET_NOT_FOUND"
           },
@@ -104,7 +103,7 @@ export async function POST(req: Request) {
       
       return NextResponse.json(
         { 
-          error: "파일 업로드에 실패했습니다", 
+          error: "?�일 ?�로?�에 ?�패?�습?�다", 
           details: errorMessage,
           code: (uploadError as any).error || "UPLOAD_FAILED"
         },
@@ -112,7 +111,7 @@ export async function POST(req: Request) {
       )
     }
 
-    // 공개 URL 생성
+    // 공개 URL ?�성
     const { data: urlData } = supabase.storage
       .from("inventory")
       .getPublicUrl(filePath)
@@ -125,12 +124,12 @@ export async function POST(req: Request) {
       type: "image",
     })
   } catch (error) {
-    console.error("[재고 이미지 업로드] 예상치 못한 오류:", error)
+    console.error("[?�고 ?��?지 ?�로?? ?�상�?못한 ?�류:", error)
     const errorMessage = error instanceof Error ? error.message : String(error)
     const errorStack = error instanceof Error ? error.stack : undefined
     return NextResponse.json(
       { 
-        error: "예상치 못한 오류가 발생했습니다", 
+        error: "?�상�?못한 ?�류가 발생?�습?�다", 
         details: errorMessage,
         ...(errorStack && { stack: errorStack })
       },

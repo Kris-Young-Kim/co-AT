@@ -1,20 +1,20 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { hasAdminOrStaffPermission } from "@co-at/auth"
 
 /**
- * 보안 이벤트 조회 API
+ * 보안 ?�벤??조회 API
  * GET /api/security/events?severity=high&limit=50&type=sql_injection
  */
 export async function GET(request: Request) {
   try {
-    console.log("[Security Events API] 보안 이벤트 조회")
+    console.log("[Security Events API] 보안 ?�벤??조회")
 
-    // 권한 확인
+    // 권한 ?�인
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) {
       return NextResponse.json(
-        { error: "권한이 없습니다" },
+        { error: "권한???�습?�다" },
         { status: 403 }
       )
     }
@@ -54,14 +54,14 @@ export async function GET(request: Request) {
     const { data: events, error } = await query
 
     if (error) {
-      console.error("[Security Events API] 보안 로그 조회 실패:", error)
+      console.error("[Security Events API] 보안 로그 조회 ?�패:", error)
       return NextResponse.json(
-        { error: "보안 로그 조회에 실패했습니다", details: error.message },
+        { error: "보안 로그 조회???�패?�습?�다", details: error.message },
         { status: 500 }
       )
     }
 
-    // 통계 정보 계산
+    // ?�계 ?�보 계산
     const stats = {
       total: events?.length || 0,
       bySeverity: {
@@ -82,7 +82,7 @@ export async function GET(request: Request) {
       notified: events?.filter((e: any) => e.notified).length || 0,
     }
 
-    console.log("[Security Events API] 보안 이벤트 조회 성공:", stats)
+    console.log("[Security Events API] 보안 ?�벤??조회 ?�공:", stats)
 
     return NextResponse.json({
       events: events || [],
@@ -90,9 +90,9 @@ export async function GET(request: Request) {
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error("[Security Events API] 보안 이벤트 조회 실패:", error)
+    console.error("[Security Events API] 보안 ?�벤??조회 ?�패:", error)
     return NextResponse.json(
-      { error: "보안 이벤트 조회에 실패했습니다", details: String(error) },
+      { error: "보안 ?�벤??조회???�패?�습?�다", details: String(error) },
       { status: 500 }
     )
   }

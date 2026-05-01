@@ -1,4 +1,4 @@
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { hasAdminOrStaffPermission } from "@co-at/auth"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
 import { readdirSync, existsSync } from "fs"
@@ -10,14 +10,14 @@ export async function GET() {
   try {
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) {
-      return NextResponse.json({ error: "권한이 없습니다" }, { status: 403 })
+      return NextResponse.json({ error: "권한???�습?�다" }, { status: 403 })
     }
 
     const docsDir = join(process.cwd(), "docs")
     const regulationsDir = join(docsDir, "regulations")
     const files: Array<{ name: string; path: string; source: "local" | "storage" }> = []
 
-    // 1. docs/regulations 폴더 (로컬)
+    // 1. docs/regulations ?�더 (로컬)
     if (existsSync(regulationsDir)) {
       try {
         const entries = readdirSync(regulationsDir, { withFileTypes: true })
@@ -38,7 +38,7 @@ export async function GET() {
       }
     }
 
-    // 2. docs/ 직접 (보조기기센터사업안내.md 등)
+    // 2. docs/ 직접 (보조기기?�터?�업?�내.md ??
     if (existsSync(docsDir)) {
       try {
         const entries = readdirSync(docsDir, { withFileTypes: true })
@@ -81,7 +81,7 @@ export async function GET() {
         }
       }
     } catch {
-      // 버킷 없으면 무시
+      // 버킷 ?�으�?무시
     }
 
     const unique = Array.from(
@@ -90,11 +90,11 @@ export async function GET() {
 
     return NextResponse.json({ success: true, files: unique })
   } catch (err) {
-    console.error("[규정 문서 목록] 오류:", err)
+    console.error("[규정 문서 목록] ?�류:", err)
     return NextResponse.json(
       {
         error:
-          err instanceof Error ? err.message : "예상치 못한 오류가 발생했습니다",
+          err instanceof Error ? err.message : "?�상�?못한 ?�류가 발생?�습?�다",
       },
       { status: 500 }
     )

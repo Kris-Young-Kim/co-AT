@@ -1,17 +1,17 @@
 import { searchClients } from "@/actions/client-actions"
 import { ClientTable } from "@/components/features/crm/ClientTable"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { hasAdminOrStaffPermission } from "@co-at/auth"
 import { redirect } from "next/navigation"
 
 export default async function ClientsPage() {
-  // 권한 확인
+  // 권한 ?�인
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) {
-    console.log("[대상자 관리] 권한 없음 - 홈으로 리다이렉트")
+    console.log("[?�?�자 관�? 권한 ?�음 - ?�으�?리다?�렉??)
     redirect("/")
   }
 
-  // 초기 데이터 로드
+  // 초기 ?�이??로드
   const result = await searchClients({ limit: 20 })
   const initialClients = result.success ? result.clients || [] : []
   const initialTotal = result.success ? result.total || 0 : 0
@@ -20,10 +20,9 @@ export default async function ClientsPage() {
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <div className="mb-8">
         <h1 className="text-responsive-xl font-bold text-foreground mb-2">
-          대상자 관리
-        </h1>
+          ?�?�자 관�?        </h1>
         <p className="text-muted-foreground">
-          대상자 정보를 검색하고 관리할 수 있습니다
+          ?�?�자 ?�보�?검?�하�?관리할 ???�습?�다
         </p>
       </div>
 
