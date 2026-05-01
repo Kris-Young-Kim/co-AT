@@ -67,7 +67,7 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
 
   // 현재 날짜 변경 시 일정 조회 (initialSchedules가 없을 때만)
   useEffect(() => {
-    if (initialSchedules.length === 0) {
+    if (initialSchedules.length === 0 && currentDate) {
       const year = currentDate.getFullYear()
       const month = currentDate.getMonth() + 1
       fetchSchedules(year, month)
@@ -92,15 +92,18 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
 
   // 월 이동
   const handlePreviousMonth = () => {
+    if (!currentDate) return
     setCurrentDate(subMonths(currentDate, 1))
   }
 
   const handleNextMonth = () => {
+    if (!currentDate) return
     setCurrentDate(addMonths(currentDate, 1))
   }
 
   // 주간 뷰: 현재 주의 날짜들
   const getWeekDays = () => {
+    if (!currentDate) return []
     const start = startOfWeek(currentDate, { locale: ko })
     const end = endOfWeek(currentDate, { locale: ko })
     return eachDayOfInterval({ start, end })
@@ -164,7 +167,7 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                 mode="single"
                 selected={selectedDate}
                 onSelect={handleDateSelect}
-                month={currentDate}
+                month={currentDate || undefined}
                 onMonthChange={setCurrentDate}
                 modifiers={{
                   hasSchedule: (date) => getSchedulesForDate(date).length > 0,
