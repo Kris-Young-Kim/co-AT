@@ -11,7 +11,16 @@
 - **DB:** Supabase 단일 프로젝트 (`packages/lib` 공유)
 - **빌드:** Turborepo + pnpm workspaces
 - **배포:** Vercel (앱별 독립 프로젝트)
+- **보안/DNS:** Cloudflare (WAF · DDoS · Bot 차단 · DNS · SSL Full Strict)
 - **에러 추적:** Sentry
+
+## 네트워크 흐름
+```
+사용자 → Cloudflare (WAF·캐시·Bot차단) → Vercel → Next.js (Clerk·Supabase)
+```
+- Cloudflare Proxy(주황 구름) 항상 ON
+- TLS: Cloudflare Full(strict) 모드 유지
+- 내부 앱은 Cloudflare Zero Trust Access로 추가 보호 가능 (무료 50명)
 
 ## 모노레포 구조
 ```
