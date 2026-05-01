@@ -33,7 +33,7 @@ export default function CreateProfilePage() {
       // 프로필 생성 성공 시 대시보드로 이동
       if (data.success) {
         setTimeout(() => {
-          router.push("/dashboard")
+          router.push("/")
         }, 2000)
       }
     } catch (err) {

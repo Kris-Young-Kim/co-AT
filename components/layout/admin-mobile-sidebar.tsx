@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dialog"
 
 const menuItems = [
-  { href: "/dashboard", label: "대시보드", icon: LayoutDashboard },
+  { href: "/", label: "대시보드", icon: LayoutDashboard },
   { href: "/notices-management", label: "새 글 관리", icon: FileText },
   { href: "/clients", label: "대상자 관리", icon: Users },
   { href: "/inventory", label: "재고 관리", icon: Package },
