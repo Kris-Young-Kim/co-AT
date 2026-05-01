@@ -78,10 +78,10 @@ export function ScheduleForm({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // 폼 데이터
+  // 폼 데이터 초기화 (하이드레이션 방지를 위해 초기값 비움)
   const [formData, setFormData] = useState<CreateScheduleInput>({
     schedule_type: "exhibition",
-    scheduled_date: format(new Date(), "yyyy-MM-dd"),
+    scheduled_date: "",
     scheduled_time: null,
     address: null,
     notes: null,
@@ -90,7 +90,21 @@ export function ScheduleForm({
   const [visitType, setVisitType] = useState<"center" | "visit" | null>(null)
   const [visitRegion, setVisitRegion] = useState<string>("")
 
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
+  const [mounted, setMounted] = useState(false)
+
+  // 마운트 시 현재 날짜 설정
+  useEffect(() => {
+    setMounted(true)
+    if (!schedule) {
+      const now = new Date()
+      setSelectedDate(now)
+      setFormData(prev => ({
+        ...prev,
+        scheduled_date: format(now, "yyyy-MM-dd")
+      }))
+    }
+  }, [open, schedule])
 
   // 일정이 변경되면 폼 데이터 초기화
   useEffect(() => {

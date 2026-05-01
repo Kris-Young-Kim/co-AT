@@ -64,7 +64,7 @@ export function BudgetContent({ initialData, initialYear, totalPlanned, totalAct
     setEditTarget(null)
   }
 
-  const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i)
+  const years = Array.from({ length: 5 }, (_, i) => initialYear - 2 + i)
 
   return (
     <div className="space-y-6">

@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, addMonths, subMonths } from "date-fns"
 import { ko } from "date-fns/locale"
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, MapPin } from "lucide-react"
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, MapPin, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { type Schedule, getSchedules } from "@/actions/schedule-actions"
 
@@ -44,10 +44,19 @@ const scheduleTypeColors: Record<string, string> = {
 
 export function CalendarView({ initialSchedules = [], onScheduleClick, onDateClick }: CalendarViewProps) {
   const [viewMode, setViewMode] = useState<"month" | "week" | "day">("month")
-  const [currentDate, setCurrentDate] = useState(new Date())
+  const [currentDate, setCurrentDate] = useState<Date | null>(null)
   const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules)
   const [loading, setLoading] = useState(false)
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
+  const [mounted, setMounted] = useState(false)
+
+  // 마운트 시 현재 날짜 설정 (하이드레이션 오류 방지)
+  useEffect(() => {
+    const now = new Date()
+    setCurrentDate(now)
+    setSelectedDate(now)
+    setMounted(true)
+  }, [])
 
   // 일정 조회
   const fetchSchedules = async (year: number, month: number) => {
@@ -120,6 +129,15 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
 
   // 일간 뷰: 선택된 날짜의 일정
   const daySchedules = selectedDate ? getSchedulesForDate(selectedDate) : []
+
+  // 아직 마운트되지 않았거나 currentDate가 없으면 로딩 표시 또는 빈 화면 반환
+  if (!mounted || !currentDate) {
+    return (
+      <div className="flex items-center justify-center h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">
