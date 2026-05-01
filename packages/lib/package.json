@@ -1,0 +1,14 @@
+{
+  "name": "@co-at/lib",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./supabase/*": "./supabase/*.ts",
+    "./validators": "./validators.ts",
+    "./types/*": "./types/*.ts"
+  },
+  "peerDependencies": {
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.89.0"
+  }
+}
