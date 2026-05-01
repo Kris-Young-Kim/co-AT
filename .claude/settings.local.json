@@ -37,7 +37,9 @@
       "Bash(where curl:*)",
       "Bash(curl --version)",
       "Bash(python:*)",
-      "Bash(claude mcp:*)"
+      "Bash(claude mcp:*)",
+      "Bash(mkdir -p \"D:/AILeader1/project/valuewith/co-AT/apps/eval/app/print/intake/[appId]\")",
+      "Bash(mkdir -p \"D:/AILeader1/project/valuewith/co-AT/apps/eval/app/print/assessment/[assessmentId]\")"
     ],
     "deny": [
       "Edit(.env)",

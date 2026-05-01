@@ -10,6 +10,143 @@
 
 ---
 
+## Task 0: Harness Engineering
+
+**Files:**
+- Modify: `.claude/settings.local.json` (add 2 hooks)
+- Create: `.claude/agents/app-boilerplate-verifier.md`
+
+### Hooks
+
+- [ ] **Step 1: Add ESLint auto-fix hook**
+
+`PostToolUse` — Edit|Write 이후 `.ts` / `.tsx` 파일에 대해 ESLint `--fix` 실행.
+`settings.local.json` `hooks.PostToolUse` 배열에 아래 항목 추가:
+
+```json
+{
+  "matcher": "Edit|Write",
+  "hooks": [
+    {
+      "type": "command",
+      "command": "cd D:/AILeader1/project/valuewith/co-AT && node -e \"const p=process.env.CLAUDE_TOOL_INPUT_FILE_PATH||''; if(p.match(/\\.(ts|tsx)$/)) require('child_process').execSync('npx eslint --fix \"'+p+'\" 2>&1 || true', {stdio:'inherit'})\"",
+      "statusMessage": "ESLint 자동 수정 중...",
+      "async": true
+    }
+  ]
+}
+```
+
+- [ ] **Step 2: Add migration immutability hook**
+
+`PreToolUse` — `migrations/*.sql` 파일 Edit 시 경고 메시지 출력 후 차단.
+`settings.local.json` `hooks.PreToolUse` 배열 추가 (없으면 키 신설):
+
+```json
+{
+  "matcher": "Edit",
+  "hooks": [
+    {
+      "type": "command",
+      "command": "node -e \"const p=process.env.CLAUDE_TOOL_INPUT_FILE_PATH||''; if(p.includes('migrations/') && p.endsWith('.sql')) { console.error('BLOCKED: Migration files are immutable after creation. Create a new migration instead.'); process.exit(1); }\"",
+      "statusMessage": "Migration 파일 보호 중..."
+    }
+  ]
+}
+```
+
+### Subagent
+
+- [ ] **Step 3: Create app-boilerplate-verifier subagent**
+
+`.claude/agents/app-boilerplate-verifier.md` 신규 생성:
+
+```markdown
+---
+name: app-boilerplate-verifier
+description: Use when a new app boilerplate has been created in apps/*. Verifies that package.json, middleware, layout, and next.config.mjs follow the GWATC monorepo standard before proceeding to Phase implementation.
+---
+
+# App Boilerplate Verifier
+
+You are a boilerplate structure verifier for the GWATC co-AT monorepo.
+
+## Your Job
+
+When called with an app name (e.g. "eval"), verify that `apps/<name>/` has a correct boilerplate structure.
+
+## Checklist
+
+### package.json
+- [ ] `name` is `@co-at/<appname>`
+- [ ] `scripts.dev` uses a unique port (3002–3008)
+- [ ] `dependencies` includes: `@co-at/auth`, `@co-at/types`, `@co-at/ui`, `@co-at/lib`
+- [ ] `dependencies` includes: `next`, `react`, `react-dom`, `@clerk/nextjs`
+
+### middleware.ts
+- [ ] File exists at `apps/<name>/middleware.ts`
+- [ ] Imports `createAppMiddleware` from `@co-at/auth`
+- [ ] Exports `middleware = createAppMiddleware('<appKey>')`
+- [ ] Exports `config = middlewareConfig`
+
+### next.config.mjs
+- [ ] `transpilePackages` includes all 4 `@co-at/*` packages
+
+### app/layout.tsx
+- [ ] Wraps children in `<ClerkProvider>`
+- [ ] Has `export const metadata` with Korean title
+
+### app/page.tsx
+- [ ] File exists and exports a default React component
+
+### app/globals.css
+- [ ] Contains `@tailwind base/components/utilities`
+
+## Output Format
+
+```
+## Boilerplate Verification: apps/<name>
+
+### PASS ✅ / FAIL ❌
+
+### Issues Found
+❌ CRITICAL: middleware.ts missing
+⚠️  WARNING: Port conflict — 3003 already used by apps/inventory
+
+### Safe to Proceed to Phase Implementation?
+YES / NO
+```
+
+## Rules
+- CRITICAL issues must be fixed before marking the app boilerplate complete
+- Check for port conflicts across all existing apps
+```
+
+### MCP Server
+
+- [ ] **Step 4: Install Supabase MCP**
+
+루트에서 실행:
+```bash
+claude mcp add supabase -- npx -y @supabase/mcp-server-supabase@latest --project-ref uyjbndiwyddjyjkdfuyi
+```
+
+MCP 추가 확인:
+```bash
+claude mcp list
+```
+
+Expected: `supabase` 항목이 목록에 표시됨.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add .claude/
+git commit -m "chore: harness engineering — ESLint hook, migration guard, app-verifier agent, Supabase MCP"
+```
+
+---
+
 ## File Map
 
 ```
