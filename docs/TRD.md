@@ -29,7 +29,7 @@ graph TD
     end
     
     subgraph AI [Google Cloud]
-        Action -.->|Generative AI| Gemini[Gemini 1.5 Flash]
+        Action -.->|Generative AI| Gemini
     end
 2. 데이터베이스 및 타입 시스템 (Database & Typing)
 2.1. Type Generation Workflow (핵심)
@@ -133,7 +133,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function generateSoapNote(text: string) {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   const prompt = `
     Role: Assistive Technology Professional

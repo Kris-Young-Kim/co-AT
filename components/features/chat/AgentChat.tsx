@@ -88,32 +88,28 @@ interface ChatMessage {
   timestamp: Date
 }
 
-const WELCOME_MESSAGE: ChatMessage = {
-  id: "welcome",
-  role: "assistant",
-  content: `안녕하세요! 저는 AI 업무 도우미입니다.
+const WELCOME_MESSAGE_CONTENT = `안녕하세요! 저는 AI 업무 도우미입니다.
 
-다음과 같은 업무를 도와드릴 수 있습니다:
+ 다음과 같은 업무를 도와드릴 수 있습니다:
 
-• **대상자 관리**: "김철수 대상자 찾아줘", "홍길동 서비스 이력 알려줘", "새 대상자 등록해줘"
-• **일정 확인**: "오늘 일정 알려줘", "이번 주 방문 일정은?"
-• **재고/대여**: "전동휠체어 재고 있어?", "현재 대여중인 기기 목록 보여줘"
-• **규정 검색**: "대여 기간이 얼마야?", "맞춤제작 지원 금액 규정 알려줘"
-• **공지사항**: "최근 공지사항 보여줘", "공지사항 작성해줘"
-• **실적/통계**: "이번 달 실적 알려줘", "예산 집행 현황은?"
-• **신청서 관리**: "새로 들어온 신청서 있어?", "반납 기한 지난 기기 알려줘"
-• **SOAP 노트**: "다음 상담 내용으로 SOAP 노트 작성해줘: ..."
+ • **대상자 관리**: "김철수 대상자 찾아줘", "홍길동 서비스 이력 알려줘", "새 대상자 등록해줘"
+ • **일정 확인**: "오늘 일정 알려줘", "이번 주 방문 일정은?"
+ • **재고/대여**: "전동휠체어 재고 있어?", "현재 대여중인 기기 목록 보여줘"
+ • **규정 검색**: "대여 기간이 얼마야?", "맞춤제작 지원 금액 규정 알려줘"
+ • **공지사항**: "최근 공지사항 보여줘", "공지사항 작성해줘"
+ • **실적/통계**: "이번 달 실적 알려줘", "예산 집행 현황은?"
+ • **신청서 관리**: "새로 들어온 신청서 있어?", "반납 기한 지난 기기 알려줘"
+ • **SOAP 노트**: "다음 상담 내용으로 SOAP 노트 작성해줘: ..."
 
-무엇을 도와드릴까요?`,
-  timestamp: new Date(),
-}
+ 무엇을 도와드릴까요?`
 
 interface AgentChatProps {
   className?: string
 }
 
 export function AgentChat({ className }: AgentChatProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MESSAGE])
+  const [mounted, setMounted] = useState(false)
+  const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [activeDomain, setActiveDomain] = useState<AgentDomain | null>(null)
@@ -124,12 +120,25 @@ export function AgentChat({ className }: AgentChatProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const abortRef = useRef<AbortController | null>(null)
 
+  // 마운트 시 초기 설정
+  useEffect(() => {
+    setMounted(true)
+    setMessages([{
+      id: "welcome",
+      role: "assistant",
+      content: WELCOME_MESSAGE_CONTENT,
+      timestamp: new Date(),
+    }])
+  }, [])
+
   // 새 메시지 도착 시 스크롤 하단 이동
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [messages])
+
+  if (!mounted) return null
 
   const sendMessage = useCallback(async () => {
     if (!input.trim() || isLoading) return
