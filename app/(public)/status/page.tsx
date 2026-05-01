@@ -13,14 +13,14 @@ type HealthResponse = {
   timestamp: string
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://gwatc.cloud"
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
 
 export const metadata: Metadata = {
-  title: "?�비???�태",
-  description: "?�스 체크 �??�비???�태 ?�이지",
+  title: "서비스 상태",
+  description: "헬스 체크 및 서비스 상태 페이지",
   openGraph: {
-    title: "?�비???�태",
-    description: "?�스 체크 �??�비???�태 ?�이지",
+    title: "서비스 상태",
+    description: "헬스 체크 및 서비스 상태 페이지",
     url: `${baseUrl}/status`,
     type: "website",
   },
@@ -30,9 +30,9 @@ export const metadata: Metadata = {
 }
 
 const STATUS_LABEL: Record<HealthStatus, string> = {
-  ok: "?�상",
+  ok: "정상",
   degraded: "감소",
-  error: "?�애",
+  error: "장애",
 }
 
 const STATUS_STYLE: Record<HealthStatus, string> = {
@@ -47,7 +47,7 @@ async function getHealth(): Promise<HealthResponse> {
   })
 
   if (!res.ok) {
-    throw new Error(`?�스 체크 ?�패: ${res.status}`)
+    throw new Error(`헬스 체크 실패: ${res.status}`)
   }
 
   return res.json()
@@ -57,16 +57,16 @@ export default async function StatusPage() {
   const data = await getHealth()
 
   const items = [
-    { label: "??, value: "ok" as HealthStatus },
-    { label: "?�이?�베?�스", value: data.db.status },
-    { label: "?�증", value: data.auth },
+    { label: "앱", value: "ok" as HealthStatus },
+    { label: "데이터베이스", value: data.db.status },
+    { label: "인증", value: data.auth },
     { label: "AI", value: data.ai },
   ]
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-      <h1 className="text-responsive-xl font-bold text-foreground mb-4">?�비???�태</h1>
-      <p className="text-muted-foreground mb-8">?�재 ?�비?��? 주요 ?�존???�태�??�인?�세??</p>
+      <h1 className="text-responsive-xl font-bold text-foreground mb-4">서비스 상태</h1>
+      <p className="text-muted-foreground mb-8">현재 서비스와 주요 의존성 상태를 확인하세요.</p>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {items.map((item) => (
@@ -82,16 +82,16 @@ export default async function StatusPage() {
 
       <div className="mt-6 rounded-lg border p-4 bg-card">
         <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-          <span>?�체 ?�태: <span className={`font-semibold ${STATUS_STYLE[data.status].split(" ")[0]}`}>{STATUS_LABEL[data.status]}</span></span>
+          <span>전체 상태: <span className={`font-semibold ${STATUS_STYLE[data.status].split(" ")[0]}`}>{STATUS_LABEL[data.status]}</span></span>
           <span>버전: {data.version}</span>
-          <span>API 지?? {data.latencyMs}ms</span>
-          <span>DB 지?? {data.db.latencyMs ?? "-"}ms</span>
+          <span>API 지연: {data.latencyMs}ms</span>
+          <span>DB 지연: {data.db.latencyMs ?? "-"}ms</span>
           <span suppressHydrationWarning>
             갱신: {new Date(data.timestamp).toLocaleString("ko-KR", { dateStyle: "medium", timeStyle: "short" })}
           </span>
         </div>
         {data.db.error && (
-          <p className="mt-2 text-xs text-red-600">DB ?�류: {data.db.error}</p>
+          <p className="mt-2 text-xs text-red-600">DB 오류: {data.db.error}</p>
         )}
       </div>
     </div>
