@@ -27,19 +27,26 @@ interface RegulationChatbotProps {
 }
 
 export function RegulationChatbot({ className }: RegulationChatbotProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content: "안녕하세요! 보조기기센터 운영 지침서 전문가입니다. 궁금한 사항을 물어보세요.\n\n예시 질문:\n- 대여 기간은 얼마나 되나요?\n- 수리비 한도는 얼마인가요?\n- 맞춤제작 지원금은 얼마인가요?",
-      timestamp: new Date(),
-    },
-  ])
+  const [mounted, setMounted] = useState(false)
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // 마운트 시 초기 설정
+  useEffect(() => {
+    setMounted(true)
+    setMessages([
+      {
+        id: "welcome",
+        role: "assistant",
+        content: "안녕하세요! 보조기기센터 운영 지침서 전문가입니다. 궁금한 사항을 물어보세요.\n\n예시 질문:\n- 대여 기간은 얼마나 되나요?\n- 수리비 한도는 얼마인가요?\n- 맞춤제작 지원금은 얼마인가요?",
+        timestamp: new Date(),
+      },
+    ])
+  }, [])
 
   // 스크롤을 맨 아래로 이동
   useEffect(() => {
@@ -47,6 +54,8 @@ export function RegulationChatbot({ className }: RegulationChatbotProps) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
     }
   }, [messages])
+
+  if (!mounted) return null
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return
