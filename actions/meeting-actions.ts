@@ -88,7 +88,7 @@ export async function saveMeetingMinutes(input: SaveMeetingMinutesInput): Promis
       .single()
 
     if (error) throw error
-    revalidatePath('/admin/schedule')
+    revalidatePath('/schedule')
     return { success: true, minutes: data as MeetingMinutes }
   } catch (err) {
     return { success: false, error: String(err) }

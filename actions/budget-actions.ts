@@ -119,7 +119,7 @@ export async function upsertBudget(input: CreateBudgetInput): Promise<{
       .single()
 
     if (error) throw error
-    revalidatePath('/admin/budget')
+    revalidatePath('/budget')
     return { success: true, budget: data as Budget }
   } catch (err) {
     return { success: false, error: String(err) }
@@ -135,7 +135,7 @@ export async function deleteBudget(id: string): Promise<{ success: boolean; erro
     const { error } = await (supabase as any).from('budgets').delete().eq('id', id)
 
     if (error) throw error
-    revalidatePath('/admin/budget')
+    revalidatePath('/budget')
     return { success: true }
   } catch (err) {
     return { success: false, error: String(err) }

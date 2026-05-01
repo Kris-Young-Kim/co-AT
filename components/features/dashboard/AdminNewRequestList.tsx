@@ -50,7 +50,7 @@ export function AdminNewRequestList({ applications }: AdminNewRequestListProps) 
           {applications.map((app) => (
             <Link
               key={app.id}
-              href={`/admin/clients/${app.client?.id || ""}`}
+              href={`/clients/${app.client?.id || ""}`}
               className="block p-3 rounded-lg border hover:bg-accent transition-colors"
             >
               <div className="flex items-start justify-between gap-4">

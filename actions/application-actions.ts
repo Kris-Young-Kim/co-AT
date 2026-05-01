@@ -152,9 +152,9 @@ export async function createApplication(
       }
     }
 
-    revalidatePath("/portal/apply")
-    revalidatePath("/portal/mypage")
-    revalidatePath("/admin/schedule")
+    revalidatePath("/apply")
+    revalidatePath("/mypage")
+    revalidatePath("/schedule")
     revalidatePath("/")
 
     return {

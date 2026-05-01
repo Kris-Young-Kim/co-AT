@@ -105,11 +105,11 @@ export async function createIntakeRecord(
       }
     }
 
-    revalidatePath("/admin/clients")
-    revalidatePath(`/admin/clients/${input.client_id}`)
     revalidatePath("/clients")
     revalidatePath(`/clients/${input.client_id}`)
-    revalidatePath("/admin/dashboard")
+    revalidatePath("/clients")
+    revalidatePath(`/clients/${input.client_id}`)
+    revalidatePath("/dashboard")
 
     return { success: true, intakeRecordId: (data as { id: string }).id }
   } catch (error) {

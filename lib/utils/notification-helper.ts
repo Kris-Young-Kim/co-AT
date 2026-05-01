@@ -14,7 +14,7 @@ export async function notifyApplicationCreated(applicationId: string, clientName
     type: "application",
     title: "새로운 서비스 신청",
     body: `${clientName}님의 서비스 신청이 접수되었습니다.`,
-    link: `/admin/applications/${applicationId}`,
+    link: `/applications/${applicationId}`,
     priority: 1,
     metadata: {
       applicationId,
@@ -46,7 +46,7 @@ export async function notifyRentalExpiry(
     type: "rental_expiry",
     title,
     body: `${deviceName} 대여 기간이 ${daysUntilExpiry === 0 ? "오늘" : `${daysUntilExpiry}일 후`} 만료됩니다.`,
-    link: `/admin/rentals/${rentalId}`,
+    link: `/rentals/${rentalId}`,
     priority: daysUntilExpiry === 0 ? 3 : daysUntilExpiry === 3 ? 2 : 1,
     metadata: {
       rentalId,
@@ -72,7 +72,7 @@ export async function notifyScheduleCreated(
     type: "schedule",
     title: "새로운 일정이 배정되었습니다",
     body: `${scheduleType} 일정이 ${new Date(scheduledDate).toLocaleDateString("ko-KR")}에 예정되어 있습니다.`,
-    link: `/admin/schedule/${scheduleId}`,
+    link: `/schedule/${scheduleId}`,
     priority: 1,
     metadata: {
       scheduleId,

@@ -6,13 +6,13 @@ import { cn } from "@/lib/utils"
 import { LayoutDashboard, FileText, Users, Package, Calendar, Bot, MessageSquare } from "lucide-react"
 
 const navItems = [
-  { href: "/admin/dashboard", label: "대시보드", icon: LayoutDashboard },
-  { href: "/admin/notices-management", label: "공지", icon: FileText },
-  { href: "/admin/clients", label: "대상자", icon: Users },
-  { href: "/admin/inventory", label: "재고", icon: Package },
-  { href: "/admin/schedule", label: "일정", icon: Calendar },
-  { href: "/admin/messenger", label: "메신저", icon: MessageSquare },
-  { href: "/admin/agent-chat", label: "AI도우미", icon: Bot },
+  { href: "/dashboard", label: "대시보드", icon: LayoutDashboard },
+  { href: "/notices-management", label: "공지", icon: FileText },
+  { href: "/clients", label: "대상자", icon: Users },
+  { href: "/inventory", label: "재고", icon: Package },
+  { href: "/schedule", label: "일정", icon: Calendar },
+  { href: "/messenger", label: "메신저", icon: MessageSquare },
+  { href: "/agent-chat", label: "AI도우미", icon: Bot },
 ]
 
 export function AdminMobileBottomNav() {

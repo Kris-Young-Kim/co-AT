@@ -180,7 +180,7 @@ async function notifySuspiciousActivity(auditLogId: string, reason: string): Pro
       type: "system",
       title: "의심스러운 활동 탐지",
       body: `감사 로그 ID: ${auditLogId}\n이유: ${reason}`,
-      link: `/admin/audit-logs/${auditLogId}`,
+      link: `/audit-logs/${auditLogId}`,
       priority: 3, // 높은 우선순위
       metadata: {
         auditLogId,

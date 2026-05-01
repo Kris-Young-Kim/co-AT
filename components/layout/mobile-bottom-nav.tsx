@@ -6,9 +6,9 @@ import { cn } from "@/lib/utils"
 import { Home, FileText, User } from "lucide-react"
 
 const navItems = [
-  { href: "/portal/mypage", label: "홈", icon: Home },
+  { href: "/mypage", label: "홈", icon: Home },
   { href: "/apply", label: "신청", icon: FileText },
-  { href: "/portal/mypage", label: "마이페이지", icon: User },
+  { href: "/mypage", label: "마이페이지", icon: User },
 ].map((item, index) => ({ ...item, key: `${item.href}-${index}` }))
 
 export function MobileBottomNav() {

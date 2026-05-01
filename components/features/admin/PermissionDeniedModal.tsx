@@ -19,7 +19,7 @@ export function PermissionDeniedModal() {
 
   const handleClose = () => {
     setOpen(false)
-    router.push("/admin/dashboard")
+    router.push("/dashboard")
   }
 
   return (

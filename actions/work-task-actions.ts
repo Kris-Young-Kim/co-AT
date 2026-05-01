@@ -82,7 +82,7 @@ export async function createWorkTask(input: CreateTaskInput): Promise<{
       .single()
 
     if (error) throw error
-    revalidatePath('/admin/work-tasks')
+    revalidatePath('/work-tasks')
     return { success: true, task: data as WorkTask }
   } catch (err) {
     return { success: false, error: String(err) }
@@ -104,7 +104,7 @@ export async function updateWorkTask(
       .eq('id', id)
 
     if (error) throw error
-    revalidatePath('/admin/work-tasks')
+    revalidatePath('/work-tasks')
     return { success: true }
   } catch (err) {
     return { success: false, error: String(err) }
@@ -120,7 +120,7 @@ export async function deleteWorkTask(id: string): Promise<{ success: boolean; er
     const { error } = await (supabase as any).from('work_tasks').delete().eq('id', id)
 
     if (error) throw error
-    revalidatePath('/admin/work-tasks')
+    revalidatePath('/work-tasks')
     return { success: true }
   } catch (err) {
     return { success: false, error: String(err) }
@@ -146,7 +146,7 @@ export async function updateTaskStatusBatch(
       )
     )
 
-    revalidatePath('/admin/work-tasks')
+    revalidatePath('/work-tasks')
     return { success: true }
   } catch (err) {
     return { success: false, error: String(err) }

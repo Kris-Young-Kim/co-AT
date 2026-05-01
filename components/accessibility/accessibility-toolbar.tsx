@@ -137,7 +137,7 @@ export function AccessibilityToolbar() {
   }, [isOpen, zoomLevel, highContrast, isSpeaking])
 
   // 관리자 페이지에서는 접근성 도구를 표시하지 않음
-  if (pathname?.startsWith("/admin")) {
+  if (pathname?.startsWith("/")) {
     return <></>
   }
 

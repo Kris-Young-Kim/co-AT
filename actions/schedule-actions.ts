@@ -306,7 +306,7 @@ export async function createSchedule(
 
     const scheduleData = data as Schedule | null;
     console.log("[일정 생성] 성공:", scheduleData?.id)
-    revalidatePath("/admin/schedule")
+    revalidatePath("/schedule")
     revalidatePath("/") // 메인페이지 캘린더도 갱신
     return { success: true, data: scheduleData || undefined }
   } catch (error) {
@@ -365,7 +365,7 @@ export async function updateSchedule(
 
     const updatedScheduleData = data as Schedule | null;
     console.log("[일정 수정] 성공:", updatedScheduleData?.id)
-    revalidatePath("/admin/schedule")
+    revalidatePath("/schedule")
     revalidatePath("/") // 메인페이지 캘린더도 갱신
     return { success: true, data: updatedScheduleData || undefined }
   } catch (error) {
@@ -410,7 +410,7 @@ export async function deleteSchedule(
     }
 
     console.log("[일정 삭제] 성공:", id)
-    revalidatePath("/admin/schedule")
+    revalidatePath("/schedule")
     revalidatePath("/") // 메인페이지 캘린더도 갱신
     return { success: true }
   } catch (error) {

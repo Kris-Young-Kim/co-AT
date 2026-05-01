@@ -116,12 +116,12 @@ export async function createRental(
     console.log("[Rental Actions] 대여 생성 성공:", rentalTyped?.id)
 
     // 경로 무효화
-    revalidatePath("/admin/clients")
-    revalidatePath(`/admin/clients/${input.client_id}`)
     revalidatePath("/clients")
     revalidatePath(`/clients/${input.client_id}`)
-    revalidatePath("/admin/inventory")
-    revalidatePath("/portal/mypage")
+    revalidatePath("/clients")
+    revalidatePath(`/clients/${input.client_id}`)
+    revalidatePath("/inventory")
+    revalidatePath("/mypage")
 
     return { success: true, rental }
   } catch (error) {
@@ -208,12 +208,12 @@ export async function returnRental(
 
     // 경로 무효화
     const rentalClientId = rentalWithIds?.client_id || "";
-    revalidatePath("/admin/clients")
-    revalidatePath(`/admin/clients/${rentalClientId}`)
     revalidatePath("/clients")
     revalidatePath(`/clients/${rentalClientId}`)
-    revalidatePath("/admin/inventory")
-    revalidatePath("/portal/mypage")
+    revalidatePath("/clients")
+    revalidatePath(`/clients/${rentalClientId}`)
+    revalidatePath("/inventory")
+    revalidatePath("/mypage")
 
     return { success: true, rental: updatedRental }
   } catch (error) {
@@ -290,11 +290,11 @@ export async function extendRental(
 
     // 경로 무효화
     const rentalClientIdForExtension = (rentalForExtension as { client_id?: string })?.client_id || "";
-    revalidatePath("/admin/clients")
-    revalidatePath(`/admin/clients/${rentalClientIdForExtension}`)
     revalidatePath("/clients")
     revalidatePath(`/clients/${rentalClientIdForExtension}`)
-    revalidatePath("/portal/mypage")
+    revalidatePath("/clients")
+    revalidatePath(`/clients/${rentalClientIdForExtension}`)
+    revalidatePath("/mypage")
 
     return { success: true, rental: updatedRental }
   } catch (error) {

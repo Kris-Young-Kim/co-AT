@@ -77,7 +77,7 @@ export async function createEventRole(input: CreateEventRoleInput): Promise<{
       .single()
 
     if (error) throw error
-    revalidatePath('/admin/schedule')
+    revalidatePath('/schedule')
     return { success: true, role: data as EventRole }
   } catch (err) {
     return { success: false, error: String(err) }
@@ -93,7 +93,7 @@ export async function deleteEventRole(id: string): Promise<{ success: boolean; e
     const { error } = await (supabase as any).from('event_roles').delete().eq('id', id)
 
     if (error) throw error
-    revalidatePath('/admin/schedule')
+    revalidatePath('/schedule')
     return { success: true }
   } catch (err) {
     return { success: false, error: String(err) }
