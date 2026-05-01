@@ -1,0 +1,35 @@
+{
+  "name": "@co-at/hr",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3006",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^6.36.3",
+    "@co-at/auth": "workspace:*",
+    "@co-at/types": "workspace:*",
+    "@co-at/ui": "workspace:*",
+    "@co-at/lib": "workspace:*",
+    "next": "^16.1.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^2.2.1",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.344.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^9",
+    "eslint-config-next": "^16.1.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
