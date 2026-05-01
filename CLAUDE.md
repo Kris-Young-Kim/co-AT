@@ -33,6 +33,7 @@ apps/
   automation/  automation.gwatc.cloud 자동화/알림 (Phase 4)
   hr/          hr.gwatc.cloud       인사관리 (Phase 5)
   approval/    approval.gwatc.cloud 전자결재 (Phase 6)
+  finance/     finance.gwatc.cloud  예산·재무 관리 (Phase 7) ← 기존 dashboard/budget/ 마이그레이션
 
 packages/
   ui/      @co-at/ui    shadcn 공유 컴포넌트
@@ -56,7 +57,7 @@ packages/
 
 ### DB / Supabase
 - 마이그레이션 파일: `migrations/NNN_<description>.sql`
-- 테이블명 네임스페이스: `eval_*`, `inventory_*`, `hr_*`, `approval_*`
+- 테이블명 네임스페이스: `eval_*`, `inventory_*`, `hr_*`, `approval_*`, `finance_*`
 - 모든 테이블에 RLS 활성화 필수
 - Supabase client는 `@co-at/lib`에서만 import
 

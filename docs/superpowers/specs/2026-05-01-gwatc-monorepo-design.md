@@ -25,6 +25,7 @@
 | 업무 자동화·알림 | `apps/automation` | `automation.gwatc.cloud` | 관리자 | Phase 4 |
 | 인사 관리 | `apps/hr` | `hr.gwatc.cloud` | 관리자·HR담당 | Phase 5 |
 | 지능형 전자결재 | `apps/approval` | `approval.gwatc.cloud` | 전 직원 | Phase 6 |
+| 예산·재무 관리 | `apps/finance` | `finance.gwatc.cloud` | 관리자·재무담당 | Phase 7 |
 
 ---
 
@@ -40,7 +41,8 @@ co-AT/
 │   ├── stats/         # NEW Phase 3
 │   ├── automation/    # NEW Phase 4
 │   ├── hr/            # NEW Phase 5
-│   └── approval/      # NEW Phase 6
+│   ├── approval/      # NEW Phase 6
+│   └── finance/       # NEW Phase 7
 │
 ├── packages/
 │   ├── ui/            # 기존 — shadcn 기반 공유 컴포넌트 (@co-at/ui)
@@ -165,13 +167,14 @@ Next.js 앱 (Clerk 인증 · Supabase)
 
 | Phase | 앱 | 핵심 기능 |
 |---|---|---|
-| 0 (현재) | 보일러플레이트 | 6개 앱 뼈대 생성, packages/auth+types 신설 |
+| 0 (현재) | 보일러플레이트 | 7개 앱 뼈대 생성, packages/auth+types 신설 |
 | 1 | eval | 클라이언트 상담기록, 보조기기 평가 폼, PDF 출력 |
 | 2 | inventory | 자산 등록/바코드, 대여·반납 자동화, 재고 현황 |
 | 3 | stats | 성과 KPI 대시보드, 리포트 다운로드 |
 | 4 | automation | 반납 알림, 일정 리마인더, 외부 API 연동 |
 | 5 | hr | 직원 프로필, 근태, 자격증 관리 |
-| 6 | approval | 기안·결재선·전자서명, 문서 보관 |
+| 6 | approval | 기안·결재선·전자서명, 문서 보관 (예산 지출 결재 포함) |
+| 7 | finance | 예산 편성·집행·잔액 조회, 회계 보고서, 기존 budget 마이그레이션 |
 
 ---
 
