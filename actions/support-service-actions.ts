@@ -67,7 +67,7 @@ export async function generateSupportServiceAnswer(
     }
 
     const client = getGeminiClient()
-    const model = client.getGenerativeModel({ model: "gemini-1.5-flash" })
+    const model = client.getGenerativeModel({ model: "gemini-2.0-flash" })
 
     const prompt = `${SUPPORT_SERVICE_SYSTEM_PROMPT}
 

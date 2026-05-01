@@ -477,7 +477,7 @@ export async function generateRegulationAnswer(query: string): Promise<{
 
     // Gemini로 답변 생성
     const client = getGeminiClient();
-    const model = client.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = client.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const systemPrompt = `당신은 보조기기센터의 운영 지침서 전문가입니다. 
 다음 규정 문서를 참고하여 사용자의 질문에 정확하고 명확하게 답변해주세요.

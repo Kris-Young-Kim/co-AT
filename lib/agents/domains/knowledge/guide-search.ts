@@ -196,7 +196,7 @@ export async function searchGuideDocument(
     const context = contextBlocks.join("\n\n---\n\n")
 
     // 4. Gemini로 답변 생성
-    const model = getGeminiModel("gemini-1.5-flash")
+    const model = getGeminiModel("gemini-2.0-flash")
     const systemPrompt = `당신은 강원도 보조기기센터의 업무 지침 전문 AI입니다.
 아래 제공된 2026년 보조기기센터 사업안내 문서의 관련 섹션을 바탕으로 질문에 정확하고 실용적으로 답변하세요.
 
