@@ -15,6 +15,7 @@
     "incremental": true,
     "plugins": [{ "name": "next" }],
     "paths": {
+      "@/eval/*": ["./*"],
       "@/components/ui/*": ["../../packages/ui/ui/*"],
       "@/lib/supabase/*": ["../../packages/lib/supabase/*"],
       "@/lib/validators": ["../../packages/lib/validators.ts"],
