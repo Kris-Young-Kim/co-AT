@@ -38,7 +38,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
           </div>
           <div>
             <dt className="text-gray-500">연락처</dt>
-            <dd className="font-medium mt-0.5">{client.phone ?? '—'}</dd>
+            <dd className="font-medium mt-0.5">{client.contact ?? '—'}</dd>
           </div>
           <div>
             <dt className="text-gray-500">장애유형</dt>
