@@ -101,5 +101,5 @@ export interface CreateLeaveRequestInput {
 export interface ReviewLeaveInput {
   id: string
   status: 'approved' | 'rejected'
-  reviewed_by: string
+  reviewed_by: string | null
 }

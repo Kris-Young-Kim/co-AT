@@ -51,7 +51,7 @@ export default async function LeavePage() {
                 </td>
                 {showReview && (
                   <td className="px-4 py-2">
-                    <LeaveReviewButtons leaveId={l.id} reviewerId="current-user" />
+                    <LeaveReviewButtons leaveId={l.id} reviewerId={null} />
                   </td>
                 )}
               </tr>

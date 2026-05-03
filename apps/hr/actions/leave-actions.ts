@@ -31,6 +31,7 @@ export async function getLeaveRequests(params?: {
 }
 
 export async function createLeaveRequest(input: CreateLeaveRequestInput): Promise<HrLeaveRequest | null> {
+  await assertRole('staff')
   const supabase = createSupabaseAdmin()
   const { data, error } = await supabase
     .from('hr_leave_requests')
@@ -58,7 +59,7 @@ export async function reviewLeaveRequest(input: ReviewLeaveInput): Promise<boole
     .from('hr_leave_requests')
     .update({
       status:      input.status,
-      reviewed_by: input.reviewed_by,
+      reviewed_by: input.reviewed_by ?? null,
       reviewed_at: new Date().toISOString(),
     })
     .eq('id', input.id)

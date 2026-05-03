@@ -6,7 +6,7 @@ import { reviewLeaveRequest } from '@/actions/leave-actions'
 
 interface Props {
   leaveId: string
-  reviewerId: string
+  reviewerId: string | null
 }
 
 export function LeaveReviewButtons({ leaveId, reviewerId }: Props) {

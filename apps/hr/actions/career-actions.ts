@@ -1,6 +1,7 @@
 'use server'
 
 import { createSupabaseAdmin } from '@/lib/supabase-admin'
+import { assertRole } from '@co-at/auth'
 import type { HrCareer, CreateCareerInput } from '@co-at/types'
 
 export async function getCareersByEmployee(employeeId: string): Promise<HrCareer[]> {
@@ -15,6 +16,7 @@ export async function getCareersByEmployee(employeeId: string): Promise<HrCareer
 }
 
 export async function createCareer(input: CreateCareerInput): Promise<HrCareer | null> {
+  await assertRole('manager')
   const supabase = createSupabaseAdmin()
   const { data, error } = await supabase
     .from('hr_careers')
@@ -36,6 +38,7 @@ export async function createCareer(input: CreateCareerInput): Promise<HrCareer |
 }
 
 export async function deleteCareer(id: string): Promise<boolean> {
+  await assertRole('admin')
   const supabase = createSupabaseAdmin()
   const { error } = await supabase
     .from('hr_careers')
