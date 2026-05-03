@@ -1,6 +1,6 @@
 'use server'
 
-import { createSupabaseAdmin } from '@/apps/hr/lib/supabase-admin'
+import { createSupabaseAdmin } from '@/lib/supabase-admin'
 import type { HrAttendanceRecord, UpsertAttendanceInput } from '@co-at/types'
 
 export async function getAttendanceByEmployee(

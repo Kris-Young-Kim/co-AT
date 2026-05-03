@@ -1,6 +1,6 @@
 'use server'
 
-import { createSupabaseAdmin } from '@/apps/hr/lib/supabase-admin'
+import { createSupabaseAdmin } from '@/lib/supabase-admin'
 import { assertRole } from '@co-at/auth'
 import type { HrLeaveRequest, CreateLeaveRequestInput, ReviewLeaveInput } from '@co-at/types'
 
@@ -78,5 +78,5 @@ export async function getApprovedLeaveDaysInYear(
     .gte('start_date', `${year}-01-01`)
     .lte('start_date', `${year}-12-31`)
   if (error) return 0
-  return (data ?? []).reduce((sum, r) => sum + Number(r.days_used), 0)
+  return (data ?? []).reduce((sum: number, r: { days_used: number | null }) => sum + Number(r.days_used), 0)
 }
