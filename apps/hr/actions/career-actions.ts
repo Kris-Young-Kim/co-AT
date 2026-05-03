@@ -1,6 +1,6 @@
 'use server'
 
-import { createSupabaseAdmin } from '@/apps/hr/lib/supabase-admin'
+import { createSupabaseAdmin } from '@/lib/supabase-admin'
 import type { HrCareer, CreateCareerInput } from '@co-at/types'
 
 export async function getCareersByEmployee(employeeId: string): Promise<HrCareer[]> {

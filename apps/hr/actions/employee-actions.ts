@@ -1,6 +1,6 @@
 'use server'
 
-import { createSupabaseAdmin } from '@/apps/hr/lib/supabase-admin'
+import { createSupabaseAdmin } from '@/lib/supabase-admin'
 import { assertRole } from '@co-at/auth'
 import type {
   HrEmployee,
