@@ -34,7 +34,7 @@ export function TargetForm({ year, defaultValues, onSubmit }: TargetFormProps) {
     const fd = new FormData(e.currentTarget)
     const data: UpsertTargetInput = { year } as UpsertTargetInput
     for (const { key } of FIELDS) {
-      (data as Record<string, unknown>)[key] = parseInt(fd.get(key) as string) || 0
+      (data as unknown as Record<string, unknown>)[key] = parseInt(fd.get(key) as string) || 0
     }
     const result = await onSubmit(data)
     setLoading(false)
@@ -52,7 +52,7 @@ export function TargetForm({ year, defaultValues, onSubmit }: TargetFormProps) {
             name={key}
             type="number"
             min={0}
-            defaultValue={(defaultValues as Record<string, unknown>)?.[key] as number ?? 0}
+            defaultValue={(defaultValues as unknown as Record<string, unknown>)?.[key] as number ?? 0}
             className="w-28 px-3 py-1.5 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <span className="text-sm text-gray-400">건</span>
