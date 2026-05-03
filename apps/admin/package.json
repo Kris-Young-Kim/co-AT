@@ -16,6 +16,9 @@
     "gen:types": "npx -y supabase gen types typescript --project-id uyjbndiwyddjyjkdfuyi --schema public > types/database.types.ts"
   },
   "dependencies": {
+    "@co-at/auth": "workspace:*",
+    "@co-at/lib": "workspace:*",
+    "@co-at/ui": "workspace:*",
     "@clerk/nextjs": "^6.36.3",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",

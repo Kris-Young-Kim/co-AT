@@ -5,7 +5,7 @@ import { getWorkTasks } from "@/actions/work-task-actions"
 import { KanbanBoard } from "@/components/features/tasks/KanbanBoard"
 
 export const dynamic = "force-dynamic"
-export const metadata = { title: "?�무 관�? }
+export const metadata = { title: "업무 관리" }
 
 export default async function WorkTasksPage() {
   const hasPermission = await hasAdminOrStaffPermission()

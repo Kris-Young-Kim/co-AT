@@ -21,6 +21,7 @@ export type Database = {
           client_id: string
           created_at: string | null
           desired_date: string | null
+          domain: string | null
           id: string
           service_year: number | null
           status: string | null
@@ -33,6 +34,7 @@ export type Database = {
           client_id: string
           created_at?: string | null
           desired_date?: string | null
+          domain?: string | null
           id?: string
           service_year?: number | null
           status?: string | null
@@ -45,6 +47,7 @@ export type Database = {
           client_id?: string
           created_at?: string | null
           desired_date?: string | null
+          domain?: string | null
           id?: string
           service_year?: number | null
           status?: string | null
@@ -1233,6 +1236,120 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      call_logs: {
+        Row: {
+          id: string
+          log_date: string
+          requester_type: string | null
+          requester_region: string | null
+          target_name: string | null
+          target_gender: string | null
+          target_disability_type: string | null
+          target_disability_severity: string | null
+          target_economic_status: string | null
+          q_public_benefit: boolean
+          q_private_benefit: boolean
+          q_device: boolean
+          q_case_management: boolean
+          q_other: boolean
+          question_content: string | null
+          answer: string | null
+          staff_name: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          log_date: string
+          requester_type?: string | null
+          requester_region?: string | null
+          target_name?: string | null
+          target_gender?: string | null
+          target_disability_type?: string | null
+          target_disability_severity?: string | null
+          target_economic_status?: string | null
+          q_public_benefit?: boolean
+          q_private_benefit?: boolean
+          q_device?: boolean
+          q_case_management?: boolean
+          q_other?: boolean
+          question_content?: string | null
+          answer?: string | null
+          staff_name?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          log_date?: string
+          requester_type?: string | null
+          requester_region?: string | null
+          target_name?: string | null
+          target_gender?: string | null
+          target_disability_type?: string | null
+          target_disability_severity?: string | null
+          target_economic_status?: string | null
+          q_public_benefit?: boolean
+          q_private_benefit?: boolean
+          q_device?: boolean
+          q_case_management?: boolean
+          q_other?: boolean
+          question_content?: string | null
+          answer?: string | null
+          staff_name?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      annual_targets: {
+        Row: {
+          id: string
+          year: number
+          consultation: number
+          experience: number
+          rental: number
+          custom_make: number
+          cleaning: number
+          repair: number
+          reuse: number
+          professional_edu: number
+          promotion: number
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          year: number
+          consultation?: number
+          experience?: number
+          rental?: number
+          custom_make?: number
+          cleaning?: number
+          repair?: number
+          reuse?: number
+          professional_edu?: number
+          promotion?: number
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          year?: number
+          consultation?: number
+          experience?: number
+          rental?: number
+          custom_make?: number
+          cleaning?: number
+          repair?: number
+          reuse?: number
+          professional_edu?: number
+          promotion?: number
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
     }
     Views: {

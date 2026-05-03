@@ -18,26 +18,26 @@ export async function POST(req: Request) {
   try {
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) {
-      return NextResponse.json({ error: "권한???�습?�다" }, { status: 403 })
+      return NextResponse.json({ error: "권한이 없습니다" }, { status: 403 })
     }
 
     const { userId } = await auth()
     if (!userId) {
-      return NextResponse.json({ error: "로그?�이 ?�요?�니?? }, { status: 401 })
+      return NextResponse.json({ error: "로그인이 필요합니다" }, { status: 401 })
     }
 
     const formData = await req.formData()
     const file = formData.get("file") as File | null
 
     if (!file) {
-      return NextResponse.json({ error: "?�일???�습?�다" }, { status: 400 })
+      return NextResponse.json({ error: "파일이 없습니다" }, { status: 400 })
     }
 
     const ext = file.name.toLowerCase().slice(file.name.lastIndexOf("."))
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
       return NextResponse.json(
         {
-          error: `지???�식: ${ALLOWED_EXTENSIONS.join(", ")} (pdf, md, txt)`,
+          error: `지원 형식: ${ALLOWED_EXTENSIONS.join(", ")} (pdf, md, txt)`,
         },
         { status: 400 }
       )
@@ -45,15 +45,15 @@ export async function POST(req: Request) {
 
     if (file.size > MAX_SIZE) {
       return NextResponse.json(
-        { error: "?�일 ?�기??20MB�?초과?????�습?�다" },
+        { error: "파일 크기는 20MB를 초과할 수 없습니다" },
         { status: 400 }
       )
     }
 
     const fileBuffer = Buffer.from(await file.arrayBuffer())
-    const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9가-??_-]/g, "_")}`
+    const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`
 
-    // 1) Supabase Storage ?�도
+    // 1) Supabase Storage 시도
     const supabase = createAdminClient()
     const { data, error } = await supabase.storage
       .from("regulations")
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
       })
     }
 
-    // 2) Storage 버킷 ?�으�?로컬 docs/regulations/???�??(개발??
+    // 2) Storage 버킷 없으면 로컬 docs/regulations/에 저장 (개발용)
     if (
       error.message?.includes("Bucket") ||
       error.message?.includes("not found")
@@ -90,11 +90,10 @@ export async function POST(req: Request) {
           source: "local",
         })
       } catch (localErr) {
-        console.error("[규정 문서 ?�로?? 로컬 ?�???�패:", localErr)
+        console.error("[규정 문서 업로드] 로컬 저장 실패:", localErr)
         return NextResponse.json(
           {
-            error:
-              "Storage 버킷 'regulations'가 ?�습?�다. Supabase ?�?�보?�에??버킷???�성?�거?? docs/regulations/ ?�더??직접 ?�일???�어주세??",
+            error: "Storage 버킷 'regulations'가 없습니다. Supabase 대시보드에서 버킷을 생성하거나 docs/regulations/ 폴더에 직접 파일을 넣어주세요",
             code: "BUCKET_NOT_FOUND",
           },
           { status: 500 }
@@ -102,17 +101,16 @@ export async function POST(req: Request) {
       }
     }
 
-    console.error("[규정 문서 ?�로?? ?�패:", error)
+    console.error("[규정 문서 업로드] 실패:", error)
     return NextResponse.json(
-      { error: "?�로???�패: " + error.message },
+      { error: "업로드 실패: " + error.message },
       { status: 500 }
     )
   } catch (err) {
-    console.error("[규정 문서 ?�로?? ?�류:", err)
+    console.error("[규정 문서 업로드] 오류:", err)
     return NextResponse.json(
       {
-        error:
-          err instanceof Error ? err.message : "?�상�?못한 ?�류가 발생?�습?�다",
+        error: err instanceof Error ? err.message : "예상치 못한 오류가 발생했습니다",
       },
       { status: 500 }
     )

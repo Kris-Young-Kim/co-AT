@@ -3,16 +3,16 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { notifyRentalExpiry } from "@/lib/utils/notification-helper"
 
 /**
- * ?�??만료 ?�림 ?��?줄러
- * 매일 09:00 UTC ?�행 (Vercel Cron ?�는 ?��? ?��?줄러)
- * 
- * ?�경 변?�에 CRON_SECRET ?�정 ?�요
+ * 대여 만료 알림 스케줄러
+ * 매일 09:00 UTC 실행 (Vercel Cron 또는 외부 스케줄러)
+ *
+ * 환경 변수에 CRON_SECRET 설정 필요
  */
 export async function GET(request: Request) {
   try {
-    console.log("[Rental Expiry Notifications] ?�??만료 ?�림 ?��?줄러 ?�작")
+    console.log("[Rental Expiry Notifications] 대여 만료 알림 스케줄러 시작")
 
-    // 보안: Cron Secret ?�인 (Vercel Cron ?�용 ??
+    // 보안: Cron Secret 확인 (Vercel Cron 사용 시)
     const authHeader = request.headers.get("Authorization")
     const cronSecret = process.env.CRON_SECRET
 
@@ -31,9 +31,9 @@ export async function GET(request: Request) {
       targetDate.setDate(today.getDate() + days)
       const targetDateStr = targetDate.toISOString().split("T")[0] // YYYY-MM-DD
 
-      console.log(`[Rental Expiry Notifications] ${days}????만료 ?�??조회: ${targetDateStr}`)
+      console.log(`[Rental Expiry Notifications] ${days}일 후 만료 대여 조회: ${targetDateStr}`)
 
-      // 만료 ?�정 ?�??조회
+      // 만료 예정 대여 조회
       const { data: rentals, error } = await supabase
         .from("rentals")
         .select(
@@ -56,16 +56,16 @@ export async function GET(request: Request) {
         .eq("rental_end_date", targetDateStr)
 
       if (error) {
-        console.error(`[Rental Expiry Notifications] ${days}????만료 ?�??조회 ?�패:`, error)
+        console.error(`[Rental Expiry Notifications] ${days}일 후 만료 대여 조회 실패:`, error)
         continue
       }
 
       if (!rentals || rentals.length === 0) {
-        console.log(`[Rental Expiry Notifications] ${days}????만료 ?�???�음`)
+        console.log(`[Rental Expiry Notifications] ${days}일 후 만료 대여 없음`)
         continue
       }
 
-      // �??�?�에 ?�???�림 ?�성
+      // 각 대여에 대해 알림 생성
       for (const rental of rentals) {
         const clientId = rental.client_id
         const clerkUserId =
@@ -88,18 +88,18 @@ export async function GET(request: Request) {
         if (result.success) {
           totalNotifications++
           console.log(
-            `[Rental Expiry Notifications] ?�림 ?�성 ?�공: ${rental.id} (${days}????만료)`
+            `[Rental Expiry Notifications] 알림 생성 성공: ${rental.id} (${days}일 후 만료)`
           )
         } else {
           console.error(
-            `[Rental Expiry Notifications] ?�림 ?�성 ?�패: ${rental.id}`,
+            `[Rental Expiry Notifications] 알림 생성 실패: ${rental.id}`,
             result.error
           )
         }
       }
     }
 
-    console.log(`[Rental Expiry Notifications] ?�료: �?${totalNotifications}�??�림 ?�성`)
+    console.log(`[Rental Expiry Notifications] 완료: 총 ${totalNotifications}건 알림 생성`)
 
     return NextResponse.json({
       success: true,
@@ -107,11 +107,11 @@ export async function GET(request: Request) {
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error("[Rental Expiry Notifications] ?��?줄러 ?�행 �??�류:", error)
+    console.error("[Rental Expiry Notifications] 스케줄러 실행 중 오류:", error)
     return NextResponse.json(
       {
         success: false,
-        error: "?�??만료 ?�림 ?��?줄러 ?�행 �??�류가 발생?�습?�다",
+        error: "대여 만료 알림 스케줄러 실행 중 오류가 발생했습니다",
         details: String(error),
       },
       { status: 500 }
