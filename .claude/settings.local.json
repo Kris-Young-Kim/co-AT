@@ -39,7 +39,15 @@
       "Bash(python:*)",
       "Bash(claude mcp:*)",
       "Bash(mkdir -p \"D:/AILeader1/project/valuewith/co-AT/apps/eval/app/print/intake/[appId]\")",
-      "Bash(mkdir -p \"D:/AILeader1/project/valuewith/co-AT/apps/eval/app/print/assessment/[assessmentId]\")"
+      "Bash(mkdir -p \"D:/AILeader1/project/valuewith/co-AT/apps/eval/app/print/assessment/[assessmentId]\")",
+      "Bash(for app:*)",
+      "Bash(do cp:*)",
+      "Bash(echo \"Copied to $app\")",
+      "Bash(done)",
+      "Bash(pnpm --filter @co-at/stats build)",
+      "Bash(pnpm --filter @co-at/eval build)",
+      "Bash(pnpm --filter admin build)",
+      "Bash(pnpm --filter web build)"
     ],
     "deny": [
       "Edit(.env)",

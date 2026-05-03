@@ -8,22 +8,25 @@ export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET
 
   if (!WEBHOOK_SECRET) {
-    throw new Error('WEBHOOK_SECRET???�정?��? ?�았?�니??')
+    throw new Error('WEBHOOK_SECRET이 설정되지 않았습니다')
   }
 
-  // ?�더?�서 svix ?�더 가?�오�?  const headerPayload = await headers()
+  // 헤더에서 svix 헤더 가져오기
+  const headerPayload = await headers()
   const svix_id = headerPayload.get('svix-id')
   const svix_timestamp = headerPayload.get('svix-timestamp')
   const svix_signature = headerPayload.get('svix-signature')
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    return new Response('svix ?�더가 ?�습?�다', { status: 400 })
+    return new Response('svix 헤더가 없습니다', { status: 400 })
   }
 
-  // 본문 가?�오�?  const payload = await req.json()
+  // 본문 가져오기
+  const payload = await req.json()
   const body = JSON.stringify(payload)
 
-  // Webhook 검�?  const wh = new Webhook(WEBHOOK_SECRET)
+  // Webhook 검증
+  const wh = new Webhook(WEBHOOK_SECRET)
 
   let evt: WebhookEvent
 
@@ -34,8 +37,8 @@ export async function POST(req: Request) {
       'svix-signature': svix_signature,
     }) as WebhookEvent
   } catch (err) {
-    console.error('Webhook 검�??�패:', err)
-    return new Response('Webhook 검�??�패', { status: 400 })
+    console.error('Webhook 검증 실패:', err)
+    return new Response('Webhook 검증 실패', { status: 400 })
   }
 
   const { id } = evt.data
@@ -43,7 +46,8 @@ export async function POST(req: Request) {
 
   const supabase = await createClient()
 
-  // ?��? ?�성 ??Supabase profiles ?�이�??�기??  if (eventType === 'user.created') {
+  // 유저 생성 시 Supabase profiles 테이블에 저장
+  if (eventType === 'user.created') {
     const { id: userId, email_addresses, first_name, last_name } = evt.data
 
     const fullName = [first_name, last_name].filter(Boolean).join(' ') || null
@@ -53,23 +57,24 @@ export async function POST(req: Request) {
       clerk_user_id: userId,
       email,
       full_name: fullName,
-      role: 'user', // 기본�?    } as any)
+      role: 'user', // 기본값
+    } as any)
 
     if (error) {
-      console.error('?�로???�성 ?�패:', error)
-      return new Response('?�로???�성 ?�패', { status: 500 })
+      console.error('프로필 생성 실패:', error)
+      return new Response('프로필 생성 실패', { status: 500 })
     }
 
-    console.log('?�로???�성 ?�공:', userId)
+    console.log('프로필 생성 성공:', userId)
   }
 
-  // 로그???�도 추적
+  // 로그인 시도 추적
   if (eventType === 'session.created' || eventType === 'session.ended') {
     const { id: userId } = evt.data
     const adminSupabase = createAdminClient()
     const headerPayload = await headers()
-    const ip = headerPayload.get('x-forwarded-for')?.split(',')[0]?.trim() || 
-               headerPayload.get('x-real-ip') || 
+    const ip = headerPayload.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+               headerPayload.get('x-real-ip') ||
                'unknown'
     const userAgent = headerPayload.get('user-agent') || 'unknown'
 
@@ -80,37 +85,36 @@ export async function POST(req: Request) {
       ip_address: ip,
       user_agent: userAgent,
       request_path: '/api/webhooks/clerk',
-      threat_description: eventType === 'session.created' 
-        ? '로그???�공' 
-        : '?�션 종료',
+      threat_description: eventType === 'session.created'
+        ? '로그인 성공'
+        : '세션 종료',
       metadata: {
         eventType,
         timestamp: new Date().toISOString(),
       },
     })
     if (logError) {
-      console.error('[Security] 로그???�도 추적 ?�패:', logError)
+      console.error('[Security] 로그인 시도 추적 실패:', logError)
     }
   }
 
-  // ?��? ??�� ???�리 로직
+  // 유저 삭제 시 처리 로직
   if (eventType === 'user.deleted') {
     const { id: userId } = evt.data
 
-    // profiles ?�이블에????�� (CASCADE ?�정???�라 관???�이?�도 ?�동 ??��)
+    // profiles 테이블에서 삭제 (CASCADE 설정에 따라 관련 데이터도 자동 삭제)
     const { error } = await supabase
       .from('profiles')
       .delete()
       .eq('clerk_user_id', userId!)
 
     if (error) {
-      console.error('?�로????�� ?�패:', error)
-      return new Response('?�로????�� ?�패', { status: 500 })
+      console.error('프로필 삭제 실패:', error)
+      return new Response('프로필 삭제 실패', { status: 500 })
     }
 
-    console.log('?�로????�� ?�공:', userId)
+    console.log('프로필 삭제 성공:', userId)
   }
 
-  return new Response('Webhook 처리 ?�료', { status: 200 })
+  return new Response('Webhook 처리 완료', { status: 200 })
 }
-

@@ -5,11 +5,11 @@ import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
   try {
-    // 권한 ?�인
+    // 권한 확인
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) {
       return NextResponse.json(
-        { error: "권한???�습?�다" },
+        { error: "권한이 없습니다" },
         { status: 403 }
       )
     }
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     const { userId } = await auth()
     if (!userId) {
       return NextResponse.json(
-        { error: "로그?�이 ?�요?�니?? },
+        { error: "로그인이 필요합니다" },
         { status: 401 }
       )
     }
@@ -27,49 +27,50 @@ export async function POST(req: Request) {
 
     if (!file) {
       return NextResponse.json(
-        { error: "?�일???�습?�다" },
+        { error: "파일이 없습니다" },
         { status: 400 }
       )
     }
 
-    // ?�일 ?�???�인
+    // 파일 유형 확인
     const fileType = file.type
     const isImage = fileType.startsWith("image/")
     const isPDF = fileType === "application/pdf"
-    
+
     if (!isImage && !isPDF) {
       return NextResponse.json(
-        { error: "?��?지 ?�는 PDF ?�일�??�로??가?�합?�다" },
+        { error: "이미지 또는 PDF 파일만 업로드 가능합니다" },
         { status: 400 }
       )
     }
 
-    // ?�일 ?�기 ?�한 (10MB)
+    // 파일 크기 제한 (10MB)
     const maxSize = 10 * 1024 * 1024
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: "?�일 ?�기??10MB�?초과?????�습?�다" },
+        { error: "파일 크기는 10MB를 초과할 수 없습니다" },
         { status: 400 }
       )
     }
 
     const supabase = await createClient()
 
-    // ?�일�??�성 (?�?�스?�프 + ?�본 ?�일�?
+    // 파일명 생성 (타임스탬프 + 원본 파일명)
     const timestamp = Date.now()
     const fileName = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`
     const filePath = `notices/${userId}/${fileName}`
 
-    // Supabase Storage???�로??    const fileBuffer = await file.arrayBuffer()
-    
-    console.log("?�일 ?�로???�도:", {
+    // Supabase Storage에 업로드
+    const fileBuffer = await file.arrayBuffer()
+
+    console.log("파일 업로드 시도:", {
       fileName: file.name,
       fileSize: file.size,
       fileType: fileType,
       filePath: filePath,
       userId: userId,
     })
-    
+
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from("notices")
       .upload(filePath, fileBuffer, {
@@ -78,42 +79,42 @@ export async function POST(req: Request) {
       })
 
     if (uploadError) {
-      console.error("?�일 ?�로???�패:", {
+      console.error("파일 업로드 실패:", {
         error: uploadError,
         message: uploadError.message,
         statusCode: (uploadError as any).statusCode,
         errorCode: (uploadError as any).error,
       })
-      
-      // 버킷???�는 경우 ??명확???�러 메시지
+
+      // 버킷이 없는 경우 더 명확한 에러 메시지
       const errorMessage = uploadError.message || String(uploadError)
       if (
-        errorMessage.includes("Bucket") || 
+        errorMessage.includes("Bucket") ||
         errorMessage.includes("not found") ||
         errorMessage.includes("does not exist") ||
         (uploadError as any).statusCode === 404
       ) {
         return NextResponse.json(
-          { 
-            error: "Storage 버킷???�정?��? ?�았?�니?? Supabase ?�?�보?�에??'notices' 버킷???�성?�주?�요.",
+          {
+            error: "Storage 버킷이 설정되지 않았습니다. Supabase 대시보드에서 'notices' 버킷을 생성해주세요.",
             details: errorMessage,
-            code: "BUCKET_NOT_FOUND"
+            code: "BUCKET_NOT_FOUND",
           },
           { status: 500 }
         )
       }
-      
+
       return NextResponse.json(
-        { 
-          error: "?�일 ?�로?�에 ?�패?�습?�다", 
+        {
+          error: "파일 업로드에 실패했습니다",
           details: errorMessage,
-          code: (uploadError as any).error || "UPLOAD_FAILED"
+          code: (uploadError as any).error || "UPLOAD_FAILED",
         },
         { status: 500 }
       )
     }
 
-    // 공개 URL ?�성
+    // 공개 URL 생성
     const { data: urlData } = supabase.storage
       .from("notices")
       .getPublicUrl(filePath)
@@ -126,17 +127,16 @@ export async function POST(req: Request) {
       type: isImage ? "image" : "pdf",
     })
   } catch (error) {
-    console.error("?�일 ?�로??�??�류:", error)
+    console.error("파일 업로드 중 오류:", error)
     const errorMessage = error instanceof Error ? error.message : String(error)
     const errorStack = error instanceof Error ? error.stack : undefined
     return NextResponse.json(
-      { 
-        error: "?�상�?못한 ?�류가 발생?�습?�다", 
+      {
+        error: "예상치 못한 오류가 발생했습니다",
         details: errorMessage,
-        ...(errorStack && { stack: errorStack })
+        ...(errorStack && { stack: errorStack }),
       },
       { status: 500 }
     )
   }
 }
-

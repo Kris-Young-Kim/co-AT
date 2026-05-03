@@ -1,5 +1,5 @@
 // app/api/agents/chat/route.ts
-// AI ?��??�트?�이???�트리밍 채팅 API ?�드?�인??
+// AI 에이전트 엔드포인트 스트리밍 채팅 API 핸들러
 import { NextRequest, NextResponse } from "next/server"
 import { hasAdminOrStaffPermission } from "@co-at/auth"
 import { runOrchestratorStream } from "@/lib/agents/orchestrator"
@@ -13,7 +13,7 @@ import { PerformanceMainAgent } from "@/lib/agents/domains/performance"
 import { ApplicationMainAgent } from "@/lib/agents/domains/application"
 import type { AgentChatRequest, AgentDomain, MainAgent } from "@/lib/agents/types"
 
-// ?�이?�트 ?��??�트�?- 모듈 ?�벨?�서 ??번만 ?�성
+// 에이전트 레지스트리 - 모듈 레벨에서 한 번만 생성
 const agentRegistry = new Map<AgentDomain, MainAgent>([
   ["client", ClientMainAgent],
   ["schedule", ScheduleMainAgent],
@@ -26,32 +26,33 @@ const agentRegistry = new Map<AgentDomain, MainAgent>([
 ])
 
 export async function POST(req: NextRequest) {
-  // 1. 권한 ?�인 (기존 Server Action ?�턴�??�일)
+  // 1. 권한 확인 (기존 Server Action 패턴과 동일)
   try {
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) {
-      return NextResponse.json({ error: "권한???�습?�다" }, { status: 403 })
+      return NextResponse.json({ error: "권한이 없습니다" }, { status: 403 })
     }
   } catch {
     return NextResponse.json(
-      { error: "?�증 ?�인 �??�류가 발생?�습?�다" },
+      { error: "인증 확인 중 오류가 발생했습니다" },
       { status: 401 }
     )
   }
 
-  // 2. ?�청 바디 ?�싱
+  // 2. 요청 바디 파싱
   let body: AgentChatRequest
   try {
     body = await req.json()
   } catch {
-    return NextResponse.json({ error: "?�못???�청 ?�식?�니?? }, { status: 400 })
+    return NextResponse.json({ error: "잘못된 요청 형식입니다" }, { status: 400 })
   }
 
   if (!body.message || typeof body.message !== "string" || !body.message.trim()) {
-    return NextResponse.json({ error: "메시지가 비어 ?�습?�다" }, { status: 400 })
+    return NextResponse.json({ error: "메시지가 비어 있습니다" }, { status: 400 })
   }
 
-  // 3. ?�???�력??Gemini ?�식?�로 변??  const geminiHistory = (body.conversationHistory || [])
+  // 3. 대화 이력을 Gemini 형식으로 변환
+  const geminiHistory = (body.conversationHistory || [])
     .filter((m) => m.content && m.content.trim())
     .map((m) => ({
       role: m.role === "assistant" ? ("model" as const) : ("user" as const),
@@ -82,5 +83,5 @@ export async function POST(req: NextRequest) {
   })
 }
 
-// ?�적 최적??방�?
+// 정적 최적화 방지
 export const dynamic = "force-dynamic"

@@ -9,7 +9,7 @@ export async function POST(req: Request) {
 
     if (!userId) {
       return NextResponse.json(
-        { success: false, error: "로그?�이 ?�요?�니?? },
+        { success: false, error: "로그인이 필요합니다" },
         { status: 401 }
       )
     }
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     if (!schedule_id || !category || !desired_date) {
       return NextResponse.json(
-        { success: false, error: "?�수 ?�보가 ?�락?�었?�니?? },
+        { success: false, error: "필수 정보가 누락되었습니다" },
         { status: 400 }
       )
     }
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     const supabase = await createClient()
     const adminSupabase = createAdminClient()
 
-    // ?�용???�로??조회
+    // 사용자 프로필 조회
     const { data: profile, error: profileError } = await adminSupabase
       .from("profiles")
       .select("id")
@@ -36,34 +36,34 @@ export async function POST(req: Request) {
 
     if (profileError || !profile) {
       return NextResponse.json(
-        { success: false, error: "?�용???�보�?찾을 ???�습?�다" },
+        { success: false, error: "사용자 정보를 찾을 수 없습니다" },
         { status: 404 }
       )
     }
 
-    // ?�라?�언???�보 조회 ?�는 ?�성
+    // 클라이언트 정보 조회 또는 생성
     const { data: client, error: clientError } = await adminSupabase
       .from("clients")
       .select("id")
-      .eq("id", profile.id) // ?�시�?profile.id�??�용 (?�제로는 별도 clients ?�이�?조회 ?�요)
+      .eq("id", profile.id) // 임시로 profile.id를 사용 (실제로는 별도 clients 테이블 조회 필요)
       .maybeSingle()
 
     let clientId: string
 
     if (clientError || !client) {
-      // ?�라?�언?��? ?�으�??�성
+      // 클라이언트가 없으면 생성
       const { data: newClient, error: createClientError } = await adminSupabase
         .from("clients")
         .insert({
-          name: "?�약??, // ?�시 (?�제로는 ?�로?�에???�름 가?�오�?
+          name: "예약자", // 임시 (실제로는 프로필에서 이름 가져오기)
         })
         .select("id")
         .single()
 
       if (createClientError || !newClient) {
-        console.error("?�라?�언???�성 ?�류:", createClientError)
+        console.error("클라이언트 생성 오류:", createClientError)
         return NextResponse.json(
-          { success: false, error: "?�라?�언???�보 ?�성???�패?�습?�다" },
+          { success: false, error: "클라이언트 정보 생성에 실패했습니다" },
           { status: 500 }
         )
       }
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
       clientId = client.id
     }
 
-    // ?�정 ?�보 조회
+    // 일정 정보 조회
     const { data: schedule, error: scheduleError } = await supabase
       .from("schedules")
       .select("id, schedule_type, scheduled_date")
@@ -83,12 +83,12 @@ export async function POST(req: Request) {
 
     if (scheduleError || !schedule) {
       return NextResponse.json(
-        { success: false, error: "?�정??찾을 ???�거???�약 가?�한 ?�태가 ?�닙?�다" },
+        { success: false, error: "일정을 찾을 수 없거나 예약 가능한 상태가 아닙니다" },
         { status: 404 }
       )
     }
 
-    // ?�청???�성
+    // 신청서 생성
     const { data: application, error: applicationError } = await adminSupabase
       .from("applications")
       .insert({
@@ -96,45 +96,44 @@ export async function POST(req: Request) {
         category,
         sub_category: (schedule as { schedule_type: string }).schedule_type === "exhibition" ? "exhibition" : "education",
         desired_date: desired_date,
-        status: "?�수",
+        status: "접수",
         service_year: new Date().getFullYear(),
       })
       .select("id")
       .single()
 
     if (applicationError || !application) {
-      console.error("?�청???�성 ?�류:", applicationError)
+      console.error("신청서 생성 오류:", applicationError)
       return NextResponse.json(
         {
           success: false,
-          error: "?�약 ?�청???�패?�습?�다: " + (applicationError?.message || "?????�는 ?�류"),
+          error: "예약 신청에 실패했습니다: " + (applicationError?.message || "알 수 없는 오류"),
         },
         { status: 500 }
       )
     }
 
-    // ?�정�??�청???�결
+    // 일정과 신청서 연결
     const { error: updateScheduleError } = await adminSupabase
       .from("schedules")
       .update({ application_id: application.id })
       .eq("id", schedule_id)
 
     if (updateScheduleError) {
-      console.error("?�정 ?�데?�트 ?�류:", updateScheduleError)
-      // ?�청?�는 ?�성?�었?��?�?경고�??�고 ?�공?�로 처리
+      console.error("일정 업데이트 오류:", updateScheduleError)
+      // 신청서는 생성되었으므로 경고만 하고 성공으로 처리
     }
 
     return NextResponse.json({
       success: true,
       applicationId: application.id,
-      message: "?�약???�료?�었?�니??,
+      message: "예약이 완료되었습니다",
     })
   } catch (error) {
-    console.error("?�약 API ?�류:", error)
+    console.error("예약 API 오류:", error)
     return NextResponse.json(
-      { success: false, error: "?�상�?못한 ?�류가 발생?�습?�다" },
+      { success: false, error: "예상치 못한 오류가 발생했습니다" },
       { status: 500 }
     )
   }
 }
-

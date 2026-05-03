@@ -5,7 +5,7 @@ import { redirect } from "next/navigation"
 import { getBudgetsWithActual } from "@/actions/budget-actions"
 import { BudgetContent } from "@/components/features/budget/BudgetContent"
 
-export const metadata = { title: "?�산 계획" }
+export const metadata = { title: "예산 계획" }
 
 export default async function BudgetPage() {
   const hasPermission = await hasAdminOrStaffPermission()

@@ -15,8 +15,8 @@ import "./globals.css";
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app";
 
 export const metadata: Metadata = {
-  title: "GWATC ?�드�?,
-  description: "GWATC ?�합 관�??�스??,
+  title: "GWATC 어드민",
+  description: "GWATC 통합 관리 시스템",
 };
 
 export default async function RootLayout({

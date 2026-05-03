@@ -37,3 +37,13 @@ export async function assertRole(required: UserRole): Promise<void> {
     throw new Error(`Requires role: ${required}`)
   }
 }
+
+/** Returns true if current user has admin or staff role (or higher) */
+export async function hasAdminOrStaffPermission(): Promise<boolean> {
+  return requireRole(ROLES.STAFF)
+}
+
+/** Returns true if current user has manager role (or higher) */
+export async function hasManagerPermission(): Promise<boolean> {
+  return requireRole(ROLES.MANAGER)
+}
