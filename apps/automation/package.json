@@ -11,15 +11,18 @@
   "dependencies": {
     "@clerk/nextjs": "^6.36.3",
     "@co-at/auth": "workspace:*",
+    "@co-at/lib": "workspace:*",
     "@co-at/types": "workspace:*",
     "@co-at/ui": "workspace:*",
-    "@co-at/lib": "workspace:*",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.0.8",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.344.0",
     "next": "^16.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwind-merge": "^2.2.1",
-    "clsx": "^2.1.0",
-    "lucide-react": "^0.344.0"
+    "resend": "^6.12.2",
+    "tailwind-merge": "^2.2.1"
   },
   "devDependencies": {
     "@types/node": "^20",
