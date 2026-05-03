@@ -15,6 +15,9 @@ export function AttendanceForm({ employeeId, date, initial }: Props) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
+  const toIso = (time: string, d: string) =>
+    time ? `${d}T${time}:00` : undefined
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
@@ -22,8 +25,8 @@ export function AttendanceForm({ employeeId, date, initial }: Props) {
     const input: UpsertAttendanceInput = {
       employee_id: employeeId,
       date,
-      check_in:  (form.get('check_in') as string) || undefined,
-      check_out: (form.get('check_out') as string) || undefined,
+      check_in:  toIso(form.get('check_in') as string, date),
+      check_out: toIso(form.get('check_out') as string, date),
       note:      (form.get('note') as string) || undefined,
     }
     await upsertAttendance(input)
@@ -31,8 +34,12 @@ export function AttendanceForm({ employeeId, date, initial }: Props) {
     setLoading(false)
   }
 
-  const toTimeInput = (ts: string | null | undefined) =>
-    ts ? new Date(ts).toTimeString().slice(0, 5) : ''
+  const toTimeInput = (ts: string | null | undefined) => {
+    if (!ts) return ''
+    // ts might be 'HH:MM' already or a full ISO string
+    if (ts.includes('T')) return ts.split('T')[1].slice(0, 5)
+    return ts.slice(0, 5)
+  }
 
   return (
     <form onSubmit={handleSubmit} className="flex gap-2 items-end text-sm">

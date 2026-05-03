@@ -1,6 +1,7 @@
 'use server'
 
 import { createSupabaseAdmin } from '@/lib/supabase-admin'
+import { assertRole } from '@co-at/auth'
 import type { HrAttendanceRecord, UpsertAttendanceInput } from '@co-at/types'
 
 export async function getAttendanceByEmployee(
@@ -49,6 +50,7 @@ export async function getAllAttendance(yearMonth: string): Promise<HrAttendanceR
 }
 
 export async function upsertAttendance(input: UpsertAttendanceInput): Promise<HrAttendanceRecord | null> {
+  await assertRole('manager')
   const supabase = createSupabaseAdmin()
   const { data, error } = await supabase
     .from('hr_attendance_records')
