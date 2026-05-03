@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
+import { AppSidebar } from '@/components/AppSidebar'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -7,15 +8,16 @@ export const metadata: Metadata = {
   description: '업무 자동화 및 알림 센터',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
       <body>
-        <ClerkProvider>{children}</ClerkProvider>
+        <ClerkProvider>
+          <div className="flex min-h-screen bg-gray-50">
+            <AppSidebar />
+            <main className="flex-1 overflow-auto">{children}</main>
+          </div>
+        </ClerkProvider>
       </body>
     </html>
   )
