@@ -11,8 +11,10 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './'),
       '@/apps/hr': path.resolve(__dirname, './apps/hr'),
+      '@/lib': path.resolve(__dirname, './apps/hr/lib'),
+      '@/actions': path.resolve(__dirname, './apps/hr/actions'),
+      '@': path.resolve(__dirname, './'),
     },
   },
 })
