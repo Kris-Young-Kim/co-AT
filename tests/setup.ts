@@ -10,6 +10,8 @@ vi.mock('server-only', () => ({
 vi.mock('@clerk/nextjs/server', () => ({
   auth: mockAuth,
   currentUser: vi.fn(() => Promise.resolve({ id: 'test-user-id', emailAddresses: [{ emailAddress: 'test@example.com' }] })),
+  clerkMiddleware: vi.fn(() => vi.fn()),
+  createRouteMatcher: vi.fn(() => vi.fn(() => false)),
 }))
 
 // auth 함수를 export하여 테스트에서 사용 가능하도록
@@ -44,8 +46,13 @@ vi.mock('next/cache', () => ({
   revalidateTag: vi.fn(),
 }))
 
-// Clerk 모듈 모킹
-const mockAuth = vi.fn(() => Promise.resolve({ userId: 'test-user-id' }))
+// Clerk 모듈 모킹 — sessionClaims에 admin 역할 포함
+const mockAuth = vi.fn(() => Promise.resolve({
+  userId: 'test-user-id',
+  sessionClaims: {
+    metadata: { role: 'admin', apps: [] },
+  },
+}))
 
 vi.mock('@clerk/nextjs', () => ({
   auth: mockAuth,
@@ -108,6 +115,18 @@ export const mockGetCurrentUserProfileId = vi.fn(() => Promise.resolve('test-pro
 vi.mock('@/lib/utils/permissions', () => ({
   hasAdminOrStaffPermission: mockHasAdminOrStaffPermission,
   getCurrentUserProfileId: mockGetCurrentUserProfileId,
+}))
+
+// @co-at/auth 모킹 — permissions (assertRole, getCurrentRole 등) 기본 통과
+vi.mock('@co-at/auth', () => ({
+  assertRole: vi.fn(() => Promise.resolve()),
+  getCurrentRole: vi.fn(() => Promise.resolve('admin')),
+  requireRole: vi.fn(() => Promise.resolve(true)),
+  hasAppAccess: vi.fn(() => Promise.resolve(true)),
+  hasAdminOrStaffPermission: vi.fn(() => Promise.resolve(true)),
+  hasManagerPermission: vi.fn(() => Promise.resolve(true)),
+  createAppMiddleware: vi.fn(() => vi.fn()),
+  middlewareConfig: { matcher: [] },
 }))
 
 // Gemini 모듈 모킹
