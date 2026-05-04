@@ -36,7 +36,11 @@ export async function issueCertificate(input: CreateCertificateInput): Promise<H
     .eq('clerk_user_id', userId)
     .maybeSingle()
 
-  if (issuerError || !issuer) {
+  if (issuerError) {
+    console.error('[issueCertificate] Failed to fetch issuer:', issuerError)
+    return null
+  }
+  if (!issuer) {
     console.error('[issueCertificate] Issuer not found in hr_employees for clerk_user_id:', userId)
     return null
   }
