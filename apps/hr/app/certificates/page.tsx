@@ -1,13 +1,7 @@
 // apps/hr/app/certificates/page.tsx
-import type { HrCertificate } from '@co-at/types'
 import Link from 'next/link'
-import { getCertificates } from '@/actions/certificate-actions'
+import { getCertificates, type CertWithRelations } from '@/actions/certificate-actions'
 import { Plus } from 'lucide-react'
-
-type CertWithRelations = HrCertificate & {
-  hr_employees?: { name: string }
-  issued_by_employee?: { name: string }
-}
 
 const CERT_LABELS: Record<string, string> = {
   employment:  '재직증명서',

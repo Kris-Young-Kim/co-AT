@@ -7,7 +7,12 @@ import type { HrCertificate, CreateCertificateInput } from '@co-at/types'
 
 const STAFF = 'staff' as const
 
-export async function getCertificates(employeeId?: string): Promise<HrCertificate[]> {
+export type CertWithRelations = HrCertificate & {
+  hr_employees?: { name: string }
+  issued_by_employee?: { name: string }
+}
+
+export async function getCertificates(employeeId?: string): Promise<CertWithRelations[]> {
   const supabase = createSupabaseAdmin()
   let query = supabase
     .from('hr_certificates')
