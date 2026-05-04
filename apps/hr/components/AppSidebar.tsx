@@ -11,6 +11,7 @@ import {
   UserCog,
   Banknote,
   Receipt,
+  FileText,
 } from 'lucide-react'
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -26,7 +27,8 @@ const NAV_ITEMS = [
   { href: '/leave',       label: '연차·휴가',   icon: CalendarDays    },
   { href: '/careers',     label: '경력 관리',   icon: Briefcase       },
   { href: '/salary',      label: '급여 관리',   icon: Banknote        },
-  { href: '/daily-wages', label: '일용급여',    icon: Receipt         },
+  { href: '/daily-wages',   label: '일용급여',    icon: Receipt   },
+  { href: '/certificates', label: '증명서 발급', icon: FileText  },
 ]
 
 export function AppSidebar() {
