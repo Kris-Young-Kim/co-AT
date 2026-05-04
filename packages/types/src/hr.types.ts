@@ -204,3 +204,25 @@ export interface CreateDailyWageInput {
   hourly_rate: number
   note?: string
 }
+
+// ============================================================
+// HR Phase 3 — Certificates
+// ============================================================
+
+export type CertificateType = 'employment' | 'career' | 'salary' | 'resignation'
+
+export interface HrCertificate {
+  id: string
+  employee_id: string
+  type: CertificateType
+  purpose: string | null
+  issued_by: string
+  issued_at: string
+}
+
+export interface CreateCertificateInput {
+  employee_id: string
+  type: CertificateType
+  purpose?: string
+  // issued_by is resolved from the current Clerk user in the action
+}
