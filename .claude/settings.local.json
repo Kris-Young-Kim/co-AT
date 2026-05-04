@@ -51,7 +51,9 @@
       "Bash(pnpm --filter @co-at/hr exec tsc --noEmit)",
       "Bash(npx vitest:*)",
       "Bash(dir:*)",
-      "Bash(cat node_modules/.pnpm/vite@*/node_modules/vite/package.json)"
+      "Bash(cat node_modules/.pnpm/vite@*/node_modules/vite/package.json)",
+      "Bash(grep -r \"from ''''@co-at/auth''''\" D:/AILeader1/project/valuewith/co-AT/apps/hr/ --include=\"*.ts\")",
+      "Bash(node -e \":*)"
     ],
     "deny": [
       "Edit(.env)",
