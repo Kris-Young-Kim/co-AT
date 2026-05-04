@@ -45,7 +45,7 @@ export async function GET(request: Request) {
 
       for (const rental of rentals) {
         const clientId = rental.client_id as string
-        const clerkUserId = (rental.clients as Record<string, unknown> | null)?.clerk_user_id as string | undefined
+        const clerkUserId = (rental.clients as unknown as Record<string, unknown> | null)?.clerk_user_id as string | undefined
         const deviceName = (rental.inventory as { name?: string } | null)?.name ?? '보조기기'
 
         const inApp = await createInAppNotification({
