@@ -103,3 +103,104 @@ export interface ReviewLeaveInput {
   status: 'approved' | 'rejected'
   reviewed_by: string | null
 }
+
+// ============================================================
+// HR Phase 2 — Salary, Allowances, Daily Wages
+// ============================================================
+
+export interface SalaryDeductions {
+  national_pension: number      // 국민연금 4.5%
+  health_insurance: number      // 건강보험 3.545%
+  employment_insurance: number  // 고용보험 0.9%
+  income_tax: number            // 소득세 3.3% (단순화)
+  local_income_tax: number      // 지방소득세 소득세×10%
+}
+
+export interface SalaryAllowance {
+  type_id: string
+  name: string
+  amount: number
+}
+
+export interface HrSalaryGrade {
+  id: string
+  grade_name: string
+  base_salary: number
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface HrAllowanceType {
+  id: string
+  name: string
+  is_active: boolean
+  created_at: string
+}
+
+export interface HrSalaryRecord {
+  id: string
+  employee_id: string
+  year_month: string
+  salary_grade_id: string | null
+  base_salary: number
+  allowances: SalaryAllowance[]
+  deductions: SalaryDeductions
+  gross_pay: number
+  net_pay: number
+  note: string | null
+  confirmed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface HrDailyWage {
+  id: string
+  employee_id: string
+  work_date: string
+  hours_worked: number
+  hourly_rate: number
+  gross_pay: number
+  deductions: SalaryDeductions
+  net_pay: number
+  note: string | null
+  created_at: string
+}
+
+// Input types
+export interface CreateSalaryGradeInput {
+  grade_name: string
+  base_salary: number
+}
+
+export interface UpdateSalaryGradeInput extends Partial<CreateSalaryGradeInput> {
+  is_active?: boolean
+}
+
+export interface CreateAllowanceTypeInput {
+  name: string
+}
+
+export interface CreateSalaryRecordInput {
+  employee_id: string
+  year_month: string
+  salary_grade_id?: string
+  base_salary: number
+  allowances: SalaryAllowance[]
+  note?: string
+}
+
+export interface UpdateSalaryRecordInput {
+  salary_grade_id?: string
+  base_salary?: number
+  allowances?: SalaryAllowance[]
+  note?: string
+}
+
+export interface CreateDailyWageInput {
+  employee_id: string
+  work_date: string
+  hours_worked: number
+  hourly_rate: number
+  note?: string
+}
