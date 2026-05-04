@@ -27,7 +27,10 @@
         "Client_Secret",
         "KAKAO_CLIENT_ID",
         "KAKAO_CLIENT_SECRET",
-        "VERCEL_ENV"
+        "VERCEL_ENV",
+        "RESEND_API_KEY",
+        "RESEND_FROM_EMAIL",
+        "CRON_SECRET"
       ]
     },
     "lint": {
