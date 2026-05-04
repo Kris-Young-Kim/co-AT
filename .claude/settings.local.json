@@ -48,7 +48,10 @@
       "Bash(pnpm --filter @co-at/eval build)",
       "Bash(pnpm --filter admin build)",
       "Bash(pnpm --filter web build)",
-      "Bash(pnpm --filter @co-at/hr exec tsc --noEmit)"
+      "Bash(pnpm --filter @co-at/hr exec tsc --noEmit)",
+      "Bash(npx vitest:*)",
+      "Bash(dir:*)",
+      "Bash(cat node_modules/.pnpm/vite@*/node_modules/vite/package.json)"
     ],
     "deny": [
       "Edit(.env)",
