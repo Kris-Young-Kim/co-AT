@@ -53,7 +53,12 @@
       "Bash(dir:*)",
       "Bash(cat node_modules/.pnpm/vite@*/node_modules/vite/package.json)",
       "Bash(grep -r \"from ''''@co-at/auth''''\" D:/AILeader1/project/valuewith/co-AT/apps/hr/ --include=\"*.ts\")",
-      "Bash(node -e \":*)"
+      "Bash(node -e \":*)",
+      "Bash(do)",
+      "Bash(sed -i 's/export const middleware = /export default /g' \"$f\")",
+      "Bash(echo \"fixed: $f\")",
+      "Bash(do echo:*)",
+      "Read(//d/AILeader1/project/valuewith/co-AT/apps/**)"
     ],
     "deny": [
       "Edit(.env)",
