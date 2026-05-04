@@ -1,4 +1,4 @@
-import { Badge } from '@co-at/ui'
+import { Badge } from '@co-at/ui/badge'
 
 interface Log {
   id: string

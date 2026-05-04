@@ -1,5 +1,5 @@
 import { MessageSquare } from 'lucide-react'
-import { Badge } from '@co-at/ui'
+import { Badge } from '@co-at/ui/badge'
 
 export function KakaoChannelCard() {
   return (

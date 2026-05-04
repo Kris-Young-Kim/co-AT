@@ -1,7 +1,10 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Button, Input, Textarea, Label } from '@co-at/ui'
+import { Button } from '@co-at/ui/button'
+import { Input } from '@co-at/ui/input'
+import { Textarea } from '@co-at/ui/textarea'
+import { Label } from '@co-at/ui/label'
 
 interface Profile {
   id: string

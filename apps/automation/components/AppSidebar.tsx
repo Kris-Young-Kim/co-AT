@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, ScrollText, Settings, Send, Zap } from 'lucide-react'
-import { cn } from '@co-at/ui'
+import { cn } from '@/lib/utils'
 
 const NAV_ITEMS = [
   { href: '/',         label: '대시보드',  icon: LayoutDashboard },
