@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createCareer } from '@/actions/career-actions'
 import type { CreateCareerInput } from '@co-at/types'
 
-export default function NewCareerPage() {
+function NewCareerForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const defaultEmployeeId = searchParams.get('employeeId') ?? ''
@@ -66,6 +66,14 @@ export default function NewCareerPage() {
         </div>
       </form>
     </div>
+  )
+}
+
+export default function NewCareerPage() {
+  return (
+    <Suspense>
+      <NewCareerForm />
+    </Suspense>
   )
 }
 
