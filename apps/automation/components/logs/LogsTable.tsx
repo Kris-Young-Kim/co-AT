@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Badge } from '@co-at/ui'
+import { Badge } from '@co-at/ui/badge'
 import { LogDetailModal } from './LogDetailModal'
 
 interface Log {

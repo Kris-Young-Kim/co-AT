@@ -1,6 +1,6 @@
 'use client'
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@co-at/ui'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@co-at/ui/dialog'
 
 interface Log {
   id: string

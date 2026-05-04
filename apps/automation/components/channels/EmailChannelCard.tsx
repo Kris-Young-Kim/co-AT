@@ -3,7 +3,10 @@
 import { useState, useTransition } from 'react'
 import { Mail } from 'lucide-react'
 import { toggleChannel, saveChannelConfig, markChannelTested } from '@/actions/channel-actions'
-import { Switch, Button, Input, Label } from '@co-at/ui'
+import { Switch } from '@co-at/ui/switch'
+import { Button } from '@co-at/ui/button'
+import { Input } from '@co-at/ui/input'
+import { Label } from '@co-at/ui/label'
 
 interface Channel {
   channel_type: string
