@@ -58,7 +58,8 @@
       "Bash(sed -i 's/export const middleware = /export default /g' \"$f\")",
       "Bash(echo \"fixed: $f\")",
       "Bash(do echo:*)",
-      "Read(//d/AILeader1/project/valuewith/co-AT/apps/**)"
+      "Read(//d/AILeader1/project/valuewith/co-AT/apps/**)",
+      "Bash(pnpm --filter @co-at/approval exec tsc --noEmit --skipLibCheck)"
     ],
     "deny": [
       "Edit(.env)",
