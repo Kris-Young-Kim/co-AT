@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache"
 export interface CallLog {
   id: string
   log_date: string
+  requester_name: string | null
+  requester_contact: string | null
   requester_type: string | null
   requester_region: string | null
   target_name: string | null
@@ -60,7 +62,7 @@ export async function getCallLogs(params?: {
 
   const { data, error, count } = await query
   if (error) return { success: false, error: error.message }
-  return { success: true, logs: (data ?? []) as CallLog[], total: count ?? 0 }
+  return { success: true, logs: (data ?? []) as unknown as CallLog[], total: count ?? 0 }
 }
 
 export async function getCallLogById(id: string): Promise<{ success: boolean; log?: CallLog; error?: string }> {
@@ -70,7 +72,7 @@ export async function getCallLogById(id: string): Promise<{ success: boolean; lo
   const supabase = createAdminClient()
   const { data, error } = await supabase.from('call_logs').select('*').eq('id', id).single()
   if (error) return { success: false, error: error.message }
-  return { success: true, log: data as CallLog }
+  return { success: true, log: data as unknown as CallLog }
 }
 
 export async function createCallLog(
@@ -88,7 +90,7 @@ export async function createCallLog(
 
   if (error) return { success: false, error: error.message }
   revalidatePath('/call-logs')
-  return { success: true, log: data as CallLog }
+  return { success: true, log: data as unknown as CallLog }
 }
 
 export async function updateCallLog(
@@ -108,7 +110,7 @@ export async function updateCallLog(
 
   if (error) return { success: false, error: error.message }
   revalidatePath('/call-logs')
-  return { success: true, log: data as CallLog }
+  return { success: true, log: data as unknown as CallLog }
 }
 
 export async function deleteCallLog(id: string): Promise<{ success: boolean; error?: string }> {
