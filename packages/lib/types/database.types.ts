@@ -1241,6 +1241,8 @@ export type Database = {
         Row: {
           id: string
           log_date: string
+          requester_name: string | null
+          requester_contact: string | null
           requester_type: string | null
           requester_region: string | null
           target_name: string | null
@@ -1262,6 +1264,8 @@ export type Database = {
         Insert: {
           id?: string
           log_date: string
+          requester_name?: string | null
+          requester_contact?: string | null
           requester_type?: string | null
           requester_region?: string | null
           target_name?: string | null
@@ -1283,6 +1287,8 @@ export type Database = {
         Update: {
           id?: string
           log_date?: string
+          requester_name?: string | null
+          requester_contact?: string | null
           requester_type?: string | null
           requester_region?: string | null
           target_name?: string | null

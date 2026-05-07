@@ -93,7 +93,7 @@ export async function syncCallLogs(): Promise<{
           continue
         }
 
-        await supabase.from('call_logs').insert({
+        const { error: insertError } = await supabase.from('call_logs').insert({
           log_date: logDate,
           requester_name: toStr(row[CALL_COL.requesterName]),
           requester_region: toStr(row[CALL_COL.requesterRegion]),
@@ -113,7 +113,9 @@ export async function syncCallLogs(): Promise<{
           answer: toStr(row[CALL_COL.answer]),
           staff_name: staffName,
         })
-        totalAdded++
+        if (!insertError) {
+          totalAdded++
+        }
       }
     }
 
@@ -198,7 +200,8 @@ function parseBirthDate(v: unknown): string | null {
   const match = s.match(/^(\d{2})(\d{2})(\d{2})/)
   if (match) {
     const yy = parseInt(match[1])
-    const century = yy >= 0 && yy <= 24 ? '20' : '19'
+    const currentYY = new Date().getFullYear() % 100
+    const century = yy <= currentYY ? '20' : '19'
     return `${century}${match[1]}-${match[2]}-${match[3]}`
   }
   return null
@@ -245,7 +248,7 @@ export async function syncServiceRecords(): Promise<{
         continue
       }
 
-      await supabase.from('eval_service_records').insert({
+      const { error: insertError } = await supabase.from('eval_service_records').insert({
         received_at: receivedAt,
         application_year: row[SR_COL.appYear] ? parseInt(String(row[SR_COL.appYear])) : null,
         application_no: row[SR_COL.appNo] ? parseInt(String(row[SR_COL.appNo])) : null,
@@ -283,7 +286,9 @@ export async function syncServiceRecords(): Promise<{
         staff_name: toStr(row[SR_COL.staffName]),
         source: 'sheets',
       })
-      totalAdded++
+      if (!insertError) {
+        totalAdded++
+      }
     }
 
     await supabase.from('eval_sync_logs').insert({
@@ -354,7 +359,7 @@ export async function getSyncStats(): Promise<{
 
   const supabase = createAdminClient()
 
-  const [{ count: callCount }, { count: srCount }, { data: lastLogs }] = await Promise.all([
+  const [callResult, srResult, logsResult] = await Promise.all([
     supabase.from('call_logs').select('*', { count: 'exact', head: true }),
     supabase.from('eval_service_records').select('*', { count: 'exact', head: true }),
     supabase.from('eval_sync_logs')
@@ -364,13 +369,17 @@ export async function getSyncStats(): Promise<{
       .limit(10),
   ])
 
-  const lastCallLog = lastLogs?.find(l => l.sheet_type === 'call_log')?.synced_at ?? null
-  const lastSR = lastLogs?.find(l => l.sheet_type === 'service_record')?.synced_at ?? null
+  if (callResult.error || srResult.error) {
+    return { success: false, error: callResult.error?.message ?? srResult.error?.message }
+  }
+
+  const lastCallLog = logsResult.data?.find(l => l.sheet_type === 'call_log')?.synced_at ?? null
+  const lastSR = logsResult.data?.find(l => l.sheet_type === 'service_record')?.synced_at ?? null
 
   return {
     success: true,
-    callLogCount: callCount ?? 0,
-    serviceRecordCount: srCount ?? 0,
+    callLogCount: callResult.count ?? 0,
+    serviceRecordCount: srResult.count ?? 0,
     lastCallLogSync: lastCallLog,
     lastServiceRecordSync: lastSR,
   }

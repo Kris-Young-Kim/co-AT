@@ -13,8 +13,15 @@ function createSheetsClient(): sheets_v4.Sheets {
   return google.sheets({ version: 'v4', auth })
 }
 
-// Module-level singleton — GoogleAuth handles token caching internally
-const sheetsClient = createSheetsClient()
+// Lazy singleton — initialized on first use so missing env var surfaces as a runtime error
+// inside the caller's try/catch rather than crashing at module load time.
+let _sheetsClient: ReturnType<typeof createSheetsClient> | null = null
+function getSheetsClient() {
+  if (!_sheetsClient) {
+    _sheetsClient = createSheetsClient()
+  }
+  return _sheetsClient
+}
 
 /**
  * 지정한 스프레드시트의 시트 데이터를 2차원 배열로 반환한다.
@@ -25,7 +32,7 @@ export async function getSheetValues(
   spreadsheetId: string,
   range: string
 ): Promise<(string | number | boolean | null)[][]> {
-  const response = await sheetsClient.spreadsheets.values.get({
+  const response = await getSheetsClient().spreadsheets.values.get({
     spreadsheetId,
     range,
     valueRenderOption: 'UNFORMATTED_VALUE',
@@ -41,7 +48,7 @@ export async function getSheetValues(
  * 스프레드시트의 모든 시트 이름 목록을 반환한다.
  */
 export async function getSheetNames(spreadsheetId: string): Promise<string[]> {
-  const response = await sheetsClient.spreadsheets.get({ spreadsheetId })
+  const response = await getSheetsClient().spreadsheets.get({ spreadsheetId })
   return (response.data.sheets ?? []).map(
     (s: sheets_v4.Schema$Sheet) => s.properties?.title ?? ''
   )
