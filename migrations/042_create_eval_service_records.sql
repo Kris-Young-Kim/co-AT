@@ -86,3 +86,16 @@ CREATE INDEX IF NOT EXISTS idx_eval_sr_client_id      ON eval_service_records(cl
 COMMENT ON TABLE eval_service_records IS '보조기기 서비스 실적 — 중앙 보고용 전용 테이블';
 
 COMMENT ON COLUMN eval_service_records.name IS '대상자 성명 — Google Sheets 원본 보존 (clients 테이블 연결 없이도 독립 조회 가능)';
+
+-- Auto-update updated_at on row modification
+CREATE OR REPLACE FUNCTION update_eval_service_records_updated_at()
+RETURNS TRIGGER LANGUAGE plpgsql AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER trg_eval_service_records_updated_at
+  BEFORE UPDATE ON eval_service_records
+  FOR EACH ROW EXECUTE FUNCTION update_eval_service_records_updated_at();

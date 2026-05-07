@@ -26,6 +26,7 @@ export async function generateCallLogReport(params: {
     .select('*')
     .gte('log_date', params.startDate)
     .lte('log_date', params.endDate)
+    .limit(10000)
 
   if (error) return { success: false, error: error.message }
   if (!data?.length) return { success: false, error: '해당 기간에 데이터가 없습니다' }
@@ -97,6 +98,7 @@ export async function generateServiceRecordReport(params: {
     .select('*')
     .gte('received_at', params.startDate)
     .lte('received_at', params.endDate)
+    .limit(10000)
 
   if (error) return { success: false, error: error.message }
   if (!data?.length) return { success: false, error: '해당 기간에 데이터가 없습니다' }
