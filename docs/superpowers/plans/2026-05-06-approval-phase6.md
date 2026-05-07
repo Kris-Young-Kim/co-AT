@@ -14,7 +14,7 @@
 
 | File | Action | Purpose |
 |---|---|---|
-| `migrations/041_create_approval_tables.sql` | Create | approval_signatures, approval_documents, approval_steps 테이블 + RLS |
+| `migrations/045_create_approval_tables.sql` | Create | approval_signatures, approval_documents, approval_steps 테이블 + RLS |
 | `packages/types/src/approval.types.ts` | Create | 전자결재 TypeScript 타입 |
 | `packages/types/src/index.ts` | Modify | approval.types.ts export 추가 |
 | `apps/approval/lib/supabase-admin.ts` | Create | Supabase service role client |
@@ -34,12 +34,12 @@
 ## Task 1: DB Migration
 
 **Files:**
-- Create: `migrations/041_create_approval_tables.sql`
+- Create: `migrations/045_create_approval_tables.sql`
 
 - [ ] **Step 1: Create migration file**
 
 ```sql
--- migrations/041_create_approval_tables.sql
+-- migrations/045_create_approval_tables.sql
 
 -- ============================================================
 -- approval_signatures — 직원별 서명 이미지 (1인 1개)
@@ -116,7 +116,7 @@ Also create Storage bucket: `approval-signatures` (public: false, file size limi
 - [ ] **Step 3: Commit**
 
 ```bash
-git add migrations/041_create_approval_tables.sql
+git add migrations/045_create_approval_tables.sql
 git commit -m "feat(approval): add DB migration for approval tables"
 ```
 
