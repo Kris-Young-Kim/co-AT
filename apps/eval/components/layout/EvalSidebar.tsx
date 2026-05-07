@@ -2,13 +2,15 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Users, BarChart3, LogOut, Phone } from 'lucide-react'
+import { Users, BarChart3, LogOut, Phone, RefreshCw, FileDown } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 
 const NAV_ITEMS = [
   { href: '/', label: '대시보드', icon: BarChart3 },
   { href: '/clients', label: '클라이언트', icon: Users },
   { href: '/call-logs', label: '콜센터 상담', icon: Phone },
+  { href: '/migration', label: 'Sheets 동기화', icon: RefreshCw },
+  { href: '/reports', label: '보고서 출력', icon: FileDown },
 ] as const
 
 function cn(...classes: (string | boolean | undefined)[]) {
