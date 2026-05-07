@@ -12,9 +12,23 @@ CREATE TABLE IF NOT EXISTS eval_sync_logs (
 ALTER TABLE eval_sync_logs ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "staff can read eval_sync_logs"
-  ON eval_sync_logs FOR SELECT USING (true);
+  ON eval_sync_logs FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE profiles.clerk_user_id = (auth.jwt() ->> 'sub')
+        AND profiles.role IN ('ADMIN', 'MANAGER', 'STAFF')
+    )
+  );
 
-CREATE POLICY "service role can insert eval_sync_logs"
-  ON eval_sync_logs FOR INSERT WITH CHECK (true);
+CREATE POLICY "staff can insert eval_sync_logs"
+  ON eval_sync_logs FOR INSERT
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE profiles.clerk_user_id = (auth.jwt() ->> 'sub')
+        AND profiles.role IN ('ADMIN', 'MANAGER', 'STAFF')
+    )
+  );
 
 COMMENT ON TABLE eval_sync_logs IS 'Google Sheets 동기화 실행 이력';
