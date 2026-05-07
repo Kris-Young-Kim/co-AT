@@ -29,7 +29,7 @@ export function DownloadReportButton({ label, action }: DownloadReportButtonProp
       a.href = url
       a.download = result.filename
       a.click()
-      URL.revokeObjectURL(url)
+      setTimeout(() => URL.revokeObjectURL(url), 100)
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
     } finally {
