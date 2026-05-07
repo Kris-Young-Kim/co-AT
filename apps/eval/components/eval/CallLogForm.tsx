@@ -43,6 +43,8 @@ export function CallLogForm({ defaultValues, onSubmit, submitLabel = '저장' }:
 
     const data: CreateCallLogInput = {
       log_date: fd.get('log_date') as string,
+      requester_name: (fd.get('requester_name') as string) || null,
+      requester_contact: (fd.get('requester_contact') as string) || null,
       requester_type: (fd.get('requester_type') as string) || null,
       requester_region: (fd.get('requester_region') as string) || null,
       target_name: (fd.get('target_name') as string) || null,
