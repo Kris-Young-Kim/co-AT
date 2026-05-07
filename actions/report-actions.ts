@@ -22,7 +22,7 @@ export async function generateCallLogReport(params: {
 
   const supabase = createAdminClient()
   const { data, error } = await supabase
-    .from('v_call_log_report' as string)
+    .from('v_call_log_report')
     .select('*')
     .gte('log_date', params.startDate)
     .lte('log_date', params.endDate)
@@ -94,7 +94,7 @@ export async function generateServiceRecordReport(params: {
 
   const supabase = createAdminClient()
   const { data, error } = await supabase
-    .from('v_service_record_report' as string)
+    .from('v_service_record_report')
     .select('*')
     .gte('received_at', params.startDate)
     .lte('received_at', params.endDate)

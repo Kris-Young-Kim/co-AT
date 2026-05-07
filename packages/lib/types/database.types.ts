@@ -527,6 +527,179 @@ export type Database = {
           },
         ]
       }
+      eval_service_records: {
+        Row: {
+          id: string
+          client_id: string | null
+          received_at: string | null
+          application_year: number | null
+          application_no: number | null
+          is_re_application: boolean
+          name: string | null
+          birth_date: string | null
+          gender: string | null
+          region: string | null
+          disability_type: string | null
+          service_category: string | null
+          product_name: string | null
+          item_category: string | null
+          service_content: string | null
+          service_area: string | null
+          is_consult: boolean
+          is_assessment: boolean
+          is_trial: boolean
+          is_rental: boolean
+          is_custom_make: boolean
+          is_grant: boolean
+          is_education: boolean
+          is_other_business: boolean
+          is_info_provision: boolean
+          is_public_funding: boolean
+          is_private_funding: boolean
+          is_self_pay: boolean
+          is_funding_secured: boolean
+          is_repair: boolean
+          is_cleaning: boolean
+          is_reuse: boolean
+          is_monitoring: boolean
+          referral_type: string | null
+          is_phone: boolean
+          is_visit_in: boolean
+          is_visit_out: boolean
+          is_closed: boolean
+          staff_name: string | null
+          source: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          client_id?: string | null
+          received_at?: string | null
+          application_year?: number | null
+          application_no?: number | null
+          is_re_application?: boolean
+          name?: string | null
+          birth_date?: string | null
+          gender?: string | null
+          region?: string | null
+          disability_type?: string | null
+          service_category?: string | null
+          product_name?: string | null
+          item_category?: string | null
+          service_content?: string | null
+          service_area?: string | null
+          is_consult?: boolean
+          is_assessment?: boolean
+          is_trial?: boolean
+          is_rental?: boolean
+          is_custom_make?: boolean
+          is_grant?: boolean
+          is_education?: boolean
+          is_other_business?: boolean
+          is_info_provision?: boolean
+          is_public_funding?: boolean
+          is_private_funding?: boolean
+          is_self_pay?: boolean
+          is_funding_secured?: boolean
+          is_repair?: boolean
+          is_cleaning?: boolean
+          is_reuse?: boolean
+          is_monitoring?: boolean
+          referral_type?: string | null
+          is_phone?: boolean
+          is_visit_in?: boolean
+          is_visit_out?: boolean
+          is_closed?: boolean
+          staff_name?: string | null
+          source?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          client_id?: string | null
+          received_at?: string | null
+          application_year?: number | null
+          application_no?: number | null
+          is_re_application?: boolean
+          name?: string | null
+          birth_date?: string | null
+          gender?: string | null
+          region?: string | null
+          disability_type?: string | null
+          service_category?: string | null
+          product_name?: string | null
+          item_category?: string | null
+          service_content?: string | null
+          service_area?: string | null
+          is_consult?: boolean
+          is_assessment?: boolean
+          is_trial?: boolean
+          is_rental?: boolean
+          is_custom_make?: boolean
+          is_grant?: boolean
+          is_education?: boolean
+          is_other_business?: boolean
+          is_info_provision?: boolean
+          is_public_funding?: boolean
+          is_private_funding?: boolean
+          is_self_pay?: boolean
+          is_funding_secured?: boolean
+          is_repair?: boolean
+          is_cleaning?: boolean
+          is_reuse?: boolean
+          is_monitoring?: boolean
+          referral_type?: string | null
+          is_phone?: boolean
+          is_visit_in?: boolean
+          is_visit_out?: boolean
+          is_closed?: boolean
+          staff_name?: string | null
+          source?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_service_records_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eval_sync_logs: {
+        Row: {
+          id: string
+          sheet_type: string
+          status: string
+          rows_added: number
+          rows_skipped: number
+          error_msg: string | null
+          synced_at: string
+        }
+        Insert: {
+          id?: string
+          sheet_type: string
+          status: string
+          rows_added?: number
+          rows_skipped?: number
+          error_msg?: string | null
+          synced_at?: string
+        }
+        Update: {
+          id?: string
+          sheet_type?: string
+          status?: string
+          rows_added?: number
+          rows_skipped?: number
+          error_msg?: string | null
+          synced_at?: string
+        }
+        Relationships: []
+      }
       equipment: {
         Row: {
           created_at: string | null
@@ -1359,7 +1532,70 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_call_log_report: {
+        Row: {
+          log_date: string | null
+          requester_name: string | null
+          requester_region: string | null
+          requester_contact: string | null
+          requester_type: string | null
+          target_name: string | null
+          target_gender: string | null
+          target_disability_type: string | null
+          target_disability_severity: string | null
+          target_economic_status: string | null
+          q_public_benefit: boolean | null
+          q_private_benefit: boolean | null
+          q_device: boolean | null
+          q_case_management: boolean | null
+          q_other: boolean | null
+          question_content: string | null
+          answer: string | null
+          staff_name: string | null
+        }
+        Relationships: []
+      }
+      v_service_record_report: {
+        Row: {
+          received_at: string | null
+          application_year: number | null
+          application_no: number | null
+          name: string | null
+          birth_date: string | null
+          gender: string | null
+          region: string | null
+          disability_type: string | null
+          service_category: string | null
+          product_name: string | null
+          item_category: string | null
+          service_content: string | null
+          service_area: string | null
+          is_consult: boolean | null
+          is_assessment: boolean | null
+          is_trial: boolean | null
+          is_rental: boolean | null
+          is_custom_make: boolean | null
+          is_grant: boolean | null
+          is_education: boolean | null
+          is_other_business: boolean | null
+          is_info_provision: boolean | null
+          is_public_funding: boolean | null
+          is_private_funding: boolean | null
+          is_self_pay: boolean | null
+          is_funding_secured: boolean | null
+          is_repair: boolean | null
+          is_cleaning: boolean | null
+          is_reuse: boolean | null
+          is_monitoring: boolean | null
+          referral_type: string | null
+          is_phone: boolean | null
+          is_visit_in: boolean | null
+          is_visit_out: boolean | null
+          is_closed: boolean | null
+          staff_name: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
