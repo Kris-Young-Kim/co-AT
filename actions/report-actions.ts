@@ -202,20 +202,19 @@ export async function generateBusinessReport(params: {
   await workbook.xlsx.readFile(templatePath)
 
   // Sheet 1: 전체 사업 실적 — update actual column E with stats values
-  const sheet1 = workbook.getWorksheet('1.전체 사업 실적')
-  if (sheet1) {
-    sheet1.getCell('E5').value = stats.callTotal
-    sheet1.getCell('E8').value = stats.rental
-    sheet1.getCell('E9').value = stats.customMake
-    sheet1.getCell('E10').value = stats.grant
-    sheet1.getCell('E11').value = stats.cleaning
-    sheet1.getCell('E12').value = stats.repair
-    sheet1.getCell('E13').value = stats.reuse
-  }
+  const sheet1 = workbook.getWorksheet(1)
+  if (!sheet1) return { success: false, error: '사업 실적 템플릿에서 시트 1을 찾을 수 없습니다' }
+  sheet1.getCell('E5').value = stats.callTotal
+  sheet1.getCell('E8').value = stats.rental
+  sheet1.getCell('E9').value = stats.customMake
+  sheet1.getCell('E10').value = stats.grant
+  sheet1.getCell('E11').value = stats.cleaning
+  sheet1.getCell('E12').value = stats.repair
+  sheet1.getCell('E13').value = stats.reuse
 
   // Sheet 6: 대여 현황
   const rentalRecords = records.filter(r => r.is_rental)
-  const sheet6 = workbook.getWorksheet('6.대여 현황 관리(대기자 등)')
+  const sheet6 = workbook.getWorksheet(6)
   if (sheet6 && rentalRecords.length > 0) {
     let rowNum = 3
     for (const rec of rentalRecords) {
@@ -230,14 +229,14 @@ export async function generateBusinessReport(params: {
 
   // Sheet 7: 제작 서비스 현황
   const makeRecords = records.filter(r => r.is_custom_make)
-  const sheet7 = workbook.getWorksheet('7.제작 서비스 현황 관리')
+  const sheet7 = workbook.getWorksheet(7)
   if (sheet7 && makeRecords.length > 0) {
     let rowNum = 3
     for (const rec of makeRecords) {
       const r = sheet7.getRow(rowNum)
       r.getCell(2).value = rec.name
       r.getCell(3).value = rec.product_name
-      r.getCell(4).value = rec.product_name
+      r.getCell(4).value = rec.service_content
       r.getCell(7).value = rec.received_at
       r.commit()
       rowNum++
