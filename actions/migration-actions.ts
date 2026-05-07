@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from 'next/cache'
 import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { getSheetValues, getSheetNames } from "@/eval/lib/google-sheets"
@@ -125,6 +126,7 @@ export async function syncCallLogs(): Promise<{
       rows_added: totalAdded,
       rows_skipped: totalSkipped,
     })
+    revalidatePath('/migration')
 
     return { success: true, rowsAdded: totalAdded, rowsSkipped: totalSkipped }
   } catch (err) {
@@ -150,8 +152,10 @@ const SR_COL = {
   seq: 1,
   appYear: 5,
   appNo: 6,
+  isReApplication: 4,
   name: 7,
   birthDate: 8,
+  gender: 10,
   region: 11,
   disabilityType: 12,
   serviceCategory: 13,
@@ -241,6 +245,7 @@ export async function syncServiceRecords(): Promise<{
         .select('id')
         .eq('received_at', receivedAt ?? '')
         .eq('name', name)
+        .eq('birth_date', birthDate ?? '')
         .maybeSingle()
 
       if (existing) {
@@ -252,8 +257,10 @@ export async function syncServiceRecords(): Promise<{
         received_at: receivedAt,
         application_year: row[SR_COL.appYear] ? parseInt(String(row[SR_COL.appYear])) : null,
         application_no: row[SR_COL.appNo] ? parseInt(String(row[SR_COL.appNo])) : null,
+        is_re_application: toBool(row[SR_COL.isReApplication]),
         name,
         birth_date: birthDate,
+        gender: toStr(row[SR_COL.gender]),
         region: toStr(row[SR_COL.region]),
         disability_type: toStr(row[SR_COL.disabilityType]),
         service_category: toStr(row[SR_COL.serviceCategory]),
@@ -297,6 +304,7 @@ export async function syncServiceRecords(): Promise<{
       rows_added: totalAdded,
       rows_skipped: totalSkipped,
     })
+    revalidatePath('/migration')
 
     return { success: true, rowsAdded: totalAdded, rowsSkipped: totalSkipped }
   } catch (err) {

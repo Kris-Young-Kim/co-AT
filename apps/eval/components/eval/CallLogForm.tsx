@@ -111,6 +111,26 @@ export function CallLogForm({ defaultValues, onSubmit, submitLabel = '저장' }:
           </select>
         </div>
         {textField('requester_region', '지역 또는 소속')}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">의뢰인 성명</label>
+          <input
+            type="text"
+            name="requester_name"
+            defaultValue={defaultValues?.requester_name ?? ''}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="의뢰인 성명"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">의뢰인 연락처</label>
+          <input
+            type="text"
+            name="requester_contact"
+            defaultValue={defaultValues?.requester_contact ?? ''}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="의뢰인 연락처"
+          />
+        </div>
       </fieldset>
 
       {/* 대상자 정보 */}
