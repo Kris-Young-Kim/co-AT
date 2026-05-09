@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
-import { getSheetValues, getSheetNames } from "@/eval/lib/google-sheets"
+import { getSheetValues, getSheetNames } from "@/apps/eval/lib/google-sheets"
 
 // ────────────────────────────────────────────
 // 콜센터 상담 일지 동기화
@@ -63,7 +63,7 @@ export async function syncCallLogs(): Promise<{
   try {
     const supabase = createAdminClient()
     const sheetNames = await getSheetNames(sheetId)
-    const yearSheets = sheetNames.filter(n => /^\d{4}$/.test(n))
+    const yearSheets = sheetNames.filter((n: string) => /^\d{4}$/.test(n))
 
     let totalAdded = 0
     let totalSkipped = 0
@@ -381,8 +381,8 @@ export async function getSyncStats(): Promise<{
     return { success: false, error: callResult.error?.message ?? srResult.error?.message }
   }
 
-  const lastCallLog = logsResult.data?.find(l => l.sheet_type === 'call_log')?.synced_at ?? null
-  const lastSR = logsResult.data?.find(l => l.sheet_type === 'service_record')?.synced_at ?? null
+  const lastCallLog = logsResult.data?.find((l: { sheet_type: string; synced_at: string | null }) => l.sheet_type === 'call_log')?.synced_at ?? null
+  const lastSR = logsResult.data?.find((l: { sheet_type: string; synced_at: string | null }) => l.sheet_type === 'service_record')?.synced_at ?? null
 
   return {
     success: true,

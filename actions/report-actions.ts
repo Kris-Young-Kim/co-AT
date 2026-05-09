@@ -180,7 +180,16 @@ export async function generateBusinessReport(params: {
   if (srResult.error) return { success: false, error: srResult.error.message }
   if (callResult.error) return { success: false, error: callResult.error.message }
 
-  const records = srResult.data ?? []
+  type ServiceRecord = {
+    is_consult: boolean; is_assessment: boolean; is_trial: boolean
+    is_rental: boolean; is_custom_make: boolean; is_grant: boolean
+    is_education: boolean; is_info_provision: boolean; is_repair: boolean
+    is_cleaning: boolean; is_reuse: boolean; is_monitoring: boolean
+    name: string | null; product_name: string | null
+    service_content: string | null; received_at: string | null
+    [key: string]: unknown
+  }
+  const records = (srResult.data ?? []) as ServiceRecord[]
   const calls = callResult.data ?? []
 
   const stats = {
