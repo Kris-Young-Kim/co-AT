@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache"
 export interface CallLog {
   id: string
   log_date: string
+  requester_name: string | null
+  requester_contact: string | null
   requester_type: string | null
   requester_region: string | null
   target_name: string | null

@@ -59,7 +59,18 @@
       "Bash(echo \"fixed: $f\")",
       "Bash(do echo:*)",
       "Read(//d/AILeader1/project/valuewith/co-AT/apps/**)",
-      "Bash(pnpm --filter @co-at/approval exec tsc --noEmit --skipLibCheck)"
+      "Bash(pnpm --filter @co-at/approval exec tsc --noEmit --skipLibCheck)",
+      "Bash(python3:*)",
+      "Bash(pip install:*)",
+      "Bash(for file:*)",
+      "Read(//d/AILeader1/project/valuewith/co-AT/**)",
+      "Bash(npx supabase:*)",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_v0_4844266856c682057f82bc77cc1f1d2fb14d0e37 npx supabase link --project-ref uyjbndiwyddjyjkdfuyi)",
+      "Bash(curl -s -X GET \"https://api.supabase.com/v1/projects/uyjbndiwyddjyjkdfuyi\" -H \"Authorization: Bearer sbp_v0_4844266856c682057f82bc77cc1f1d2fb14d0e37\")",
+      "Bash(SUPABASE_ACCESS_TOKEN=sbp_v0_4844266856c682057f82bc77cc1f1d2fb14d0e37 pnpm gen:types)",
+      "Bash(npm install:*)",
+      "Bash(npx:*)",
+      "Bash(pnpm turbo:*)"
     ],
     "deny": [
       "Edit(.env)",
