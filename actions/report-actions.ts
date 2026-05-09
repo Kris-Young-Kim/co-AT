@@ -149,6 +149,24 @@ export async function generateServiceRecordReport(params: {
     r.getCell(39).value = record.is_visit_out ? '✓' : ''
     r.getCell(40).value = record.is_closed ? '종결' : ''
     r.getCell(41).value = record.staff_name as string
+    // ── columns added in migration 050 ─────────────────────────
+    r.getCell(3).value = record.application_year as number
+    r.getCell(4).value = record.application_month as number
+    r.getCell(5).value = record.application_no as number
+    r.getCell(6).value = record.is_re_application ? '재신청' : ''
+    r.getCell(7).value = record.record_status as string
+    r.getCell(10).value = record.gender as string
+    r.getCell(11).value = record.economic_status as string
+    r.getCell(42).value = record.service_major_category as string
+    r.getCell(43).value = record.service_sub_category as string
+    r.getCell(44).value = record.disability_severity as string
+    r.getCell(45).value = record.consultation_date as string
+    r.getCell(46).value = record.performance_date as string
+    r.getCell(47).value = record.closed_at as string
+    r.getCell(48).value = record.monitoring_date as string
+    r.getCell(49).value = record.trial_device_count as number
+    r.getCell(50).value = record.info_provision_area as string
+    r.getCell(51).value = record.funding_source_detail as string
     r.commit()
     rowNum++
   }
@@ -187,10 +205,20 @@ export async function generateBusinessReport(params: {
     is_cleaning: boolean; is_reuse: boolean; is_monitoring: boolean
     name: string | null; product_name: string | null
     service_content: string | null; received_at: string | null
+    application_month: number | null; record_status: string | null
+    service_major_category: string | null; economic_status: string | null
+    disability_severity: string | null
     [key: string]: unknown
   }
   const records = (srResult.data ?? []) as ServiceRecord[]
   const calls = callResult.data ?? []
+
+  // Monthly breakdown (1–12)
+  const byMonth: Record<number, number> = {}
+  for (let m = 1; m <= 12; m++) byMonth[m] = 0
+  for (const r of records) {
+    if (r.application_month) byMonth[r.application_month] = (byMonth[r.application_month] ?? 0) + 1
+  }
 
   const stats = {
     callTotal:     calls.length,
@@ -206,6 +234,19 @@ export async function generateBusinessReport(params: {
     cleaning:      records.filter(r => r.is_cleaning).length,
     reuse:         records.filter(r => r.is_reuse).length,
     monitoring:    records.filter(r => r.is_monitoring).length,
+    // major category breakdown
+    catPublic:     records.filter(r => r.service_major_category === '공적급여').length,
+    catPrivate:    records.filter(r => r.service_major_category === '민간지원').length,
+    catOther:      records.filter(r => r.service_major_category === '기타').length,
+    catService:    records.filter(r => r.service_major_category === '서비스지원').length,
+    // economic status breakdown
+    ecoRecipient:  records.filter(r => r.economic_status === '수급자').length,
+    ecoNearPoor:   records.filter(r => r.economic_status === '차상위').length,
+    ecoGeneral:    records.filter(r => r.economic_status === '일반').length,
+    // disability severity
+    sevSevere:     records.filter(r => r.disability_severity === '중증').length,
+    sevMild:       records.filter(r => r.disability_severity === '경증').length,
+    byMonth,
   }
 
   const templatePath = getTemplatePath('business_report_template.xlsx')
@@ -222,6 +263,22 @@ export async function generateBusinessReport(params: {
   sheet1.getCell('E11').value = stats.cleaning
   sheet1.getCell('E12').value = stats.repair
   sheet1.getCell('E13').value = stats.reuse
+  // major category counts
+  sheet1.getCell('E16').value = stats.catPublic
+  sheet1.getCell('E17').value = stats.catPrivate
+  sheet1.getCell('E18').value = stats.catOther
+  sheet1.getCell('E19').value = stats.catService
+  // economic status counts
+  sheet1.getCell('E22').value = stats.ecoRecipient
+  sheet1.getCell('E23').value = stats.ecoNearPoor
+  sheet1.getCell('E24').value = stats.ecoGeneral
+  // disability severity counts
+  sheet1.getCell('E27').value = stats.sevSevere
+  sheet1.getCell('E28').value = stats.sevMild
+  // monthly breakdown (rows 31–42 assumed, one per month)
+  for (let m = 1; m <= 12; m++) {
+    sheet1.getCell(`E${30 + m}`).value = stats.byMonth[m] ?? 0
+  }
 
   // Sheet 6: 대여 현황
   const rentalRecords = records.filter(r => r.is_rental)
