@@ -36,6 +36,19 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next",
+    "apps",
+    "packages",
+    "scripts",
+    "tests",
+    ".worktrees",
+    ".playwright-mcp",
+    "actions",
+    "app",
+    "components",
+    "lib",
+    "types",
+    "proxy.ts"
   ]
 }

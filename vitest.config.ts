@@ -8,12 +8,16 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./tests/setup.ts'],
+    include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
+    exclude: ['.worktrees/**', 'apps/**', 'node_modules/**'],
   },
   resolve: {
     alias: {
+      '@co-at/types': path.resolve(__dirname, './packages/types/src'),
+      '@co-at/lib': path.resolve(__dirname, './packages/lib'),
+      '@co-at/auth': path.resolve(__dirname, './packages/auth/src'),
       '@/apps/hr': path.resolve(__dirname, './apps/hr'),
-      '@/lib': path.resolve(__dirname, './apps/hr/lib'),
-      '@/actions': path.resolve(__dirname, './apps/hr/actions'),
+      '@/lib/supabase-admin': path.resolve(__dirname, './apps/hr/lib/supabase-admin'),
       '@': path.resolve(__dirname, './'),
     },
   },
