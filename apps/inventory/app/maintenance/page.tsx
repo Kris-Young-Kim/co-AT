@@ -28,7 +28,7 @@ export default async function MaintenancePage() {
           <tbody className="divide-y">
             {logs.map(l => (
               <tr key={l.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 text-gray-500 text-xs">{(l.performed_at ?? l.created_at).slice(0, 10)}</td>
+                <td className="px-4 py-3 text-gray-500 text-xs">{(l.performed_at ?? l.created_at ?? '').slice(0, 10)}</td>
                 <td className="px-4 py-3 font-medium">{l.device_name ?? '—'}</td>
                 <td className="px-4 py-3">{TYPE_LABELS[l.type] ?? l.type}</td>
                 <td className="px-4 py-3">
@@ -37,7 +37,7 @@ export default async function MaintenancePage() {
                   </span>
                 </td>
                 <td className="px-4 py-3 text-gray-500">{l.technician ?? '—'}</td>
-                <td className="px-4 py-3 text-gray-500">{l.cost > 0 ? `${l.cost.toLocaleString()}원` : '—'}</td>
+                <td className="px-4 py-3 text-gray-500">{(l.cost ?? 0) > 0 ? `${(l.cost ?? 0).toLocaleString()}원` : '—'}</td>
                 <td className="px-4 py-3 text-gray-500">{l.notes ?? '—'}</td>
               </tr>
             ))}

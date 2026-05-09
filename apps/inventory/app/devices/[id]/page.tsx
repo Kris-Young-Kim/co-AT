@@ -74,9 +74,9 @@ export default async function DeviceDetailPage({ params }: Props) {
                 <span className={`px-2 py-0.5 rounded-full text-xs ${l.status === 'done' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                   {statusLabels[l.status] ?? l.status}
                 </span>
-                <span className="text-gray-500">{l.performed_at?.slice(0, 10) ?? l.created_at.slice(0, 10)}</span>
+                <span className="text-gray-500">{l.performed_at?.slice(0, 10) ?? l.created_at?.slice(0, 10) ?? '—'}</span>
                 <span className="flex-1">{l.notes ?? '—'}</span>
-                {l.cost > 0 && <span className="text-gray-500">{l.cost.toLocaleString()}원</span>}
+                {(l.cost ?? 0) > 0 && <span className="text-gray-500">{(l.cost ?? 0).toLocaleString()}원</span>}
               </div>
             ))}
           </div>

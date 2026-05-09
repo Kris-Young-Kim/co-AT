@@ -18,7 +18,7 @@ export async function getFabEquipment(): Promise<{
     .order('name')
 
   if (error) return { success: false, error: error.message }
-  return { success: true, equipment: data ?? [] }
+  return { success: true, equipment: (data ?? []) as InventoryFabEquipment[] }
 }
 
 export async function getFabEquipmentById(id: string): Promise<{
@@ -43,7 +43,7 @@ export async function getFabEquipmentById(id: string): Promise<{
     return { id: o?.id ?? '', client_name: o?.clients?.name ?? null, status: o?.status ?? '' }
   })
 
-  return { success: true, equipment: { ...eqResult.data, active_orders } }
+  return { success: true, equipment: { ...(eqResult.data as InventoryFabEquipment), active_orders } }
 }
 
 export async function createFabEquipment(input: {

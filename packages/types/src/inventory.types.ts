@@ -11,12 +11,12 @@ export interface InventoryCustomOrder {
   client_id: string
   approval_id: string | null
   status: CustomOrderStatus
-  track_token: string
-  requested_at: string
+  track_token: string | null
+  requested_at: string | null
   delivered_at: string | null
   notes: string | null
-  created_at: string
-  updated_at: string
+  created_at: string | null
+  updated_at: string | null
 }
 
 export interface InventoryCustomOrderWithDetails extends InventoryCustomOrder {
@@ -33,8 +33,8 @@ export interface InventoryReuseDispatch {
   status: ReuseDispatchStatus
   dispatched_at: string | null
   notes: string | null
-  created_at: string
-  updated_at: string
+  created_at: string | null
+  updated_at: string | null
 }
 
 export interface InventoryReuseDispatchWithDetails extends InventoryReuseDispatch {
@@ -50,8 +50,8 @@ export interface InventoryFabEquipment {
   serial_number: string | null
   purchased_at: string | null
   notes: string | null
-  created_at: string
-  updated_at: string
+  created_at: string | null
+  updated_at: string | null
 }
 
 export interface InventoryFabEquipmentAssignment {
@@ -71,10 +71,10 @@ export interface InventoryMaintenanceLog {
   status: MaintenanceLogStatus
   performed_at: string | null
   technician: string | null
-  cost: number
+  cost: number | null
   notes: string | null
   created_by: string | null
-  created_at: string
+  created_at: string | null
 }
 
 export interface CreateCustomOrderInput {

@@ -30,6 +30,7 @@ export async function getCustomOrders(filters?: {
   if (error) return { success: false, error: error.message }
   const orders = (data ?? []).map(o => ({
     ...o,
+    status: o.status as CustomOrderStatus,
     client_name: (o.clients as { name?: string } | null)?.name ?? null,
     device_name: (o.inventory as { name?: string } | null)?.name ?? null,
   }))
@@ -55,6 +56,7 @@ export async function getCustomOrderById(id: string): Promise<{
     success: true,
     order: {
       ...data,
+      status: data.status as CustomOrderStatus,
       client_name: (data.clients as { name?: string } | null)?.name ?? null,
       device_name: (data.inventory as { name?: string } | null)?.name ?? null,
       equipment,
@@ -167,5 +169,5 @@ export async function createCustomOrderFromApproval(
     .single()
 
   if (error) return { success: false, error: error.message }
-  return { success: true, id: data.id, trackToken: data.track_token }
+  return { success: true, id: data.id, trackToken: data.track_token ?? undefined }
 }

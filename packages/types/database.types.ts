@@ -2008,7 +2008,7 @@ export type Database = {
       }
       rentals: {
         Row: {
-          application_id: string
+          application_id: string | null
           approval_id: string | null
           client_id: string
           created_at: string | null
@@ -2023,7 +2023,7 @@ export type Database = {
           wait_list_checked_at: string | null
         }
         Insert: {
-          application_id: string
+          application_id?: string | null
           approval_id?: string | null
           client_id: string
           created_at?: string | null
@@ -2038,7 +2038,7 @@ export type Database = {
           wait_list_checked_at?: string | null
         }
         Update: {
-          application_id?: string
+          application_id?: string | null
           approval_id?: string | null
           client_id?: string
           created_at?: string | null
