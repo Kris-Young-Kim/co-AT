@@ -28,6 +28,7 @@ export interface InventoryItem {
   purchase_date: string | null
   purchase_price: number | null
   qr_code: string | null
+  qr_token: string | null
   barcode: string | null
   image_url: string | null
   created_at: string | null
