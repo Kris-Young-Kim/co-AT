@@ -152,12 +152,12 @@ export async function approveStep(
   // Load step
   const { data: step } = await supabase
     .from('approval_steps')
-    .select('*, approval_documents(id, title, created_by, status)')
+    .select('*, approval_documents(id, title, created_by, status, type, content)')
     .eq('id', stepId)
     .single()
   if (!step || step.status !== 'pending') return false
 
-  const doc = step.approval_documents as { id: string; title: string; created_by: string; status: string }
+  const doc = step.approval_documents as { id: string; title: string; created_by: string; status: string; type: string; content: Record<string, unknown> }
 
   // Verify actor has the right role
   const actorRole = step.step === 1 ? ROLES.MANAGER : ROLES.ADMIN
@@ -191,6 +191,30 @@ export async function approveStep(
       .from('approval_documents')
       .update({ status: 'approved', updated_at: new Date().toISOString() })
       .eq('id', doc.id)
+
+    // Auto-insert inventory record based on document type
+    const clientId = (doc.content as { client_id?: string }).client_id
+    if (clientId) {
+      if (doc.type === 'rental') {
+        await supabase.from('rentals').insert({
+          client_id:    clientId,
+          approval_id:  doc.id,
+          status:       'pending_assignment',
+        })
+      } else if (doc.type === 'custom_make') {
+        await supabase.from('inventory_custom_orders').insert({
+          client_id:   clientId,
+          approval_id: doc.id,
+          status:      'requested',
+        })
+      } else if (doc.type === 'reuse') {
+        await supabase.from('inventory_reuse_dispatches').insert({
+          client_id:   clientId,
+          approval_id: doc.id,
+          status:      'donated',
+        })
+      }
+    }
 
     await sendApprovalNotification(
       [doc.created_by],
