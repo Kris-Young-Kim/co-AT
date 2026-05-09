@@ -30,7 +30,7 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
   const supabase = createAdminClient()
   const { data } = await supabase
     .from('applications')
-    .select('sub_category, domain, client_id, status')
+    .select('sub_category, client_id, status')
     .gte('created_at', `${year}-01-01`)
     .lte('created_at', `${year}-12-31`)
 
@@ -39,10 +39,6 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
   const rows: DomainRow[] = SERVICE_ROWS.map(({ key, label }) => {
     const filtered = apps.filter(a => a.sub_category === key)
     const byDomain: Partial<Record<Domain, number>> = {}
-    for (const d of DOMAINS) {
-      const cnt = filtered.filter(a => a.domain === d).length
-      if (cnt > 0) byDomain[d] = cnt
-    }
     const uniqueClients = new Set(filtered.map(a => a.client_id).filter(Boolean)).size
     return {
       label,
