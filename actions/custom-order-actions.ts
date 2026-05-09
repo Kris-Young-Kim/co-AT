@@ -19,7 +19,7 @@ export async function getCustomOrders(filters?: {
 }): Promise<{ success: boolean; orders?: InventoryCustomOrderWithDetails[]; error?: string }> {
   let query = supabase()
     .from('inventory_custom_orders')
-    .select('*, eval_clients(name), inventory(name)')
+    .select('*, clients(name), inventory(name)')
     .order('created_at', { ascending: false })
     .limit(filters?.limit ?? 100)
 
@@ -30,7 +30,7 @@ export async function getCustomOrders(filters?: {
   if (error) return { success: false, error: error.message }
   const orders = (data ?? []).map(o => ({
     ...o,
-    client_name: (o.eval_clients as { name?: string } | null)?.name ?? null,
+    client_name: (o.clients as { name?: string } | null)?.name ?? null,
     device_name: (o.inventory as { name?: string } | null)?.name ?? null,
   }))
   return { success: true, orders }
@@ -43,7 +43,7 @@ export async function getCustomOrderById(id: string): Promise<{
 }> {
   const { data, error } = await supabase()
     .from('inventory_custom_orders')
-    .select('*, eval_clients(name), inventory(name), inventory_custom_order_equipment(*, inventory_fab_equipment(*))')
+    .select('*, clients(name), inventory(name), inventory_custom_order_equipment(*, inventory_fab_equipment(*))')
     .eq('id', id)
     .single()
 
@@ -55,7 +55,7 @@ export async function getCustomOrderById(id: string): Promise<{
     success: true,
     order: {
       ...data,
-      client_name: (data.eval_clients as { name?: string } | null)?.name ?? null,
+      client_name: (data.clients as { name?: string } | null)?.name ?? null,
       device_name: (data.inventory as { name?: string } | null)?.name ?? null,
       equipment,
     },
