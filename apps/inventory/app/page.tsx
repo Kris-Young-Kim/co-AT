@@ -1,20 +1,25 @@
 import { getInventoryList } from '@/actions/inventory-actions'
 import { getOverdueRentals, getExpiringRentals, getRentals } from '@/actions/rental-actions'
+import { getFabEquipment } from '@/actions/fab-equipment-actions'
 import Link from 'next/link'
-import { Package, ArrowLeftRight, AlertTriangle, Clock } from 'lucide-react'
+import { Package, ArrowLeftRight, AlertTriangle, Clock, Cpu } from 'lucide-react'
 
 export default async function InventoryDashboard() {
-  const [inventoryResult, overdueResult, expiringResult, activeRentalsResult] = await Promise.all([
+  const [inventoryResult, overdueResult, expiringResult, activeRentalsResult, fabEquipmentResult] = await Promise.all([
     getInventoryList({ limit: 1 }),
     getOverdueRentals(),
     getExpiringRentals(7),
     getRentals({ status: 'rented', limit: 1 }),
+    getFabEquipment(),
   ])
 
   const totalDevices = inventoryResult.success ? inventoryResult.total ?? 0 : 0
   const overdueCount = overdueResult.success ? (overdueResult.rentals ?? []).length : 0
   const expiringCount = expiringResult.success ? (expiringResult.rentals ?? []).length : 0
   const activeRentals = activeRentalsResult.success ? activeRentalsResult.total ?? 0 : 0
+  const fabEquipmentList = fabEquipmentResult.success ? (fabEquipmentResult.equipment ?? []) : []
+  const inUseCount = fabEquipmentList.filter((e) => e.status === 'in_use').length
+  const availableCount = fabEquipmentList.filter((e) => e.status === 'available').length
 
   const cards = [
     { label: '전체 기기', value: `${totalDevices}개`, href: '/devices', icon: Package, color: 'blue' },
@@ -52,6 +57,21 @@ export default async function InventoryDashboard() {
             </div>
           </Link>
         ))}
+      </div>
+
+      <div className="mb-10">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">제작 장비 현황</h2>
+        <Link
+          href="/fab-equipment"
+          className="inline-flex items-center gap-3 border rounded-lg bg-white p-5 hover:shadow-sm transition-shadow"
+        >
+          <div className="p-2 rounded-lg bg-purple-100 text-purple-600">
+            <Cpu className="h-5 w-5" />
+          </div>
+          <p className="text-sm font-medium text-gray-900">
+            {inUseCount}대 사용중 / {availableCount}대 유휴
+          </p>
+        </Link>
       </div>
 
       <div className="flex gap-3">

@@ -1,4 +1,4 @@
-export type ApprovalDocumentType = 'expenditure' | 'leave' | 'business_report'
+export type ApprovalDocumentType = 'expenditure' | 'leave' | 'business_report' | 'rental' | 'custom_make' | 'reuse'
 export type ApprovalDocumentStatus = 'draft' | 'pending' | 'approved' | 'rejected'
 export type ApprovalStepStatus = 'pending' | 'approved' | 'rejected'
 export type ApprovalStepRole = 'manager' | 'admin'
@@ -28,10 +28,28 @@ export interface BusinessReportContent {
   attachment_urls?: string[]
 }
 
+export interface RentalApprovalContent {
+  client_id: string
+  notes?: string
+}
+
+export interface CustomMakeApprovalContent {
+  client_id: string
+  notes?: string
+}
+
+export interface ReuseApprovalContent {
+  client_id: string
+  notes?: string
+}
+
 export type ApprovalDocumentContent =
   | ExpenditureContent
   | LeaveContent
   | BusinessReportContent
+  | RentalApprovalContent
+  | CustomMakeApprovalContent
+  | ReuseApprovalContent
 
 // ── Core entities ─────────────────────────────────────────
 
