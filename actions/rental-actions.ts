@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { revalidatePath } from "next/cache"
 import { updateInventoryStatus } from "./inventory-actions"
@@ -8,9 +9,10 @@ import { differenceInDays, isPast, isToday, addDays, format } from "date-fns"
 
 export interface RentalItem {
   id: string
-  application_id: string
+  application_id: string | null
   inventory_id: string
   client_id: string
+  approval_id: string | null
   rental_start_date: string
   rental_end_date: string
   return_date: string | null
@@ -18,6 +20,7 @@ export interface RentalItem {
   status: string | null
   created_at: string | null
   updated_at: string | null
+  wait_list_checked_at: string | null
 }
 
 export interface CreateRentalInput {
@@ -266,6 +269,10 @@ export async function extendRental(
 
     // 연장 횟수 증가
     const rentalForExtension = rentalTypedForExtension as { extension_count?: number } | null;
+
+    if ((rentalForExtension?.extension_count ?? 0) >= 1) {
+      return { success: false, error: '이미 1회 연장하여 추가 연장이 불가합니다' }
+    }
     const newExtensionCount = (rentalForExtension?.extension_count || 0) + 1
 
     // 대여 기간 업데이트
@@ -605,4 +612,33 @@ export async function getExpiringRentals(daysAhead: number = 7): Promise<{
       error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
     }
   }
+}
+
+// Called from approval app on final approval
+export async function createRentalFromApproval(
+  clientId: string,
+  approvalId: string
+): Promise<{ success: boolean; id?: string; error?: string }> {
+  const supabase = createAdminClient()
+
+  const startDate = format(new Date(), 'yyyy-MM-dd')
+  const endDate = format(addDays(new Date(), 180), 'yyyy-MM-dd')
+
+  const { data, error } = await supabase
+    .from('rentals')
+    .insert({
+      application_id: null,
+      inventory_id: null,
+      client_id: clientId,
+      approval_id: approvalId,
+      rental_start_date: startDate,
+      rental_end_date: endDate,
+      status: 'pending_assignment',
+      extension_count: 0,
+    })
+    .select('id')
+    .single()
+
+  if (error) return { success: false, error: error.message }
+  return { success: true, id: data.id }
 }
