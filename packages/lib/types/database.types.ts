@@ -21,7 +21,6 @@ export type Database = {
           client_id: string
           created_at: string | null
           desired_date: string | null
-          domain: string | null
           id: string
           service_year: number | null
           status: string | null
@@ -34,7 +33,6 @@ export type Database = {
           client_id: string
           created_at?: string | null
           desired_date?: string | null
-          domain?: string | null
           id?: string
           service_year?: number | null
           status?: string | null
@@ -47,7 +45,6 @@ export type Database = {
           client_id?: string
           created_at?: string | null
           desired_date?: string | null
-          domain?: string | null
           id?: string
           service_year?: number | null
           status?: string | null
@@ -70,6 +67,254 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      approval_documents: {
+        Row: {
+          content: Json
+          created_at: string
+          created_by: string
+          id: string
+          status: string
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          content?: Json
+          created_at?: string
+          created_by: string
+          id?: string
+          status?: string
+          title: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          created_by?: string
+          id?: string
+          status?: string
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      approval_signatures: {
+        Row: {
+          clerk_user_id: string
+          created_at: string
+          id: string
+          image_url: string
+          updated_at: string
+        }
+        Insert: {
+          clerk_user_id: string
+          created_at?: string
+          id?: string
+          image_url: string
+          updated_at?: string
+        }
+        Update: {
+          clerk_user_id?: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      approval_steps: {
+        Row: {
+          acted_at: string | null
+          acted_by: string | null
+          approver_role: string
+          comment: string | null
+          document_id: string
+          id: string
+          signature_url: string | null
+          status: string
+          step: number
+        }
+        Insert: {
+          acted_at?: string | null
+          acted_by?: string | null
+          approver_role: string
+          comment?: string | null
+          document_id: string
+          id?: string
+          signature_url?: string | null
+          status?: string
+          step: number
+        }
+        Update: {
+          acted_at?: string | null
+          acted_by?: string | null
+          approver_role?: string
+          comment?: string | null
+          document_id?: string
+          id?: string
+          signature_url?: string | null
+          status?: string
+          step?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_steps_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "approval_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_channels: {
+        Row: {
+          channel_type: string
+          config: Json | null
+          created_at: string
+          id: string
+          is_enabled: boolean
+          last_tested_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          channel_type: string
+          config?: Json | null
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          last_tested_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          channel_type?: string
+          config?: Json | null
+          created_at?: string
+          id?: string
+          is_enabled?: boolean
+          last_tested_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      automation_logs: {
+        Row: {
+          channel: string
+          created_at: string
+          error_message: string | null
+          fail_count: number
+          id: string
+          job_name: string
+          metadata: Json | null
+          status: string
+          success_count: number
+          total_sent: number
+          triggered_by: string
+          updated_at: string
+        }
+        Insert: {
+          channel: string
+          created_at?: string
+          error_message?: string | null
+          fail_count?: number
+          id?: string
+          job_name: string
+          metadata?: Json | null
+          status: string
+          success_count?: number
+          total_sent?: number
+          triggered_by: string
+          updated_at?: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          error_message?: string | null
+          fail_count?: number
+          id?: string
+          job_name?: string
+          metadata?: Json | null
+          status?: string
+          success_count?: number
+          total_sent?: number
+          triggered_by?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      call_logs: {
+        Row: {
+          answer: string | null
+          created_at: string | null
+          id: string
+          log_date: string
+          q_case_management: boolean
+          q_device: boolean
+          q_other: boolean
+          q_private_benefit: boolean
+          q_public_benefit: boolean
+          question_content: string | null
+          requester_contact: string | null
+          requester_name: string | null
+          requester_region: string | null
+          requester_type: string | null
+          staff_name: string | null
+          target_disability_severity: string | null
+          target_disability_type: string | null
+          target_economic_status: string | null
+          target_gender: string | null
+          target_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          answer?: string | null
+          created_at?: string | null
+          id?: string
+          log_date: string
+          q_case_management?: boolean
+          q_device?: boolean
+          q_other?: boolean
+          q_private_benefit?: boolean
+          q_public_benefit?: boolean
+          question_content?: string | null
+          requester_contact?: string | null
+          requester_name?: string | null
+          requester_region?: string | null
+          requester_type?: string | null
+          staff_name?: string | null
+          target_disability_severity?: string | null
+          target_disability_type?: string | null
+          target_economic_status?: string | null
+          target_gender?: string | null
+          target_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          answer?: string | null
+          created_at?: string | null
+          id?: string
+          log_date?: string
+          q_case_management?: boolean
+          q_device?: boolean
+          q_other?: boolean
+          q_private_benefit?: boolean
+          q_public_benefit?: boolean
+          question_content?: string | null
+          requester_contact?: string | null
+          requester_name?: string | null
+          requester_region?: string | null
+          requester_type?: string | null
+          staff_name?: string | null
+          target_disability_severity?: string | null
+          target_disability_type?: string | null
+          target_economic_status?: string | null
+          target_gender?: string | null
+          target_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       chat_message_reads: {
         Row: {
@@ -227,6 +472,50 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      client_voc: {
+        Row: {
+          client_id: string
+          content: string
+          created_at: string
+          created_by: string
+          id: string
+          response: string | null
+          status: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          content: string
+          created_at?: string
+          created_by: string
+          id?: string
+          response?: string | null
+          status?: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          content?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          response?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_voc_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       clients: {
         Row: {
@@ -527,179 +816,6 @@ export type Database = {
           },
         ]
       }
-      eval_service_records: {
-        Row: {
-          id: string
-          client_id: string | null
-          received_at: string | null
-          application_year: number | null
-          application_no: number | null
-          is_re_application: boolean
-          name: string | null
-          birth_date: string | null
-          gender: string | null
-          region: string | null
-          disability_type: string | null
-          service_category: string | null
-          product_name: string | null
-          item_category: string | null
-          service_content: string | null
-          service_area: string | null
-          is_consult: boolean
-          is_assessment: boolean
-          is_trial: boolean
-          is_rental: boolean
-          is_custom_make: boolean
-          is_grant: boolean
-          is_education: boolean
-          is_other_business: boolean
-          is_info_provision: boolean
-          is_public_funding: boolean
-          is_private_funding: boolean
-          is_self_pay: boolean
-          is_funding_secured: boolean
-          is_repair: boolean
-          is_cleaning: boolean
-          is_reuse: boolean
-          is_monitoring: boolean
-          referral_type: string | null
-          is_phone: boolean
-          is_visit_in: boolean
-          is_visit_out: boolean
-          is_closed: boolean
-          staff_name: string | null
-          source: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          client_id?: string | null
-          received_at?: string | null
-          application_year?: number | null
-          application_no?: number | null
-          is_re_application?: boolean
-          name?: string | null
-          birth_date?: string | null
-          gender?: string | null
-          region?: string | null
-          disability_type?: string | null
-          service_category?: string | null
-          product_name?: string | null
-          item_category?: string | null
-          service_content?: string | null
-          service_area?: string | null
-          is_consult?: boolean
-          is_assessment?: boolean
-          is_trial?: boolean
-          is_rental?: boolean
-          is_custom_make?: boolean
-          is_grant?: boolean
-          is_education?: boolean
-          is_other_business?: boolean
-          is_info_provision?: boolean
-          is_public_funding?: boolean
-          is_private_funding?: boolean
-          is_self_pay?: boolean
-          is_funding_secured?: boolean
-          is_repair?: boolean
-          is_cleaning?: boolean
-          is_reuse?: boolean
-          is_monitoring?: boolean
-          referral_type?: string | null
-          is_phone?: boolean
-          is_visit_in?: boolean
-          is_visit_out?: boolean
-          is_closed?: boolean
-          staff_name?: string | null
-          source?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          client_id?: string | null
-          received_at?: string | null
-          application_year?: number | null
-          application_no?: number | null
-          is_re_application?: boolean
-          name?: string | null
-          birth_date?: string | null
-          gender?: string | null
-          region?: string | null
-          disability_type?: string | null
-          service_category?: string | null
-          product_name?: string | null
-          item_category?: string | null
-          service_content?: string | null
-          service_area?: string | null
-          is_consult?: boolean
-          is_assessment?: boolean
-          is_trial?: boolean
-          is_rental?: boolean
-          is_custom_make?: boolean
-          is_grant?: boolean
-          is_education?: boolean
-          is_other_business?: boolean
-          is_info_provision?: boolean
-          is_public_funding?: boolean
-          is_private_funding?: boolean
-          is_self_pay?: boolean
-          is_funding_secured?: boolean
-          is_repair?: boolean
-          is_cleaning?: boolean
-          is_reuse?: boolean
-          is_monitoring?: boolean
-          referral_type?: string | null
-          is_phone?: boolean
-          is_visit_in?: boolean
-          is_visit_out?: boolean
-          is_closed?: boolean
-          staff_name?: string | null
-          source?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "eval_service_records_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      eval_sync_logs: {
-        Row: {
-          id: string
-          sheet_type: string
-          status: string
-          rows_added: number
-          rows_skipped: number
-          error_msg: string | null
-          synced_at: string
-        }
-        Insert: {
-          id?: string
-          sheet_type: string
-          status: string
-          rows_added?: number
-          rows_skipped?: number
-          error_msg?: string | null
-          synced_at?: string
-        }
-        Update: {
-          id?: string
-          sheet_type?: string
-          status?: string
-          rows_added?: number
-          rows_skipped?: number
-          error_msg?: string | null
-          synced_at?: string
-        }
-        Relationships: []
-      }
       equipment: {
         Row: {
           created_at: string | null
@@ -749,6 +865,521 @@ export type Database = {
             columns: ["manager_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eval_service_records: {
+        Row: {
+          application_no: number | null
+          application_year: number | null
+          birth_date: string | null
+          client_id: string | null
+          created_at: string | null
+          disability_type: string | null
+          gender: string | null
+          id: string
+          is_assessment: boolean | null
+          is_cleaning: boolean | null
+          is_closed: boolean | null
+          is_consult: boolean | null
+          is_custom_make: boolean | null
+          is_education: boolean | null
+          is_funding_secured: boolean | null
+          is_grant: boolean | null
+          is_info_provision: boolean | null
+          is_monitoring: boolean | null
+          is_other_business: boolean | null
+          is_phone: boolean | null
+          is_private_funding: boolean | null
+          is_public_funding: boolean | null
+          is_re_application: boolean | null
+          is_rental: boolean | null
+          is_repair: boolean | null
+          is_reuse: boolean | null
+          is_self_pay: boolean | null
+          is_trial: boolean | null
+          is_visit_in: boolean | null
+          is_visit_out: boolean | null
+          item_category: string | null
+          name: string | null
+          product_name: string | null
+          received_at: string | null
+          referral_type: string | null
+          region: string | null
+          service_area: string | null
+          service_category: string | null
+          service_content: string | null
+          source: string | null
+          staff_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          application_no?: number | null
+          application_year?: number | null
+          birth_date?: string | null
+          client_id?: string | null
+          created_at?: string | null
+          disability_type?: string | null
+          gender?: string | null
+          id?: string
+          is_assessment?: boolean | null
+          is_cleaning?: boolean | null
+          is_closed?: boolean | null
+          is_consult?: boolean | null
+          is_custom_make?: boolean | null
+          is_education?: boolean | null
+          is_funding_secured?: boolean | null
+          is_grant?: boolean | null
+          is_info_provision?: boolean | null
+          is_monitoring?: boolean | null
+          is_other_business?: boolean | null
+          is_phone?: boolean | null
+          is_private_funding?: boolean | null
+          is_public_funding?: boolean | null
+          is_re_application?: boolean | null
+          is_rental?: boolean | null
+          is_repair?: boolean | null
+          is_reuse?: boolean | null
+          is_self_pay?: boolean | null
+          is_trial?: boolean | null
+          is_visit_in?: boolean | null
+          is_visit_out?: boolean | null
+          item_category?: string | null
+          name?: string | null
+          product_name?: string | null
+          received_at?: string | null
+          referral_type?: string | null
+          region?: string | null
+          service_area?: string | null
+          service_category?: string | null
+          service_content?: string | null
+          source?: string | null
+          staff_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          application_no?: number | null
+          application_year?: number | null
+          birth_date?: string | null
+          client_id?: string | null
+          created_at?: string | null
+          disability_type?: string | null
+          gender?: string | null
+          id?: string
+          is_assessment?: boolean | null
+          is_cleaning?: boolean | null
+          is_closed?: boolean | null
+          is_consult?: boolean | null
+          is_custom_make?: boolean | null
+          is_education?: boolean | null
+          is_funding_secured?: boolean | null
+          is_grant?: boolean | null
+          is_info_provision?: boolean | null
+          is_monitoring?: boolean | null
+          is_other_business?: boolean | null
+          is_phone?: boolean | null
+          is_private_funding?: boolean | null
+          is_public_funding?: boolean | null
+          is_re_application?: boolean | null
+          is_rental?: boolean | null
+          is_repair?: boolean | null
+          is_reuse?: boolean | null
+          is_self_pay?: boolean | null
+          is_trial?: boolean | null
+          is_visit_in?: boolean | null
+          is_visit_out?: boolean | null
+          item_category?: string | null
+          name?: string | null
+          product_name?: string | null
+          received_at?: string | null
+          referral_type?: string | null
+          region?: string | null
+          service_area?: string | null
+          service_category?: string | null
+          service_content?: string | null
+          source?: string | null
+          staff_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_service_records_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eval_sync_logs: {
+        Row: {
+          error_msg: string | null
+          id: string
+          rows_added: number | null
+          rows_skipped: number | null
+          sheet_type: string
+          status: string
+          synced_at: string | null
+        }
+        Insert: {
+          error_msg?: string | null
+          id?: string
+          rows_added?: number | null
+          rows_skipped?: number | null
+          sheet_type: string
+          status: string
+          synced_at?: string | null
+        }
+        Update: {
+          error_msg?: string | null
+          id?: string
+          rows_added?: number | null
+          rows_skipped?: number | null
+          sheet_type?: string
+          status?: string
+          synced_at?: string | null
+        }
+        Relationships: []
+      }
+      hr_allowance_types: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
+      hr_attendance_records: {
+        Row: {
+          check_in: string | null
+          check_out: string | null
+          created_at: string
+          date: string
+          employee_id: string
+          id: string
+          note: string | null
+        }
+        Insert: {
+          check_in?: string | null
+          check_out?: string | null
+          created_at?: string
+          date: string
+          employee_id: string
+          id?: string
+          note?: string | null
+        }
+        Update: {
+          check_in?: string | null
+          check_out?: string | null
+          created_at?: string
+          date?: string
+          employee_id?: string
+          id?: string
+          note?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_attendance_records_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_careers: {
+        Row: {
+          created_at: string
+          description: string | null
+          employee_id: string
+          end_date: string | null
+          id: string
+          organization: string
+          position: string
+          start_date: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          employee_id: string
+          end_date?: string | null
+          id?: string
+          organization: string
+          position: string
+          start_date: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          employee_id?: string
+          end_date?: string | null
+          id?: string
+          organization?: string
+          position?: string
+          start_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_careers_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_daily_wages: {
+        Row: {
+          created_at: string
+          deductions: Json
+          employee_id: string
+          gross_pay: number
+          hourly_rate: number
+          hours_worked: number
+          id: string
+          net_pay: number
+          note: string | null
+          work_date: string
+        }
+        Insert: {
+          created_at?: string
+          deductions?: Json
+          employee_id: string
+          gross_pay: number
+          hourly_rate: number
+          hours_worked: number
+          id?: string
+          net_pay: number
+          note?: string | null
+          work_date: string
+        }
+        Update: {
+          created_at?: string
+          deductions?: Json
+          employee_id?: string
+          gross_pay?: number
+          hourly_rate?: number
+          hours_worked?: number
+          id?: string
+          net_pay?: number
+          note?: string | null
+          work_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_daily_wages_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_employees: {
+        Row: {
+          clerk_user_id: string | null
+          created_at: string
+          department: string
+          email: string
+          employment_type: string
+          hire_date: string
+          id: string
+          is_active: boolean
+          leave_date: string | null
+          name: string
+          phone: string | null
+          position: string
+          updated_at: string
+        }
+        Insert: {
+          clerk_user_id?: string | null
+          created_at?: string
+          department: string
+          email: string
+          employment_type: string
+          hire_date: string
+          id?: string
+          is_active?: boolean
+          leave_date?: string | null
+          name: string
+          phone?: string | null
+          position: string
+          updated_at?: string
+        }
+        Update: {
+          clerk_user_id?: string | null
+          created_at?: string
+          department?: string
+          email?: string
+          employment_type?: string
+          hire_date?: string
+          id?: string
+          is_active?: boolean
+          leave_date?: string | null
+          name?: string
+          phone?: string | null
+          position?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      hr_leave_requests: {
+        Row: {
+          created_at: string
+          days_used: number
+          employee_id: string
+          end_date: string
+          id: string
+          leave_type: string
+          reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          start_date: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          days_used: number
+          employee_id: string
+          end_date: string
+          id?: string
+          leave_type: string
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          start_date: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          days_used?: number
+          employee_id?: string
+          end_date?: string
+          id?: string
+          leave_type?: string
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          start_date?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_leave_requests_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_leave_requests_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_salary_grades: {
+        Row: {
+          base_salary: number
+          created_at: string
+          grade_name: string
+          id: string
+          is_active: boolean
+          updated_at: string
+        }
+        Insert: {
+          base_salary: number
+          created_at?: string
+          grade_name: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Update: {
+          base_salary?: number
+          created_at?: string
+          grade_name?: string
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      hr_salary_records: {
+        Row: {
+          allowances: Json
+          base_salary: number
+          confirmed_at: string | null
+          created_at: string
+          deductions: Json
+          employee_id: string
+          gross_pay: number
+          id: string
+          net_pay: number
+          note: string | null
+          salary_grade_id: string | null
+          updated_at: string
+          year_month: string
+        }
+        Insert: {
+          allowances?: Json
+          base_salary: number
+          confirmed_at?: string | null
+          created_at?: string
+          deductions?: Json
+          employee_id: string
+          gross_pay: number
+          id?: string
+          net_pay: number
+          note?: string | null
+          salary_grade_id?: string | null
+          updated_at?: string
+          year_month: string
+        }
+        Update: {
+          allowances?: Json
+          base_salary?: number
+          confirmed_at?: string | null
+          created_at?: string
+          deductions?: Json
+          employee_id?: string
+          gross_pay?: number
+          id?: string
+          net_pay?: number
+          note?: string | null
+          salary_grade_id?: string | null
+          updated_at?: string
+          year_month?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_salary_records_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_salary_records_salary_grade_id_fkey"
+            columns: ["salary_grade_id"]
+            isOneToOne: false
+            referencedRelation: "hr_salary_grades"
             referencedColumns: ["id"]
           },
         ]
@@ -826,7 +1457,6 @@ export type Database = {
           category: string | null
           created_at: string | null
           id: string
-          image_url: string | null
           is_rental_available: boolean | null
           manufacturer: string | null
           model: string | null
@@ -834,6 +1464,7 @@ export type Database = {
           purchase_date: string | null
           purchase_price: number | null
           qr_code: string | null
+          qr_token: string
           status: string | null
           updated_at: string | null
         }
@@ -843,7 +1474,6 @@ export type Database = {
           category?: string | null
           created_at?: string | null
           id?: string
-          image_url?: string | null
           is_rental_available?: boolean | null
           manufacturer?: string | null
           model?: string | null
@@ -851,6 +1481,7 @@ export type Database = {
           purchase_date?: string | null
           purchase_price?: number | null
           qr_code?: string | null
+          qr_token?: string
           status?: string | null
           updated_at?: string | null
         }
@@ -860,7 +1491,6 @@ export type Database = {
           category?: string | null
           created_at?: string | null
           id?: string
-          image_url?: string | null
           is_rental_available?: boolean | null
           manufacturer?: string | null
           model?: string | null
@@ -868,10 +1498,334 @@ export type Database = {
           purchase_date?: string | null
           purchase_price?: number | null
           qr_code?: string | null
+          qr_token?: string
           status?: string | null
           updated_at?: string | null
         }
         Relationships: []
+      }
+      inventory_custom_order_equipment: {
+        Row: {
+          custom_order_id: string
+          equipment_id: string
+          finished_at: string | null
+          id: string
+          notes: string | null
+          started_at: string | null
+        }
+        Insert: {
+          custom_order_id: string
+          equipment_id: string
+          finished_at?: string | null
+          id?: string
+          notes?: string | null
+          started_at?: string | null
+        }
+        Update: {
+          custom_order_id?: string
+          equipment_id?: string
+          finished_at?: string | null
+          id?: string
+          notes?: string | null
+          started_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_custom_order_equipment_custom_order_id_fkey"
+            columns: ["custom_order_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_custom_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_custom_order_equipment_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_fab_equipment"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_custom_orders: {
+        Row: {
+          approval_id: string | null
+          client_id: string
+          created_at: string | null
+          delivered_at: string | null
+          device_id: string | null
+          id: string
+          notes: string | null
+          requested_at: string | null
+          status: string
+          track_token: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          approval_id?: string | null
+          client_id: string
+          created_at?: string | null
+          delivered_at?: string | null
+          device_id?: string | null
+          id?: string
+          notes?: string | null
+          requested_at?: string | null
+          status?: string
+          track_token?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          approval_id?: string | null
+          client_id?: string
+          created_at?: string | null
+          delivered_at?: string | null
+          device_id?: string | null
+          id?: string
+          notes?: string | null
+          requested_at?: string | null
+          status?: string
+          track_token?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_custom_orders_approval_id_fkey"
+            columns: ["approval_id"]
+            isOneToOne: false
+            referencedRelation: "approval_documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_custom_orders_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_custom_orders_device_id_fkey"
+            columns: ["device_id"]
+            isOneToOne: false
+            referencedRelation: "inventory"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_fab_equipment: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          notes: string | null
+          purchased_at: string | null
+          serial_number: string | null
+          status: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          purchased_at?: string | null
+          serial_number?: string | null
+          status?: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          purchased_at?: string | null
+          serial_number?: string | null
+          status?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      inventory_maintenance_logs: {
+        Row: {
+          cost: number | null
+          created_at: string | null
+          created_by: string | null
+          device_id: string
+          id: string
+          notes: string | null
+          performed_at: string | null
+          status: string
+          technician: string | null
+          type: string
+        }
+        Insert: {
+          cost?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          device_id: string
+          id?: string
+          notes?: string | null
+          performed_at?: string | null
+          status?: string
+          technician?: string | null
+          type: string
+        }
+        Update: {
+          cost?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          device_id?: string
+          id?: string
+          notes?: string | null
+          performed_at?: string | null
+          status?: string
+          technician?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_maintenance_logs_device_id_fkey"
+            columns: ["device_id"]
+            isOneToOne: false
+            referencedRelation: "inventory"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_reuse_dispatches: {
+        Row: {
+          approval_id: string | null
+          client_id: string
+          created_at: string | null
+          device_id: string
+          dispatched_at: string | null
+          id: string
+          notes: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          approval_id?: string | null
+          client_id: string
+          created_at?: string | null
+          device_id: string
+          dispatched_at?: string | null
+          id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          approval_id?: string | null
+          client_id?: string
+          created_at?: string | null
+          device_id?: string
+          dispatched_at?: string | null
+          id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_reuse_dispatches_approval_id_fkey"
+            columns: ["approval_id"]
+            isOneToOne: false
+            referencedRelation: "approval_documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_reuse_dispatches_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_reuse_dispatches_device_id_fkey"
+            columns: ["device_id"]
+            isOneToOne: false
+            referencedRelation: "inventory"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meeting_minutes: {
+        Row: {
+          action_items: Json | null
+          agenda: string | null
+          attendees: string[] | null
+          created_at: string
+          created_by: string
+          id: string
+          meeting_type: string
+          minutes: string | null
+          schedule_id: string
+          updated_at: string
+        }
+        Insert: {
+          action_items?: Json | null
+          agenda?: string | null
+          attendees?: string[] | null
+          created_at?: string
+          created_by: string
+          id?: string
+          meeting_type?: string
+          minutes?: string | null
+          schedule_id: string
+          updated_at?: string
+        }
+        Update: {
+          action_items?: Json | null
+          agenda?: string | null
+          attendees?: string[] | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          meeting_type?: string
+          minutes?: string | null
+          schedule_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_minutes_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: true
+            referencedRelation: "schedules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notice_reads: {
+        Row: {
+          clerk_user_id: string
+          id: string
+          notice_id: string
+          read_at: string
+        }
+        Insert: {
+          clerk_user_id: string
+          id?: string
+          notice_id: string
+          read_at?: string
+        }
+        Update: {
+          clerk_user_id?: string
+          id?: string
+          notice_id?: string
+          read_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notice_reads_notice_id_fkey"
+            columns: ["notice_id"]
+            isOneToOne: false
+            referencedRelation: "notices"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notices: {
         Row: {
@@ -1055,42 +2009,48 @@ export type Database = {
       rentals: {
         Row: {
           application_id: string
+          approval_id: string | null
           client_id: string
           created_at: string | null
           extension_count: number | null
           id: string
-          inventory_id: string
+          inventory_id: string | null
           rental_end_date: string
           rental_start_date: string
           return_date: string | null
           status: string | null
           updated_at: string | null
+          wait_list_checked_at: string | null
         }
         Insert: {
           application_id: string
+          approval_id?: string | null
           client_id: string
           created_at?: string | null
           extension_count?: number | null
           id?: string
-          inventory_id: string
+          inventory_id?: string | null
           rental_end_date: string
           rental_start_date: string
           return_date?: string | null
           status?: string | null
           updated_at?: string | null
+          wait_list_checked_at?: string | null
         }
         Update: {
           application_id?: string
+          approval_id?: string | null
           client_id?: string
           created_at?: string | null
           extension_count?: number | null
           id?: string
-          inventory_id?: string
+          inventory_id?: string | null
           rental_end_date?: string
           rental_start_date?: string
           return_date?: string | null
           status?: string | null
           updated_at?: string | null
+          wait_list_checked_at?: string | null
         }
         Relationships: [
           {
@@ -1098,6 +2058,13 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rentals_approval_id_fkey"
+            columns: ["approval_id"]
+            isOneToOne: false
+            referencedRelation: "approval_documents"
             referencedColumns: ["id"]
           },
           {
@@ -1112,6 +2079,59 @@ export type Database = {
             columns: ["inventory_id"]
             isOneToOne: false
             referencedRelation: "inventory"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      resources: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          file_name: string | null
+          file_size: number | null
+          file_url: string | null
+          id: string
+          resource_date: string | null
+          title: string
+          type: string
+          updated_at: string | null
+          youtube_ids: string[] | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_url?: string | null
+          id?: string
+          resource_date?: string | null
+          title: string
+          type: string
+          updated_at?: string | null
+          youtube_ids?: string[] | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_url?: string | null
+          id?: string
+          resource_date?: string | null
+          title?: string
+          type?: string
+          updated_at?: string | null
+          youtube_ids?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resources_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1357,242 +2377,274 @@ export type Database = {
           },
         ]
       }
-      resources: {
+      supplies: {
         Row: {
-          id: string
-          type: string
-          title: string
-          description: string | null
-          file_url: string | null
-          file_name: string | null
-          file_size: number | null
-          youtube_ids: string[] | null
-          resource_date: string | null
-          created_by: string | null
+          category: string | null
           created_at: string
+          current_stock: number
+          id: string
+          location: string | null
+          minimum_stock: number
+          name: string
+          notes: string | null
+          unit: string
           updated_at: string
         }
         Insert: {
-          id?: string
-          type: string
-          title: string
-          description?: string | null
-          file_url?: string | null
-          file_name?: string | null
-          file_size?: number | null
-          youtube_ids?: string[] | null
-          resource_date?: string | null
-          created_by?: string | null
+          category?: string | null
           created_at?: string
+          current_stock?: number
+          id?: string
+          location?: string | null
+          minimum_stock?: number
+          name: string
+          notes?: string | null
+          unit?: string
           updated_at?: string
         }
         Update: {
-          id?: string
-          type?: string
-          title?: string
-          description?: string | null
-          file_url?: string | null
-          file_name?: string | null
-          file_size?: number | null
-          youtube_ids?: string[] | null
-          resource_date?: string | null
-          created_by?: string | null
+          category?: string | null
           created_at?: string
+          current_stock?: number
+          id?: string
+          location?: string | null
+          minimum_stock?: number
+          name?: string
+          notes?: string | null
+          unit?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      supply_transactions: {
+        Row: {
+          clerk_user_id: string
+          created_at: string
+          id: string
+          quantity: number
+          reason: string | null
+          supply_id: string
+          type: string
+        }
+        Insert: {
+          clerk_user_id: string
+          created_at?: string
+          id?: string
+          quantity: number
+          reason?: string | null
+          supply_id: string
+          type: string
+        }
+        Update: {
+          clerk_user_id?: string
+          created_at?: string
+          id?: string
+          quantity?: number
+          reason?: string | null
+          supply_id?: string
+          type?: string
         }
         Relationships: [
           {
-            foreignKeyName: "resources_created_by_fkey"
-            columns: ["created_by"]
+            foreignKeyName: "supply_transactions_supply_id_fkey"
+            columns: ["supply_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "supplies"
             referencedColumns: ["id"]
           },
         ]
       }
-      call_logs: {
-        Row: {
-          id: string
-          log_date: string
-          requester_name: string | null
-          requester_contact: string | null
-          requester_type: string | null
-          requester_region: string | null
-          target_name: string | null
-          target_gender: string | null
-          target_disability_type: string | null
-          target_disability_severity: string | null
-          target_economic_status: string | null
-          q_public_benefit: boolean
-          q_private_benefit: boolean
-          q_device: boolean
-          q_case_management: boolean
-          q_other: boolean
-          question_content: string | null
-          answer: string | null
-          staff_name: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          log_date: string
-          requester_name?: string | null
-          requester_contact?: string | null
-          requester_type?: string | null
-          requester_region?: string | null
-          target_name?: string | null
-          target_gender?: string | null
-          target_disability_type?: string | null
-          target_disability_severity?: string | null
-          target_economic_status?: string | null
-          q_public_benefit?: boolean
-          q_private_benefit?: boolean
-          q_device?: boolean
-          q_case_management?: boolean
-          q_other?: boolean
-          question_content?: string | null
-          answer?: string | null
-          staff_name?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          log_date?: string
-          requester_name?: string | null
-          requester_contact?: string | null
-          requester_type?: string | null
-          requester_region?: string | null
-          target_name?: string | null
-          target_gender?: string | null
-          target_disability_type?: string | null
-          target_disability_severity?: string | null
-          target_economic_status?: string | null
-          q_public_benefit?: boolean
-          q_private_benefit?: boolean
-          q_device?: boolean
-          q_case_management?: boolean
-          q_other?: boolean
-          question_content?: string | null
-          answer?: string | null
-          staff_name?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      annual_targets: {
-        Row: {
-          id: string
-          year: number
-          consultation: number
-          experience: number
-          rental: number
-          custom_make: number
-          cleaning: number
-          repair: number
-          reuse: number
-          professional_edu: number
-          promotion: number
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          year: number
-          consultation?: number
-          experience?: number
-          rental?: number
-          custom_make?: number
-          cleaning?: number
-          repair?: number
-          reuse?: number
-          professional_edu?: number
-          promotion?: number
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          year?: number
-          consultation?: number
-          experience?: number
-          rental?: number
-          custom_make?: number
-          cleaning?: number
-          repair?: number
-          reuse?: number
-          professional_edu?: number
-          promotion?: number
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
     }
     Views: {
+      inventory_dispatch_summary: {
+        Row: {
+          approval_id: string | null
+          client_id: string | null
+          created_at: string | null
+          device_id: string | null
+          dispatch_type: string | null
+          id: string | null
+          status: string | null
+        }
+        Relationships: []
+      }
       v_call_log_report: {
         Row: {
+          answer: string | null
           log_date: string | null
+          q_case_management: boolean | null
+          q_device: boolean | null
+          q_other: boolean | null
+          q_private_benefit: boolean | null
+          q_public_benefit: boolean | null
+          question_content: string | null
+          requester_contact: string | null
           requester_name: string | null
           requester_region: string | null
-          requester_contact: string | null
           requester_type: string | null
-          target_name: string | null
-          target_gender: string | null
-          target_disability_type: string | null
-          target_disability_severity: string | null
-          target_economic_status: string | null
-          q_public_benefit: boolean | null
-          q_private_benefit: boolean | null
-          q_device: boolean | null
-          q_case_management: boolean | null
-          q_other: boolean | null
-          question_content: string | null
-          answer: string | null
           staff_name: string | null
+          target_disability_severity: string | null
+          target_disability_type: string | null
+          target_economic_status: string | null
+          target_gender: string | null
+          target_name: string | null
+        }
+        Insert: {
+          answer?: string | null
+          log_date?: string | null
+          q_case_management?: boolean | null
+          q_device?: boolean | null
+          q_other?: boolean | null
+          q_private_benefit?: boolean | null
+          q_public_benefit?: boolean | null
+          question_content?: string | null
+          requester_contact?: string | null
+          requester_name?: string | null
+          requester_region?: string | null
+          requester_type?: string | null
+          staff_name?: string | null
+          target_disability_severity?: string | null
+          target_disability_type?: string | null
+          target_economic_status?: string | null
+          target_gender?: string | null
+          target_name?: string | null
+        }
+        Update: {
+          answer?: string | null
+          log_date?: string | null
+          q_case_management?: boolean | null
+          q_device?: boolean | null
+          q_other?: boolean | null
+          q_private_benefit?: boolean | null
+          q_public_benefit?: boolean | null
+          question_content?: string | null
+          requester_contact?: string | null
+          requester_name?: string | null
+          requester_region?: string | null
+          requester_type?: string | null
+          staff_name?: string | null
+          target_disability_severity?: string | null
+          target_disability_type?: string | null
+          target_economic_status?: string | null
+          target_gender?: string | null
+          target_name?: string | null
         }
         Relationships: []
       }
       v_service_record_report: {
         Row: {
-          received_at: string | null
-          application_year: number | null
           application_no: number | null
-          name: string | null
+          application_year: number | null
           birth_date: string | null
-          gender: string | null
-          region: string | null
           disability_type: string | null
-          service_category: string | null
-          product_name: string | null
-          item_category: string | null
-          service_content: string | null
-          service_area: string | null
-          is_consult: boolean | null
+          gender: string | null
           is_assessment: boolean | null
-          is_trial: boolean | null
-          is_rental: boolean | null
-          is_custom_make: boolean | null
-          is_grant: boolean | null
-          is_education: boolean | null
-          is_other_business: boolean | null
-          is_info_provision: boolean | null
-          is_public_funding: boolean | null
-          is_private_funding: boolean | null
-          is_self_pay: boolean | null
-          is_funding_secured: boolean | null
-          is_repair: boolean | null
           is_cleaning: boolean | null
-          is_reuse: boolean | null
+          is_closed: boolean | null
+          is_consult: boolean | null
+          is_custom_make: boolean | null
+          is_education: boolean | null
+          is_funding_secured: boolean | null
+          is_grant: boolean | null
+          is_info_provision: boolean | null
           is_monitoring: boolean | null
-          referral_type: string | null
+          is_other_business: boolean | null
           is_phone: boolean | null
+          is_private_funding: boolean | null
+          is_public_funding: boolean | null
+          is_rental: boolean | null
+          is_repair: boolean | null
+          is_reuse: boolean | null
+          is_self_pay: boolean | null
+          is_trial: boolean | null
           is_visit_in: boolean | null
           is_visit_out: boolean | null
-          is_closed: boolean | null
+          item_category: string | null
+          name: string | null
+          product_name: string | null
+          received_at: string | null
+          referral_type: string | null
+          region: string | null
+          service_area: string | null
+          service_category: string | null
+          service_content: string | null
           staff_name: string | null
+        }
+        Insert: {
+          application_no?: number | null
+          application_year?: number | null
+          birth_date?: string | null
+          disability_type?: string | null
+          gender?: string | null
+          is_assessment?: boolean | null
+          is_cleaning?: boolean | null
+          is_closed?: boolean | null
+          is_consult?: boolean | null
+          is_custom_make?: boolean | null
+          is_education?: boolean | null
+          is_funding_secured?: boolean | null
+          is_grant?: boolean | null
+          is_info_provision?: boolean | null
+          is_monitoring?: boolean | null
+          is_other_business?: boolean | null
+          is_phone?: boolean | null
+          is_private_funding?: boolean | null
+          is_public_funding?: boolean | null
+          is_rental?: boolean | null
+          is_repair?: boolean | null
+          is_reuse?: boolean | null
+          is_self_pay?: boolean | null
+          is_trial?: boolean | null
+          is_visit_in?: boolean | null
+          is_visit_out?: boolean | null
+          item_category?: string | null
+          name?: string | null
+          product_name?: string | null
+          received_at?: string | null
+          referral_type?: string | null
+          region?: string | null
+          service_area?: string | null
+          service_category?: string | null
+          service_content?: string | null
+          staff_name?: string | null
+        }
+        Update: {
+          application_no?: number | null
+          application_year?: number | null
+          birth_date?: string | null
+          disability_type?: string | null
+          gender?: string | null
+          is_assessment?: boolean | null
+          is_cleaning?: boolean | null
+          is_closed?: boolean | null
+          is_consult?: boolean | null
+          is_custom_make?: boolean | null
+          is_education?: boolean | null
+          is_funding_secured?: boolean | null
+          is_grant?: boolean | null
+          is_info_provision?: boolean | null
+          is_monitoring?: boolean | null
+          is_other_business?: boolean | null
+          is_phone?: boolean | null
+          is_private_funding?: boolean | null
+          is_public_funding?: boolean | null
+          is_rental?: boolean | null
+          is_repair?: boolean | null
+          is_reuse?: boolean | null
+          is_self_pay?: boolean | null
+          is_trial?: boolean | null
+          is_visit_in?: boolean | null
+          is_visit_out?: boolean | null
+          item_category?: string | null
+          name?: string | null
+          product_name?: string | null
+          received_at?: string | null
+          referral_type?: string | null
+          region?: string | null
+          service_area?: string | null
+          service_category?: string | null
+          service_content?: string | null
+          staff_name?: string | null
         }
         Relationships: []
       }
