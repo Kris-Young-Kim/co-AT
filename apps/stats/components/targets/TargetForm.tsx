@@ -44,7 +44,7 @@ export function TargetForm({ year, defaultValues, onSubmit }: TargetFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3 max-w-md">
-      <p className="text-sm text-gray-500 mb-4">콜센터·교부사업 맞춤형 평가지원은 '상시' 항목으로 목표 없음</p>
+      <p className="text-sm text-gray-500 mb-4">콜센터·교부사업 맞춤형 평가지원은 &apos;상시&apos; 항목으로 목표 없음</p>
       {FIELDS.map(({ key, label }) => (
         <div key={key} className="flex items-center gap-4">
           <label className="w-52 shrink-0 text-sm text-gray-700">{label}</label>
