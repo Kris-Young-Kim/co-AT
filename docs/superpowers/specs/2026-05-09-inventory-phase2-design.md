@@ -3,7 +3,7 @@ Date: 2026-05-09
 
 ## Overview
 
-Extend the existing inventory app (`inventory.gwatc.cloud`) to support three assistive device service types — rental, custom-made, and reuse — with QR-based device tracking, approval app integration, maintenance logging, client progress visibility, and Excel reports.
+Extend the existing inventory app (`inventory.gwatc.cloud`) to support three assistive device service types — rental, custom-made, and reuse — with QR-based device tracking, approval app integration, maintenance logging, client progress visibility, fabrication equipment utilization tracking, and Excel reports.
 
 ---
 
@@ -51,6 +51,30 @@ CREATE TABLE inventory_reuse_dispatches (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- 보유 제작 장비 (Fabrication equipment — 3D printer, CNC, etc.)
+CREATE TABLE inventory_fab_equipment (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,                                -- e.g. "3D프린터 #1", "CNC 라우터"
+  type TEXT NOT NULL,                                -- 3d_printer | cnc | laser | other
+  status TEXT NOT NULL DEFAULT 'available',          -- available | in_use | maintenance
+  serial_number TEXT,
+  purchased_at DATE,
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 맞춤제작 ↔ 제작 장비 연결 (N:M junction)
+CREATE TABLE inventory_custom_order_equipment (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  custom_order_id UUID NOT NULL REFERENCES inventory_custom_orders(id) ON DELETE CASCADE,
+  equipment_id UUID NOT NULL REFERENCES inventory_fab_equipment(id),
+  started_at TIMESTAMPTZ,
+  finished_at TIMESTAMPTZ,
+  notes TEXT,
+  UNIQUE (custom_order_id, equipment_id)
+);
+
 -- 점검/수리 이력 (Maintenance logs)
 CREATE TABLE inventory_maintenance_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -96,6 +120,7 @@ CREATE VIEW inventory_dispatch_summary AS
 대여 관리         /rentals
 맞춤제작          /custom-orders
 재사용            /reuse
+제작 장비         /fab-equipment
 점검/수리         /maintenance
 리포트            /reports
 ```
@@ -116,6 +141,8 @@ CREATE VIEW inventory_dispatch_summary AS
 | `/custom-orders/[id]` | Server | Custom order detail + status change + device assignment |
 | `/reuse` | Server | Reuse dispatch list with status filter |
 | `/reuse/[id]` | Server | Reuse detail + status change |
+| `/fab-equipment` | Server | Fabrication equipment list — status (available/in_use/maintenance) |
+| `/fab-equipment/[id]` | Server | Equipment detail + linked custom orders history |
 | `/maintenance` | Server | Maintenance log list across all devices |
 | `/reports` | Client | Excel download buttons |
 
@@ -161,6 +188,16 @@ Applicant-facing timeline at `gwatc.cloud/track/[track_token]`:
 ```
 - Fetched via service role using `track_token` (no auth required)
 - Future: `track_token` URL sent via SMS/email through automation app
+
+### Fabrication Equipment
+
+- **`/fab-equipment`** — card grid showing each machine with status badge (available / in_use / maintenance)
+- **Equipment status** is derived automatically:
+  - `in_use` when linked to a `custom_order` with status `in_progress` and no `finished_at`
+  - `maintenance` when manually set by MANAGER+
+  - `available` otherwise
+- **Custom order detail page** — "장비 배정" section: multi-select from available equipment, record `started_at`; mark `finished_at` when done
+- **Dashboard** — add equipment utilization summary card (X대 사용중 / Y대 유휴)
 
 ### Status Steppers
 - **`CustomOrderStatusStepper`** — 4-step: requested → in_progress → completed → delivered
@@ -208,6 +245,8 @@ Adds:
 - `rentals.approval_id`, `rentals.extension_count`, `rentals.wait_list_checked_at`
 - `inventory_custom_orders` table + RLS
 - `inventory_reuse_dispatches` table + RLS
+- `inventory_fab_equipment` table + RLS
+- `inventory_custom_order_equipment` junction table + RLS
 - `inventory_maintenance_logs` table + RLS
 - `inventory_dispatch_summary` view
 - `updated_at` trigger on new tables
@@ -218,14 +257,15 @@ Adds:
 
 1. Migration file `047_inventory_phase2.sql`
 2. `@co-at/types` — add inventory phase 2 types
-3. Server actions — `custom-order-actions.ts`, `reuse-actions.ts`, `maintenance-actions.ts`, extend `rental-actions.ts`
+3. Server actions — `custom-order-actions.ts`, `reuse-actions.ts`, `maintenance-actions.ts`, `fab-equipment-actions.ts`, extend `rental-actions.ts`
 4. `/scan/[qr_token]` redirect route
 5. `QrLabelPrint` component + device detail update
-6. `/custom-orders` pages + `CustomOrderStatusStepper`
+6. `/custom-orders` pages + `CustomOrderStatusStepper` + equipment assignment panel
 7. `/reuse` pages + `ReuseStatusStepper`
-8. `/maintenance` page + `MaintenanceLogForm`
-9. Dispatch panel on device detail
-10. Reports page
-11. Sidebar update
-12. `web` app — `/track/[track_token]` page
-13. `approval` app — auto-insert on final approval
+8. `/fab-equipment` pages + equipment status cards
+9. `/maintenance` page + `MaintenanceLogForm`
+10. Dispatch panel on device detail
+11. Reports page
+12. Sidebar update
+13. `web` app — `/track/[track_token]` page
+14. `approval` app — auto-insert on final approval
