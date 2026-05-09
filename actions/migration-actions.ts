@@ -186,6 +186,20 @@ const SR_COL = {
   isVisitOut: 38,
   isClosed: 39,
   staffName: 40,
+  // ── 추가 컬럼 (migration 050) ──────────────────────────────
+  // NOTE: 아래 인덱스는 실제 Google Sheet '보조기기 서비스 상세' 열 구조에 맞게
+  //       조정 필요. 현재는 시트에 없는 경우 null을 반환하도록 안전하게 처리.
+  consultationDate:    41, // 상담일
+  serviceMajorCat:     42, // 서비스대분류 (공적급여/민간지원/기타/서비스지원)
+  serviceSubCat:       43, // 서비스중분류
+  economicStatus:      44, // 경제상황 (수급자/차상위/일반)
+  disabilitySeverity:  45, // 장애정도 (중증/경증)
+  performanceDate:     46, // 실적기준일
+  closedAt:            47, // 종결일
+  monitoringDate:      48, // 모니터링 날짜
+  trialDeviceCount:    49, // 체험지원 적용대수
+  infoProvisionArea:   50, // 정보제공 영역
+  fundingSourceDetail: 51, // 재원연계 상세
 } as const
 
 function parseServiceDate(v: unknown): string | null {
@@ -292,6 +306,20 @@ export async function syncServiceRecords(): Promise<{
         is_closed: toBool(row[SR_COL.isClosed]),
         staff_name: toStr(row[SR_COL.staffName]),
         source: 'sheets',
+        // ── columns added in migration 050 ─────────────────────────
+        application_month: receivedAt ? parseInt(receivedAt.split('-')[1]) : null,
+        record_status: toBool(row[SR_COL.isClosed]) ? '완료' : '미정',
+        consultation_date: parseServiceDate(row[SR_COL.consultationDate]),
+        service_major_category: toStr(row[SR_COL.serviceMajorCat]),
+        service_sub_category: toStr(row[SR_COL.serviceSubCat]),
+        economic_status: toStr(row[SR_COL.economicStatus]),
+        disability_severity: toStr(row[SR_COL.disabilitySeverity]),
+        performance_date: parseServiceDate(row[SR_COL.performanceDate]),
+        closed_at: parseServiceDate(row[SR_COL.closedAt]),
+        monitoring_date: parseServiceDate(row[SR_COL.monitoringDate]),
+        trial_device_count: row[SR_COL.trialDeviceCount] ? parseInt(String(row[SR_COL.trialDeviceCount])) : null,
+        info_provision_area: toStr(row[SR_COL.infoProvisionArea]),
+        funding_source_detail: toStr(row[SR_COL.fundingSourceDetail]),
       })
       if (!insertError) {
         totalAdded++
