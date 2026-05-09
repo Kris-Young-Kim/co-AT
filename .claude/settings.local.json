@@ -70,7 +70,9 @@
       "Bash(SUPABASE_ACCESS_TOKEN=sbp_v0_4844266856c682057f82bc77cc1f1d2fb14d0e37 pnpm gen:types)",
       "Bash(npm install:*)",
       "Bash(npx:*)",
-      "Bash(pnpm turbo:*)"
+      "Bash(pnpm turbo:*)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" pr merge 3 --merge --repo Kris-Young-Kim/co-AT --admin 2>&1)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" pr view 3 --repo Kris-Young-Kim/co-AT --json state 2>&1)"
     ],
     "deny": [
       "Edit(.env)",
