@@ -17,7 +17,7 @@ export async function getReuseDispatches(filters?: {
 }): Promise<{ success: boolean; dispatches?: InventoryReuseDispatchWithDetails[]; error?: string }> {
   let query = supabase()
     .from('inventory_reuse_dispatches')
-    .select('*, eval_clients(name), inventory(name)')
+    .select('*, clients(name), inventory(name)')
     .order('created_at', { ascending: false })
     .limit(filters?.limit ?? 100)
 
@@ -28,7 +28,7 @@ export async function getReuseDispatches(filters?: {
 
   const dispatches = (data ?? []).map(d => ({
     ...d,
-    client_name: (d.eval_clients as { name?: string } | null)?.name ?? null,
+    client_name: (d.clients as { name?: string } | null)?.name ?? null,
     device_name: (d.inventory as { name?: string } | null)?.name ?? null,
   }))
   return { success: true, dispatches }
@@ -41,7 +41,7 @@ export async function getReuseDispatchById(id: string): Promise<{
 }> {
   const { data, error } = await supabase()
     .from('inventory_reuse_dispatches')
-    .select('*, eval_clients(name), inventory(name)')
+    .select('*, clients(name), inventory(name)')
     .eq('id', id)
     .single()
 
@@ -50,7 +50,7 @@ export async function getReuseDispatchById(id: string): Promise<{
     success: true,
     dispatch: {
       ...data,
-      client_name: (data.eval_clients as { name?: string } | null)?.name ?? null,
+      client_name: (data.clients as { name?: string } | null)?.name ?? null,
       device_name: (data.inventory as { name?: string } | null)?.name ?? null,
     },
   }

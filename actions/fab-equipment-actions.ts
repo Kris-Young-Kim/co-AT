@@ -30,7 +30,7 @@ export async function getFabEquipmentById(id: string): Promise<{
     supabase().from('inventory_fab_equipment').select('*').eq('id', id).single(),
     supabase()
       .from('inventory_custom_order_equipment')
-      .select('custom_order_id, inventory_custom_orders(id, status, eval_clients(name))')
+      .select('custom_order_id, inventory_custom_orders(id, status, clients(name))')
       .eq('equipment_id', id)
       .order('started_at', { ascending: false })
       .limit(20),
@@ -39,8 +39,8 @@ export async function getFabEquipmentById(id: string): Promise<{
   if (eqResult.error || !eqResult.data) return { success: false, error: eqResult.error?.message ?? 'Not found' }
 
   const active_orders = (ordersResult.data ?? []).map(r => {
-    const o = r.inventory_custom_orders as { id: string; status: string; eval_clients: { name?: string } | null } | null
-    return { id: o?.id ?? '', client_name: o?.eval_clients?.name ?? null, status: o?.status ?? '' }
+    const o = r.inventory_custom_orders as { id: string; status: string; clients: { name?: string } | null } | null
+    return { id: o?.id ?? '', client_name: o?.clients?.name ?? null, status: o?.status ?? '' }
   })
 
   return { success: true, equipment: { ...eqResult.data, active_orders } }

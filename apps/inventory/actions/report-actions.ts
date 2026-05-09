@@ -10,7 +10,7 @@ export async function generateRentalReport(params: { year: number; month?: numbe
     const supabase = createAdminClient()
     let query = supabase
       .from('rentals')
-      .select('*, inventory(name, model), eval_clients(name)')
+      .select('*, inventory(name, model), clients(name)')
       .order('rental_start_date', { ascending: false })
 
     if (params.month) {
@@ -38,7 +38,7 @@ export async function generateRentalReport(params: { year: number; month?: numbe
     ws.getRow(1).font = { bold: true }
     ;(data ?? []).forEach(r => {
       const inv = r.inventory as { name?: string; model?: string } | null
-      const cli = r.eval_clients as { name?: string } | null
+      const cli = r.clients as { name?: string } | null
       ws.addRow({
         start: r.rental_start_date, end: r.rental_end_date,
         device: inv?.name ?? '—', model: inv?.model ?? '—',
@@ -64,9 +64,9 @@ export async function generateDispatchSummaryReport(params: { year: number }): P
     const yearEnd = `${params.year}-12-31`
 
     const [rentals, customs, reuses] = await Promise.all([
-      supabase.from('rentals').select('client_id, eval_clients(name), status').gte('rental_start_date', yearStart).lte('rental_start_date', yearEnd),
-      supabase.from('inventory_custom_orders').select('client_id, eval_clients(name), status').gte('created_at', yearStart).lte('created_at', yearEnd),
-      supabase.from('inventory_reuse_dispatches').select('client_id, eval_clients(name), status').gte('created_at', yearStart).lte('created_at', yearEnd),
+      supabase.from('rentals').select('client_id, clients(name), status').gte('rental_start_date', yearStart).lte('rental_start_date', yearEnd),
+      supabase.from('inventory_custom_orders').select('client_id, clients(name), status').gte('created_at', yearStart).lte('created_at', yearEnd),
+      supabase.from('inventory_reuse_dispatches').select('client_id, clients(name), status').gte('created_at', yearStart).lte('created_at', yearEnd),
     ])
 
     const wb = new ExcelJS.Workbook()
@@ -79,8 +79,8 @@ export async function generateDispatchSummaryReport(params: { year: number }): P
         { header: '상태', key: 'status', width: 14 },
       ]
       ws.getRow(1).font = { bold: true }
-      ;(rows as { eval_clients: { name?: string } | null; status: string }[]).forEach(r => {
-        ws.addRow({ client: r.eval_clients?.name ?? '—', type, status: r.status })
+      ;(rows as { clients: { name?: string } | null; status: string }[]).forEach(r => {
+        ws.addRow({ client: r.clients?.name ?? '—', type, status: r.status })
       })
     }
 
