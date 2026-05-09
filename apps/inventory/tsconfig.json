@@ -38,6 +38,15 @@
       "@/types/*": [
         "../../packages/lib/types/*"
       ],
+      "@co-at/types": [
+        "../../packages/types/src/index.ts"
+      ],
+      "@co-at/auth": [
+        "../../packages/auth/src/index.ts"
+      ],
+      "@co-at/lib": [
+        "../../packages/lib/index.ts"
+      ],
       "@/*": [
         "../../*"
       ]

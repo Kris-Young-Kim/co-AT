@@ -28,6 +28,7 @@ export async function getReuseDispatches(filters?: {
 
   const dispatches = (data ?? []).map(d => ({
     ...d,
+    status: d.status as ReuseDispatchStatus,
     client_name: (d.clients as { name?: string } | null)?.name ?? null,
     device_name: (d.inventory as { name?: string } | null)?.name ?? null,
   }))
@@ -50,6 +51,7 @@ export async function getReuseDispatchById(id: string): Promise<{
     success: true,
     dispatch: {
       ...data,
+      status: data.status as ReuseDispatchStatus,
       client_name: (data.clients as { name?: string } | null)?.name ?? null,
       device_name: (data.inventory as { name?: string } | null)?.name ?? null,
     },

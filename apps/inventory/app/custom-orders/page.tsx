@@ -56,7 +56,7 @@ export default async function CustomOrdersPage({ searchParams }: Props) {
           <tbody className="divide-y">
             {orders.map(o => (
               <tr key={o.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 text-gray-500 text-xs">{o.requested_at.slice(0, 10)}</td>
+                <td className="px-4 py-3 text-gray-500 text-xs">{o.requested_at?.slice(0, 10) ?? '—'}</td>
                 <td className="px-4 py-3">{o.client_name ?? '—'}</td>
                 <td className="px-4 py-3 text-gray-500">{o.device_name ?? '미배정'}</td>
                 <td className="px-4 py-3">

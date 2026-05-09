@@ -54,7 +54,7 @@ export default async function ReusePage({ searchParams }: Props) {
           <tbody className="divide-y">
             {dispatches.map(d => (
               <tr key={d.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 text-gray-500 text-xs">{d.created_at.slice(0, 10)}</td>
+                <td className="px-4 py-3 text-gray-500 text-xs">{d.created_at?.slice(0, 10) ?? '—'}</td>
                 <td className="px-4 py-3 font-medium">{d.device_name ?? '—'}</td>
                 <td className="px-4 py-3">{d.client_name ?? '—'}</td>
                 <td className="px-4 py-3">

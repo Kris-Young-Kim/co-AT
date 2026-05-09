@@ -25,6 +25,8 @@ export async function getMaintenanceLogs(filters?: {
 
   const logs = (data ?? []).map(l => ({
     ...l,
+    type: l.type as InventoryMaintenanceLog['type'],
+    status: l.status as InventoryMaintenanceLog['status'],
     device_name: (l.inventory as { name?: string } | null)?.name ?? null,
   }))
   return { success: true, logs }

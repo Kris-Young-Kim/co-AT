@@ -41,7 +41,7 @@ export default async function CustomOrderDetailPage({ params }: Props) {
         <dl>
           {row('대상자', order.client_name)}
           {row('기기', order.device_name ?? '미배정')}
-          {row('신청일', order.requested_at.slice(0, 10))}
+          {row('신청일', order.requested_at?.slice(0, 10) ?? '—')}
           {row('지급일', order.delivered_at?.slice(0, 10))}
           {row('메모', order.notes)}
         </dl>
