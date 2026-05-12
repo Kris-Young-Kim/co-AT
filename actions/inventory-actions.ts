@@ -341,7 +341,7 @@ export async function updateInventoryItem(
       .update({
         ...data,
         updated_at: new Date().toISOString(),
-      })
+      } as never)
       .eq("id", id)
       .select()
       .single()
