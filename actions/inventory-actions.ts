@@ -30,7 +30,6 @@ export interface InventoryItem {
   qr_code: string | null
   qr_token: string | null
   barcode: string | null
-  image_url: string | null
   created_at: string | null
   updated_at: string | null
 }
@@ -280,7 +279,6 @@ export async function createInventoryItem(
         purchase_date: data.purchase_date || null,
         purchase_price: data.purchase_price || null,
         qr_code: data.qr_code || null,
-        image_url: data.image_url || null,
       })
       .select()
       .single()
@@ -501,7 +499,6 @@ export interface GroupedDevice {
   category: string | null
   manufacturer: string | null
   model: string | null
-  image_url: string | null
   total: number
   stored: number    // 보관 (대여가능)
   rented: number    // 대여중
@@ -518,7 +515,7 @@ export async function getGroupedInventoryForPublic(): Promise<GroupedDevice[]> {
 
   const { data, error } = await supabase
     .from("inventory")
-    .select("name, category, manufacturer, model, image_url, status")
+    .select("name, category, manufacturer, model, status")
     .neq("status", "폐기")
     .order("name")
 
@@ -538,7 +535,6 @@ export async function getGroupedInventoryForPublic(): Promise<GroupedDevice[]> {
         category: item.category,
         manufacturer: item.manufacturer,
         model: item.model,
-        image_url: item.image_url,
         total: 0,
         stored: 0,
         rented: 0,

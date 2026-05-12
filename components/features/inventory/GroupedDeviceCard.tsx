@@ -3,7 +3,6 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { type GroupedDevice } from "@/actions/inventory-actions"
-import Image from "next/image"
 import { Package } from "lucide-react"
 
 interface GroupedDeviceCardProps {
@@ -13,21 +12,10 @@ interface GroupedDeviceCardProps {
 export function GroupedDeviceCard({ device }: GroupedDeviceCardProps) {
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-      {/* 이미지 */}
       <div className="relative w-full h-48 bg-muted">
-        {device.image_url ? (
-          <Image
-            src={device.image_url}
-            alt={device.name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <Package className="h-16 w-16 text-muted-foreground/40" />
-          </div>
-        )}
+        <div className="flex items-center justify-center h-full">
+          <Package className="h-16 w-16 text-muted-foreground/40" />
+        </div>
       </div>
 
       {/* 정보 */}
