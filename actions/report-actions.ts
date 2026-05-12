@@ -210,7 +210,7 @@ export async function generateBusinessReport(params: {
     disability_severity: string | null
     [key: string]: unknown
   }
-  const records = (srResult.data ?? []) as ServiceRecord[]
+  const records = (srResult.data ?? []) as unknown as ServiceRecord[]
   const calls = callResult.data ?? []
 
   // Monthly breakdown (1–12)
