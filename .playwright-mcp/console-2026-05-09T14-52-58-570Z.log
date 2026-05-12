@@ -1,0 +1,17 @@
+[    5901ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c/node_modules/next/dist/next-devtools/shared/forward-logs-shared.js:27
+[    6113ms] [LOG] [HMR] connected @ webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c/node_modules/next/dist/next-devtools/shared/forward-logs-shared.js:27
+[    6326ms] [LOG] %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit @ webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c/node_modules/next/dist/next-devtools/shared/forward-logs-shared.js:27
+[    6327ms] [LOG] %c[Vercel Web Analytics]%c [view] http://localhost:3000/info/devices color: rgb(120, 120, 120) color: inherit {o: http://localhost:3000/info/devices, sv: 0.1.3, sdkn: @vercel/analytics/react, sdkv: 1.6.1, ts: 1778338384896} /_vercel/insights/view @ webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c/node_modules/next/dist/next-devtools/shared/forward-logs-shared.js:27
+[    6331ms] [LOG] %c[Vercel Speed Insights]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit @ webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c/node_modules/next/dist/next-devtools/shared/forward-logs-shared.js:27
+[    6414ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://clerk.gwatc.cloud/v1/client?__clerk_api_version=2025-11-10&_clerk_js_version=5.125.10:0
+[    6437ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://clerk.gwatc.cloud/v1/environment?__clerk_api_version=2025-11-10&_clerk_js_version=5.125.10:0
+[    6440ms] [ERROR] e: Clerk: Production Keys are only allowed for domain "gwatc.cloud". 
+API Error: The Request HTTP Origin header must be equal to or a subdomain of the requesting URL.
+    at https://clerk.gwatc.cloud/npm/@clerk/clerk-js@5/dist/clerk.browser.js:2:7182
+    at u._baseFetch (https://clerk.gwatc.cloud/npm/@clerk/clerk-js@5/dist/clerk.browser.js:3:38)
+    at async d.execute (https://clerk.gwatc.cloud/npm/@clerk/clerk-js@5/dist/clerk.browser.js:2:5226)
+    at async s._baseGet (https://clerk.gwatc.cloud/npm/@clerk/clerk-js@5/dist/clerk.browser.js:3:567)
+    at async Promise.all (index 1)
+    at async #U (https://clerk.gwatc.cloud/npm/@clerk/clerk-js@5/dist/clerk.browser.js:5:73576)
+    at async e5.load (https://clerk.gwatc.cloud/npm/@clerk/clerk-js@5/dist/clerk.browser.js:5:34357)
+    at async _IsomorphicClerk.loadClerkJS (webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/@clerk+clerk-react@5.59.0_r_9b6cab8f62a8deaaccdbe0852cd4a42d/node_modules/@clerk/clerk-react/dist/index.mjs:1720:9) @ webpack-internal:///(app-pages-browser)/../../node_modules/.pnpm/next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c/node_modules/next/dist/next-devtools/userspace/app/errors/intercept-console-error.js:51

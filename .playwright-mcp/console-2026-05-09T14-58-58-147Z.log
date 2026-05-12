@@ -1,0 +1,9 @@
+[    2284ms] Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at rX (https://gwatc.cloud/_next/static/chunks/184fad26-d768c62e01b179d6.js:1:37060)
+    at https://gwatc.cloud/_next/static/chunks/184fad26-d768c62e01b179d6.js:1:133599
+    at sg (https://gwatc.cloud/_next/static/chunks/184fad26-d768c62e01b179d6.js:1:137164)
+    at sp (https://gwatc.cloud/_next/static/chunks/184fad26-d768c62e01b179d6.js:1:128502)
+    at https://gwatc.cloud/_next/static/chunks/184fad26-d768c62e01b179d6.js:1:123331
+    at sn (https://gwatc.cloud/_next/static/chunks/184fad26-d768c62e01b179d6.js:1:123432)
+    at sQ (https://gwatc.cloud/_next/static/chunks/184fad26-d768c62e01b179d6.js:1:149820)
+    at MessagePort.M (https://gwatc.cloud/_next/static/chunks/5114-5615e558e2ea897d.js:1:42682)

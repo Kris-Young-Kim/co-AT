@@ -1,0 +1,104 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "GW GWATC" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e6]:
+            - generic [ref=e8]: GW
+            - generic [ref=e9]: GWATC
+        - navigation [ref=e10]:
+          - button "주요사업 메뉴" [ref=e11] [cursor=pointer]: 주요사업
+          - button "커뮤니티 메뉴" [ref=e12] [cursor=pointer]: 커뮤니티
+          - button "보조기기 정보 메뉴" [ref=e13] [cursor=pointer]: 보조기기 정보
+          - button "서비스 신청 메뉴" [ref=e15] [cursor=pointer]: 서비스 신청
+          - button "센터소개 메뉴" [ref=e16] [cursor=pointer]: 센터소개
+        - generic [ref=e17]:
+          - button "로딩 중..." [disabled]
+    - main [ref=e18]:
+      - generic [ref=e19]:
+        - navigation "브레드크럼" [ref=e20]:
+          - link "홈으로 이동" [ref=e21] [cursor=pointer]:
+            - /url: /
+            - img [ref=e22]
+          - generic [ref=e25]:
+            - img [ref=e26]
+            - link "보조기기 정보" [ref=e28] [cursor=pointer]:
+              - /url: /info
+          - generic [ref=e29]:
+            - img [ref=e30]
+            - generic [ref=e32]: 보유 보조기기
+        - generic [ref=e33]:
+          - heading "보유 보조기기" [level=1] [ref=e34]
+          - paragraph [ref=e35]: 센터에서 보유하고 있는 보조기기 목록입니다. 상태별로 필터링하여 대여 가능한 기기를 확인할 수 있습니다.
+        - generic [ref=e36]:
+          - generic [ref=e37]:
+            - generic [ref=e38]:
+              - img [ref=e39]
+              - textbox "기기명, 카테고리, 제조사 검색" [ref=e42]
+            - button [disabled]:
+              - img
+          - img [ref=e44]
+    - generic [ref=e46]:
+      - link "서비스 이용안내" [ref=e47] [cursor=pointer]:
+        - /url: /apply/guide
+        - img [ref=e48]
+        - generic [ref=e51]: 서비스 이용안내
+      - link "온라인 신청" [ref=e52] [cursor=pointer]:
+        - /url: /apply
+        - img [ref=e53]
+        - generic [ref=e56]: 온라인 신청
+      - link "보유기기 검색" [ref=e57] [cursor=pointer]:
+        - /url: /info/devices
+        - img [ref=e58]
+        - generic [ref=e61]: 보유기기 검색
+      - link "중앙보조 기기센터" [ref=e62] [cursor=pointer]:
+        - /url: http://knat.go.kr/knw/home/knat_DB/prod_search.php
+        - img [ref=e63]
+        - generic [ref=e67]: 중앙보조 기기센터
+      - button "맨 위로 이동":
+        - img
+        - generic: TOP
+    - button "지원사업 안내 챗봇 열기" [ref=e68] [cursor=pointer]:
+      - img [ref=e69]
+    - contentinfo [ref=e71]:
+      - generic [ref=e72]:
+        - generic [ref=e73]:
+          - link "개인정보처리방침" [ref=e74] [cursor=pointer]:
+            - /url: /privacy
+          - link "이메일무단수집거부" [ref=e75] [cursor=pointer]:
+            - /url: /email-policy
+        - generic [ref=e76]:
+          - generic [ref=e77]:
+            - generic [ref=e78]:
+              - generic [ref=e80]: GW
+              - generic [ref=e81]: GWATC
+            - generic [ref=e82]:
+              - paragraph [ref=e83]: 강원특별자치도 보조기기센터
+              - paragraph [ref=e84]: 강원특별자치도 춘천시 충열로 142번길 24-16(우두동 291-2)
+              - paragraph [ref=e85]: 강원특별자치도재활병원 2층
+              - paragraph [ref=e86]: "대표 : 이승준"
+              - paragraph [ref=e87]: "고유번호증 : 221-82-10983"
+              - paragraph [ref=e88]:
+                - generic [ref=e89]: "대표전화 : 033-248-7751~4"
+                - generic [ref=e90]: "Fax : 033-248-7755"
+                - generic [ref=e91]: "Email : gatc2019@naver.com"
+              - paragraph [ref=e92]: Copyright(c) 강원특별자치도보조기기센터 All rights reserved.
+          - generic [ref=e93]:
+            - generic [ref=e94]:
+              - link "카카오톡" [ref=e95] [cursor=pointer]:
+                - /url: http://pf.kakao.com/_hjxmRxb
+                - img [ref=e97]
+                - generic [ref=e100]:
+                  - img [ref=e101]
+                  - text: 카카오톡
+              - link "페이스북" [ref=e103] [cursor=pointer]:
+                - /url: https://www.facebook.com/GATC2019
+                - img [ref=e105]
+                - generic [ref=e108]:
+                  - img [ref=e109]
+                  - text: 페이스북
+            - button "패밀리 사이트" [ref=e112] [cursor=pointer]:
+              - generic [ref=e113]: 패밀리 사이트
+              - img [ref=e114]
+  - alert [ref=e116]

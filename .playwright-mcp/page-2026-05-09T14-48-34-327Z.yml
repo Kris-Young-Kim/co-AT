@@ -1,0 +1,89 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "GW GWATC" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e7]:
+            - generic [ref=e9]: GW
+            - generic [ref=e10]: GWATC
+        - navigation [ref=e11]:
+          - link "홈으로" [ref=e12] [cursor=pointer]:
+            - /url: /
+            - img
+            - generic [ref=e13]: 홈으로
+          - button "관리자 로그아웃" [ref=e14] [cursor=pointer]:
+            - img
+            - generic [ref=e15]: 관리자 로그아웃
+    - generic [ref=e17]:
+      - complementary [ref=e18]:
+        - generic [ref=e20]:
+          - img [ref=e22]
+          - generic [ref=e24]:
+            - generic [ref=e25]: 관리자
+            - generic [ref=e26]: Admin Panel
+        - navigation [ref=e27]:
+          - link "대시보드" [ref=e28] [cursor=pointer]:
+            - /url: /
+            - img [ref=e29]
+            - generic [ref=e34]: 대시보드
+          - link "통계 대시보드" [ref=e36] [cursor=pointer]:
+            - /url: /stats
+            - img [ref=e37]
+            - generic [ref=e39]: 통계 대시보드
+          - link "새 글 관리" [ref=e40] [cursor=pointer]:
+            - /url: /notices-management
+            - img [ref=e41]
+            - generic [ref=e44]: 새 글 관리
+          - link "대상자 관리" [ref=e45] [cursor=pointer]:
+            - /url: /clients
+            - img [ref=e46]
+            - generic [ref=e51]: 대상자 관리
+          - link "재고 관리" [ref=e52] [cursor=pointer]:
+            - /url: /inventory
+            - img [ref=e53]
+            - generic [ref=e57]: 재고 관리
+          - link "대여 관리" [ref=e58] [cursor=pointer]:
+            - /url: /rentals
+            - img [ref=e59]
+            - generic [ref=e63]: 대여 관리
+          - link "맞춤제작 관리" [ref=e64] [cursor=pointer]:
+            - /url: /custom-makes
+            - img [ref=e65]
+            - generic [ref=e69]: 맞춤제작 관리
+          - link "예산 계획" [ref=e70] [cursor=pointer]:
+            - /url: /budget
+            - img [ref=e71]
+            - generic [ref=e74]: 예산 계획
+          - link "장비 관리" [ref=e75] [cursor=pointer]:
+            - /url: /equipment
+            - img [ref=e76]
+            - generic [ref=e78]: 장비 관리
+          - link "일정 관리" [ref=e79] [cursor=pointer]:
+            - /url: /schedule
+            - img [ref=e80]
+            - generic [ref=e82]: 일정 관리
+          - link "업무 관리" [ref=e83] [cursor=pointer]:
+            - /url: /work-tasks
+            - img [ref=e84]
+            - generic [ref=e87]: 업무 관리
+          - link "업무 메신저" [ref=e88] [cursor=pointer]:
+            - /url: /messenger
+            - img [ref=e89]
+            - generic [ref=e91]: 업무 메신저
+          - link "AI 업무 도우미" [ref=e92] [cursor=pointer]:
+            - /url: /agent-chat
+            - img [ref=e93]
+            - generic [ref=e96]: AI 업무 도우미
+          - link "설정" [ref=e97] [cursor=pointer]:
+            - /url: /settings
+            - img [ref=e98]
+            - generic [ref=e101]: 설정
+      - main [ref=e102]:
+        - generic [ref=e106]:
+          - img [ref=e107]
+          - paragraph [ref=e109]: 관리자 세션을 확인하는 중...
+    - button "규정 검색 챗봇 열기" [ref=e110] [cursor=pointer]:
+      - img [ref=e111]
+  - button "Open Next.js Dev Tools" [ref=e118] [cursor=pointer]:
+    - img [ref=e119]

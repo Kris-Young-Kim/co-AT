@@ -1,0 +1,39 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - heading "자산/재고 관리" [level=1] [ref=e5]
+      - paragraph [ref=e6]: inventory.gwatc.cloud
+    - navigation [ref=e7]:
+      - link "대시보드" [ref=e8] [cursor=pointer]:
+        - /url: /
+        - img [ref=e9]
+        - text: 대시보드
+      - link "기기 목록" [ref=e14] [cursor=pointer]:
+        - /url: /devices
+        - img [ref=e15]
+        - text: 기기 목록
+      - link "대여 관리" [ref=e19] [cursor=pointer]:
+        - /url: /rentals
+        - img [ref=e20]
+        - text: 대여 관리
+      - link "맞춤제작" [ref=e23] [cursor=pointer]:
+        - /url: /custom-orders
+        - img [ref=e24]
+        - text: 맞춤제작
+      - link "재사용" [ref=e26] [cursor=pointer]:
+        - /url: /reuse
+        - img [ref=e27]
+        - text: 재사용
+      - link "제작 장비" [ref=e32] [cursor=pointer]:
+        - /url: /fab-equipment
+        - img [ref=e33]
+        - text: 제작 장비
+      - link "점검/수리" [ref=e36] [cursor=pointer]:
+        - /url: /maintenance
+        - img [ref=e37]
+        - text: 점검/수리
+      - link "리포트" [ref=e40] [cursor=pointer]:
+        - /url: /reports
+        - img [ref=e41]
+        - text: 리포트
+  - main [ref=e44]

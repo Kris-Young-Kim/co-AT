@@ -1,0 +1,10 @@
+[    1523ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://hr.gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Fhr.gwatc.cloud%2F:0
+[    2227ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://hr.gwatc.cloud/favicon.ico:0
+[    2482ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://hr.gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Fhr.gwatc.cloud%2Fdaily-wages:0
+[    2517ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://hr.gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Fhr.gwatc.cloud%2Fsalary:0
+[    2700ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://hr.gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Fhr.gwatc.cloud%2Fleave:0
+[    2748ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://hr.gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Fhr.gwatc.cloud%2Fattendance:0
+[    2914ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://hr.gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Fhr.gwatc.cloud%2Femployees:0
+[    2954ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://hr.gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Fhr.gwatc.cloud%2Fcertificates:0
+[    2975ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://hr.gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Fhr.gwatc.cloud%2Fcareers:0
+[    2986ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://hr.gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Fhr.gwatc.cloud%2F:0

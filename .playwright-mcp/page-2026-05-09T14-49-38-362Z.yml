@@ -1,0 +1,31 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - heading "성과 대시보드" [level=1] [ref=e5]
+      - paragraph [ref=e6]: stats.gwatc.cloud
+    - navigation [ref=e7]:
+      - link "KPI 대시보드" [ref=e8] [cursor=pointer]:
+        - /url: /
+        - img [ref=e9]
+        - text: KPI 대시보드
+      - link "월별 현황" [ref=e14] [cursor=pointer]:
+        - /url: /monthly
+        - img [ref=e15]
+        - text: 월별 현황
+      - link "사업별 현황" [ref=e17] [cursor=pointer]:
+        - /url: /business
+        - img [ref=e18]
+        - text: 사업별 현황
+      - link "연도별 추이" [ref=e21] [cursor=pointer]:
+        - /url: /yearly
+        - img [ref=e22]
+        - text: 연도별 추이
+      - link "목표 관리" [ref=e25] [cursor=pointer]:
+        - /url: /targets
+        - img [ref=e26]
+        - text: 목표 관리
+      - link "Excel 내보내기" [ref=e30] [cursor=pointer]:
+        - /url: /export
+        - img [ref=e31]
+        - text: Excel 내보내기
+  - main [ref=e34]

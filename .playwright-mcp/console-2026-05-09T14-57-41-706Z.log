@@ -1,0 +1,2 @@
+[    4826ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://admin.gwatc.cloud/favicon.ico:0
+[    6594ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:7243/ingest/019d36bc-4964-4ab1-b760-13c472a4ead0:0

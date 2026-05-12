@@ -1,0 +1,2 @@
+[    3757ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://automation.gwatc.cloud/favicon.ico:0
+[    3978ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://automation.gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Fautomation.gwatc.cloud%2F:0

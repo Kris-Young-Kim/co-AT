@@ -1,0 +1,31 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - heading "GWATC 평가툴" [level=1] [ref=e5]
+      - navigation [ref=e6]:
+        - link "대시보드" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img [ref=e8]
+          - text: 대시보드
+        - link "클라이언트" [ref=e10] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e11]
+          - text: 클라이언트
+        - link "콜센터 상담" [ref=e16] [cursor=pointer]:
+          - /url: /call-logs
+          - img [ref=e17]
+          - text: 콜센터 상담
+        - link "Sheets 동기화" [ref=e19] [cursor=pointer]:
+          - /url: /migration
+          - img [ref=e20]
+          - text: Sheets 동기화
+        - link "보고서 출력" [ref=e25] [cursor=pointer]:
+          - /url: /reports
+          - img [ref=e26]
+          - text: 보고서 출력
+      - button "로그아웃" [ref=e30] [cursor=pointer]:
+        - img [ref=e31]
+        - text: 로그아웃
+    - main [ref=e34]
+  - button "Open Next.js Dev Tools" [ref=e41] [cursor=pointer]:
+    - img [ref=e42]

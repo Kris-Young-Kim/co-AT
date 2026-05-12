@@ -1,0 +1,654 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - main [ref=e4]:
+      - generic [ref=e5]:
+        - navigation "브레드크럼" [ref=e6]:
+          - link "홈으로 이동" [ref=e7] [cursor=pointer]:
+            - /url: /
+            - img [ref=e8]
+          - generic [ref=e11]:
+            - img [ref=e12]
+            - generic [ref=e14]: 공지사항
+        - generic [ref=e15]:
+          - heading "공지사항" [level=1] [ref=e16]
+          - paragraph [ref=e17]: 센터의 주요 공지사항을 확인하실 수 있습니다
+        - generic [ref=e18]:
+          - link "고정 공지사항 [지원사업] 월드비전과 함께하는 2026 저소득 희귀질환아동 맞춤형보조기기 지원사업 안내 2026.04.21 [공지]" [ref=e20] [cursor=pointer]:
+            - /url: /notices/b401fae2-8cf5-4288-b128-a864f0f42ea6
+            - generic [ref=e21]:
+              - generic [ref=e23]:
+                - generic [ref=e24]:
+                  - generic [ref=e25]:
+                    - generic [ref=e26]:
+                      - img [ref=e27]
+                      - text: 고정
+                    - generic [ref=e29]: 공지사항
+                  - heading "[지원사업] 월드비전과 함께하는 2026 저소득 희귀질환아동 맞춤형보조기기 지원사업 안내" [level=3] [ref=e30]
+                - generic [ref=e31]:
+                  - img [ref=e32]
+                  - text: 2026.04.21
+              - paragraph [ref=e35]: "[공지]"
+          - link "고정 공지사항 [지원사업] 월드비전과 함께하는 2026 저소득 희귀질환아동 맞춤형보조기기 지원사업 안내 2026.04.21 [공지]" [ref=e37] [cursor=pointer]:
+            - /url: /notices/d5a2565c-e4eb-4afe-8bce-07f2df2ad9b4
+            - generic [ref=e38]:
+              - generic [ref=e40]:
+                - generic [ref=e41]:
+                  - generic [ref=e42]:
+                    - generic [ref=e43]:
+                      - img [ref=e44]
+                      - text: 고정
+                    - generic [ref=e46]: 공지사항
+                  - heading "[지원사업] 월드비전과 함께하는 2026 저소득 희귀질환아동 맞춤형보조기기 지원사업 안내" [level=3] [ref=e47]
+                - generic [ref=e48]:
+                  - img [ref=e49]
+                  - text: 2026.04.21
+              - paragraph [ref=e52]: "[공지]"
+          - link "고정 공지사항 [지원사업]「THE좋은세상만들기」주거환경개선사업 신청 안내 2026.04.10 [공지]" [ref=e54] [cursor=pointer]:
+            - /url: /notices/f3fbc6f3-c49b-4705-8354-5a3a1ae1b0cb
+            - generic [ref=e55]:
+              - generic [ref=e57]:
+                - generic [ref=e58]:
+                  - generic [ref=e59]:
+                    - generic [ref=e60]:
+                      - img [ref=e61]
+                      - text: 고정
+                    - generic [ref=e63]: 공지사항
+                  - heading "[지원사업]「THE좋은세상만들기」주거환경개선사업 신청 안내" [level=3] [ref=e64]
+                - generic [ref=e65]:
+                  - img [ref=e66]
+                  - text: 2026.04.10
+              - paragraph [ref=e69]: "[공지]"
+          - link "고정 공지사항 [지원사업]「THE좋은세상만들기」주거환경개선사업 신청 안내 2026.04.10 [공지]" [ref=e71] [cursor=pointer]:
+            - /url: /notices/05e4e2e0-0953-4906-908a-edf67cbb591d
+            - generic [ref=e72]:
+              - generic [ref=e74]:
+                - generic [ref=e75]:
+                  - generic [ref=e76]:
+                    - generic [ref=e77]:
+                      - img [ref=e78]
+                      - text: 고정
+                    - generic [ref=e80]: 공지사항
+                  - heading "[지원사업]「THE좋은세상만들기」주거환경개선사업 신청 안내" [level=3] [ref=e81]
+                - generic [ref=e82]:
+                  - img [ref=e83]
+                  - text: 2026.04.10
+              - paragraph [ref=e86]: "[공지]"
+          - link "고정 공지사항 [지원사업] 2026 롯데재단 장애인 보조기기 지원사업 안내 2026.04.06 [공지]" [ref=e88] [cursor=pointer]:
+            - /url: /notices/148aee74-bc7f-4740-b839-24de0b33875f
+            - generic [ref=e89]:
+              - generic [ref=e91]:
+                - generic [ref=e92]:
+                  - generic [ref=e93]:
+                    - generic [ref=e94]:
+                      - img [ref=e95]
+                      - text: 고정
+                    - generic [ref=e97]: 공지사항
+                  - heading "[지원사업] 2026 롯데재단 장애인 보조기기 지원사업 안내" [level=3] [ref=e98]
+                - generic [ref=e99]:
+                  - img [ref=e100]
+                  - text: 2026.04.06
+              - paragraph [ref=e103]: "[공지]"
+          - link "고정 공지사항 [지원사업] 2026 롯데재단 장애인 보조기기 지원사업 안내 2026.04.06 [공지]" [ref=e105] [cursor=pointer]:
+            - /url: /notices/8daf5c04-da07-407a-a2fd-04d2e14f615c
+            - generic [ref=e106]:
+              - generic [ref=e108]:
+                - generic [ref=e109]:
+                  - generic [ref=e110]:
+                    - generic [ref=e111]:
+                      - img [ref=e112]
+                      - text: 고정
+                    - generic [ref=e114]: 공지사항
+                  - heading "[지원사업] 2026 롯데재단 장애인 보조기기 지원사업 안내" [level=3] [ref=e115]
+                - generic [ref=e116]:
+                  - img [ref=e117]
+                  - text: 2026.04.06
+              - paragraph [ref=e120]: "[공지]"
+          - link "고정 공지사항 [센터사업] 2026년 보조기기 무상 대여 서비스 2026.03.23 [정보]" [ref=e122] [cursor=pointer]:
+            - /url: /notices/d97399ee-fbed-4ad8-aea9-ea128fb517f6
+            - generic [ref=e123]:
+              - generic [ref=e125]:
+                - generic [ref=e126]:
+                  - generic [ref=e127]:
+                    - generic [ref=e128]:
+                      - img [ref=e129]
+                      - text: 고정
+                    - generic [ref=e131]: 공지사항
+                  - heading "[센터사업] 2026년 보조기기 무상 대여 서비스" [level=3] [ref=e132]
+                - generic [ref=e133]:
+                  - img [ref=e134]
+                  - text: 2026.03.23
+              - paragraph [ref=e137]: "[정보]"
+          - link "고정 공지사항 [센터사업] 2026년 보조기기 무상 대여 서비스 2026.03.23 [정보]" [ref=e139] [cursor=pointer]:
+            - /url: /notices/e286225b-f6cf-4cae-b563-723a1189e394
+            - generic [ref=e140]:
+              - generic [ref=e142]:
+                - generic [ref=e143]:
+                  - generic [ref=e144]:
+                    - generic [ref=e145]:
+                      - img [ref=e146]
+                      - text: 고정
+                    - generic [ref=e148]: 공지사항
+                  - heading "[센터사업] 2026년 보조기기 무상 대여 서비스" [level=3] [ref=e149]
+                - generic [ref=e150]:
+                  - img [ref=e151]
+                  - text: 2026.03.23
+              - paragraph [ref=e154]: "[정보]"
+          - link "고정 공지사항 테스트1 2026.01.08 ㅇㅇㅇㅇㅇ" [ref=e156] [cursor=pointer]:
+            - /url: /notices/c778c593-c5d5-4d23-a38b-ff984d1bbaab
+            - generic [ref=e157]:
+              - generic [ref=e159]:
+                - generic [ref=e160]:
+                  - generic [ref=e161]:
+                    - generic [ref=e162]:
+                      - img [ref=e163]
+                      - text: 고정
+                    - generic [ref=e165]: 공지사항
+                  - heading "테스트1" [level=3] [ref=e166]
+                - generic [ref=e167]:
+                  - img [ref=e168]
+                  - text: 2026.01.08
+              - paragraph [ref=e171]: ㅇㅇㅇㅇㅇ
+          - link "고정 공지사항 첫 글 2025.12.07 와우" [ref=e173] [cursor=pointer]:
+            - /url: /notices/984187df-a509-475d-a73b-c2e53b3d1ed4
+            - generic [ref=e174]:
+              - generic [ref=e176]:
+                - generic [ref=e177]:
+                  - generic [ref=e178]:
+                    - generic [ref=e179]:
+                      - img [ref=e180]
+                      - text: 고정
+                    - generic [ref=e182]: 공지사항
+                  - heading "첫 글" [level=3] [ref=e183]
+                - generic [ref=e184]:
+                  - img [ref=e185]
+                  - text: 2025.12.07
+              - paragraph [ref=e188]: 와우
+          - link "고정 공지사항 [정보제공] 한소네 6 카카오톡 사용방법 2025.09.18 [정보]" [ref=e190] [cursor=pointer]:
+            - /url: /notices/b86abc23-457c-44db-820e-e98ffaf08351
+            - generic [ref=e191]:
+              - generic [ref=e193]:
+                - generic [ref=e194]:
+                  - generic [ref=e195]:
+                    - generic [ref=e196]:
+                      - img [ref=e197]
+                      - text: 고정
+                    - generic [ref=e199]: 공지사항
+                  - heading "[정보제공] 한소네 6 카카오톡 사용방법" [level=3] [ref=e200]
+                - generic [ref=e201]:
+                  - img [ref=e202]
+                  - text: 2025.09.18
+              - paragraph [ref=e205]: "[정보]"
+          - link "고정 공지사항 [정보제공] 한소네 6 카카오톡 사용방법 2025.09.18 [정보]" [ref=e207] [cursor=pointer]:
+            - /url: /notices/6454a134-e504-49f5-bcf5-b0b86ce29813
+            - generic [ref=e208]:
+              - generic [ref=e210]:
+                - generic [ref=e211]:
+                  - generic [ref=e212]:
+                    - generic [ref=e213]:
+                      - img [ref=e214]
+                      - text: 고정
+                    - generic [ref=e216]: 공지사항
+                  - heading "[정보제공] 한소네 6 카카오톡 사용방법" [level=3] [ref=e217]
+                - generic [ref=e218]:
+                  - img [ref=e219]
+                  - text: 2025.09.18
+              - paragraph [ref=e222]: "[정보]"
+          - link "공지사항 [합격자발표]강원특별자치도 보조기기센터 국비계약직 최종합격자 발표 및 채용후보등록 공고 2026.03.16 [채용]" [ref=e224] [cursor=pointer]:
+            - /url: /notices/08c5e8b9-8a11-4f71-ac0f-dcc948712815
+            - generic [ref=e225]:
+              - generic [ref=e227]:
+                - generic [ref=e228]:
+                  - generic [ref=e230]: 공지사항
+                  - heading "[합격자발표]강원특별자치도 보조기기센터 국비계약직 최종합격자 발표 및 채용후보등록 공고" [level=3] [ref=e231]
+                - generic [ref=e232]:
+                  - img [ref=e233]
+                  - text: 2026.03.16
+              - paragraph [ref=e236]: "[채용]"
+          - link "공지사항 [합격자발표]강원특별자치도 보조기기센터 국비계약직 최종합격자 발표 및 채용후보등록 공고 2026.03.16 [채용]" [ref=e238] [cursor=pointer]:
+            - /url: /notices/8ced4772-2bc9-400c-b505-598a1349df84
+            - generic [ref=e239]:
+              - generic [ref=e241]:
+                - generic [ref=e242]:
+                  - generic [ref=e244]: 공지사항
+                  - heading "[합격자발표]강원특별자치도 보조기기센터 국비계약직 최종합격자 발표 및 채용후보등록 공고" [level=3] [ref=e245]
+                - generic [ref=e246]:
+                  - img [ref=e247]
+                  - text: 2026.03.16
+              - paragraph [ref=e250]: "[채용]"
+          - link "공지사항 [서류발표]강원특별자치도보조기기센터 서류전형 합격자 발표 및 면접일정 안내 2026.03.10 [채용]" [ref=e252] [cursor=pointer]:
+            - /url: /notices/708d9570-b6b3-4d46-bc14-87c6c0119765
+            - generic [ref=e253]:
+              - generic [ref=e255]:
+                - generic [ref=e256]:
+                  - generic [ref=e258]: 공지사항
+                  - heading "[서류발표]강원특별자치도보조기기센터 서류전형 합격자 발표 및 면접일정 안내" [level=3] [ref=e259]
+                - generic [ref=e260]:
+                  - img [ref=e261]
+                  - text: 2026.03.10
+              - paragraph [ref=e264]: "[채용]"
+          - link "공지사항 [서류발표]강원특별자치도보조기기센터 서류전형 합격자 발표 및 면접일정 안내 2026.03.10 [채용]" [ref=e266] [cursor=pointer]:
+            - /url: /notices/a9b4e86d-e457-47c2-aabd-4d44d7e48fd6
+            - generic [ref=e267]:
+              - generic [ref=e269]:
+                - generic [ref=e270]:
+                  - generic [ref=e272]: 공지사항
+                  - heading "[서류발표]강원특별자치도보조기기센터 서류전형 합격자 발표 및 면접일정 안내" [level=3] [ref=e273]
+                - generic [ref=e274]:
+                  - img [ref=e275]
+                  - text: 2026.03.10
+              - paragraph [ref=e278]: "[채용]"
+          - link "공지사항 [휴관안내] 26.03.02 대체 휴무로 인한 센터 휴관 안내 2026.03.01 [공지]" [ref=e280] [cursor=pointer]:
+            - /url: /notices/397585ac-9ac2-4a5f-b85d-f4c25c37d816
+            - generic [ref=e281]:
+              - generic [ref=e283]:
+                - generic [ref=e284]:
+                  - generic [ref=e286]: 공지사항
+                  - heading "[휴관안내] 26.03.02 대체 휴무로 인한 센터 휴관 안내" [level=3] [ref=e287]
+                - generic [ref=e288]:
+                  - img [ref=e289]
+                  - text: 2026.03.01
+              - paragraph [ref=e292]: "[공지]"
+          - link "공지사항 [지원사업] 2026 현대모비스 장애아동 이동편의 지원사업 신청안내 2026.02.26 [마감]" [ref=e294] [cursor=pointer]:
+            - /url: /notices/a248f6cc-672d-4618-84e7-bc6f656f97f1
+            - generic [ref=e295]:
+              - generic [ref=e297]:
+                - generic [ref=e298]:
+                  - generic [ref=e300]: 공지사항
+                  - heading "[지원사업] 2026 현대모비스 장애아동 이동편의 지원사업 신청안내" [level=3] [ref=e301]
+                - generic [ref=e302]:
+                  - img [ref=e303]
+                  - text: 2026.02.26
+              - paragraph [ref=e306]: "[마감]"
+          - link "공지사항 [지원사업] 현대모비스 장애아동·청소년 보조기구 지원사업 신청 안내 2026.02.24 [공지]" [ref=e308] [cursor=pointer]:
+            - /url: /notices/f8030ee1-1c58-40f7-8159-defe15a7ea2e
+            - generic [ref=e309]:
+              - generic [ref=e311]:
+                - generic [ref=e312]:
+                  - generic [ref=e314]: 공지사항
+                  - heading "[지원사업] 현대모비스 장애아동·청소년 보조기구 지원사업 신청 안내" [level=3] [ref=e315]
+                - generic [ref=e316]:
+                  - img [ref=e317]
+                  - text: 2026.02.24
+              - paragraph [ref=e320]: "[공지]"
+          - link "공지사항 [채용공고]강원특별자치도 보조기기센터 국비계약직 채용모집공고 2026.02.24 [채용]" [ref=e322] [cursor=pointer]:
+            - /url: /notices/f52a39d8-7f4c-4ceb-bbac-24096b52583f
+            - generic [ref=e323]:
+              - generic [ref=e325]:
+                - generic [ref=e326]:
+                  - generic [ref=e328]: 공지사항
+                  - heading "[채용공고]강원특별자치도 보조기기센터 국비계약직 채용모집공고" [level=3] [ref=e329]
+                - generic [ref=e330]:
+                  - img [ref=e331]
+                  - text: 2026.02.24
+              - paragraph [ref=e334]: "[채용]"
+          - link "공지사항 [지원사업] 현대모비스 장애아동·청소년 보조기구 지원사업 신청 안내 2026.02.24 [공지]" [ref=e336] [cursor=pointer]:
+            - /url: /notices/2a34976f-38cd-4e4b-aad8-45d61bfecdcf
+            - generic [ref=e337]:
+              - generic [ref=e339]:
+                - generic [ref=e340]:
+                  - generic [ref=e342]: 공지사항
+                  - heading "[지원사업] 현대모비스 장애아동·청소년 보조기구 지원사업 신청 안내" [level=3] [ref=e343]
+                - generic [ref=e344]:
+                  - img [ref=e345]
+                  - text: 2026.02.24
+              - paragraph [ref=e348]: "[공지]"
+          - link "공지사항 [채용공고]강원특별자치도 보조기기센터 국비계약직 채용모집공고 2026.02.24 [채용]" [ref=e350] [cursor=pointer]:
+            - /url: /notices/97410188-eaa3-4324-8612-22da92b7f667
+            - generic [ref=e351]:
+              - generic [ref=e353]:
+                - generic [ref=e354]:
+                  - generic [ref=e356]: 공지사항
+                  - heading "[채용공고]강원특별자치도 보조기기센터 국비계약직 채용모집공고" [level=3] [ref=e357]
+                - generic [ref=e358]:
+                  - img [ref=e359]
+                  - text: 2026.02.24
+              - paragraph [ref=e362]: "[채용]"
+          - link "공지사항 [서류발표]강원특별자치도보조기기센터 서류전형 합격자 발표 2026.02.23 [채용]" [ref=e364] [cursor=pointer]:
+            - /url: /notices/c81b17e7-22b7-4cfd-a207-b23eb6360c52
+            - generic [ref=e365]:
+              - generic [ref=e367]:
+                - generic [ref=e368]:
+                  - generic [ref=e370]: 공지사항
+                  - heading "[서류발표]강원특별자치도보조기기센터 서류전형 합격자 발표" [level=3] [ref=e371]
+                - generic [ref=e372]:
+                  - img [ref=e373]
+                  - text: 2026.02.23
+              - paragraph [ref=e376]: "[채용]"
+          - link "공지사항 [공지사항] 설날 휴관 안내(26. 2. 16 ~ 2. 18.) 2026.02.12 [공지]" [ref=e378] [cursor=pointer]:
+            - /url: /notices/a230dfdf-0edf-4c64-914e-f1e06975dca7
+            - generic [ref=e379]:
+              - generic [ref=e381]:
+                - generic [ref=e382]:
+                  - generic [ref=e384]: 공지사항
+                  - heading "[공지사항] 설날 휴관 안내(26. 2. 16 ~ 2. 18.)" [level=3] [ref=e385]
+                - generic [ref=e386]:
+                  - img [ref=e387]
+                  - text: 2026.02.12
+              - paragraph [ref=e390]: "[공지]"
+          - link "공지사항 [채용공고]강원특별자치도 보조기기센터 계약직 채용모집(26. 2. 2.) 2026.02.02 [채용]" [ref=e392] [cursor=pointer]:
+            - /url: /notices/1dcd0083-2743-4346-9cf3-7de8e3061b0c
+            - generic [ref=e393]:
+              - generic [ref=e395]:
+                - generic [ref=e396]:
+                  - generic [ref=e398]: 공지사항
+                  - heading "[채용공고]강원특별자치도 보조기기센터 계약직 채용모집(26. 2. 2.)" [level=3] [ref=e399]
+                - generic [ref=e400]:
+                  - img [ref=e401]
+                  - text: 2026.02.02
+              - paragraph [ref=e404]: "[채용]"
+          - link "공지사항 [지원사업] 2026 EY한영 장애아동‧청소년 보조기구 지원사업 신청 안내 2026.01.13 [마감]" [ref=e406] [cursor=pointer]:
+            - /url: /notices/ed86b84d-015f-49bf-9bbc-b5e39b66ba07
+            - generic [ref=e407]:
+              - generic [ref=e409]:
+                - generic [ref=e410]:
+                  - generic [ref=e412]: 공지사항
+                  - heading "[지원사업] 2026 EY한영 장애아동‧청소년 보조기구 지원사업 신청 안내" [level=3] [ref=e413]
+                - generic [ref=e414]:
+                  - img [ref=e415]
+                  - text: 2026.01.13
+              - paragraph [ref=e418]: "[마감]"
+          - link "공지사항 [지원사업] 2026 신용카드 사회공헌재단과 함께하는 희귀난치 어린이·가족통합 지원사업 안내 2025.12.23 [마감]" [ref=e420] [cursor=pointer]:
+            - /url: /notices/c347b902-0d10-4f36-8e32-77da5ccb3dd0
+            - generic [ref=e421]:
+              - generic [ref=e423]:
+                - generic [ref=e424]:
+                  - generic [ref=e426]: 공지사항
+                  - heading "[지원사업] 2026 신용카드 사회공헌재단과 함께하는 희귀난치 어린이·가족통합 지원사업 안내" [level=3] [ref=e427]
+                - generic [ref=e428]:
+                  - img [ref=e429]
+                  - text: 2025.12.23
+              - paragraph [ref=e432]: "[마감]"
+          - link "공지사항 센터 12월&1월 휴관 안내 2025.12.23 [공지]" [ref=e434] [cursor=pointer]:
+            - /url: /notices/170eb005-db74-4b5f-93cd-52c0f690cf8a
+            - generic [ref=e435]:
+              - generic [ref=e437]:
+                - generic [ref=e438]:
+                  - generic [ref=e440]: 공지사항
+                  - heading "센터 12월&1월 휴관 안내" [level=3] [ref=e441]
+                - generic [ref=e442]:
+                  - img [ref=e443]
+                  - text: 2025.12.23
+              - paragraph [ref=e446]: "[공지]"
+          - link "공지사항 [지원사업] 2026 신용카드 사회공헌재단과 함께하는 희귀난치 어린이·가족통합 지원사업 안내 2025.12.23 [마감]" [ref=e448] [cursor=pointer]:
+            - /url: /notices/ee580e99-0bfc-45fd-8ab6-5bb3dd6e82cd
+            - generic [ref=e449]:
+              - generic [ref=e451]:
+                - generic [ref=e452]:
+                  - generic [ref=e454]: 공지사항
+                  - heading "[지원사업] 2026 신용카드 사회공헌재단과 함께하는 희귀난치 어린이·가족통합 지원사업 안내" [level=3] [ref=e455]
+                - generic [ref=e456]:
+                  - img [ref=e457]
+                  - text: 2025.12.23
+              - paragraph [ref=e460]: "[마감]"
+          - link "공지사항 [지원사업] 2025 볼보자동차코리아 장애어린이 보조기구 지원사업 신청 안내 2025.11.27 [공지]" [ref=e462] [cursor=pointer]:
+            - /url: /notices/b37505f3-1cdc-4e53-84eb-7c47afc9d92d
+            - generic [ref=e463]:
+              - generic [ref=e465]:
+                - generic [ref=e466]:
+                  - generic [ref=e468]: 공지사항
+                  - heading "[지원사업] 2025 볼보자동차코리아 장애어린이 보조기구 지원사업 신청 안내" [level=3] [ref=e469]
+                - generic [ref=e470]:
+                  - img [ref=e471]
+                  - text: 2025.11.27
+              - paragraph [ref=e474]: "[공지]"
+          - link "공지사항 2025 하나금융그룹 장애아동•청소년 [재활] 보조기구 지원사업 [최종 지원대상자 발표] 2025.11.20 [결과]" [ref=e476] [cursor=pointer]:
+            - /url: /notices/c1114d45-0d0e-408b-b879-fe534c7ffd2e
+            - generic [ref=e477]:
+              - generic [ref=e479]:
+                - generic [ref=e480]:
+                  - generic [ref=e482]: 공지사항
+                  - heading "2025 하나금융그룹 장애아동•청소년 [재활] 보조기구 지원사업 [최종 지원대상자 발표]" [level=3] [ref=e483]
+                - generic [ref=e484]:
+                  - img [ref=e485]
+                  - text: 2025.11.20
+              - paragraph [ref=e488]: "[결과]"
+          - link "공지사항 센터 10월 휴관 안내 2025.10.02 [공지]" [ref=e490] [cursor=pointer]:
+            - /url: /notices/0cfaf6e5-dc93-4013-b14a-75d0d29be5ca
+            - generic [ref=e491]:
+              - generic [ref=e493]:
+                - generic [ref=e494]:
+                  - generic [ref=e496]: 공지사항
+                  - heading "센터 10월 휴관 안내" [level=3] [ref=e497]
+                - generic [ref=e498]:
+                  - img [ref=e499]
+                  - text: 2025.10.02
+              - paragraph [ref=e502]: "[공지]"
+          - link "공지사항 [공지사항] 25. 08. 15 (금) 센터 휴관 안내 2025.08.14 [공지]" [ref=e504] [cursor=pointer]:
+            - /url: /notices/8042262f-fe81-4d7c-b151-be61773272d8
+            - generic [ref=e505]:
+              - generic [ref=e507]:
+                - generic [ref=e508]:
+                  - generic [ref=e510]: 공지사항
+                  - heading "[공지사항] 25. 08. 15 (금) 센터 휴관 안내" [level=3] [ref=e511]
+                - generic [ref=e512]:
+                  - img [ref=e513]
+                  - text: 2025.08.14
+              - paragraph [ref=e516]: "[공지]"
+          - link "공지사항 [지원사업] 2025 하나금융그룹 장애아동•청소년 [학습] 보조기구 2차 지원사업 신청 안내 2025.08.12 [마감]" [ref=e518] [cursor=pointer]:
+            - /url: /notices/bacf4d88-a08a-45c2-bae3-b74831d9a7df
+            - generic [ref=e519]:
+              - generic [ref=e521]:
+                - generic [ref=e522]:
+                  - generic [ref=e524]: 공지사항
+                  - heading "[지원사업] 2025 하나금융그룹 장애아동•청소년 [학습] 보조기구 2차 지원사업 신청 안내" [level=3] [ref=e525]
+                - generic [ref=e526]:
+                  - img [ref=e527]
+                  - text: 2025.08.12
+              - paragraph [ref=e530]: "[마감]"
+          - link "공지사항 [지원사업] 2025 하나금융그룹 장애아동•청소년 [재활] 보조기구 지원사업 신청 안내 2025.08.12 [마감]" [ref=e532] [cursor=pointer]:
+            - /url: /notices/886b39c4-c081-415c-a91b-ae9734d557d7
+            - generic [ref=e533]:
+              - generic [ref=e535]:
+                - generic [ref=e536]:
+                  - generic [ref=e538]: 공지사항
+                  - heading "[지원사업] 2025 하나금융그룹 장애아동•청소년 [재활] 보조기구 지원사업 신청 안내" [level=3] [ref=e539]
+                - generic [ref=e540]:
+                  - img [ref=e541]
+                  - text: 2025.08.12
+              - paragraph [ref=e544]: "[마감]"
+          - link "공지사항 2025 SPC 행복한 펀드 장애어린이 보조기구 지원사업 [최종 지원 대상자 발표] 2025.07.22 [결과]" [ref=e546] [cursor=pointer]:
+            - /url: /notices/313bc790-42ea-477e-82d5-6d369508f08f
+            - generic [ref=e547]:
+              - generic [ref=e549]:
+                - generic [ref=e550]:
+                  - generic [ref=e552]: 공지사항
+                  - heading "2025 SPC 행복한 펀드 장애어린이 보조기구 지원사업 [최종 지원 대상자 발표]" [level=3] [ref=e553]
+                - generic [ref=e554]:
+                  - img [ref=e555]
+                  - text: 2025.07.22
+              - paragraph [ref=e558]: "[결과]"
+          - link "공지사항 2025 월드비전 저소득 희귀질환아동 맞춤형 보조기기 지원사업 [최종 지원 대상자 발표] 2025.07.18 [결과]" [ref=e560] [cursor=pointer]:
+            - /url: /notices/d4aa1637-0cce-41c7-9fac-efc52f510982
+            - generic [ref=e561]:
+              - generic [ref=e563]:
+                - generic [ref=e564]:
+                  - generic [ref=e566]: 공지사항
+                  - heading "2025 월드비전 저소득 희귀질환아동 맞춤형 보조기기 지원사업 [최종 지원 대상자 발표]" [level=3] [ref=e567]
+                - generic [ref=e568]:
+                  - img [ref=e569]
+                  - text: 2025.07.18
+              - paragraph [ref=e572]: "[결과]"
+          - link "공지사항 2025 롯데복지재단 장애인보조기기 지원사업 [최종 지원 대상자 발표] 2025.07.10 [결과]" [ref=e574] [cursor=pointer]:
+            - /url: /notices/02b73e67-c36b-4671-8a8b-4e89c16599c9
+            - generic [ref=e575]:
+              - generic [ref=e577]:
+                - generic [ref=e578]:
+                  - generic [ref=e580]: 공지사항
+                  - heading "2025 롯데복지재단 장애인보조기기 지원사업 [최종 지원 대상자 발표]" [level=3] [ref=e581]
+                - generic [ref=e582]:
+                  - img [ref=e583]
+                  - text: 2025.07.10
+              - paragraph [ref=e586]: "[결과]"
+          - link "공지사항 2025 현대모비스 장애아동이동편의 보조기구 [ 최종 지원 대상자 발표 ] 2025.07.04 [결과]" [ref=e588] [cursor=pointer]:
+            - /url: /notices/ff826c50-67b8-4959-a9cf-f241521c0bf0
+            - generic [ref=e589]:
+              - generic [ref=e591]:
+                - generic [ref=e592]:
+                  - generic [ref=e594]: 공지사항
+                  - heading "2025 현대모비스 장애아동이동편의 보조기구 [ 최종 지원 대상자 발표 ]" [level=3] [ref=e595]
+                - generic [ref=e596]:
+                  - img [ref=e597]
+                  - text: 2025.07.04
+              - paragraph [ref=e600]: "[결과]"
+          - link "공지사항 [2025] 보조기기 리싸이클 드립사업 2025.06.27 [공지]" [ref=e602] [cursor=pointer]:
+            - /url: /notices/e4e220d6-a71d-4cc7-90b4-82b918b0a88a
+            - generic [ref=e603]:
+              - generic [ref=e605]:
+                - generic [ref=e606]:
+                  - generic [ref=e608]: 공지사항
+                  - heading "[2025] 보조기기 리싸이클 드립사업" [level=3] [ref=e609]
+                - generic [ref=e610]:
+                  - img [ref=e611]
+                  - text: 2025.06.27
+              - paragraph [ref=e614]: "[공지]"
+          - link "공지사항 [센터소식] 2025 보조기기 무상 대여 서비스 2025.06.11 [마감]" [ref=e616] [cursor=pointer]:
+            - /url: /notices/8dec6003-382a-4026-8aec-7c94b05226f8
+            - generic [ref=e617]:
+              - generic [ref=e619]:
+                - generic [ref=e620]:
+                  - generic [ref=e622]: 공지사항
+                  - heading "[센터소식] 2025 보조기기 무상 대여 서비스" [level=3] [ref=e623]
+                - generic [ref=e624]:
+                  - img [ref=e625]
+                  - text: 2025.06.11
+              - paragraph [ref=e628]: "[마감]"
+          - link "공지사항 [지원사업] 2025 SCP행복한 펀드 장애어린이 지원사업 2025.06.10 [마감]" [ref=e630] [cursor=pointer]:
+            - /url: /notices/afc0ca50-f05f-4df9-a8ed-99e0417e10ff
+            - generic [ref=e631]:
+              - generic [ref=e633]:
+                - generic [ref=e634]:
+                  - generic [ref=e636]: 공지사항
+                  - heading "[지원사업] 2025 SCP행복한 펀드 장애어린이 지원사업" [level=3] [ref=e637]
+                - generic [ref=e638]:
+                  - img [ref=e639]
+                  - text: 2025.06.10
+              - paragraph [ref=e642]: "[마감]"
+          - link "공지사항 [현장평가] 2025 롯데재단 장애인 보조기기 지원사업 현장평가 대상자 발표 2025.06.09 [공지]" [ref=e644] [cursor=pointer]:
+            - /url: /notices/c92a915f-32b5-47c8-930a-945cea40d76f
+            - generic [ref=e645]:
+              - generic [ref=e647]:
+                - generic [ref=e648]:
+                  - generic [ref=e650]: 공지사항
+                  - heading "[현장평가] 2025 롯데재단 장애인 보조기기 지원사업 현장평가 대상자 발표" [level=3] [ref=e651]
+                - generic [ref=e652]:
+                  - img [ref=e653]
+                  - text: 2025.06.09
+              - paragraph [ref=e656]: "[공지]"
+          - link "공지사항 [공지사항] 6월 센터 휴관 안내 2025.05.28 [공지]" [ref=e658] [cursor=pointer]:
+            - /url: /notices/4c43c14a-a357-4c5e-8247-cf4474afc5f6
+            - generic [ref=e659]:
+              - generic [ref=e661]:
+                - generic [ref=e662]:
+                  - generic [ref=e664]: 공지사항
+                  - heading "[공지사항] 6월 센터 휴관 안내" [level=3] [ref=e665]
+                - generic [ref=e666]:
+                  - img [ref=e667]
+                  - text: 2025.05.28
+              - paragraph [ref=e670]: "[공지]"
+          - link "공지사항 [지원사업] 2025 MG새마을금고지역희망나눔재단 시각·청각 장애어린이 및 청소년 보조기구 지원사업 신청 안내 2025.05.27 [마감]" [ref=e672] [cursor=pointer]:
+            - /url: /notices/2d298f45-b717-4aa9-b30e-17eeccc01d46
+            - generic [ref=e673]:
+              - generic [ref=e675]:
+                - generic [ref=e676]:
+                  - generic [ref=e678]: 공지사항
+                  - heading "[지원사업] 2025 MG새마을금고지역희망나눔재단 시각·청각 장애어린이 및 청소년 보조기구 지원사업 신청 안내" [level=3] [ref=e679]
+                - generic [ref=e680]:
+                  - img [ref=e681]
+                  - text: 2025.05.27
+              - paragraph [ref=e684]: "[마감]"
+          - link "공지사항 [지원사업] 2025 월드비전 저소득 희귀질환아동 맞춤형보조기기 지원사업 안내 2025.05.12 [마감]" [ref=e686] [cursor=pointer]:
+            - /url: /notices/cfeb2dfb-f1e5-43d6-9a36-69502edebaab
+            - generic [ref=e687]:
+              - generic [ref=e689]:
+                - generic [ref=e690]:
+                  - generic [ref=e692]: 공지사항
+                  - heading "[지원사업] 2025 월드비전 저소득 희귀질환아동 맞춤형보조기기 지원사업 안내" [level=3] [ref=e693]
+                - generic [ref=e694]:
+                  - img [ref=e695]
+                  - text: 2025.05.12
+              - paragraph [ref=e698]: "[마감]"
+          - link "공지사항 [신청안내] 2025년 정보통신보조기기 신청 안내(5.7.~6.23.) 2025.05.12 [마감]" [ref=e700] [cursor=pointer]:
+            - /url: /notices/a7b80b02-b4b6-4419-ab10-10a639a0216a
+            - generic [ref=e701]:
+              - generic [ref=e703]:
+                - generic [ref=e704]:
+                  - generic [ref=e706]: 공지사항
+                  - heading "[신청안내] 2025년 정보통신보조기기 신청 안내(5.7.~6.23.)" [level=3] [ref=e707]
+                - generic [ref=e708]:
+                  - img [ref=e709]
+                  - text: 2025.05.12
+              - paragraph [ref=e712]: "[마감]"
+          - link "공지사항 [공지사항] 5월 센터 휴관 안내 2025.04.29 [공지]" [ref=e714] [cursor=pointer]:
+            - /url: /notices/dec0ff85-a003-44ec-9ebf-cf5b510e25af
+            - generic [ref=e715]:
+              - generic [ref=e717]:
+                - generic [ref=e718]:
+                  - generic [ref=e720]: 공지사항
+                  - heading "[공지사항] 5월 센터 휴관 안내" [level=3] [ref=e721]
+                - generic [ref=e722]:
+                  - img [ref=e723]
+                  - text: 2025.04.29
+              - paragraph [ref=e726]: "[공지]"
+          - link "공지사항 [공지사항] 25. 04. 30 (수) 임시 휴관 안내 2025.04.29 [공지]" [ref=e728] [cursor=pointer]:
+            - /url: /notices/89e69f89-36c5-4d55-88ab-978cc207aa5a
+            - generic [ref=e729]:
+              - generic [ref=e731]:
+                - generic [ref=e732]:
+                  - generic [ref=e734]: 공지사항
+                  - heading "[공지사항] 25. 04. 30 (수) 임시 휴관 안내" [level=3] [ref=e735]
+                - generic [ref=e736]:
+                  - img [ref=e737]
+                  - text: 2025.04.29
+              - paragraph [ref=e740]: "[공지]"
+          - link "공지사항 2025년 장애인보조기기교부사업 품목안내 2025.04.28 [정보]" [ref=e742] [cursor=pointer]:
+            - /url: /notices/f9306792-60e7-4d67-b8ef-eb54ea07c3f3
+            - generic [ref=e743]:
+              - generic [ref=e745]:
+                - generic [ref=e746]:
+                  - generic [ref=e748]: 공지사항
+                  - heading "2025년 장애인보조기기교부사업 품목안내" [level=3] [ref=e749]
+                - generic [ref=e750]:
+                  - img [ref=e751]
+                  - text: 2025.04.28
+              - paragraph [ref=e754]: "[정보]"
+    - contentinfo [ref=e755]:
+      - generic [ref=e756]:
+        - generic [ref=e757]:
+          - link "개인정보처리방침" [ref=e758] [cursor=pointer]:
+            - /url: /privacy
+          - link "이메일무단수집거부" [ref=e759] [cursor=pointer]:
+            - /url: /email-policy
+        - generic [ref=e760]:
+          - generic [ref=e761]:
+            - generic [ref=e762]:
+              - generic [ref=e764]: GW
+              - generic [ref=e765]: GWATC
+            - generic [ref=e766]:
+              - paragraph [ref=e767]: 강원특별자치도 보조기기센터
+              - paragraph [ref=e768]: 강원특별자치도 춘천시 충열로 142번길 24-16(우두동 291-2)
+              - paragraph [ref=e769]: 강원특별자치도재활병원 2층
+              - paragraph [ref=e770]: "대표 : 이승준"
+              - paragraph [ref=e771]: "고유번호증 : 221-82-10983"
+              - paragraph [ref=e772]:
+                - generic [ref=e773]: "대표전화 : 033-248-7751~4"
+                - generic [ref=e774]: "Fax : 033-248-7755"
+                - generic [ref=e775]: "Email : gatc2019@naver.com"
+              - paragraph [ref=e776]: Copyright(c) 강원특별자치도보조기기센터 All rights reserved.
+          - generic [ref=e777]:
+            - generic [ref=e778]:
+              - link "카카오톡" [ref=e779] [cursor=pointer]:
+                - /url: http://pf.kakao.com/_hjxmRxb
+                - img [ref=e781]
+                - generic [ref=e784]:
+                  - img [ref=e785]
+                  - text: 카카오톡
+              - link "페이스북" [ref=e787] [cursor=pointer]:
+                - /url: https://www.facebook.com/GATC2019
+                - img [ref=e789]
+                - generic [ref=e792]:
+                  - img [ref=e793]
+                  - text: 페이스북
+            - button "패밀리 사이트" [ref=e796] [cursor=pointer]:
+              - generic [ref=e797]: 패밀리 사이트
+              - img [ref=e798]
+  - alert [ref=e800]

@@ -1,0 +1,23 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - img [ref=e5]
+      - generic [ref=e7]: 업무 자동화
+    - navigation [ref=e8]:
+      - link "대시보드" [ref=e9] [cursor=pointer]:
+        - /url: /
+        - img [ref=e10]
+        - text: 대시보드
+      - link "실행 로그" [ref=e15] [cursor=pointer]:
+        - /url: /logs
+        - img [ref=e16]
+        - text: 실행 로그
+      - link "채널 설정" [ref=e19] [cursor=pointer]:
+        - /url: /channels
+        - img [ref=e20]
+        - text: 채널 설정
+      - link "수동 발송" [ref=e23] [cursor=pointer]:
+        - /url: /send
+        - img [ref=e24]
+        - text: 수동 발송
+  - main [ref=e27]

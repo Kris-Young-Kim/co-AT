@@ -1,0 +1,2 @@
+[    4485ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://approval.gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Fapproval.gwatc.cloud%2F:0
+[    4635ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://approval.gwatc.cloud/favicon.ico:0

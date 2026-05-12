@@ -1,0 +1,68 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - main [ref=e4]:
+      - generic [ref=e5]:
+        - navigation "브레드크럼" [ref=e6]:
+          - link "홈으로 이동" [ref=e7] [cursor=pointer]:
+            - /url: /
+            - img [ref=e8]
+          - generic [ref=e11]:
+            - img [ref=e12]
+            - link "보조기기 정보" [ref=e14] [cursor=pointer]:
+              - /url: /info
+          - generic [ref=e15]:
+            - img [ref=e16]
+            - generic [ref=e18]: 보유 보조기기
+        - generic [ref=e19]:
+          - heading "보유 보조기기" [level=1] [ref=e20]
+          - paragraph [ref=e21]: 센터에서 보유하고 있는 보조기기 목록입니다. 상태별로 필터링하여 대여 가능한 기기를 확인할 수 있습니다.
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - generic [ref=e24]:
+              - img [ref=e25]
+              - textbox "기기명, 카테고리, 제조사 검색" [ref=e28]
+            - button [disabled]:
+              - img
+          - img [ref=e30]
+    - contentinfo [ref=e32]:
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - link "개인정보처리방침" [ref=e35] [cursor=pointer]:
+            - /url: /privacy
+          - link "이메일무단수집거부" [ref=e36] [cursor=pointer]:
+            - /url: /email-policy
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - generic [ref=e39]:
+              - generic [ref=e41]: GW
+              - generic [ref=e42]: GWATC
+            - generic [ref=e43]:
+              - paragraph [ref=e44]: 강원특별자치도 보조기기센터
+              - paragraph [ref=e45]: 강원특별자치도 춘천시 충열로 142번길 24-16(우두동 291-2)
+              - paragraph [ref=e46]: 강원특별자치도재활병원 2층
+              - paragraph [ref=e47]: "대표 : 이승준"
+              - paragraph [ref=e48]: "고유번호증 : 221-82-10983"
+              - paragraph [ref=e49]:
+                - generic [ref=e50]: "대표전화 : 033-248-7751~4"
+                - generic [ref=e51]: "Fax : 033-248-7755"
+                - generic [ref=e52]: "Email : gatc2019@naver.com"
+              - paragraph [ref=e53]: Copyright(c) 강원특별자치도보조기기센터 All rights reserved.
+          - generic [ref=e54]:
+            - generic [ref=e55]:
+              - link "카카오톡" [ref=e56] [cursor=pointer]:
+                - /url: http://pf.kakao.com/_hjxmRxb
+                - img [ref=e58]
+                - generic [ref=e61]:
+                  - img [ref=e62]
+                  - text: 카카오톡
+              - link "페이스북" [ref=e64] [cursor=pointer]:
+                - /url: https://www.facebook.com/GATC2019
+                - img [ref=e66]
+                - generic [ref=e69]:
+                  - img [ref=e70]
+                  - text: 페이스북
+            - button "패밀리 사이트" [ref=e73] [cursor=pointer]:
+              - generic [ref=e74]: 패밀리 사이트
+              - img [ref=e75]
+  - button "Open Next.js Dev Tools" [ref=e82] [cursor=pointer]:
+    - img [ref=e83]
