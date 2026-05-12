@@ -14,7 +14,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      isSatellite
+      domain={(url: URL) => url.host}
+      signInUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? 'https://gwatc.cloud/sign-in'}
+      signUpUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL ?? 'https://gwatc.cloud/sign-up'}
+    >
       <html lang="ko">
         <body className="bg-gray-50">
           <div className="flex min-h-screen">

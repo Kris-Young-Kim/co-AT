@@ -16,7 +16,12 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <ClerkProvider>
+        <ClerkProvider
+          isSatellite
+          domain={(url: URL) => url.host}
+          signInUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? 'https://gwatc.cloud/sign-in'}
+          signUpUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL ?? 'https://gwatc.cloud/sign-up'}
+        >
           <div className="flex min-h-screen bg-gray-50">
             <EvalSidebar />
             <main className="flex-1 overflow-auto">
