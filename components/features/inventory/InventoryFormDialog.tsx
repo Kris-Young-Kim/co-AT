@@ -80,7 +80,7 @@ export function InventoryFormDialog({
         purchase_price: item.purchase_price?.toString() || "",
         qr_code: item.qr_code || "",
       })
-      setImageUrl(null)
+      setImageUrl(item.image_url || null)
     } else {
       setFormData({
         name: "",
@@ -162,6 +162,7 @@ export function InventoryFormDialog({
         purchase_price: formData.purchase_price ? parseFloat(formData.purchase_price) : null,
         qr_code: formData.qr_code || null,
         barcode: formData.barcode || null,
+        image_url: imageUrl || null,
       }
 
       let result

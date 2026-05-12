@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { type InventoryItem } from "@/actions/inventory-actions"
+import Image from "next/image"
 import { Package, MapPin } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -35,9 +36,19 @@ export function PublicDeviceCard({ device }: PublicDeviceCardProps) {
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative w-full h-48 bg-muted">
-        <div className="flex items-center justify-center h-full">
-          <Package className="h-16 w-16 text-muted-foreground" />
-        </div>
+        {device.image_url ? (
+          <Image
+            src={device.image_url}
+            alt={device.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <Package className="h-16 w-16 text-muted-foreground" />
+          </div>
+        )}
         <div className="absolute top-2 right-2">
           <Badge
             className={cn(
