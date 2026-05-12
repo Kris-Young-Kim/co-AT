@@ -3,6 +3,13 @@
 # MCP config (references local env paths — not portable)
 .mcp.json
 
+# Claude Code local settings (may contain tokens/secrets)
+.claude/settings.local.json
+
+# Repomix output (may contain secrets from scanned files)
+repomix-output.xml
+repomix-output.md
+
 # dependencies
 /node_modules
 /.pnp
