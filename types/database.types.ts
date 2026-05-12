@@ -17,7 +17,9 @@ export type Database = {
       applications: {
         Row: {
           assigned_staff_id: string | null
-          category: string | null
+          category: string | 
+          
+          
           client_id: string
           created_at: string | null
           desired_date: string | null
@@ -1496,6 +1498,7 @@ export type Database = {
           category: string | null
           created_at: string | null
           id: string
+          image_url: string | null
           is_rental_available: boolean | null
           manufacturer: string | null
           model: string | null
@@ -1513,6 +1516,7 @@ export type Database = {
           category?: string | null
           created_at?: string | null
           id?: string
+          image_url?: string | null
           is_rental_available?: boolean | null
           manufacturer?: string | null
           model?: string | null
@@ -1530,6 +1534,7 @@ export type Database = {
           category?: string | null
           created_at?: string | null
           id?: string
+          image_url?: string | null
           is_rental_available?: boolean | null
           manufacturer?: string | null
           model?: string | null
