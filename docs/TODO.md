@@ -1,410 +1,402 @@
-# 📋 Co-AT 프로젝트 개발 TODO
+# Co-AT 모노레포 개발 TODO
 
-> **프로젝트**: GWATC 통합 관리 플랫폼 (Co-AT)  
-> **비전**: "행정은 AI에게, 사람은 클라이언트에게"  
-> **기술 스택**: Next.js 16, React 19, Clerk, Supabase, Gemini Flash  
-> **작성일**: 2025. 12. 06
-> **마지막 업데이트**: 2025. 01. 27
-
----
-
-## 📚 목차
-
-1. [완료된 Phase (1-11)](#완료된-phase-1-11)
-2. [진행 중/미완료 작업](#진행-중미완료-작업)
-3. [Phase 12+: 고도화 아이디어](#phase-12-고도화-아이디어)
-4. [참고 자료](#참고-자료)
+> **프로젝트**: GWATC 통합 관리 플랫폼 (Co-AT)
+> **비전**: "행정은 AI에게, 사람은 클라이언트에게"
+> **아키텍처**: Turborepo 모노레포 — 앱별 독립 배포
+> **마지막 업데이트**: 2026-05-13
 
 ---
 
-## ✅ 완료된 Phase (1-11)
+## 목차
 
-### 🚀 Phase 1: 기반 구축 ✅
-
-- [x] 프로젝트 초기 설정 (Next.js 16, React 19, TypeScript, Tailwind CSS, ESLint)
-- [x] 인증 시스템 (Clerk 연동, Webhook 설정)
-- [x] 데이터베이스 설정 (Supabase, 마이그레이션, RLS, 타입 생성)
-- [x] UI 기반 설정 (shadcn/ui, Pretendard 폰트, Tailwind Config)
-- [x] 레이아웃 컴포넌트 (Public/Admin/Portal 헤더, 사이드바, 모바일 네비게이션)
-- [x] 공통 컴포넌트 (로고, 로딩 스피너, 상태 뱃지, 파일 업로더)
-
-### 🎯 Phase 2: Public Zone (대민 서비스) ✅
-
-- [x] 랜딩 페이지 (Hero, Quick Menu, 공지사항 탭, 갤러리, 공개 캘린더)
-- [x] 서비스 신청 시스템 (8개 폼 컴포넌트, Wizard, Zustand Store, Zod 검증)
-- [x] 마이페이지 (신청 이력 타임라인, 대여 상태)
-- [x] 공지사항 (목록/상세, 관리자 CRUD, 공유 기능)
-
-### 🏢 Phase 3: Admin Zone (업무 시스템) ✅
-
-- [x] 통합 대시보드 (KPI, 신규 접수, 오늘 일정, React Query)
-- [x] 대상자 CRM (검색, 상세 정보, 서비스 이력)
-- [x] 상담 기록 시스템 (동적 양식 빌더, 템플릿 관리)
-- [x] 평가 시스템 (9개 영역 평가, 결과 시각화)
-- [x] 서비스 진행 기록 (통합 대시보드, 타임라인, 필터링, 엑스포트)
-
-### 🤖 Phase 4: AI 기능 구현 ✅
-
-- [x] AI SOAP 노트 생성 (Gemini 연동, 음성 녹음, STT)
-- [x] RAG 챗봇 (규정 검색 AI)
-  - [x] 문서 벡터화 (`regulations` 테이블, Gemini Embedding)
-  - [x] 유사도 검색 및 답변 생성
-  - [x] 챗봇 UI (`/admin/chatbot`)
-
-### 📦 Phase 5: 재고 관리 시스템 ✅
-
-- [x] 재고 관리 (CRUD, QR 코드 생성/스캔, 통계 대시보드)
-- [x] 대여 관리 (대여/반납/연장, D-Day 계산, 알림)
-- [x] 맞춤제작 관리 (프로젝트 생성, 진행도 추적, 장비 배정)
-- [x] 장비 관리 (장비 CRUD, 상태 관리, 통계)
-
-### 💼 Phase 6: 비즈니스 로직 구현 ✅
-
-- [x] 한도 체크 로직
-  - [x] 수리비 10만원 한도 체크
-  - [x] 맞춤제작 연 2회 횟수 제한
-  - [x] 맞춤제작비 10만원 한도 체크 (재료비 기준)
-- [x] 개인정보 보유 기간 관리 (5년 만료 알림)
-
-### 📅 Phase 7: 일정 관리 ✅
-
-- [x] 캘린더 시스템 (월간/주간/일간 뷰, 일정 CRUD)
-
-### 🎨 Phase 8: UI/UX 개선 및 반응형 ✅
-
-- [x] 모바일 최적화 (반응형, 터치 최적화, Safe Area)
-- [x] 접근성 (A11y) (접근성 툴바, 키보드 네비게이션, ARIA 레이블, 색상 대비)
-
-### 🧪 Phase 9: 테스트 및 안정화 ✅
-
-- [x] 기능 테스트 (Vitest, 22개 테스트 통과)
-- [x] 성능 최적화 (이미지 최적화, 코드 스플리팅, React Query 캐싱)
-- [x] 보안 점검 (RLS 정책, API Key 보안, XSS/CSRF 방어)
-
-### 📊 Phase 10: 통계 및 보고서 ✅
-
-- [x] 통계 대시보드 (5대 사업별 실적, 월별/연도별 통계, recharts)
-- [x] Excel 내보내기 (사업 실적 보고서 자동 생성)
-
-### 🚀 Phase 11: 배포 준비 ✅
-
-- [x] 환경 설정 (Vercel, 환경 변수, 도메인)
-- [x] CI/CD (GitHub Actions, 자동 배포, 템플릿)
-- [x] 문서화 (사용자 매뉴얼, 관리자 가이드, API 문서)
+1. [플랫폼 인프라](#플랫폼-인프라)
+2. [apps/web — 공개 포털](#appsweb--공개-포털-gwatccloud)
+3. [apps/admin — 권한 관리](#appsadmin--권한-관리-admingwatccloud)
+4. [apps/eval — 상담·평가 (Phase 1)](#appseval--상담평가-evalgwatccloud)
+5. [apps/inventory — 자산·재고 (Phase 2)](#appsinventory--자산재고-inventorygwatccloud)
+6. [apps/stats — 성과 대시보드 (Phase 3)](#appsstats--성과-대시보드-statsgwatccloud)
+7. [apps/automation — 자동화·알림 (Phase 4)](#appsautomation--자동화알림-automationgwatccloud)
+8. [apps/hr — 인사관리 (Phase 5)](#appshr--인사관리-hrgwatccloud)
+9. [apps/approval — 전자결재 (Phase 6)](#appsapproval--전자결재-approvalgwatccloud)
+10. [apps/finance — 예산·재무 (Phase 7)](#appsfinance--예산재무-financegwatccloud)
+11. [packages — 공유 패키지](#packages--공유-패키지)
+12. [DB 마이그레이션](#db-마이그레이션)
+13. [고도화 백로그](#고도화-백로그)
 
 ---
 
-## 🔄 진행 중/미완료 작업
+## 플랫폼 인프라
 
-### Phase 5: 맞춤제작 관리
+### CI/CD · 빌드
 
-- [x] 일정 관리 연동 ✅
-  - [x] 제작 일정과 `schedules` 테이블 연동 ✅
-  - [x] 캘린더에 제작 일정 표시 ✅
-  - [x] 맞춤제작 프로젝트 생성/수정 시 일정 자동 생성 ✅
-  - [x] `migrations/013_add_custom_make_schedule_type.sql` 마이그레이션 생성 ✅
+| 항목 | 상태 |
+|------|------|
+| Turborepo + pnpm workspaces 설정 | ✅ |
+| GitHub Actions (install → lint/test → build) | ✅ |
+| Node.js 24 (`.nvmrc`, `engines`) | ✅ |
+| pnpm 락파일 동기화 | ✅ |
+| Vercel 앱별 독립 프로젝트 배포 | ✅ |
+| E2E 테스트 (Playwright) | ⬜ |
 
-### Phase 6: 비즈니스 로직
+### 인증 (Clerk 멀티도메인)
 
-- [x] 수리비 입력 폼에 한도 체크 통합 (`service_logs` 생성 시) ✅
-  - [x] `actions/service-log-actions.ts` 생성 (createServiceLog, updateServiceLog) ✅
-  - [x] 수리비 한도 체크 통합 (checkRepairLimit) ✅
-  - [x] 한도 초과 시 경고 정보 반환 (UI에서 경고 다이얼로그 표시 가능) ✅
+| 항목 | 상태 |
+|------|------|
+| gwatc.cloud — Primary 도메인 (isSatellite 없음) | ✅ |
+| 위성 앱 — `isSatellite: true` + `domain` 문자열 | ✅ |
+| middleware: 빈 문자열 fallback 제거 (`?? ''` 삭제) | ✅ |
+| Vercel 각 위성 앱에 `NEXT_PUBLIC_CLERK_DOMAIN` 설정 | ✅ |
+| `@co-at/auth` 공유 미들웨어 (`createAppMiddleware`) | ✅ |
 
-### Phase 8: 접근성
+### 보안
 
-- [ ] 스크린 리더 테스트 (NVDA, JAWS) - 메인 홈페이지(Public Zone)만 수동 테스트 필요
-  - [ ] 관리자 페이지는 제외
-  - [ ] 메인 페이지, 서비스 신청 페이지, 공지사항 페이지 등 Public Zone만 테스트
-
----
-
-## 🚀 Phase 12+: 고도화 아이디어
-
-> **현재 상태**: Phase 1-11 완료, 기본 기능 구현 완료  
-> **목표**: 사용자 경험 개선, 업무 효율성 향상, 데이터 활용 극대화
-
-### 📊 우선순위별 정리
-
-#### ⭐⭐⭐ 즉시 구현 권장 (High Priority)
-
-**SEO 최적화** (Public Zone):
-
-1. **SEO 기본 구현**
-   - [x] XML 사이트맵 생성 (`app/sitemap.ts`)
-   - [x] robots.txt 파일 생성 (`public/robots.txt`)
-   - [x] 각 페이지별 고유한 메타 설명 추가 (Public Zone 모든 주요 페이지)
-   - [x] 구조화된 데이터(Schema.org) 마크업 추가 (Organization, NewsArticle, BreadcrumbList)
-   - [x] Open Graph 및 Twitter Card 태그 추가 (루트 레이아웃 및 페이지별)
-   - [x] 브레드크럼 구조화된 데이터 추가 (Breadcrumb 컴포넌트)
-   - [x] Canonical URL 태그 추가 (모든 Public Zone 페이지)
-   - [x] Public Zone 주요 페이지별 메타데이터 추가
-     - [x] 메인 페이지
-     - [x] 서비스 페이지 (주요사업, 상담, 맞춤형 지원, 사후관리, 교육/홍보)
-     - [x] 공지사항 (목록, 상세)
-     - [x] 보조기기 정보 (정보, 정부지원사업, 보유 보조기기, 재사용 보조기기, 추천, 수리센터, 자료실)
-     - [x] 센터소개 (소개, 인사말, 조직도, 연혁, 찾아오시는 길)
-     - [x] 커뮤니티 (커뮤니티, 활동갤러리, 서비스 사례)
-     - [x] 서비스 신청 (이용 안내)
-   - [x] OG 이미지 설정 가이드 제공 (`docs/OG_IMAGE_GUIDE.md`)
-   - [ ] 실제 OG 이미지 파일 생성 (`public/og-image.jpg`, 수동 작업 필요)
-   - [ ] Google Search Console 등록 (수동 작업 필요)
-   - [ ] Naver Search Advisor 등록 (수동 작업 필요)
-   - [ ] 참고: `docs/SEO_STANDARD.md` 문서 참조
-
-**SaaS 안정화** (최우선):
-
-1. **모니터링 및 로깅 시스템**
-
-   - [x] Sentry 통합 (에러 추적) — `instrumentation-client.ts`, `sentry.server.config.ts`, `global-error.tsx`, `next.config.mjs` (NEXT_PUBLIC_SENTRY_DSN 설정 시 활성화)
-   - [x] 구조화된 로깅 (pino, JSON, 로그 레벨) — `lib/utils/logger.ts`, LOG_LEVEL 환경변수
-   - [x] Vercel Analytics (페이지 로딩, Core Web Vitals) — `@vercel/analytics`, `@vercel/speed-insights`, 루트 레이아웃 포함
-   - [x] Supabase Monitoring (DB 쿼리 성능) — Dashboard Reports 활용, `docs/MONITORING_GUIDE.md` 가이드 제공
-
-2. **에러 처리 및 복구 메커니즘**
-
-   - [ ] React Error Boundary 강화
-   - [ ] 자동 재시도 로직 (지수 백오프)
-   - [ ] 에러 알림 시스템 (Notion 데이터베이스 또는 Google Sheet 수신; 향후 필요 시 Slack/Discord로 확장)
-
-3. **헬스 체크 및 상태 페이지**
-
-   - [x] `/api/health` 엔드포인트 (서버, DB, Auth, AI 상태) — 최소 응답: `{app:'ok', db:'ok', auth:'ok', ai:'ok', version:'<git_sha>'}`
-   - [x] 공개 상태 페이지 (`status.co-at-gw.vercel.app`) — 헬스 응답 요약 카드 + 최근 24h 히스토리
-   - [ ] Uptime 모니터링 (UptimeRobot/Pingdom) — 알림 채널: Notion DB 또는 Google Sheet 기록(필요시 Slack/Discord 확장)
-
-4. **Rate Limiting 및 DDoS 방어**
-
-   - [x] Vercel Edge Middleware (IP 기반 제한)
-   - [ ] 사용자별 Rate Limit (Clerk ID 기반)
-   - [ ] 엔드포인트별 제한 (AI 생성 API 등)
-
-5. **데이터베이스 최적화 및 모니터링**
-
-   - [x] 슬로우 쿼리 로깅 (1초 이상) - `lib/utils/query-logger.ts` 구현 완료
-   - [x] 인덱스 최적화 - `migrations/014_optimize_indexes.sql` 생성 완료
-   - [x] 연결 풀 모니터링 - `app/api/db/monitor/route.ts` 구현 완료
-
-6. **재해 복구 계획 (Disaster Recovery)**
-
-   - [x] RTO: 4시간, RPO: 1시간 목표 - `docs/DISASTER_RECOVERY.md` 문서화 완료
-   - [x] 다중 백업 (일일, 주간, 월간) - `scripts/backup.ts` 및 `migrations/015_create_backup_logs.sql` 구현 완료
-   - [x] 분기별 복구 테스트 - `scripts/restore-test.ts` 구현 완료
-
-7. **보안 모니터링 및 위협 탐지**
-   - [x] 로그인 시도 추적 - Clerk webhook 및 middleware에서 추적 구현 완료
-   - [x] SQL Injection/XSS 공격 탐지 - `lib/utils/security-detector.ts` 및 middleware에 탐지 로직 구현 완료
-   - [x] 크리티컬 보안 이벤트 알림 - `lib/utils/security-alert.ts` 구현 완료 (Notion/Google Sheet 연동은 향후 구현)
-
-**기능 고도화**:
-
-1. **실시간 알림 시스템**
-
-   - [x] Supabase Realtime 활용 - `lib/hooks/useNotifications.ts` 구현 완료
-   - [x] 알림 센터 (모든 알림 통합 관리) - `components/features/notifications/NotificationCenter.tsx` 구현 완료
-   - [x] 대여 만료 알림 (D-Day 7일 전, 3일 전, 당일) - `app/api/cron/rental-expiry-notifications/route.ts` 구현 완료
-   - [x] 알림 데이터 모델: `notifications`, `notification_preferences`, `notification_logs` - `migrations/017_create_notifications.sql` 생성 완료
-   - [x] 송신 채널: 웹 인앱(Toasts + 알림 센터) - 구현 완료, 이메일/Webhook은 향후 구현
-   - [x] 트리거/프로듀서: 서버 액션으로 `notifications` 생성 → Supabase Realtime 자동 publish - `actions/notification-actions.ts` 구현 완료
-   - [x] 클라이언트: 알림 센터(무한스크롤), 읽음/읽지 않음 토글, 브로드캐스트 지원 - 구현 완료
-   - [x] 대여 만료 알림: Vercel Cron으로 매일 09:00 UTC 실행 → D-7/3/0 대상 `notifications` 생성 - 구현 완료
-   - [x] 장애/로깅: 알림 발송 결과를 `notification_logs`에 기록 - 테이블 생성 완료 (향후 로깅 로직 추가 필요)
-
-2. **워크플로우 자동화**
-
-   - [x] 상태 전환 자동화 (상담 완료 → 배정) ✅
-     - [x] `createIntakeRecord` 함수에서 상담 기록 생성 시 신청서 상태를 "배정"으로 자동 전환 ✅
-   - [x] 일정 자동 생성 (신청 접수 시) ✅
-     - [x] `createApplication` 함수에서 신청서 생성 시 `desired_date`가 있으면 일정 자동 생성 ✅
-   - [x] 리마인더 자동 발송 ✅
-     - [x] `app/api/cron/schedule-reminders/route.ts` 생성: 매일 09:00 UTC 실행하여 다음날 일정 리마인더 알림 발송 ✅
-     - [x] 담당자 및 클라이언트 모두에게 리마인더 알림 발송 ✅
-
-3. **감사 로그 (Audit Log)**
-
-   - [x] 모든 데이터 변경 이력 기록 ✅
-     - [x] `migrations/018_create_audit_logs.sql` 생성: audit_logs 테이블 생성 ✅
-     - [x] `lib/utils/audit-logger.ts` 생성: 감사 로그 기록 헬퍼 함수 ✅
-     - [x] 주요 액션 함수들에 감사 로그 기록 추가 (clients, applications, service_logs) ✅
-   - [x] 로그 조회 기능 ✅
-     - [x] `actions/audit-actions.ts` 생성: 감사 로그 조회, 필터링, 페이지네이션 기능 ✅
-     - [x] 특정 레코드의 감사 로그 조회 기능 ✅
-   - [x] 의심스러운 활동 알림 ✅
-     - [x] 의심스러운 활동 자동 탐지 (비정상 시간대, 대량 삭제, 민감 정보 수정 등) ✅
-     - [x] 의심스러운 활동 알림 자동 발송 ✅
-     - [x] 의심스러운 활동 로그 조회 기능 ✅
-
-4. **고급 대시보드**
-
-   - [x] 실시간 KPI 모니터링 ✅
-     - [x] 대시보드 갱신 간격을 1분에서 30초로 단축 (실시간 모니터링 강화) ✅
-     - [x] `lib/hooks/useDashboardStats.ts` 업데이트 ✅
-   - [x] 전년 동기 대비 실적 비교 ✅
-     - [x] `actions/advanced-dashboard-actions.ts` 생성: `getYearOverYearComparison()` 함수 구현 ✅
-     - [x] 신청서 건수, 완료 건수, 카테고리별 비교 기능 ✅
-   - [x] 팀별 성과 분석 ✅
-     - [x] `getTeamPerformance()` 함수 구현: profiles.team 필드 기반 팀별 통계 ✅
-     - [x] 신청서, 서비스 로그, 일정, 비용 통계 제공 ✅
-   - [x] 예산 집행 현황 ✅
-     - [x] `getBudgetExecution()` 함수 구현: service_logs.cost_total 기반 집행 현황 ✅
-     - [x] 카테고리별, 월별 집행 내역 제공 ✅
-   - [x] 고급 대시보드 UI 컴포넌트 ✅
-     - [x] `components/features/dashboard/AdvancedDashboardSection.tsx` 생성 ✅
-     - [x] 탭 기반 UI (전년 동기 대비, 팀별 성과, 예산 집행) ✅
-     - [x] `AdminDashboardContent`에 통합 ✅
-
-#### ⭐⭐ 중기 구현 권장 (Medium Priority)
-
-1. **AI 기기 추천 시스템** - 대상자 정보 분석 기반 맞춤형 추천
-2. **예측 분석** - 수리 예측, 대여 패턴 분석, 대상자 니즈 예측
-3. **스마트 일정 관리** - 자동 일정 제안, 충돌 방지, 최적 경로 계산
-4. **모바일 앱 (PWA)** - 오프라인 지원, 홈 화면 추가, QR 코드 스캔 강화
-5. **자동 보고서 생성** - AI 기반 보고서 초안 생성, 인사이트 추출
-6. **데이터 시각화 강화** - 인터랙티브 차트, 지도 시각화, 타임라인 뷰, 히트맵
-7. **검색 기능 강화** - 전문 검색 (PostgreSQL tsvector), 자동완성
-8. **CI/CD 파이프라인 고도화** - E2E 테스트, 성능 테스트, Preview 배포
-9. **사용자 지원 시스템** - 티켓 시스템, 피드백 수집, 지식 베이스
-
-#### ⭐ 장기 구현 검토 (Low Priority)
-
-1. **외부 시스템 연동** - 전자정부 시스템, 의료기관, 카카오톡 알림톡, SMS
-2. **다국어 지원** - i18n 구현 (한국어, 영어, 중국어)
-3. **음성 인터페이스** - 음성 명령, 음성 입력, 스크린 리더 연동
-4. **API 공개 (Public API)** - RESTful API, API 키 관리, Swagger 문서화
-5. **소셜 미디어 연동** - 유튜브 자동 연동, 인스타그램 피드
-6. **캐싱 전략 고도화** - Redis 캐싱, CDN 활용
-7. **대용량 데이터 처리** - 무한 스크롤, 배치 처리, 데이터 아카이빙
-8. **SLO/SLI 모니터링** - 가용성 목표 99.5%, 응답 시간 목표 2초 이내
-9. **성능 모니터링 및 최적화** - Core Web Vitals 모니터링, 리소스 최적화
+| 항목 | 상태 |
+|------|------|
+| `.claude/settings.local.json` git 추적 해제 | ✅ |
+| `repomix-output.*` git 추적 해제 | ✅ |
+| Supabase PAT 유출 대응 (폐기 + git 히스토리 삭제) | ✅ |
+| GitHub secret scanning 알림 해소 | ✅ |
 
 ---
 
-## 🗂️ Phase 13: 데이터 마이그레이션 및 실적 보고 자동화
+## apps/web — 공개 포털 (gwatc.cloud)
 
-> **설계 문서**: `docs/SYSTEM_DESIGN.md`
-> **목표**: 기존 구글 스프레드시트 기반 사례관리 데이터를 Supabase로 전환하고, 중앙보조기기센터 보고 양식에 맞춘 실적 출력 자동화
+**포트**: 3000 | **Clerk**: Primary (no satellite)
 
-### 1단계: 데이터 마이그레이션 (Google Sheets → Supabase)
+### Public Zone
 
-- [ ] **표준 텍스트 매핑 정의 (Data Cleansing 규칙)**
-  - [ ] 장애유형 표준어 목록 확정 (지체, 뇌병변, 시각, 청각, 언어, 지적, 자폐성, 정신, 신장, 심장, 호흡기, 간, 안면, 장루·요루, 뇌전증)
-  - [ ] 급여종류 표준어 확정 (기초, 차상위, 일반)
-  - [ ] 서비스내용 표준어 확정 (상담, 평가, 적용, 공적급여 연계, 수리, 사후관리 등)
-- [ ] **DB 스키마 생성**
-  - [ ] `clients` 테이블 마이그레이션 파일 작성 (`eval_clients` 네임스페이스 적용)
-  - [ ] `service_logs` 테이블 마이그레이션 파일 작성 (`eval_service_logs`)
-  - [ ] 모든 테이블에 RLS 정책 적용
-- [ ] **데이터 정제 스크립트 작성**
-  - [ ] 구글 시트 내보내기 CSV → Supabase INSERT 변환 스크립트
-  - [ ] 자유 기입 데이터 → 표준 단어 매핑 로직
+| 기능 | 상태 |
+|------|------|
+| 랜딩 페이지 (Hero, Quick Menu, 공지사항, 갤러리) | ✅ |
+| 서비스 신청 시스템 (8개 폼, Wizard, Zod 검증) | ✅ |
+| 공지사항 목록/상세 | ✅ |
+| 보조기기 정보 페이지 | ✅ |
+| 마이페이지 (신청 이력, 대여 상태) | ✅ |
+| SEO (sitemap, robots.txt, OG 태그, Schema.org) | ✅ |
+| OG 이미지 실제 파일 생성 (`public/og-image.jpg`) | ⬜ 수동 |
+| Google Search Console 등록 | ⬜ 수동 |
+| Naver Search Advisor 등록 | ⬜ 수동 |
 
-### 2단계: 업무 프로세스 이식 (Google Sheets Workflow → Web UI)
+### Portal Zone (로그인 후)
 
-- [ ] **대상자 조회/검색 (File 1)**
-  - [ ] 성명/등록번호 실시간 검색 UI
-  - [ ] RLS 기반 권한별 접근 제어
-- [ ] **접수 및 상담 폼 (File 2)**
-  - [ ] PWA 기반 모바일 최적화 폼
-  - [ ] 기존 대상자 선택 시 `clients` 테이블 자동 로드
-- [ ] **서비스 제공 및 사후관리 (File 4-5)**
-  - [ ] `eval_service_logs` 타임라인 뷰 구현
-  - [ ] 기기 대여/수리/교부 이력 기록 UI
-
-### 3단계: 중앙 보고 양식 엑셀 출력 자동화
-
-- [ ] **Supabase View 생성**
-  - [ ] `v_central_report` 뷰 생성 — 엑셀 양식 컬럼 순서와 동일하게 구성
-  - [ ] 서비스 일자별 그룹화 로직 포함
-- [ ] **ExcelJS 기반 출력 구현**
-  - [ ] `exceljs` 패키지 설치
-  - [ ] 중앙 보고 엑셀 템플릿 파일 추가 (`public/template_case_report.xlsx`)
-  - [ ] `generateReport()` 함수 구현 — 템플릿에 데이터 주입 후 다운로드
-  - [ ] 컬럼 매핑: 성명, 장애유형, 서비스내용, 사후관리내용 등
-- [ ] **보고서 출력 페이지 구현**
-  - [ ] 기간 선택 UI (분기/연도)
-  - [ ] 미리보기 및 다운로드 버튼
+| 기능 | 상태 |
+|------|------|
+| 대시보드 (KPI, 오늘 일정) | ✅ |
+| 신청 이력 타임라인 | ✅ |
+| Vercel Analytics + Speed Insights | ✅ |
 
 ---
 
-## 📚 참고 자료
+## apps/admin — 권한 관리 (admin.gwatc.cloud)
 
-### 접근성 가이드
+**포트**: 3001 | **Clerk**: Satellite
 
-- **WCAG 2.1 AA 수준** 준수
-- 구현된 기능: 화면 확대/축소, 고대비 모드, 음성 출력 (TTS), 키보드 스캔 모드
-- 상세 가이드: `docs/ACCESSIBILITY_GUIDE.md`
+### 사용자·권한 관리
 
-### 데이터베이스 스키마
-
-- **Supabase MCP**: `supabase-co-AT`
-- **Project Ref**: `uyjbndiwyddjyjkdfuyi`
-- **타입 생성**: `npm run gen:types`
-- **마이그레이션 파일**: `migrations/002~012_create_*.sql`
-- **주요 테이블**: profiles, clients, applications, inventory, schedules, notices, rentals, custom_makes, equipment, regulations
-
-### 개발 컨벤션
-
-- **Spacing-First 정책**: padding/gap 우선 사용
-- **컴포넌트 네이밍**: `[Domain][Role][Variant]` 형식
-- **타입 안전성**: `any` 타입 사용 금지, Zod 스키마 검증
-- **Next.js 16 준수**: `await params`, Server Actions 우선, Server Components 우선
-- **로깅**: 구조화된 로그 (118건 확인)
-
-### 문서
-
-- **MRD.md**: 시장 요구사항, 5대 사업 정의
-- **PRD.md**: 기능 명세, UI/UX 가이드
-- **TRD.md**: 기술 설계, 아키텍처
-- **USER_MANUAL.md**: 사용자 매뉴얼
-- **ADMIN_GUIDE.md**: 관리자 가이드
-- **API_DOCUMENTATION.md**: API 문서
-- **SECURITY_GUIDE.md**: 보안 가이드
-- **SEO_STANDARD.md**: SEO 최적화 가이드
-- **NEXTJS_16_GUIDE.md**: Next.js 16 App Router 개발 가이드
-- **보조기기센터사업안내.md**: 실제 업무 규정 및 양식
+| 기능 | 상태 |
+|------|------|
+| 사용자 목록 조회 | ✅ |
+| 역할 부여 (`ADMIN` / `MANAGER` / `STAFF`) | ✅ |
+| 앱 접근 권한 설정 (`publicMetadata.apps[]`) | ✅ |
+| Security logs 기록 | ✅ |
+| 권한 없는 사용자 `/unauthorized` 리다이렉트 | ✅ |
+| 신규 직원 온보딩 UI (앱 접근권한 일괄 부여) | ⬜ |
 
 ---
 
-## ✅ 완료 기준 (Definition of Done)
+## apps/eval — 상담·평가 (eval.gwatc.cloud)
 
-각 Phase 완료 시 확인:
+**포트**: 3002 | **Clerk**: Satellite | **DB 네임스페이스**: `eval_*`
 
-- [x] 기능이 요구사항대로 동작하는가? ✅
-- [x] 타입 에러가 없는가? ⚠️ (일부 database types 관련 개선 필요)
-- [x] 린트 에러가 없는가? ⚠️ (사용하지 않는 변수 정리 필요)
-- [x] 모바일 반응형이 적용되었는가? ✅
-- [x] 핵심 기능에 로그가 추가되었는가? ✅
-- [x] Spacing-First 정책을 준수했는가? ✅
+### 구현 완료
 
----
+| 기능 | 상태 |
+|------|------|
+| 대상자 목록/검색/상세 | ✅ |
+| 콜센터 상담일지 (call-logs) | ✅ |
+| 서비스 기록 (service records) | ✅ |
+| 보고서 뷰 + 인쇄 출력 | ✅ |
+| 데이터 마이그레이션 페이지 | ✅ |
 
-## 🔒 SaaS 안정화 체크리스트
+### 미구현 / 진행 중
 
-### 필수 항목 (Must Have)
-
-- [ ] 에러 추적 시스템 (Sentry)
-- [ ] 헬스 체크 엔드포인트
-- [ ] 상태 페이지
-- [ ] Rate Limiting
-- [ ] 데이터베이스 백업 자동화
-- [ ] 재해 복구 계획 문서화
-- [ ] 보안 모니터링 시스템
-
-### 권장 항목 (Should Have)
-
-- [ ] APM (Application Performance Monitoring)
-- [ ] Uptime 모니터링
-- [ ] 자동 재시도 로직
-- [ ] 쿼리 성능 최적화
-- [ ] CI/CD 파이프라인 고도화
-
-### 선택 항목 (Nice to Have)
-
-- [ ] SLO/SLI 모니터링
-- [ ] 사용자 지원 티켓 시스템
-- [ ] Core Web Vitals 모니터링
-- [ ] Feature Flags
+| 기능 | 상태 |
+|------|------|
+| AI SOAP 노트 생성 (Gemini) | ⬜ |
+| 음성 녹음 → STT 연동 | ⬜ |
+| 9개 영역 평가 시스템 | ⬜ |
+| 평가 결과 시각화 | ⬜ |
+| Google Sheets → Supabase 데이터 마이그레이션 스크립트 | ⬜ |
+| 중앙보조기기센터 보고 양식 엑셀 출력 자동화 | ⬜ |
 
 ---
 
-**마지막 업데이트**: 2025. 01. 27
+## apps/inventory — 자산·재고 (inventory.gwatc.cloud)
+
+**포트**: 3003 | **Clerk**: Satellite | **DB 네임스페이스**: `inventory_*`
+
+### 구현 완료
+
+| 기능 | 상태 |
+|------|------|
+| 기기 CRUD + QR/바코드 생성·스캔 | ✅ |
+| 이미지 업로드 (`image_url` DB + types 동기화) | ✅ |
+| 대여 관리 (대여/반납/연장, D-Day) | ✅ |
+| 맞춤제작 관리 (custom-orders) | ✅ |
+| 제작 장비 관리 (fab-equipment) | ✅ |
+| 유지보수 로그 (maintenance) | ✅ |
+| 재사용 배포 관리 (reuse/dispatch) | ✅ |
+| 보고서 | ✅ |
+
+### 미구현
+
+| 기능 | 상태 |
+|------|------|
+| 대여 만료 알림 (D-7/3/0 Vercel Cron) | ⬜ |
+| 재고 부족 알림 | ⬜ |
+
+---
+
+## apps/stats — 성과 대시보드 (stats.gwatc.cloud)
+
+**포트**: 3004 | **Clerk**: Satellite
+
+### 구현 완료
+
+| 기능 | 상태 |
+|------|------|
+| 5대 사업별 실적 (business) | ✅ |
+| 월별/연도별 통계 (monthly/yearly) | ✅ |
+| 목표 대비 실적 (targets) | ✅ |
+| Excel 내보내기 (export) | ✅ |
+
+### 미구현
+
+| 기능 | 상태 |
+|------|------|
+| 전년 동기 대비 비교 차트 | ⬜ |
+| 팀별 성과 분석 | ⬜ |
+| 예측 분석 (대여 패턴, 수리 예측) | ⬜ |
+
+---
+
+## apps/automation — 자동화·알림 (automation.gwatc.cloud)
+
+**포트**: 3005 | **Clerk**: Satellite
+
+### 구현 완료
+
+| 기능 | 상태 |
+|------|------|
+| 알림 채널 관리 (channels) | ✅ |
+| 메시지 발송 (send) | ✅ |
+| 발송 로그 (logs) | ✅ |
+
+### 미구현
+
+| 기능 | 상태 |
+|------|------|
+| Supabase Realtime 알림 센터 연동 | ⬜ |
+| 카카오톡 알림톡 채널 연동 | ⬜ |
+| 일정 리마인더 Cron (매일 09:00 UTC) | ⬜ |
+
+---
+
+## apps/hr — 인사관리 (hr.gwatc.cloud)
+
+**포트**: 3006 | **Clerk**: Satellite | **DB 네임스페이스**: `hr_*`
+
+### 구현 완료
+
+| 기능 | 상태 |
+|------|------|
+| 직원 목록/상세 (employees) | ✅ |
+| 근태 관리 (attendance) | ✅ |
+| 휴가 관리 (leave) | ✅ |
+| 급여 관리 (salary) | ✅ |
+| 증명서 발급 (certificates) | ✅ |
+| 일용직 임금 (daily-wages) | ✅ |
+| 채용 관리 (careers) | ✅ |
+
+### 미구현
+
+| 기능 | 상태 |
+|------|------|
+| 근태 자동 집계 (월말 정산) | ⬜ |
+| 급여 명세서 PDF 출력 | ⬜ |
+
+---
+
+## apps/approval — 전자결재 (approval.gwatc.cloud)
+
+**포트**: 3007 | **Clerk**: Satellite | **DB 네임스페이스**: `approval_*`
+
+### 구현 완료
+
+| 기능 | 상태 |
+|------|------|
+| 결재 문서 생성 (new) | ✅ |
+| 문서 상세/결재선 (id) | ✅ |
+| 문서 보관함 (archive) | ✅ |
+| 결재 양식 설정 (settings) | ✅ |
+
+### 미구현
+
+| 기능 | 상태 |
+|------|------|
+| 결재 승인/반려 워크플로우 | ⬜ |
+| 전자서명 (결재선 순차 처리) | ⬜ |
+| PDF 출력 (`@react-pdf/renderer` 설치됨) | ⬜ |
+| 위임 결재 | ⬜ |
+
+---
+
+## apps/finance — 예산·재무 (finance.gwatc.cloud)
+
+**포트**: 3008 | **Clerk**: Satellite | **DB 네임스페이스**: `finance_*`
+
+### 구현 완료
+
+| 기능 | 상태 |
+|------|------|
+| 예산 계획 (budget) | ✅ |
+| 항목 분류 (categories) | ✅ |
+| 지출 기록 (expenditures) | ✅ |
+| 재무 보고서 (reports) | ✅ |
+
+### 미구현
+
+| 기능 | 상태 |
+|------|------|
+| 예산 집행률 시각화 (recharts) | ⬜ |
+| 분기별 예산 vs 실적 비교 | ⬜ |
+| 국비·도비·자부담 항목 구분 | ⬜ |
+
+---
+
+## packages — 공유 패키지
+
+### @co-at/ui (`packages/ui`)
+
+| 항목 | 상태 |
+|------|------|
+| shadcn/ui 기반 공유 컴포넌트 | ✅ |
+| Storybook 문서화 | ⬜ |
+
+### @co-at/lib (`packages/lib`)
+
+| 항목 | 상태 |
+|------|------|
+| Supabase client (server/client/admin) | ✅ |
+| DB 타입 (`types/database.types.ts`) | ✅ |
+| `gen:types` 스크립트 (3개 파일 동기화) | ✅ |
+
+### @co-at/auth (`packages/auth`)
+
+| 항목 | 상태 |
+|------|------|
+| `createAppMiddleware(appKey)` | ✅ |
+| 역할 상수 (`ADMIN`, `MANAGER`, `STAFF`) | ✅ |
+| 앱 키 타입 (`AppKey` in `@co-at/types`) | ✅ |
+
+### @co-at/types (`packages/types`)
+
+| 항목 | 상태 |
+|------|------|
+| DB Row/Insert/Update 타입 | ✅ |
+| `AppKey` 유니온 타입 | ✅ |
+| `hr.types.ts`, `finance.types.ts`, `approval.types.ts` | ✅ |
+
+---
+
+## DB 마이그레이션
+
+> 파일 위치: `migrations/NNN_<description>.sql`
+> 실행 명령: Supabase 대시보드 또는 `supabase db push`
+
+### 완료된 마이그레이션 (002 ~ 051)
+
+- `002–018`: 기반 테이블 (applications, inventory, service_logs, schedules, notices, rentals, custom_makes, regulations, audit_logs 등)
+- `019`: inventory `image_url` 컬럼 추가
+- `020`: 채팅 테이블
+- `021–027`: 일정 상태, 공지 읽음, VOC, 회의록, 업무 태스크, 이벤트 역할
+- `028, 030`: budgets, resources
+- `045`: approval 테이블
+- `046`: finance 테이블
+- `047*`: inventory Phase 2 (QR 토큰, 대여 확장, 맞춤제작, 재사용, 제작장비, 유지보수, 배포 요약 뷰)
+- `048*`: 보안 강화
+- `049–051`: vector extension, eval 서비스 기록 확장
+
+### 미실행 / 예정 마이그레이션
+
+| 파일명 (예정) | 내용 |
+|---------------|------|
+| `052_eval_ai_soap.sql` | AI SOAP 노트 저장 테이블 |
+| `053_hr_payroll.sql` | 급여 명세서 테이블 |
+| `054_approval_workflow.sql` | 결재선 순차 처리 상태 |
+| `055_finance_quarters.sql` | 분기 예산 집계 뷰 |
+
+---
+
+## 고도화 백로그
+
+### 우선순위 높음
+
+- [ ] **eval** — AI SOAP 노트 생성 (Gemini Flash 연동)
+- [ ] **eval** — Google Sheets → Supabase 마이그레이션 스크립트
+- [ ] **eval** — 중앙보조기기센터 보고 양식 엑셀 출력 (ExcelJS)
+- [ ] **approval** — 결재 승인/반려 워크플로우 + PDF 출력
+- [ ] **모든 앱** — Sentry DSN 환경변수 설정 (코드는 이미 준비됨)
+- [ ] **web** — OG 이미지 파일 생성, Google/Naver Search Console 등록
+
+### 우선순위 중간
+
+- [ ] **inventory** — 대여 만료 Vercel Cron 알림
+- [ ] **stats** — 전년 동기 대비 차트, 팀별 성과 분석
+- [ ] **hr** — 급여 명세서 PDF, 근태 자동 집계
+- [ ] **finance** — 예산 집행률 시각화
+- [ ] **admin** — 신규 직원 온보딩 UI
+- [ ] **packages/ui** — Storybook 문서화
+- [ ] **CI** — E2E 테스트 (Playwright)
+
+### 우선순위 낮음
+
+- [ ] PWA 오프라인 지원
+- [ ] 카카오톡 알림톡 채널 연동
+- [ ] 외부 시스템 연동 (전자정부, 의료기관)
+- [ ] Redis 캐싱 전략
+- [ ] SLO/SLI 모니터링 (가용성 99.5% 목표)
+
+---
+
+## 개발 명령어 참조
+
+```bash
+pnpm dev          # 전체 개발 서버 (Turbo)
+pnpm build        # 전체 빌드
+pnpm lint         # 전체 린트
+pnpm test         # 전체 테스트
+pnpm gen:types    # Supabase 타입 재생성 (3개 파일 동기화)
+
+# 특정 앱만
+pnpm --filter @co-at/inventory dev
+pnpm --filter @co-at/eval build
+```
+
+## 신규 앱 생성
+
+```
+/new-app  # 표준 보일러플레이트 자동 생성
+```
+
+## DB 마이그레이션 생성
+
+```
+/db-migrate  # 파일 생성 + RLS 검증
+```
+
+---
+
+**Supabase Project**: `uyjbndiwyddjyjkdfuyi`
+**GitHub**: `https://github.com/Kris-Young-Kim/co-AT`
+**설계 스펙**: `docs/superpowers/specs/2026-05-01-gwatc-monorepo-design.md`
