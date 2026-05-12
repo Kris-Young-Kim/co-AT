@@ -161,6 +161,7 @@ export function InventoryFormDialog({
         purchase_date: formData.purchase_date || null,
         purchase_price: formData.purchase_price ? parseFloat(formData.purchase_price) : null,
         qr_code: formData.qr_code || null,
+        qr_token: null,
         barcode: formData.barcode || null,
         image_url: imageUrl || null,
       }

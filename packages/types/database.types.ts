@@ -1457,6 +1457,7 @@ export type Database = {
           category: string | null
           created_at: string | null
           id: string
+          image_url: string | null
           is_rental_available: boolean | null
           manufacturer: string | null
           model: string | null
@@ -1474,6 +1475,7 @@ export type Database = {
           category?: string | null
           created_at?: string | null
           id?: string
+          image_url?: string | null
           is_rental_available?: boolean | null
           manufacturer?: string | null
           model?: string | null
@@ -1491,6 +1493,7 @@ export type Database = {
           category?: string | null
           created_at?: string | null
           id?: string
+          image_url?: string | null
           is_rental_available?: boolean | null
           manufacturer?: string | null
           model?: string | null

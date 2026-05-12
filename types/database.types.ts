@@ -17,9 +17,7 @@ export type Database = {
       applications: {
         Row: {
           assigned_staff_id: string | null
-          category: string | 
-          
-          
+          category: string | null
           client_id: string
           created_at: string | null
           desired_date: string | null

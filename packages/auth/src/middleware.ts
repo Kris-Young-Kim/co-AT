@@ -35,7 +35,7 @@ export function createAppMiddleware(appKey?: AppKey) {
     isSatellite: true,
     signInUrl: PRIMARY_SIGN_IN,
     signUpUrl: PRIMARY_SIGN_UP,
-    domain: (url: URL) => url.host,
+    domain: process.env.NEXT_PUBLIC_CLERK_DOMAIN ?? '',
   })
 }
 

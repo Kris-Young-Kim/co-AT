@@ -55,7 +55,7 @@ async function logSecurityEvent(data: {
 }): Promise<void> {
   try {
     const supabase = createAdminClient()
-    await supabase.from('security_logs' as never).insert({
+    await supabase.from('security_logs').insert({
       event_type: data.eventType,
       severity: data.severity,
       ip_address: data.ip,
@@ -147,7 +147,7 @@ export default clerkMiddleware(async (auth, req) => {
   isSatellite: true,
   signInUrl: PRIMARY_SIGN_IN,
   signUpUrl: PRIMARY_SIGN_UP,
-  domain: (url: URL) => url.host,
+  domain: process.env.NEXT_PUBLIC_CLERK_DOMAIN ?? 'admin.gwatc.cloud',
 })
 
 export const config = {
