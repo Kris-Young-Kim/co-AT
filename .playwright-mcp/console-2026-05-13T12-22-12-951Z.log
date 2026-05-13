@@ -1,0 +1,6 @@
+[ 2221347ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://waa-pa.clients6.google.com/$rpc/google.internal.waa.v1.Waa/Ping:0
+[ 2221356ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://addons-pa.clients6.google.com/$rpc/google.internal.apps.addons.v1.AddOnService/ListInstallations:0
+[ 2221369ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://play.google.com/log?hasfast=true&auth=SAPISIDHASH+c3fbbc81425fe72ab9bfed6034cae56f94e54573+SAPISID1PHASH+c3fbbc81425fe72ab9bfed6034cae56f94e54573+SAPISID3PHASH+c3fbbc81425fe72ab9bfed6034cae56f94e54573&authuser=0&format=json:0
+[ 2221388ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://ssl.gstatic.com/docs/common/netcheck.gif?zx=j0wamekx2z2d:0
+[ 2221405ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://play.google.com/log?format=json&hasfast=true&authuser=0:0
+[ 2222397ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://waa-pa.googleapis.com/$rpc/google.internal.waa.v1.Waa/Ping:0

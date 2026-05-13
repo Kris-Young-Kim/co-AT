@@ -1,0 +1,22 @@
+[      96ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3002/migration:0
+[     327ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3002/_next/static/chunks/01e4c_react-dom_c6220206._.js:15305
+[     409ms] Error: 
+Missing domain and proxyUrl. A satellite application needs to specify a domain or a proxyUrl.
+
+1) With middleware
+   e.g. export default clerkMiddleware({domain:'YOUR_DOMAIN',isSatellite:true});
+2) With environment variables e.g.
+   NEXT_PUBLIC_CLERK_DOMAIN='YOUR_DOMAIN'
+   NEXT_PUBLIC_CLERK_IS_SATELLITE='true'
+   
+    at handleMultiDomainAndProxy (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\59d2c_@clerk_nextjs_dist_esm_aef3e36f._.js:1252:15)
+    at createAuthenticateRequestOptions (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\59d2c_@clerk_nextjs_dist_esm_aef3e36f._.js:2120:323)
+    at <unknown> (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\59d2c_@clerk_nextjs_dist_esm_aef3e36f._.js:1992:98)
+    at async (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\fdf70_next_f930016f._.js:11646:20)
+    at async (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\fdf70_next_f930016f._.js:5825:28)
+    at async adapter (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\fdf70_next_f930016f._.js:5780:16)
+    at async (file://D:\AILeader1\project\valuewith\co-AT\node_modules\.pnpm\next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c\node_modules\next\dist\server\web\sandbox\sandbox.js:112:26)
+    at async runWithTaggedErrors (file://D:\AILeader1\project\valuewith\co-AT\node_modules\.pnpm\next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c\node_modules\next\dist\server\web\sandbox\sandbox.js:109:9)
+    at async DevServer.runMiddleware (file://D:\AILeader1\project\valuewith\co-AT\node_modules\.pnpm\next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c\node_modules\next\dist\server\next-server.js:1247:22)
+    at async DevServer.runMiddleware (file://D:\AILeader1\project\valuewith\co-AT\node_modules\.pnpm\next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c\node_modules\next\dist\server\dev\next-dev-server.js:278:28)
+[     410ms] [LOG] [HMR] connected @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206

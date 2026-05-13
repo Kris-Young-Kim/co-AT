@@ -1,5 +1,6 @@
-import { getSyncStats, getSyncLogs, syncCallLogs, syncServiceRecords } from '@/actions/migration-actions'
-import { SyncButton } from '@/eval/components/eval/SyncButton'
+import { getSyncStats, getSyncLogs } from '@/actions/migration-actions'
+import { importClientsFile, importCallLogsFile, importServiceRecordsFile } from '@/actions/import-actions'
+import { FileImportCard } from '@/eval/components/eval/FileImportCard'
 import { CheckCircle, XCircle } from 'lucide-react'
 
 function formatDate(iso: string | null | undefined): string {
@@ -18,38 +19,32 @@ export default async function MigrationPage() {
 
   return (
     <div className="p-8 max-w-4xl">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">Google Sheets 동기화</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-2">데이터 가져오기</h1>
       <p className="text-sm text-gray-500 mb-8">
-        구글 스프레드시트의 데이터를 Supabase로 가져옵니다. 중복 데이터는 자동으로 건너뜁니다.
+        Excel / CSV 파일을 업로드해 Supabase로 가져옵니다. 중복 데이터는 자동으로 건너뜁니다.
       </p>
 
-      <div className="grid grid-cols-2 gap-4 mb-10">
-        <div className="border rounded-lg p-6 bg-white">
-          <h2 className="text-base font-semibold text-gray-900 mb-1">콜센터 상담 일지</h2>
-          <p className="text-sm text-gray-500 mb-1">
-            총 <span className="font-medium text-gray-900">{stats?.callLogCount ?? '—'}건</span>
-          </p>
-          <p className="text-xs text-gray-400 mb-4">
-            마지막 동기화: {formatDate(stats?.lastCallLogSync)}
-          </p>
-          <SyncButton label="동기화 실행" action={syncCallLogs} />
-        </div>
-
-        <div className="border rounded-lg p-6 bg-white">
-          <h2 className="text-base font-semibold text-gray-900 mb-1">서비스 실적</h2>
-          <p className="text-sm text-gray-500 mb-1">
-            총 <span className="font-medium text-gray-900">{stats?.serviceRecordCount ?? '—'}건</span>
-          </p>
-          <p className="text-xs text-gray-400 mb-4">
-            마지막 동기화: {formatDate(stats?.lastServiceRecordSync)}
-          </p>
-          <SyncButton label="동기화 실행" action={syncServiceRecords} />
-        </div>
+      <div className="grid grid-cols-3 gap-4 mb-6">
+        <FileImportCard
+          label="대상자 정보"
+          description={`${stats?.clientCount ?? '—'}명 등록됨 · 마지막: ${formatDate(stats?.lastClientSync)}`}
+          action={importClientsFile}
+        />
+        <FileImportCard
+          label="콜센터 상담 일지"
+          description={`${stats?.callLogCount ?? '—'}건 등록됨 · 마지막: ${formatDate(stats?.lastCallLogSync)}`}
+          action={importCallLogsFile}
+        />
+        <FileImportCard
+          label="서비스 실적"
+          description={`${stats?.serviceRecordCount ?? '—'}건 등록됨 · 마지막: ${formatDate(stats?.lastServiceRecordSync)}`}
+          action={importServiceRecordsFile}
+        />
       </div>
 
-      <h2 className="text-base font-semibold text-gray-900 mb-3">최근 동기화 이력</h2>
+      <h2 className="text-base font-semibold text-gray-900 mb-3">최근 가져오기 이력</h2>
       {logs.length === 0 ? (
-        <p className="text-sm text-gray-500">동기화 이력이 없습니다.</p>
+        <p className="text-sm text-gray-500">가져오기 이력이 없습니다.</p>
       ) : (
         <div className="border rounded-lg overflow-hidden">
           <table className="w-full text-sm">
@@ -67,7 +62,10 @@ export default async function MigrationPage() {
                 <tr key={log.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 text-gray-600">{formatDate(log.synced_at)}</td>
                   <td className="px-4 py-3">
-                    {log.sheet_type === 'call_log' ? '콜센터 상담' : '서비스 실적'}
+                    {log.sheet_type === 'call_log' ? '콜센터 상담'
+                      : log.sheet_type === 'service_record' ? '서비스 실적'
+                      : log.sheet_type === 'client' ? '대상자 정보'
+                      : log.sheet_type}
                   </td>
                   <td className="px-4 py-3">
                     {log.status === 'success' ? (

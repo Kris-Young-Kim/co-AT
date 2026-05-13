@@ -10,7 +10,9 @@ const isPublicRoute = createRouteMatcher([
   '/api/webhooks(.*)',
 ])
 
-export function createAppMiddleware(appKey?: AppKey) {
+export function createAppMiddleware(appKey?: AppKey, localDomain?: string) {
+  const domain = process.env.NEXT_PUBLIC_CLERK_DOMAIN ?? localDomain
+
   return clerkMiddleware(async (auth, req) => {
     if (isPublicRoute(req)) return
 
@@ -33,9 +35,9 @@ export function createAppMiddleware(appKey?: AppKey) {
     }
   }, {
     isSatellite: true,
+    domain,
     signInUrl: PRIMARY_SIGN_IN,
     signUpUrl: PRIMARY_SIGN_UP,
-    domain: process.env.NEXT_PUBLIC_CLERK_DOMAIN,
   })
 }
 

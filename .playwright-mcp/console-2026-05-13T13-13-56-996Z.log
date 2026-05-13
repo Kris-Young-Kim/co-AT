@@ -1,0 +1,86 @@
+[      76ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3002/migration:0
+[     184ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3002/_next/static/chunks/01e4c_react-dom_c6220206._.js:15305
+[     205ms] Error: 
+Missing domain and proxyUrl. A satellite application needs to specify a domain or a proxyUrl.
+
+1) With middleware
+   e.g. export default clerkMiddleware({domain:'YOUR_DOMAIN',isSatellite:true});
+2) With environment variables e.g.
+   NEXT_PUBLIC_CLERK_DOMAIN='YOUR_DOMAIN'
+   NEXT_PUBLIC_CLERK_IS_SATELLITE='true'
+   
+    at handleMultiDomainAndProxy (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\59d2c_@clerk_nextjs_dist_esm_aef3e36f._.js:1252:15)
+    at createAuthenticateRequestOptions (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\59d2c_@clerk_nextjs_dist_esm_aef3e36f._.js:2120:323)
+    at <unknown> (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\59d2c_@clerk_nextjs_dist_esm_aef3e36f._.js:1992:98)
+    at async (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\fdf70_next_f930016f._.js:11646:20)
+    at async (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\fdf70_next_f930016f._.js:5825:28)
+    at async adapter (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\fdf70_next_f930016f._.js:5780:16)
+    at async (file://D:\AILeader1\project\valuewith\co-AT\node_modules\.pnpm\next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c\node_modules\next\dist\server\web\sandbox\sandbox.js:112:26)
+    at async runWithTaggedErrors (file://D:\AILeader1\project\valuewith\co-AT\node_modules\.pnpm\next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c\node_modules\next\dist\server\web\sandbox\sandbox.js:109:9)
+    at async DevServer.runMiddleware (file://D:\AILeader1\project\valuewith\co-AT\node_modules\.pnpm\next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c\node_modules\next\dist\server\next-server.js:1247:22)
+    at async DevServer.runMiddleware (file://D:\AILeader1\project\valuewith\co-AT\node_modules\.pnpm\next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c\node_modules\next\dist\server\dev\next-dev-server.js:278:28)
+[     199ms] [LOG] [HMR] connected @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[    3614ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[    4808ms] [LOG] [Fast Refresh] done in 1299ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  339409ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  339648ms] [LOG] [Fast Refresh] done in 346ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  339752ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  339908ms] [LOG] [Fast Refresh] done in 259ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  340707ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  340831ms] [LOG] [Fast Refresh] done in 229ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  341015ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  341093ms] [LOG] [Fast Refresh] done in 191ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  341201ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  341307ms] [LOG] [Fast Refresh] done in 214ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  341418ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  341513ms] [LOG] [Fast Refresh] done in 205ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  341620ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  341758ms] [LOG] [Fast Refresh] done in 244ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  376911ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  377114ms] [LOG] [Fast Refresh] done in 309ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  377220ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  377318ms] [LOG] [Fast Refresh] done in 203ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  377433ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  377513ms] [LOG] [Fast Refresh] done in 195ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  377618ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[  377732ms] [LOG] [Fast Refresh] done in 218ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6386010ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6386027ms] [LOG] [Fast Refresh] done in 125ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6390832ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6398014ms] [LOG] [HMR] connected @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6400335ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3002/migration:0
+[ 6401030ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3002/_next/static/chunks/01e4c_react-dom_c6220206._.js:15305
+[ 6401221ms] Error: 
+Missing domain and proxyUrl. A satellite application needs to specify a domain or a proxyUrl.
+
+1) With middleware
+   e.g. export default clerkMiddleware({domain:'YOUR_DOMAIN',isSatellite:true});
+2) With environment variables e.g.
+   NEXT_PUBLIC_CLERK_DOMAIN='YOUR_DOMAIN'
+   NEXT_PUBLIC_CLERK_IS_SATELLITE='true'
+   
+    at handleMultiDomainAndProxy (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\59d2c_@clerk_nextjs_dist_esm_aef3e36f._.js:1252:15)
+    at createAuthenticateRequestOptions (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\59d2c_@clerk_nextjs_dist_esm_aef3e36f._.js:2120:323)
+    at <unknown> (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\59d2c_@clerk_nextjs_dist_esm_aef3e36f._.js:1992:98)
+    at async (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\fdf70_next_f930016f._.js:11646:20)
+    at async (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\fdf70_next_f930016f._.js:5825:28)
+    at async adapter (file://D:\AILeader1\project\valuewith\co-AT\apps\eval\.next\dev\server\edge\chunks\fdf70_next_f930016f._.js:5780:16)
+    at async (file://D:\AILeader1\project\valuewith\co-AT\node_modules\.pnpm\next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c\node_modules\next\dist\server\web\sandbox\sandbox.js:112:26)
+    at async runWithTaggedErrors (file://D:\AILeader1\project\valuewith\co-AT\node_modules\.pnpm\next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c\node_modules\next\dist\server\web\sandbox\sandbox.js:109:9)
+    at async DevServer.runMiddleware (file://D:\AILeader1\project\valuewith\co-AT\node_modules\.pnpm\next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c\node_modules\next\dist\server\next-server.js:1247:22)
+    at async DevServer.runMiddleware (file://D:\AILeader1\project\valuewith\co-AT\node_modules\.pnpm\next@16.1.1_@babel+core@7.2_44ddf4d2a14008cea0ed17b1d2e3ad2c\node_modules\next\dist\server\dev\next-dev-server.js:278:28)
+[ 6401308ms] [LOG] [HMR] connected @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6404103ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6405249ms] [LOG] [Fast Refresh] done in 1258ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6406545ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6406579ms] [LOG] [Fast Refresh] done in 232ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6407924ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6408162ms] [LOG] [Fast Refresh] done in 343ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6408431ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6408431ms] [LOG] [Fast Refresh] done in 107ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6409299ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6409338ms] [LOG] [Fast Refresh] done in 276ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6409549ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6409564ms] [LOG] [Fast Refresh] done in 225ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6409722ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
+[ 6409815ms] [LOG] [Fast Refresh] done in 200ms @ http://localhost:3002/_next/static/chunks/fdf70_next_dist_60201eaa._.js:1206
