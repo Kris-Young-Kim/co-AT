@@ -1,6 +1,7 @@
 import { getDomainAssessments } from '@/actions/assessment-actions'
 import { DomainSelector } from '@/eval/components/eval/DomainSelector'
 import { DomainAssessmentForm } from '@/eval/components/eval/DomainAssessmentForm'
+import { DomainSummaryView } from '@/eval/components/eval/DomainSummaryView'
 import type { AssessmentDomainType } from '@/eval/components/eval/DomainSelector'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
@@ -24,19 +25,28 @@ export default async function AssessmentPage({ params, searchParams }: Assessmen
   const selectedDomain: AssessmentDomainType = isValidDomain(domain) ? domain : 'WC'
 
   const assessmentResult = await getDomainAssessments(appId)
-  const assessments = assessmentResult.success ? assessmentResult.assessments ?? [] : []
-  const completedDomains = assessments.map((a: { domain_type: string }) => a.domain_type) as AssessmentDomainType[]
+  const assessments = assessmentResult.success ? (assessmentResult.assessments ?? []) : []
+
+  const completedDomains = assessments.map(
+    (a: { domain_type: string }) => a.domain_type
+  ) as AssessmentDomainType[]
+
+  const existingAssessment = assessments.find(
+    (a: { domain_type: string }) => a.domain_type === selectedDomain
+  ) ?? null
 
   return (
     <div className="p-8 max-w-3xl">
-      <Link href={`/clients/${clientId}/applications/${appId}`}
-        className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-6">
+      <Link
+        href={`/clients/${clientId}/applications/${appId}`}
+        className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-6"
+      >
         <ArrowLeft className="h-4 w-4" />
         신청서로
       </Link>
 
       <h1 className="text-2xl font-bold text-gray-900 mb-2">영역별 평가</h1>
-      <p className="text-sm text-gray-500 mb-8">
+      <p className="text-sm text-gray-500 mb-6">
         첨부 21 — 영역을 선택하고 평가를 입력하세요 ({completedDomains.length}/9 완료)
       </p>
 
@@ -44,9 +54,22 @@ export default async function AssessmentPage({ params, searchParams }: Assessmen
         <DomainSelector selectedDomain={selectedDomain} completedDomains={completedDomains} />
       </Suspense>
 
-      <div className="border rounded-lg p-6 bg-white">
-        <DomainAssessmentForm applicationId={appId} domain={selectedDomain} clientId={clientId} />
-      </div>
+      {existingAssessment ? (
+        <DomainSummaryView
+          domain={selectedDomain}
+          assessment={existingAssessment}
+          applicationId={appId}
+          clientId={clientId}
+        />
+      ) : (
+        <div className="border rounded-lg p-6 bg-white">
+          <DomainAssessmentForm
+            applicationId={appId}
+            domain={selectedDomain}
+            clientId={clientId}
+          />
+        </div>
+      )}
     </div>
   )
 }
