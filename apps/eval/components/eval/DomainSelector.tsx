@@ -5,15 +5,15 @@ import { useRouter, useSearchParams } from 'next/navigation'
 export type AssessmentDomainType = 'WC' | 'ADL' | 'S' | 'SP' | 'EC' | 'CA' | 'L' | 'AAC' | 'AM'
 
 export const DOMAIN_LABELS: Record<AssessmentDomainType, string> = {
-  WC: '휠체어',
-  ADL: '일상생활',
-  S: '착석/자세',
-  SP: '서기/보행',
-  EC: '환경제어',
-  CA: '의사소통보조',
-  L: '여가/스포츠',
+  WC:  '휠체어 및 이동',
+  ADL: '일상생활동작',
+  S:   '감각',
+  SP:  '앉기 및 자세',
+  EC:  '주택 및 환경개조',
+  CA:  '컴퓨터접근',
+  L:   '레저',
   AAC: '보완대체의사소통',
-  AM: '상지보조기기',
+  AM:  '자동차개조',
 }
 
 const DOMAINS: AssessmentDomainType[] = ['WC', 'ADL', 'S', 'SP', 'EC', 'CA', 'L', 'AAC', 'AM']
