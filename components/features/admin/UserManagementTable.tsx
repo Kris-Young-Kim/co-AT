@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Search, Loader2 } from "lucide-react"
+import { Search, Loader2, Settings2 } from "lucide-react"
 import {
   Table,
   TableBody,
@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { OnboardingModal } from "@/components/features/admin/OnboardingModal"
 
 interface User {
   id: string
@@ -32,6 +33,12 @@ interface User {
   updated_at: string | null
 }
 
+interface OnboardingTarget {
+  id: string
+  name: string | null
+  email: string | null
+}
+
 export function UserManagementTable() {
   const [users, setUsers] = useState<User[]>([])
   const [filteredUsers, setFilteredUsers] = useState<User[]>([])
@@ -39,6 +46,7 @@ export function UserManagementTable() {
   const [searchQuery, setSearchQuery] = useState("")
   const [roleFilter, setRoleFilter] = useState<string>("all")
   const [updatingRole, setUpdatingRole] = useState<string | null>(null)
+  const [onboarding, setOnboarding] = useState<OnboardingTarget | null>(null)
 
   useEffect(() => {
     fetchUsers()
@@ -148,6 +156,16 @@ export function UserManagementTable() {
   }
 
   return (
+    <>
+    {onboarding && (
+      <OnboardingModal
+        userId={onboarding.id}
+        userName={onboarding.name}
+        userEmail={onboarding.email}
+        onClose={() => setOnboarding(null)}
+        onSaved={() => { setOnboarding(null); fetchUsers() }}
+      />
+    )}
     <Card>
       <CardHeader>
         <CardTitle>사용자 목록</CardTitle>
@@ -188,12 +206,13 @@ export function UserManagementTable() {
                 <TableHead>현재 역할</TableHead>
                 <TableHead>역할 변경</TableHead>
                 <TableHead>가입일</TableHead>
+                <TableHead>앱 권한</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                     사용자가 없습니다
                   </TableCell>
                 </TableRow>
@@ -234,6 +253,17 @@ export function UserManagementTable() {
                     <TableCell>
                       {new Date(user.created_at).toLocaleDateString("ko-KR")}
                     </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setOnboarding({ id: user.id, name: user.full_name, email: user.email })}
+                        className="flex items-center gap-1.5"
+                      >
+                        <Settings2 className="h-3.5 w-3.5" />
+                        앱 권한
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))
               )}
@@ -247,6 +277,7 @@ export function UserManagementTable() {
         </div>
       </CardContent>
     </Card>
+    </>
   )
 }
 
