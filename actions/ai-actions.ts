@@ -182,9 +182,9 @@ export async function generateIntakeDraft(
     const { userId } = await auth()
     if (!userId) return { success: false, error: "로그인이 필요합니다" }
 
-    console.log("[AI Actions] 초안 생성 시작:", { memoLength: input.memo.length })
-
     if (!input.memo.trim()) return { success: false, error: "메모를 입력해주세요" }
+
+    console.log("[AI Actions] 초안 생성 시작:", { memoLength: input.memo.trim().length })
 
     const supabase = createAdminClient()
 
@@ -202,6 +202,17 @@ export async function generateIntakeDraft(
 
     if (clientResult.error) console.error("[AI Actions] 클라이언트 조회 오류:", clientResult.error)
     if (assessmentResult.error) console.error("[AI Actions] 평가 조회 오류:", assessmentResult.error)
+
+    // Verify the application belongs to this client
+    const { data: appRow } = await supabase
+      .from('applications')
+      .select('client_id')
+      .eq('id', input.applicationId)
+      .single()
+
+    if (!appRow || appRow.client_id !== input.clientId) {
+      return { success: false, error: '접근 권한이 없습니다' }
+    }
 
     console.log("[AI Actions] 클라이언트 컨텍스트 조회 완료")
 
@@ -225,7 +236,8 @@ export async function generateIntakeDraft(
     console.log("[AI Actions] Gemini API 호출 중...")
 
     const result = await model.generateContent(prompt)
-    const generatedText = result.response.text()
+    const response = await result.response
+    const generatedText = response.text()
 
     console.log("[AI Actions] Gemini 응답 수신:", { responseLength: generatedText.length })
 

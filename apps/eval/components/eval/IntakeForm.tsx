@@ -29,6 +29,15 @@ export function IntakeForm({ clientId, applicationId }: IntakeFormProps) {
   const [environmentLimitations, setEnvironmentLimitations] = useState('')
 
   async function handleAiGenerate() {
+    const hasExistingContent = [
+      consultationContent, mainActivityPlace, activityPosture,
+      mainSupporter, environmentLimitations,
+    ].some(Boolean)
+
+    if (hasExistingContent && !window.confirm('기존 내용이 덮어씌워집니다. 계속하시겠습니까?')) {
+      return
+    }
+
     setAiLoading(true)
     setAiError(null)
     try {
@@ -111,6 +120,7 @@ export function IntakeForm({ clientId, applicationId }: IntakeFormProps) {
           onChange={(e) => setMemo(e.target.value)}
           rows={3}
           placeholder="예) 40대 남성, 지체장애 3급, 전동휠체어 사용 중. 자택 생활, 혼자 외출 가능."
+          disabled={aiLoading}
           className={INPUT_CLASS}
         />
         {aiError && <p className="text-sm text-red-600">{aiError}</p>}
