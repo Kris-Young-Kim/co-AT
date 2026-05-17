@@ -192,3 +192,71 @@ export async function createApplication(
   }
 }
 
+export interface CreateApplicationWithPendingClientInput {
+  // Client info from portal
+  name: string
+  birth_date?: string | null
+  contact?: string | null
+  // Application info
+  category: string
+  sub_category?: string | null
+  memo?: string | null
+}
+
+export async function createApplicationWithPendingClient(
+  input: CreateApplicationWithPendingClientInput
+): Promise<{ success: boolean; applicationId?: string; error?: string }> {
+  try {
+    const supabase = await createClient()
+
+    // 1. Create pending client (source = portal, no auth required for portal submissions)
+    const { data: clientData, error: clientError } = await supabase
+      .from("clients")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+      .insert({
+        name: input.name,
+        birth_date: input.birth_date ?? null,
+        contact: input.contact ?? null,
+        status: "pending",
+        source: "portal",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single()
+
+    if (clientError) {
+      console.error("createApplicationWithPendingClient (client):", clientError)
+      return { success: false, error: "클라이언트 생성에 실패했습니다" }
+    }
+
+    const clientId = (clientData as { id: string }).id
+
+    // 2. Create application linked to the pending client
+    const { data: appData, error: appError } = await supabase
+      .from("applications")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+      .insert({
+        client_id: clientId,
+        category: input.category,
+        sub_category: input.sub_category ?? null,
+        memo: input.memo ?? null,
+        status: "submitted",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single()
+
+    if (appError) {
+      console.error("createApplicationWithPendingClient (application):", appError)
+      return { success: false, error: "신청서 생성에 실패했습니다" }
+    }
+
+    return { success: true, applicationId: (appData as { id: string }).id }
+  } catch (error) {
+    console.error("Unexpected error in createApplicationWithPendingClient:", error)
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
+
