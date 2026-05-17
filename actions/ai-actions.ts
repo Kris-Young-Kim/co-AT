@@ -146,7 +146,7 @@ export async function generateSoapNote(
 
 export interface IntakeDraftInput {
   memo: string
-  applicationId: string
+  applicationId: string // passed from IntakeFormProps, reserved for future per-application scoping
   clientId: string
 }
 
@@ -158,6 +158,7 @@ export interface IntakeDraft {
   environment_limitations: string
 }
 
+/** 상담기록지 5개 필드 AI 초안 생성 System Prompt */
 const INTAKE_DRAFT_SYSTEM_PROMPT = `당신은 보조기기센터 전문가입니다. 아래 제공된 메모와 클라이언트 정보를 바탕으로 상담기록지 초안을 JSON 형식으로 생성해주세요.
 
 다음 JSON 형식으로만 응답하세요. 다른 설명은 포함하지 마세요:
@@ -169,6 +170,8 @@ const INTAKE_DRAFT_SYSTEM_PROMPT = `당신은 보조기기센터 전문가입니
   "environment_limitations": "환경적 제한 사항 (예: 엘리베이터 없음)"
 }`
 
+/** 직원 메모와 클라이언트 정보를 기반으로 상담기록지 초안 생성 */
+
 export async function generateIntakeDraft(
   input: IntakeDraftInput
 ): Promise<{ success: boolean; draft?: IntakeDraft; error?: string }> {
@@ -178,6 +181,8 @@ export async function generateIntakeDraft(
 
     const { userId } = await auth()
     if (!userId) return { success: false, error: "로그인이 필요합니다" }
+
+    console.log("[AI Actions] 초안 생성 시작:", { memoLength: input.memo.length })
 
     if (!input.memo.trim()) return { success: false, error: "메모를 입력해주세요" }
 
@@ -195,6 +200,11 @@ export async function generateIntakeDraft(
         .eq('client_id', input.clientId),
     ])
 
+    if (clientResult.error) console.error("[AI Actions] 클라이언트 조회 오류:", clientResult.error)
+    if (assessmentResult.error) console.error("[AI Actions] 평가 조회 오류:", assessmentResult.error)
+
+    console.log("[AI Actions] 클라이언트 컨텍스트 조회 완료")
+
     const client = clientResult.data
     const clientContext = client
       ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}`
@@ -210,46 +220,60 @@ export async function generateIntakeDraft(
         : '평가 정보 없음'
 
     const model = getGeminiModel("gemini-2.0-flash")
-    const prompt = `${INTAKE_DRAFT_SYSTEM_PROMPT}
+    const prompt = `${INTAKE_DRAFT_SYSTEM_PROMPT}\n\n클라이언트 정보:\n${clientContext}\n\n영역별 평가 의견:\n${assessmentContext}\n\n직원 메모:\n${input.memo}`
 
-클라이언트 정보:
-${clientContext}
-
-영역별 평가 의견:
-${assessmentContext}
-
-직원 메모:
-${input.memo}`
+    console.log("[AI Actions] Gemini API 호출 중...")
 
     const result = await model.generateContent(prompt)
     const generatedText = result.response.text()
 
-    const cleanedText = generatedText
-      .replace(/```json\s*/g, '')
-      .replace(/```\s*/g, '')
-      .trim()
+    console.log("[AI Actions] Gemini 응답 수신:", { responseLength: generatedText.length })
 
-    const draft = JSON.parse(cleanedText) as IntakeDraft
+    let draft: IntakeDraft
+    try {
+      const cleanedText = generatedText
+        .replace(/```json\s*/g, '')
+        .replace(/```\s*/g, '')
+        .trim()
 
-    if (
-      !draft.consultation_content ||
-      !draft.main_activity_place ||
-      !draft.activity_posture ||
-      !draft.main_supporter ||
-      !draft.environment_limitations
-    ) {
-      throw new Error("초안 필수 필드가 누락되었습니다")
+      draft = JSON.parse(cleanedText) as IntakeDraft
+
+      if (
+        !draft.consultation_content ||
+        !draft.main_activity_place ||
+        !draft.activity_posture ||
+        !draft.main_supporter ||
+        !draft.environment_limitations
+      ) {
+        throw new Error("초안 필수 필드가 누락되었습니다")
+      }
+    } catch (parseError) {
+      console.error("[AI Actions] 초안 JSON 파싱 실패:", parseError)
+      console.error("[AI Actions] 원본 응답:", generatedText)
+      return {
+        success: false,
+        error: `AI 응답 파싱에 실패했습니다: ${parseError instanceof Error ? parseError.message : "알 수 없는 오류"}`,
+      }
     }
+
+    console.log("[AI Actions] 초안 생성 성공")
 
     return { success: true, draft }
   } catch (error) {
     console.error("[AI Actions] 초안 생성 오류:", error)
+
     if (error instanceof Error) {
       if (error.message.includes("GOOGLE_AI_API_KEY")) {
         return { success: false, error: "Google AI API 키가 설정되지 않았습니다" }
       }
+
+      if (error.message.includes("API_KEY")) {
+        return { success: false, error: "Google AI API 키가 유효하지 않습니다" }
+      }
+
       return { success: false, error: `AI 생성 중 오류가 발생했습니다: ${error.message}` }
     }
+
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }
   }
 }
