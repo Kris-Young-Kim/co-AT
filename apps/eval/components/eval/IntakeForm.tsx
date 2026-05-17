@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation'
 import { createIntakeRecord } from '@/actions/intake-actions'
 import { generateIntakeDraft } from '@/actions/ai-actions'
 
+const INPUT_CLASS = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+const SKELETON_CLASS = 'w-full rounded-md bg-gray-200 animate-pulse'
+
 interface IntakeFormProps {
   clientId: string
   applicationId: string
@@ -28,18 +31,23 @@ export function IntakeForm({ clientId, applicationId }: IntakeFormProps) {
   async function handleAiGenerate() {
     setAiLoading(true)
     setAiError(null)
-    const result = await generateIntakeDraft({ memo, applicationId, clientId })
-    setAiLoading(false)
-    if (!result.success || !result.draft) {
-      setAiError(result.error ?? 'AI 초안 생성에 실패했습니다')
-      return
+    try {
+      const result = await generateIntakeDraft({ memo, applicationId, clientId })
+      if (!result.success || !result.draft) {
+        setAiError(result.error ?? 'AI 초안 생성에 실패했습니다')
+        return
+      }
+      const { draft } = result
+      setConsultationContent(draft.consultation_content)
+      setMainActivityPlace(draft.main_activity_place)
+      setActivityPosture(draft.activity_posture)
+      setMainSupporter(draft.main_supporter)
+      setEnvironmentLimitations(draft.environment_limitations)
+    } catch {
+      setAiError('AI 초안 생성에 실패했습니다')
+    } finally {
+      setAiLoading(false)
     }
-    const { draft } = result
-    setConsultationContent(draft.consultation_content)
-    setMainActivityPlace(draft.main_activity_place)
-    setActivityPosture(draft.activity_posture)
-    setMainSupporter(draft.main_supporter)
-    setEnvironmentLimitations(draft.environment_limitations)
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -69,9 +77,9 @@ export function IntakeForm({ clientId, applicationId }: IntakeFormProps) {
     router.push(`/clients/${clientId}/applications/${applicationId}`)
   }
 
-  const inputClass =
+  const INPUT_CLASS =
     'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
-  const skeletonClass = 'w-full rounded-md bg-gray-200 animate-pulse'
+  const SKELETON_CLASS = 'w-full rounded-md bg-gray-200 animate-pulse'
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -107,7 +115,7 @@ export function IntakeForm({ clientId, applicationId }: IntakeFormProps) {
           onChange={(e) => setMemo(e.target.value)}
           rows={3}
           placeholder="예) 40대 남성, 지체장애 3급, 전동휠체어 사용 중. 자택 생활, 혼자 외출 가능."
-          className={inputClass}
+          className={INPUT_CLASS}
         />
         {aiError && <p className="text-sm text-red-600">{aiError}</p>}
         <button
@@ -132,14 +140,14 @@ export function IntakeForm({ clientId, applicationId }: IntakeFormProps) {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">상담 내용</label>
           {aiLoading ? (
-            <div className={`${skeletonClass} h-24`} />
+            <div className={`${SKELETON_CLASS} h-24`} />
           ) : (
             <textarea
               value={consultationContent}
               onChange={(e) => setConsultationContent(e.target.value)}
               rows={5}
               placeholder="상담 내용을 입력하세요"
-              className={inputClass}
+              className={INPUT_CLASS}
             />
           )}
         </div>
@@ -151,56 +159,56 @@ export function IntakeForm({ clientId, applicationId }: IntakeFormProps) {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">주 활동 장소</label>
             {aiLoading ? (
-              <div className={`${skeletonClass} h-9`} />
+              <div className={`${SKELETON_CLASS} h-9`} />
             ) : (
               <input
                 type="text"
                 value={mainActivityPlace}
                 onChange={(e) => setMainActivityPlace(e.target.value)}
                 placeholder="예) 자택, 직장, 학교"
-                className={inputClass}
+                className={INPUT_CLASS}
               />
             )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">주 활동 자세</label>
             {aiLoading ? (
-              <div className={`${skeletonClass} h-9`} />
+              <div className={`${SKELETON_CLASS} h-9`} />
             ) : (
               <input
                 type="text"
                 value={activityPosture}
                 onChange={(e) => setActivityPosture(e.target.value)}
                 placeholder="예) 앉기, 서기, 눕기"
-                className={inputClass}
+                className={INPUT_CLASS}
               />
             )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">주 부양자</label>
             {aiLoading ? (
-              <div className={`${skeletonClass} h-9`} />
+              <div className={`${SKELETON_CLASS} h-9`} />
             ) : (
               <input
                 type="text"
                 value={mainSupporter}
                 onChange={(e) => setMainSupporter(e.target.value)}
                 placeholder="예) 배우자, 부모, 자녀"
-                className={inputClass}
+                className={INPUT_CLASS}
               />
             )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">환경적 제한 사항</label>
             {aiLoading ? (
-              <div className={`${skeletonClass} h-9`} />
+              <div className={`${SKELETON_CLASS} h-9`} />
             ) : (
               <input
                 type="text"
                 value={environmentLimitations}
                 onChange={(e) => setEnvironmentLimitations(e.target.value)}
                 placeholder="예) 엘리베이터 없음, 문턱 있음"
-                className={inputClass}
+                className={INPUT_CLASS}
               />
             )}
           </div>
