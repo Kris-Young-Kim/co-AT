@@ -38,7 +38,7 @@ export function RegisterWizard({ client, nextCode, staffMembers }: RegisterWizar
   return (
     <div className="max-w-md">
       <div className="flex items-center gap-2 mb-8">
-        <div className={`flex items-center gap-2 text-sm ${step === 1 ? 'text-blue-600 font-medium' : 'text-gray-400'}`}>
+        <div className={`flex items-center gap-2 text-sm ${step === 1 ? 'text-blue-600 font-medium' : step > 1 ? 'text-green-600 font-medium' : 'text-gray-400'}`}>
           <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
             step > 1 ? 'bg-green-500 text-white' : step === 1 ? 'bg-blue-600 text-white' : 'bg-gray-200'
           }`}>1</span>
@@ -93,7 +93,7 @@ export function RegisterWizard({ client, nextCode, staffMembers }: RegisterWizar
           {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
           <div className="flex gap-3">
             <button
-              onClick={() => setStep(1)}
+              onClick={() => { setStep(1); setError(null) }}
               className="flex-1 py-2 px-4 border rounded-lg font-medium text-gray-700 hover:bg-gray-50"
             >
               이전

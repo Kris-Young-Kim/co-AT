@@ -11,9 +11,8 @@ interface RegisterPageProps {
 export default async function RegisterPage({ params }: RegisterPageProps) {
   const { clientId } = await params
 
-  const [clientResult, nextCode, staffMembers] = await Promise.all([
+  const [clientResult, staffMembers] = await Promise.all([
     getClientById(clientId),
-    getNextRegistrationCode(),
     getStaffMembers(),
   ])
 
@@ -22,6 +21,14 @@ export default async function RegisterPage({ params }: RegisterPageProps) {
 
   if (client.status !== 'pending') {
     redirect(`/clients/${clientId}`)
+  }
+
+  let nextCode = ''
+  try {
+    nextCode = await getNextRegistrationCode()
+  } catch {
+    // Fall back to year-only display; registerClient generates the real code on submit
+    nextCode = `GW${new Date().getFullYear()}????`
   }
 
   return (
