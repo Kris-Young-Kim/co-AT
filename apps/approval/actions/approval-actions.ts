@@ -32,7 +32,7 @@ async function sendApprovalNotification(
 ): Promise<void> {
   const supabase = createSupabaseAdmin()
   const inserts = targetClerkUserIds.map(userId => ({
-    user_id:       userId,
+    user_id:       null,
     clerk_user_id: userId,
     type:          'approval',
     title,

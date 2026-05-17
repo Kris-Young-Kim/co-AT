@@ -3,7 +3,7 @@
 > **프로젝트**: GWATC 통합 관리 플랫폼 (Co-AT)
 > **비전**: "행정은 AI에게, 사람은 클라이언트에게"
 > **아키텍처**: Turborepo 모노레포 — 앱별 독립 배포
-> **마지막 업데이트**: 2026-05-13
+> **마지막 업데이트**: 2026-05-17
 
 ---
 
@@ -100,7 +100,7 @@
 | 앱 접근 권한 설정 (`publicMetadata.apps[]`) | ✅ |
 | Security logs 기록 | ✅ |
 | 권한 없는 사용자 `/unauthorized` 리다이렉트 | ✅ |
-| 신규 직원 온보딩 UI (앱 접근권한 일괄 부여) | ⬜ |
+| 신규 직원 온보딩 UI (앱 접근권한 일괄 부여) | ✅ |
 
 ---
 
@@ -122,12 +122,12 @@
 
 | 기능 | 상태 |
 |------|------|
-| AI SOAP 노트 생성 (Gemini) | ⬜ |
+| 9개 영역 평가 시스템 (첨부 21 기반) | ✅ |
+| 평가 결과 시각화 (허브 그리드 + 도메인 요약) | ✅ |
+| Google Sheets → Supabase 데이터 마이그레이션 (File import) | ✅ |
+| 중앙보조기기센터 보고 양식 엑셀 출력 (ExcelJS) | ✅ |
+| AI 상담기록 생성 (Gemini) | ⬜ 형식 미결정 |
 | 음성 녹음 → STT 연동 | ⬜ |
-| 9개 영역 평가 시스템 | ⬜ |
-| 평가 결과 시각화 | ⬜ |
-| Google Sheets → Supabase 데이터 마이그레이션 스크립트 | ⬜ |
-| 중앙보조기기센터 보고 양식 엑셀 출력 자동화 | ⬜ |
 
 ---
 
@@ -244,10 +244,11 @@
 
 | 기능 | 상태 |
 |------|------|
-| 결재 승인/반려 워크플로우 | ⬜ |
-| 전자서명 (결재선 순차 처리) | ⬜ |
-| PDF 출력 (`@react-pdf/renderer` 설치됨) | ⬜ |
+| 결재 승인/반려 워크플로우 (2단계: manager→admin) | ✅ |
+| 전자서명 (결재선 순차 처리) | ✅ |
+| PDF 출력 (`@react-pdf/renderer`) | ✅ |
 | 위임 결재 | ⬜ |
+| notifications 타입 버그 (`'approval'` CHECK 제약 미등록) | ✅ |
 
 ---
 
@@ -342,10 +343,12 @@
 
 ### 우선순위 높음
 
-- [ ] **eval** — AI SOAP 노트 생성 (Gemini Flash 연동)
-- [ ] **eval** — Google Sheets → Supabase 마이그레이션 스크립트
-- [ ] **eval** — 중앙보조기기센터 보고 양식 엑셀 출력 (ExcelJS)
-- [ ] **approval** — 결재 승인/반려 워크플로우 + PDF 출력
+- [x] **eval** — Google Sheets → Supabase 마이그레이션 (File import 완료)
+- [x] **eval** — 중앙보조기기센터 보고 양식 엑셀 출력 (ExcelJS 완료)
+- [x] **eval** — 9개 영역 평가 시스템 + 결과 시각화 완료
+- [x] **approval** — 결재 승인/반려 워크플로우 + PDF 출력 완료
+- [ ] **eval** — AI 상담기록 생성 (형식 미결정: SOAP 노트 vs 상담기록)
+- [x] **approval** — notifications 타입 버그 수정 (`'approval'` CHECK 제약 추가)
 - [ ] **모든 앱** — Sentry DSN 환경변수 설정 (코드는 이미 준비됨)
 - [ ] **web** — OG 이미지 파일 생성, Google/Naver Search Console 등록
 
@@ -355,7 +358,7 @@
 - [ ] **stats** — 전년 동기 대비 차트, 팀별 성과 분석
 - [ ] **hr** — 급여 명세서 PDF, 근태 자동 집계
 - [ ] **finance** — 예산 집행률 시각화
-- [ ] **admin** — 신규 직원 온보딩 UI
+- [x] **admin** — 신규 직원 온보딩 UI
 - [ ] **packages/ui** — Storybook 문서화
 - [ ] **CI** — E2E 테스트 (Playwright)
 
