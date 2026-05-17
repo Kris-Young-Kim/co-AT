@@ -62,6 +62,7 @@ export async function searchClients(params: ClientSearchParams = {}): Promise<{
     const supabase = await createClient()
     const { query, disability_type, limit = 50, offset = 0 } = params
 
+    // Only return registered clients; pending clients are managed via getPendingClients
     let queryBuilder = supabase
       .from("clients")
       .select("*", { count: "exact" })
@@ -586,12 +587,16 @@ export async function createPendingClient(
 export async function getNextRegistrationCode(): Promise<string> {
   const supabase = await createClient()
   const year = new Date().getFullYear()
-  const { data } = await (supabase
-    .from("clients") as unknown as ReturnType<typeof supabase.from>)
+  const { data, error } = await supabase
+    .from("clients")
     .select("registration_number")
     .like("registration_number", `GW${year}%`)
     .order("registration_number", { ascending: false })
     .limit(1)
+  if (error) {
+    console.error("getNextRegistrationCode:", error)
+    throw new Error("등록코드 생성에 실패했습니다")
+  }
   const rows = (data as unknown) as Array<{ registration_number: string | null }> | null
   const last = rows?.[0]?.registration_number ?? null
   const seq = last ? Number(last.slice(6)) + 1 : 1
@@ -606,6 +611,7 @@ export async function registerClient(
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return { success: false, error: "권한이 없습니다" }
     const supabase = await createClient()
+    // Sequential code generation is acceptable for single-center small-team use
     const registrationNumber = await getNextRegistrationCode()
     const { data, error } = await supabase
       .from("clients")
@@ -641,7 +647,8 @@ export async function getStaffMembers(): Promise<StaffMember[]> {
       fullName: u.fullName,
       email: u.emailAddresses[0]?.emailAddress ?? null,
     }))
-  } catch {
+  } catch (error) {
+    console.error("Unexpected error in getStaffMembers:", error)
     return []
   }
 }
