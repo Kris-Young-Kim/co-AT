@@ -3,6 +3,7 @@
 import { getGeminiModel } from "@/lib/gemini/client"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { auth } from "@clerk/nextjs/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 
 export interface SoapNote {
   subjective: string // 주관적 정보 (S)
@@ -140,5 +141,115 @@ export async function generateSoapNote(
       success: false,
       error: "예상치 못한 오류가 발생했습니다",
     }
+  }
+}
+
+export interface IntakeDraftInput {
+  memo: string
+  applicationId: string
+  clientId: string
+}
+
+export interface IntakeDraft {
+  consultation_content: string
+  main_activity_place: string
+  activity_posture: string
+  main_supporter: string
+  environment_limitations: string
+}
+
+const INTAKE_DRAFT_SYSTEM_PROMPT = `당신은 보조기기센터 전문가입니다. 아래 제공된 메모와 클라이언트 정보를 바탕으로 상담기록지 초안을 JSON 형식으로 생성해주세요.
+
+다음 JSON 형식으로만 응답하세요. 다른 설명은 포함하지 마세요:
+{
+  "consultation_content": "상담 내용 요약 (3~5문장)",
+  "main_activity_place": "주 활동 장소 (예: 자택, 직장)",
+  "activity_posture": "주 활동 자세 (예: 앉기, 서기)",
+  "main_supporter": "주 부양자 (예: 배우자, 부모)",
+  "environment_limitations": "환경적 제한 사항 (예: 엘리베이터 없음)"
+}`
+
+export async function generateIntakeDraft(
+  input: IntakeDraftInput
+): Promise<{ success: boolean; draft?: IntakeDraft; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: "로그인이 필요합니다" }
+
+    if (!input.memo.trim()) return { success: false, error: "메모를 입력해주세요" }
+
+    const supabase = createAdminClient()
+
+    const [clientResult, assessmentResult] = await Promise.all([
+      supabase
+        .from('clients')
+        .select('name, birth_date, disability_type')
+        .eq('id', input.clientId)
+        .single(),
+      supabase
+        .from('domain_assessments')
+        .select('domain, evaluator_opinion')
+        .eq('client_id', input.clientId),
+    ])
+
+    const client = clientResult.data
+    const clientContext = client
+      ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}`
+      : '클라이언트 정보 없음'
+
+    const assessments = assessmentResult.data ?? []
+    const assessmentContext =
+      assessments.length > 0
+        ? assessments
+            .filter((a) => a.evaluator_opinion)
+            .map((a) => `${a.domain}: ${a.evaluator_opinion}`)
+            .join('\n')
+        : '평가 정보 없음'
+
+    const model = getGeminiModel("gemini-2.0-flash")
+    const prompt = `${INTAKE_DRAFT_SYSTEM_PROMPT}
+
+클라이언트 정보:
+${clientContext}
+
+영역별 평가 의견:
+${assessmentContext}
+
+직원 메모:
+${input.memo}`
+
+    const result = await model.generateContent(prompt)
+    const generatedText = result.response.text()
+
+    const cleanedText = generatedText
+      .replace(/```json\s*/g, '')
+      .replace(/```\s*/g, '')
+      .trim()
+
+    const draft = JSON.parse(cleanedText) as IntakeDraft
+
+    if (
+      !draft.consultation_content ||
+      !draft.main_activity_place ||
+      !draft.activity_posture ||
+      !draft.main_supporter ||
+      !draft.environment_limitations
+    ) {
+      throw new Error("초안 필수 필드가 누락되었습니다")
+    }
+
+    return { success: true, draft }
+  } catch (error) {
+    console.error("[AI Actions] 초안 생성 오류:", error)
+    if (error instanceof Error) {
+      if (error.message.includes("GOOGLE_AI_API_KEY")) {
+        return { success: false, error: "Google AI API 키가 설정되지 않았습니다" }
+      }
+      return { success: false, error: `AI 생성 중 오류가 발생했습니다: ${error.message}` }
+    }
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
   }
 }
