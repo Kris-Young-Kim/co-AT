@@ -520,6 +520,7 @@ export type Database = {
       clients: {
         Row: {
           address: string | null
+          assigned_staff_id: string | null
           birth_date: string | null
           contact: string | null
           created_at: string | null
@@ -536,10 +537,13 @@ export type Database = {
           name: string
           obstacles: string | null
           registration_number: string | null
+          source: string
+          status: string
           updated_at: string | null
         }
         Insert: {
           address?: string | null
+          assigned_staff_id?: string | null
           birth_date?: string | null
           contact?: string | null
           created_at?: string | null
@@ -556,10 +560,13 @@ export type Database = {
           name: string
           obstacles?: string | null
           registration_number?: string | null
+          source?: string
+          status?: string
           updated_at?: string | null
         }
         Update: {
           address?: string | null
+          assigned_staff_id?: string | null
           birth_date?: string | null
           contact?: string | null
           created_at?: string | null
@@ -576,6 +583,8 @@ export type Database = {
           name?: string
           obstacles?: string | null
           registration_number?: string | null
+          source?: string
+          status?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -871,6 +880,7 @@ export type Database = {
       }
       eval_service_records: {
         Row: {
+          address: string | null
           application_month: number | null
           application_no: number | null
           application_year: number | null
@@ -878,6 +888,7 @@ export type Database = {
           client_id: string | null
           closed_at: string | null
           consultation_date: string | null
+          contact: string | null
           created_at: string | null
           disability_severity: string | null
           disability_type: string | null
@@ -928,6 +939,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          address?: string | null
           application_month?: number | null
           application_no?: number | null
           application_year?: number | null
@@ -935,6 +947,7 @@ export type Database = {
           client_id?: string | null
           closed_at?: string | null
           consultation_date?: string | null
+          contact?: string | null
           created_at?: string | null
           disability_severity?: string | null
           disability_type?: string | null
@@ -985,6 +998,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          address?: string | null
           application_month?: number | null
           application_no?: number | null
           application_year?: number | null
@@ -992,6 +1006,7 @@ export type Database = {
           client_id?: string | null
           closed_at?: string | null
           consultation_date?: string | null
+          contact?: string | null
           created_at?: string | null
           disability_severity?: string | null
           disability_type?: string | null
@@ -1904,6 +1919,156 @@ export type Database = {
           {
             foreignKeyName: "notices_created_by_fkey"
             columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_logs: {
+        Row: {
+          channel: string
+          created_at: string | null
+          delivered_at: string | null
+          error_message: string | null
+          id: string
+          metadata: Json | null
+          notification_id: string
+          recipient: string | null
+          response_code: number | null
+          retry_count: number | null
+          sent_at: string | null
+          status: string
+        }
+        Insert: {
+          channel: string
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          notification_id: string
+          recipient?: string | null
+          response_code?: number | null
+          retry_count?: number | null
+          sent_at?: string | null
+          status: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          notification_id?: string
+          recipient?: string | null
+          response_code?: number | null
+          retry_count?: number | null
+          sent_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_logs_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_preferences: {
+        Row: {
+          channel: string
+          clerk_user_id: string | null
+          created_at: string | null
+          enabled: boolean | null
+          id: string
+          type_filter: string[] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          channel: string
+          clerk_user_id?: string | null
+          created_at?: string | null
+          enabled?: boolean | null
+          id?: string
+          type_filter?: string[] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          clerk_user_id?: string | null
+          created_at?: string | null
+          enabled?: boolean | null
+          id?: string
+          type_filter?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string
+          clerk_user_id: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          link: string | null
+          metadata: Json | null
+          priority: number | null
+          read_at: string | null
+          status: string | null
+          title: string
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          body: string
+          clerk_user_id?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          link?: string | null
+          metadata?: Json | null
+          priority?: number | null
+          read_at?: string | null
+          status?: string | null
+          title: string
+          type: string
+          user_id?: string | null
+        }
+        Update: {
+          body?: string
+          clerk_user_id?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          link?: string | null
+          metadata?: Json | null
+          priority?: number | null
+          read_at?: string | null
+          status?: string | null
+          title?: string
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
