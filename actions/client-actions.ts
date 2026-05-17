@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from 'next/cache'
 import { createClient } from "@/lib/supabase/server"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { Database } from "@/types/database.types"
@@ -585,6 +586,8 @@ export async function createPendingClient(
 }
 
 export async function getNextRegistrationCode(): Promise<string> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) throw new Error('권한이 없습니다')
   const supabase = await createClient()
   const year = new Date().getFullYear()
   const { data, error } = await supabase
@@ -597,7 +600,7 @@ export async function getNextRegistrationCode(): Promise<string> {
     console.error("getNextRegistrationCode:", error)
     throw new Error("등록코드 생성에 실패했습니다")
   }
-  const rows = (data as unknown) as Array<{ registration_number: string | null }> | null
+  const rows = data as Array<{ registration_number: string | null }> | null
   const last = rows?.[0]?.registration_number ?? null
   const seq = last ? Number(last.slice(6)) + 1 : 1
   return `GW${year}${String(seq).padStart(4, "0")}`
@@ -629,6 +632,9 @@ export async function registerClient(
       console.error("registerClient:", error)
       return { success: false, error: "등록 처리에 실패했습니다" }
     }
+    revalidatePath('/clients')
+    revalidatePath('/clients/pending')
+    revalidatePath(`/clients/${clientId}`)
     return { success: true, client: data as Client, registrationNumber }
   } catch (error) {
     console.error("Unexpected error in registerClient:", error)

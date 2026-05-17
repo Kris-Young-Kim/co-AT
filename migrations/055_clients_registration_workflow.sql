@@ -14,5 +14,6 @@ ALTER TABLE clients
   ADD COLUMN IF NOT EXISTS source TEXT NOT NULL DEFAULT 'staff'
     CHECK (source IN ('portal', 'staff'));
 
--- Mark all pre-migration clients as registered (safe to re-run)
+-- Mark all pre-migration clients as registered
+-- Note: re-running this UPDATE after new pending clients exist will incorrectly flip them to registered
 UPDATE clients SET status = 'registered' WHERE status = 'pending';
