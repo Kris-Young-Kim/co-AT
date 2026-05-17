@@ -3,7 +3,7 @@ import { getApplicationsByClientId } from '@/actions/application-actions'
 import { ApplicationListCard } from '@/eval/components/eval/ApplicationListCard'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, AlertCircle } from 'lucide-react'
 
 interface ClientDetailPageProps {
   params: Promise<{ clientId: string }>
@@ -28,6 +28,22 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
         <ArrowLeft className="h-4 w-4" />
         목록으로
       </Link>
+
+      {client.status === 'pending' && (
+        <div className="flex items-center gap-3 p-4 mb-6 rounded-lg bg-orange-50 border border-orange-200">
+          <AlertCircle className="h-5 w-5 text-orange-600 shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-orange-800">미등록 클라이언트</p>
+            <p className="text-sm text-orange-700">등록 처리 후 정보 수정 및 서비스 신청이 가능합니다</p>
+          </div>
+          <Link
+            href={`/clients/${clientId}/register`}
+            className="px-3 py-1.5 text-sm font-medium bg-orange-600 text-white rounded-lg hover:bg-orange-700 whitespace-nowrap"
+          >
+            등록 처리
+          </Link>
+        </div>
+      )}
 
       <div className="border rounded-lg p-6 mb-8 bg-white">
         <h1 className="text-xl font-bold text-gray-900 mb-4">{client.name}</h1>
