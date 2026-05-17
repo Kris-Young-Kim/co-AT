@@ -146,7 +146,7 @@ export async function generateSoapNote(
 
 export interface IntakeDraftInput {
   memo: string
-  applicationId: string // passed from IntakeFormProps, reserved for future per-application scoping
+  applicationId: string // used to query domain_assessments for this consultation session
   clientId: string
 }
 
@@ -196,8 +196,8 @@ export async function generateIntakeDraft(
         .single(),
       supabase
         .from('domain_assessments')
-        .select('domain, evaluator_opinion')
-        .eq('client_id', input.clientId),
+        .select('domain_type, evaluator_opinion')
+        .eq('application_id', input.applicationId),
     ])
 
     if (clientResult.error) console.error("[AI Actions] 클라이언트 조회 오류:", clientResult.error)
@@ -215,7 +215,7 @@ export async function generateIntakeDraft(
       assessments.length > 0
         ? assessments
             .filter((a) => a.evaluator_opinion)
-            .map((a) => `${a.domain}: ${a.evaluator_opinion}`)
+            .map((a) => `${a.domain_type}: ${a.evaluator_opinion}`)
             .join('\n')
         : '평가 정보 없음'
 
