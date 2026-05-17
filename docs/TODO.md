@@ -341,34 +341,50 @@
 
 ## 고도화 백로그
 
-### 우선순위 높음
+> **개발 집중 앱**: web · admin · eval · inventory · stats
+> **개발 보류 앱**: hr · approval · automation (1차 앱 안정화 이후)
+
+### 1차 집중 — 높은 우선순위
 
 - [x] **eval** — Google Sheets → Supabase 마이그레이션 (File import 완료)
 - [x] **eval** — 중앙보조기기센터 보고 양식 엑셀 출력 (ExcelJS 완료)
 - [x] **eval** — 9개 영역 평가 시스템 + 결과 시각화 완료
-- [x] **approval** — 결재 승인/반려 워크플로우 + PDF 출력 완료
 - [ ] **eval** — AI 상담기록 생성 (형식 미결정: SOAP 노트 vs 상담기록)
-- [x] **approval** — notifications 타입 버그 수정 (`'approval'` CHECK 제약 추가)
-- [ ] **모든 앱** — Sentry DSN 환경변수 설정 (코드는 이미 준비됨)
 - [ ] **web** — OG 이미지 파일 생성, Google/Naver Search Console 등록
+- [ ] **모든 앱** — Sentry DSN 환경변수 설정 (코드는 이미 준비됨)
 
-### 우선순위 중간
+### 1차 집중 — 중간 우선순위
 
-- [ ] **inventory** — 대여 만료 Vercel Cron 알림
-- [ ] **stats** — 전년 동기 대비 차트, 팀별 성과 분석
-- [ ] **hr** — 급여 명세서 PDF, 근태 자동 집계
-- [ ] **finance** — 예산 집행률 시각화
-- [x] **admin** — 신규 직원 온보딩 UI
+- [ ] **inventory** — 대여 만료 Vercel Cron 알림 (D-7/3/0)
+- [ ] **stats** — 전년 동기 대비 차트
+- [ ] **stats** — 팀별 성과 분석
 - [ ] **packages/ui** — Storybook 문서화
 - [ ] **CI** — E2E 테스트 (Playwright)
 
-### 우선순위 낮음
+### 1차 집중 — 낮은 우선순위
 
-- [ ] PWA 오프라인 지원
-- [ ] 카카오톡 알림톡 채널 연동
+- [ ] **web** — PWA 오프라인 지원
 - [ ] 외부 시스템 연동 (전자정부, 의료기관)
 - [ ] Redis 캐싱 전략
 - [ ] SLO/SLI 모니터링 (가용성 99.5% 목표)
+
+### 2차 개발 보류 (hr · approval · automation)
+
+- [ ] **hr** — 급여 명세서 PDF, 근태 자동 집계
+- [ ] **approval** — 위임 결재
+- [ ] **automation** — Supabase Realtime 알림 센터 연동
+- [ ] **automation** — 카카오톡 알림톡 채널 연동
+- [ ] **automation** — 일정 리마인더 Cron
+- [ ] **finance** — 예산 집행률 시각화, 분기별 비교, 국비·도비·자부담 구분
+
+### 완료 이력
+
+- [x] **eval** — 9개 영역 평가 시스템 + 결과 시각화
+- [x] **eval** — Google Sheets 마이그레이션 (File import)
+- [x] **eval** — 엑셀 출력 (ExcelJS)
+- [x] **admin** — 신규 직원 온보딩 UI
+- [x] **approval** — 결재 승인/반려 워크플로우 + 전자서명 + PDF 출력
+- [x] **approval** — notifications 타입 버그 수정 (`'approval'` CHECK 제약)
 
 ---
 
