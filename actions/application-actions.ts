@@ -225,7 +225,7 @@ export async function createApplicationWithPendingClient(
       .select("id")
       .single()
 
-    if (clientError) {
+    if (clientError || !clientData) {
       console.error("createApplicationWithPendingClient (client):", clientError)
       return { success: false, error: "클라이언트 생성에 실패했습니다" }
     }
@@ -240,15 +240,14 @@ export async function createApplicationWithPendingClient(
         client_id: clientId,
         category: input.category,
         sub_category: input.sub_category ?? null,
-        memo: input.memo ?? null,
-        status: "submitted",
+        status: "접수",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
       .select("id")
       .single()
 
-    if (appError) {
+    if (appError || !appData) {
       console.error("createApplicationWithPendingClient (application):", appError)
       return { success: false, error: "신청서 생성에 실패했습니다" }
     }
