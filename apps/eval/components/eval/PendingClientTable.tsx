@@ -52,7 +52,7 @@ export function PendingClientTable({ clients }: PendingClientTableProps) {
                     ? 'bg-blue-100 text-blue-700'
                     : 'bg-gray-100 text-gray-700'
                 }`}>
-                  {SOURCE_LABELS[client.source ?? 'staff'] ?? '직원입력'}
+                  {SOURCE_LABELS[client.source] ?? client.source}
                 </span>
               </td>
               <td className="px-4 py-3 text-gray-600">
