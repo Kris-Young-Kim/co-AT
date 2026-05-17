@@ -77,10 +77,6 @@ export function IntakeForm({ clientId, applicationId }: IntakeFormProps) {
     router.push(`/clients/${clientId}/applications/${applicationId}`)
   }
 
-  const INPUT_CLASS =
-    'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
-  const SKELETON_CLASS = 'w-full rounded-md bg-gray-200 animate-pulse'
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
