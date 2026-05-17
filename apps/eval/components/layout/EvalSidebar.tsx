@@ -2,12 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Users, BarChart3, LogOut, Phone, RefreshCw, FileDown } from 'lucide-react'
+import { Users, BarChart3, LogOut, Phone, RefreshCw, FileDown, Clock } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 
 const NAV_ITEMS = [
   { href: '/', label: '대시보드', icon: BarChart3 },
   { href: '/clients', label: '클라이언트', icon: Users },
+  { href: '/clients/pending', label: '신규 접수 대기', icon: Clock },
   { href: '/call-logs', label: '콜센터 상담', icon: Phone },
   { href: '/migration', label: 'Sheets 동기화', icon: RefreshCw },
   { href: '/reports', label: '보고서 출력', icon: FileDown },
@@ -15,6 +16,15 @@ const NAV_ITEMS = [
 
 function cn(...classes: (string | boolean | undefined)[]) {
   return classes.filter(Boolean).join(' ')
+}
+
+function isActive(pathname: string, href: string): boolean {
+  if (href === '/') return pathname === '/'
+  if (href === '/clients') {
+    // /clients is active for client detail pages but NOT for /clients/pending
+    return pathname === '/clients' || (pathname.startsWith('/clients/') && !pathname.startsWith('/clients/pending'))
+  }
+  return pathname === href || pathname.startsWith(href + '/')
 }
 
 export function EvalSidebar() {
@@ -36,7 +46,7 @@ export function EvalSidebar() {
             href={href}
             className={cn(
               'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-              pathname === href || (href !== '/' && pathname.startsWith(href))
+              isActive(pathname, href)
                 ? 'bg-blue-50 text-blue-700'
                 : 'text-gray-700 hover:bg-gray-100'
             )}
