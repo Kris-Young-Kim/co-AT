@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { Database } from "@/types/database.types"
+import { clerkClient } from '@clerk/nextjs/server'
 
 export type Client = Database["public"]["Tables"]["clients"]["Row"]
 
@@ -28,6 +29,21 @@ export interface ClientHistoryItem {
   category?: string | null
 }
 
+export interface CreatePendingClientInput {
+  name: string
+  birth_date?: string | null
+  gender?: string | null
+  contact?: string | null
+  guardian_contact?: string | null
+  disability_type?: string | null
+}
+
+export interface StaffMember {
+  id: string
+  fullName: string | null
+  email: string | null
+}
+
 /**
  * 대상자 검색 (이름/생년월일)
  */
@@ -49,6 +65,7 @@ export async function searchClients(params: ClientSearchParams = {}): Promise<{
     let queryBuilder = supabase
       .from("clients")
       .select("*", { count: "exact" })
+      .eq("status", "registered")
 
     // 이름 또는 생년월일 검색
     if (query) {
@@ -488,6 +505,144 @@ export async function getClientHistory(clientId: string): Promise<{
   } catch (error) {
     console.error("Unexpected error in getClientHistory:", error)
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
+
+export async function getPendingCount(): Promise<number> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return 0
+    const supabase = await createClient()
+    const { count } = await supabase
+      .from("clients")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "pending")
+    return count ?? 0
+  } catch {
+    return 0
+  }
+}
+
+export async function getPendingClients(): Promise<{
+  success: boolean
+  clients?: Client[]
+  error?: string
+}> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+    const supabase = await createClient()
+    const { data, error } = await supabase
+      .from("clients")
+      .select("*")
+      .eq("status", "pending")
+      .order("created_at", { ascending: false })
+    if (error) {
+      console.error("getPendingClients:", error)
+      return { success: false, error: "조회에 실패했습니다" }
+    }
+    return { success: true, clients: (data ?? []) as Client[] }
+  } catch (error) {
+    console.error("Unexpected error in getPendingClients:", error)
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
+
+export async function createPendingClient(
+  input: CreatePendingClientInput
+): Promise<{ success: boolean; client?: Client; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+    const supabase = await createClient()
+    const { data, error } = await supabase
+      .from("clients")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+      .insert({
+        name: input.name,
+        birth_date: input.birth_date ?? null,
+        gender: input.gender ?? null,
+        contact: input.contact ?? null,
+        guardian_contact: input.guardian_contact ?? null,
+        disability_type: input.disability_type ?? null,
+        status: "pending",
+        source: "staff",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .select()
+      .single()
+    if (error) {
+      console.error("createPendingClient:", error)
+      return { success: false, error: "등록에 실패했습니다: " + error.message }
+    }
+    return { success: true, client: data as Client }
+  } catch (error) {
+    console.error("Unexpected error in createPendingClient:", error)
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
+
+export async function getNextRegistrationCode(): Promise<string> {
+  const supabase = await createClient()
+  const year = new Date().getFullYear()
+  const { data } = await (supabase
+    .from("clients") as unknown as ReturnType<typeof supabase.from>)
+    .select("registration_number")
+    .like("registration_number", `GW${year}%`)
+    .order("registration_number", { ascending: false })
+    .limit(1)
+  const rows = (data as unknown) as Array<{ registration_number: string | null }> | null
+  const last = rows?.[0]?.registration_number ?? null
+  const seq = last ? Number(last.slice(6)) + 1 : 1
+  return `GW${year}${String(seq).padStart(4, "0")}`
+}
+
+export async function registerClient(
+  clientId: string,
+  assignedStaffId: string
+): Promise<{ success: boolean; client?: Client; registrationNumber?: string; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+    const supabase = await createClient()
+    const registrationNumber = await getNextRegistrationCode()
+    const { data, error } = await supabase
+      .from("clients")
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+      .update({
+        status: "registered",
+        registration_number: registrationNumber,
+        assigned_staff_id: assignedStaffId,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", clientId)
+      .select()
+      .single()
+    if (error) {
+      console.error("registerClient:", error)
+      return { success: false, error: "등록 처리에 실패했습니다" }
+    }
+    return { success: true, client: data as Client, registrationNumber }
+  } catch (error) {
+    console.error("Unexpected error in registerClient:", error)
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
+
+export async function getStaffMembers(): Promise<StaffMember[]> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return []
+    const clerk = await clerkClient()
+    const response = await clerk.users.getUserList({ limit: 200 })
+    return response.data.map(u => ({
+      id: u.id,
+      fullName: u.fullName,
+      email: u.emailAddresses[0]?.emailAddress ?? null,
+    }))
+  } catch {
+    return []
   }
 }
 
