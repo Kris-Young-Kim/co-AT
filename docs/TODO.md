@@ -126,8 +126,8 @@
 | 평가 결과 시각화 (허브 그리드 + 도메인 요약) | ✅ |
 | Google Sheets → Supabase 데이터 마이그레이션 (File import) | ✅ |
 | 중앙보조기기센터 보고 양식 엑셀 출력 (ExcelJS) | ✅ |
-| AI 상담기록 생성 (Gemini) | ⬜ 형식 미결정 |
-| 음성 녹음 → STT 연동 | ⬜ |
+| AI 상담기록 생성 (Gemini) | ✅ |
+| 음성 녹음 → STT 연동 | ✅ |
 
 ---
 
