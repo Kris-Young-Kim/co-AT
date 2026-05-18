@@ -2,8 +2,9 @@
 
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Mic, MicOff } from 'lucide-react'
+import { Mic, MicOff, Sparkles } from 'lucide-react'
 import type { CallLog, CreateCallLogInput } from '@/actions/call-log-actions'
+import { generateCallLogAnswer } from '@/actions/ai-actions'
 
 interface CallLogFormProps {
   defaultValues?: Partial<CallLog>
@@ -65,6 +66,8 @@ export function CallLogForm({ defaultValues, onSubmit, submitLabel = '저장' }:
   )
   const [recording, setRecording] = useState<VoiceField | null>(null)
   const recognitionRef = useRef<SpeechRecognitionAPI | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiError, setAiError] = useState<string | null>(null)
 
   function toggleRecording(field: VoiceField) {
     if (recording === field) {
@@ -116,6 +119,24 @@ export function CallLogForm({ defaultValues, onSubmit, submitLabel = '저장' }:
     recognitionRef.current = rec
     rec.start()
     setRecording(field)
+  }
+
+  async function handleAiAnswer() {
+    setAiLoading(true)
+    setAiError(null)
+    const activeQuestionTypes = Q_TYPES.filter(q => qTypes[q.key]).map(q => q.label)
+    const result = await generateCallLogAnswer({
+      questionContent: questionContent,
+      requesterType: null,
+      disabilityType: null,
+      activeQuestionTypes,
+    })
+    setAiLoading(false)
+    if (!result.success || !result.answer) {
+      setAiError(result.error ?? 'AI 답변 생성에 실패했습니다')
+      return
+    }
+    setAnswerContent(result.answer)
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -172,28 +193,45 @@ export function CallLogForm({ defaultValues, onSubmit, submitLabel = '저장' }:
       <div key={field}>
         <div className="flex items-center justify-between mb-1">
           <label className="block text-sm font-medium text-gray-700">{label}</label>
-          <button
-            type="button"
-            onClick={() => toggleRecording(field)}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
-              isRecording
-                ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {isRecording ? (
-              <>
-                <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                <MicOff className="w-3.5 h-3.5" />
-                녹음 중지
-              </>
-            ) : (
-              <>
-                <Mic className="w-3.5 h-3.5" />
-                음성 입력
-              </>
+          <div className="flex items-center gap-2">
+            {field === 'answer' && (
+              <button
+                type="button"
+                onClick={handleAiAnswer}
+                disabled={aiLoading || !questionContent.trim()}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 disabled:opacity-50 transition-colors"
+              >
+                {aiLoading ? (
+                  <span className="inline-block w-3 h-3 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Sparkles className="w-3.5 h-3.5" />
+                )}
+                AI 초안
+              </button>
             )}
-          </button>
+            <button
+              type="button"
+              onClick={() => toggleRecording(field)}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                isRecording
+                  ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {isRecording ? (
+                <>
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                  <MicOff className="w-3.5 h-3.5" />
+                  녹음 중지
+                </>
+              ) : (
+                <>
+                  <Mic className="w-3.5 h-3.5" />
+                  음성 입력
+                </>
+              )}
+            </button>
+          </div>
         </div>
         <textarea
           name={field}
@@ -316,9 +354,10 @@ export function CallLogForm({ defaultValues, onSubmit, submitLabel = '저장' }:
         </div>
       </div>
 
-      {/* 질문내용 + 답변 (음성 입력 지원) */}
+      {/* 질문내용 + 답변 (음성 입력 + AI 초안 지원) */}
       {voiceTextarea('question_content', '질문 내용')}
       {voiceTextarea('answer', '답변(조치사항)')}
+      {aiError && <p className="text-sm text-red-600 -mt-3">{aiError}</p>}
 
       {textField('staff_name', '상담자')}
 

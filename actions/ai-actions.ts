@@ -289,3 +289,58 @@ export async function generateIntakeDraft(
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }
   }
 }
+
+export interface CallLogAnswerInput {
+  questionContent: string
+  requesterType?: string | null
+  disabilityType?: string | null
+  activeQuestionTypes: string[]
+}
+
+const CALL_LOG_ANSWER_PROMPT = `당신은 강원특별자치도 보조기기센터의 전문 상담사입니다.
+상담 내용을 바탕으로 적절한 답변(조치사항)을 작성해 주세요.
+
+답변 작성 규칙:
+- 2~4문장의 간결한 텍스트만 반환 (JSON 불필요)
+- 구체적인 안내 사항, 다음 단계, 관련 서비스 등을 포함
+- 전문적이고 친절한 어투 사용
+- 보조기기 관련 전문 용어는 한국어로 작성`
+
+export async function generateCallLogAnswer(
+  input: CallLogAnswerInput
+): Promise<{ success: boolean; answer?: string; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: "로그인이 필요합니다" }
+
+    if (!input.questionContent.trim())
+      return { success: false, error: "질문 내용을 먼저 입력해 주세요" }
+
+    const contextLines = [
+      input.activeQuestionTypes.length > 0 && `질문 유형: ${input.activeQuestionTypes.join(", ")}`,
+      input.requesterType && `의뢰인 유형: ${input.requesterType}`,
+      input.disabilityType && `장애유형: ${input.disabilityType}`,
+    ].filter(Boolean).join("\n")
+
+    const model = getGeminiModel("gemini-2.0-flash")
+    const prompt = `${CALL_LOG_ANSWER_PROMPT}
+
+${contextLines}
+
+질문 내용:
+${input.questionContent}`
+
+    const result = await model.generateContent(prompt)
+    const answer = result.response.text().trim()
+
+    if (!answer) throw new Error("빈 응답")
+
+    return { success: true, answer }
+  } catch (error) {
+    console.error("[AI Actions] 콜로그 답변 생성 오류:", error)
+    return { success: false, error: "AI 답변 생성 중 오류가 발생했습니다" }
+  }
+}
