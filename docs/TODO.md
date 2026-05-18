@@ -152,7 +152,7 @@
 
 | 기능 | 상태 |
 |------|------|
-| 대여 만료 알림 (D-7/3/0 Vercel Cron) | ⬜ |
+| 대여 만료 알림 (D-7/3/0 Vercel Cron) | ✅ |
 | 재고 부족 알림 | ⬜ |
 
 ---
@@ -355,7 +355,7 @@
 
 ### 1차 집중 — 중간 우선순위
 
-- [ ] **inventory** — 대여 만료 Vercel Cron 알림 (D-7/3/0)
+- [x] **inventory** — 대여 만료 Vercel Cron 알림 (D-7/3/0)
 - [ ] **stats** — 전년 동기 대비 차트
 - [ ] **stats** — 팀별 성과 분석
 - [ ] **packages/ui** — Storybook 문서화
