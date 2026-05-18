@@ -1,13 +1,19 @@
 import { ImageResponse } from "next/og"
 
+export const runtime = "edge"
 export const alt = "GWATC 보조기기센터 | 강원특별자치도 통합 케어 플랫폼"
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 
 export default async function Image() {
-  const interBold = await fetch(
-    "https://fonts.gstatic.com/s/notosanskr/v36/PbyxFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.0.woff2"
-  ).then((res) => res.arrayBuffer())
+  let fontData: ArrayBuffer | null = null
+  try {
+    fontData = await fetch(
+      "https://fonts.gstatic.com/s/notosanskr/v36/PbyxFmXiEBPT4ITbgNA5Cgm20xz64px_1hVWr0wuPNGmlQNMEfD4.0.woff2"
+    ).then((res) => res.arrayBuffer())
+  } catch {
+    // Proceed without custom font
+  }
 
   const services = ["상담", "체험", "맞춤제작", "사후관리", "교육홍보"]
 
@@ -139,14 +145,9 @@ export default async function Image() {
     ),
     {
       ...size,
-      fonts: [
-        {
-          name: "NotoSansKR",
-          data: interBold,
-          style: "normal",
-          weight: 700,
-        },
-      ],
+      fonts: fontData
+        ? [{ name: "NotoSansKR", data: fontData, style: "normal", weight: 700 }]
+        : [],
     }
   )
 }
