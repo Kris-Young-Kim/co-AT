@@ -143,17 +143,11 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   return NextResponse.next()
-}, {
-  isSatellite: true,
-  signInUrl: PRIMARY_SIGN_IN,
-  signUpUrl: PRIMARY_SIGN_UP,
-  domain: process.env.NEXT_PUBLIC_CLERK_DOMAIN ?? 'admin.gwatc.cloud',
 })
 
 export const config = {
   matcher: [
     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
     '/(api|trpc)(.*)',
-    '/__clerk/(.*)',
   ],
 }
