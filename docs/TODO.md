@@ -356,8 +356,6 @@
 
 - [x] **inventory** — 대여 만료 Vercel Cron 알림 (D-7/3/0)
 - [x] **stats** — 전년 동기 대비 차트
-- [ ] **packages/ui** — Storybook 문서화
-- [ ] **CI** — E2E 테스트 (Playwright)
 
 ### 1차 집중 — 낮은 우선순위
 
