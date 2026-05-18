@@ -137,6 +137,9 @@ export function ClientFormDialog({
         disability_grade: formData.disability_grade || null,
         disability_cause: formData.disability_cause || null,
         disability_onset_date: formData.disability_onset_date || null,
+        assigned_staff_id: null,
+        source: 'crm',
+        status: 'active',
       }
 
       let result
