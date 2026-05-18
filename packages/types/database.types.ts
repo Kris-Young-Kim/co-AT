@@ -520,6 +520,7 @@ export type Database = {
       clients: {
         Row: {
           address: string | null
+          assigned_staff_id: string | null
           birth_date: string | null
           contact: string | null
           created_at: string | null
@@ -536,10 +537,13 @@ export type Database = {
           name: string
           obstacles: string | null
           registration_number: string | null
+          source: string
+          status: string
           updated_at: string | null
         }
         Insert: {
           address?: string | null
+          assigned_staff_id?: string | null
           birth_date?: string | null
           contact?: string | null
           created_at?: string | null
@@ -556,10 +560,13 @@ export type Database = {
           name: string
           obstacles?: string | null
           registration_number?: string | null
+          source?: string
+          status?: string
           updated_at?: string | null
         }
         Update: {
           address?: string | null
+          assigned_staff_id?: string | null
           birth_date?: string | null
           contact?: string | null
           created_at?: string | null
@@ -576,6 +583,8 @@ export type Database = {
           name?: string
           obstacles?: string | null
           registration_number?: string | null
+          source?: string
+          status?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -871,14 +880,23 @@ export type Database = {
       }
       eval_service_records: {
         Row: {
+          address: string | null
+          application_month: number | null
           application_no: number | null
           application_year: number | null
           birth_date: string | null
           client_id: string | null
+          closed_at: string | null
+          consultation_date: string | null
+          contact: string | null
           created_at: string | null
+          disability_severity: string | null
           disability_type: string | null
+          economic_status: string | null
+          funding_source_detail: string | null
           gender: string | null
           id: string
+          info_provision_area: string | null
           is_assessment: boolean | null
           is_cleaning: boolean | null
           is_closed: boolean | null
@@ -902,27 +920,42 @@ export type Database = {
           is_visit_in: boolean | null
           is_visit_out: boolean | null
           item_category: string | null
+          monitoring_date: string | null
           name: string | null
+          performance_date: string | null
           product_name: string | null
           received_at: string | null
+          record_status: string | null
           referral_type: string | null
           region: string | null
           service_area: string | null
           service_category: string | null
           service_content: string | null
+          service_major_category: string | null
+          service_sub_category: string | null
           source: string | null
           staff_name: string | null
+          trial_device_count: number | null
           updated_at: string | null
         }
         Insert: {
+          address?: string | null
+          application_month?: number | null
           application_no?: number | null
           application_year?: number | null
           birth_date?: string | null
           client_id?: string | null
+          closed_at?: string | null
+          consultation_date?: string | null
+          contact?: string | null
           created_at?: string | null
+          disability_severity?: string | null
           disability_type?: string | null
+          economic_status?: string | null
+          funding_source_detail?: string | null
           gender?: string | null
           id?: string
+          info_provision_area?: string | null
           is_assessment?: boolean | null
           is_cleaning?: boolean | null
           is_closed?: boolean | null
@@ -946,27 +979,42 @@ export type Database = {
           is_visit_in?: boolean | null
           is_visit_out?: boolean | null
           item_category?: string | null
+          monitoring_date?: string | null
           name?: string | null
+          performance_date?: string | null
           product_name?: string | null
           received_at?: string | null
+          record_status?: string | null
           referral_type?: string | null
           region?: string | null
           service_area?: string | null
           service_category?: string | null
           service_content?: string | null
+          service_major_category?: string | null
+          service_sub_category?: string | null
           source?: string | null
           staff_name?: string | null
+          trial_device_count?: number | null
           updated_at?: string | null
         }
         Update: {
+          address?: string | null
+          application_month?: number | null
           application_no?: number | null
           application_year?: number | null
           birth_date?: string | null
           client_id?: string | null
+          closed_at?: string | null
+          consultation_date?: string | null
+          contact?: string | null
           created_at?: string | null
+          disability_severity?: string | null
           disability_type?: string | null
+          economic_status?: string | null
+          funding_source_detail?: string | null
           gender?: string | null
           id?: string
+          info_provision_area?: string | null
           is_assessment?: boolean | null
           is_cleaning?: boolean | null
           is_closed?: boolean | null
@@ -990,16 +1038,22 @@ export type Database = {
           is_visit_in?: boolean | null
           is_visit_out?: boolean | null
           item_category?: string | null
+          monitoring_date?: string | null
           name?: string | null
+          performance_date?: string | null
           product_name?: string | null
           received_at?: string | null
+          record_status?: string | null
           referral_type?: string | null
           region?: string | null
           service_area?: string | null
           service_category?: string | null
           service_content?: string | null
+          service_major_category?: string | null
+          service_sub_category?: string | null
           source?: string | null
           staff_name?: string | null
+          trial_device_count?: number | null
           updated_at?: string | null
         }
         Relationships: [
@@ -1871,6 +1925,156 @@ export type Database = {
           },
         ]
       }
+      notification_logs: {
+        Row: {
+          channel: string
+          created_at: string | null
+          delivered_at: string | null
+          error_message: string | null
+          id: string
+          metadata: Json | null
+          notification_id: string
+          recipient: string | null
+          response_code: number | null
+          retry_count: number | null
+          sent_at: string | null
+          status: string
+        }
+        Insert: {
+          channel: string
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          notification_id: string
+          recipient?: string | null
+          response_code?: number | null
+          retry_count?: number | null
+          sent_at?: string | null
+          status: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string | null
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          notification_id?: string
+          recipient?: string | null
+          response_code?: number | null
+          retry_count?: number | null
+          sent_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_logs_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: false
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_preferences: {
+        Row: {
+          channel: string
+          clerk_user_id: string | null
+          created_at: string | null
+          enabled: boolean | null
+          id: string
+          type_filter: string[] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          channel: string
+          clerk_user_id?: string | null
+          created_at?: string | null
+          enabled?: boolean | null
+          id?: string
+          type_filter?: string[] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          clerk_user_id?: string | null
+          created_at?: string | null
+          enabled?: boolean | null
+          id?: string
+          type_filter?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string
+          clerk_user_id: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          link: string | null
+          metadata: Json | null
+          priority: number | null
+          read_at: string | null
+          status: string | null
+          title: string
+          type: string
+          user_id: string | null
+        }
+        Insert: {
+          body: string
+          clerk_user_id?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          link?: string | null
+          metadata?: Json | null
+          priority?: number | null
+          read_at?: string | null
+          status?: string | null
+          title: string
+          type: string
+          user_id?: string | null
+        }
+        Update: {
+          body?: string
+          clerk_user_id?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          link?: string | null
+          metadata?: Json | null
+          priority?: number | null
+          read_at?: string | null
+          status?: string | null
+          title?: string
+          type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       process_logs: {
         Row: {
           application_id: string
@@ -2536,11 +2740,18 @@ export type Database = {
       }
       v_service_record_report: {
         Row: {
+          application_month: number | null
           application_no: number | null
           application_year: number | null
           birth_date: string | null
+          closed_at: string | null
+          consultation_date: string | null
+          disability_severity: string | null
           disability_type: string | null
+          economic_status: string | null
+          funding_source_detail: string | null
           gender: string | null
+          info_provision_area: string | null
           is_assessment: boolean | null
           is_cleaning: boolean | null
           is_closed: boolean | null
@@ -2555,6 +2766,7 @@ export type Database = {
           is_phone: boolean | null
           is_private_funding: boolean | null
           is_public_funding: boolean | null
+          is_re_application: boolean | null
           is_rental: boolean | null
           is_repair: boolean | null
           is_reuse: boolean | null
@@ -2563,22 +2775,35 @@ export type Database = {
           is_visit_in: boolean | null
           is_visit_out: boolean | null
           item_category: string | null
+          monitoring_date: string | null
           name: string | null
+          performance_date: string | null
           product_name: string | null
           received_at: string | null
+          record_status: string | null
           referral_type: string | null
           region: string | null
           service_area: string | null
           service_category: string | null
           service_content: string | null
+          service_major_category: string | null
+          service_sub_category: string | null
           staff_name: string | null
+          trial_device_count: number | null
         }
         Insert: {
+          application_month?: number | null
           application_no?: number | null
           application_year?: number | null
           birth_date?: string | null
+          closed_at?: string | null
+          consultation_date?: string | null
+          disability_severity?: string | null
           disability_type?: string | null
+          economic_status?: string | null
+          funding_source_detail?: string | null
           gender?: string | null
+          info_provision_area?: string | null
           is_assessment?: boolean | null
           is_cleaning?: boolean | null
           is_closed?: boolean | null
@@ -2593,6 +2818,7 @@ export type Database = {
           is_phone?: boolean | null
           is_private_funding?: boolean | null
           is_public_funding?: boolean | null
+          is_re_application?: boolean | null
           is_rental?: boolean | null
           is_repair?: boolean | null
           is_reuse?: boolean | null
@@ -2601,22 +2827,35 @@ export type Database = {
           is_visit_in?: boolean | null
           is_visit_out?: boolean | null
           item_category?: string | null
+          monitoring_date?: string | null
           name?: string | null
+          performance_date?: string | null
           product_name?: string | null
           received_at?: string | null
+          record_status?: string | null
           referral_type?: string | null
           region?: string | null
           service_area?: string | null
           service_category?: string | null
           service_content?: string | null
+          service_major_category?: string | null
+          service_sub_category?: string | null
           staff_name?: string | null
+          trial_device_count?: number | null
         }
         Update: {
+          application_month?: number | null
           application_no?: number | null
           application_year?: number | null
           birth_date?: string | null
+          closed_at?: string | null
+          consultation_date?: string | null
+          disability_severity?: string | null
           disability_type?: string | null
+          economic_status?: string | null
+          funding_source_detail?: string | null
           gender?: string | null
+          info_provision_area?: string | null
           is_assessment?: boolean | null
           is_cleaning?: boolean | null
           is_closed?: boolean | null
@@ -2631,6 +2870,7 @@ export type Database = {
           is_phone?: boolean | null
           is_private_funding?: boolean | null
           is_public_funding?: boolean | null
+          is_re_application?: boolean | null
           is_rental?: boolean | null
           is_repair?: boolean | null
           is_reuse?: boolean | null
@@ -2639,15 +2879,21 @@ export type Database = {
           is_visit_in?: boolean | null
           is_visit_out?: boolean | null
           item_category?: string | null
+          monitoring_date?: string | null
           name?: string | null
+          performance_date?: string | null
           product_name?: string | null
           received_at?: string | null
+          record_status?: string | null
           referral_type?: string | null
           region?: string | null
           service_area?: string | null
           service_category?: string | null
           service_content?: string | null
+          service_major_category?: string | null
+          service_sub_category?: string | null
           staff_name?: string | null
+          trial_device_count?: number | null
         }
         Relationships: []
       }
