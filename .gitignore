@@ -66,3 +66,6 @@ next-env.d.ts
 .cursor/
 # Git worktrees
 .worktrees/
+
+# Serena AI tool (cache and local runtime data)
+.serena/
