@@ -44,11 +44,17 @@ export async function sendRentalExpiryEmail(params: {
   deviceName: string
   daysLeft: number
   expiryDate: string
+  clientName?: string
 }): Promise<NotifyResult> {
   try {
     const resend = getResend()
     const html = await render(
-      RentalExpiryEmail({ deviceName: params.deviceName, daysLeft: params.daysLeft, expiryDate: params.expiryDate })
+      RentalExpiryEmail({
+        deviceName: params.deviceName,
+        daysLeft: params.daysLeft,
+        expiryDate: params.expiryDate,
+        clientName: params.clientName,
+      })
     )
     const { error } = await resend.emails.send({
       from: FROM_EMAIL,

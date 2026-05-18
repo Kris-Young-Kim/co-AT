@@ -6,6 +6,14 @@ import { createLog } from '@/actions/log-actions'
 
 const DAYS_TO_CHECK = [7, 3, 0]
 
+type RentalRow = {
+  id: string
+  client_id: string
+  rental_end_date: string
+  inventory: { name: string } | null
+  clients: { name: string; contact: string | null; assigned_staff_id: string | null } | null
+}
+
 export async function GET(request: Request) {
   const authError = verifyCronSecret(request)
   if (authError) return authError
@@ -18,7 +26,7 @@ export async function GET(request: Request) {
   try {
     const { data: emailChannel } = await supabase
       .from('automation_channels')
-      .select('is_enabled, config')
+      .select('is_enabled')
       .eq('channel_type', 'email')
       .single()
     const emailEnabled = emailChannel?.is_enabled ?? false
@@ -33,46 +41,47 @@ export async function GET(request: Request) {
         .select(`
           id, client_id, rental_end_date,
           inventory:inventory_id ( name ),
-          clients:client_id (
-            id,
-            profiles!rentals_client_id_fkey ( clerk_user_id )
-          )
+          clients:client_id ( name, contact, assigned_staff_id )
         `)
         .eq('status', 'rented')
         .eq('rental_end_date', targetDate)
 
       if (error || !rentals) continue
 
-      for (const rental of rentals) {
-        const clientId = rental.client_id as string
-        const clerkUserId = (rental.clients as unknown as Record<string, unknown> | null)?.clerk_user_id as string | undefined
-        const deviceName = (rental.inventory as { name?: string } | null)?.name ?? '보조기기'
+      for (const rental of rentals as unknown as RentalRow[]) {
+        const clientId = rental.client_id
+        const deviceName = rental.inventory?.name ?? '보조기기'
+        const clientName = rental.clients?.name ?? '대상자'
+        const assignedStaffId = rental.clients?.assigned_staff_id ?? null
 
+        // In-app notification (stored against client's user_id)
         const inApp = await createInAppNotification({
-          userId:      clientId,
-          clerkUserId: clerkUserId,
-          type:        'rental_expiry',
-          title:       `대여 기간 만료 ${days === 0 ? '오늘' : `D-${days}`} 안내`,
-          body:        `${deviceName} 대여 기간이 ${days === 0 ? '오늘' : `${days}일 후`} 만료됩니다.`,
-          link:        '/mypage',
-          priority:    days === 0 ? 3 : 2,
-          metadata:    { rentalId: rental.id, daysLeft: days, expiryDate: targetDate },
+          userId: clientId,
+          type: 'rental_expiry',
+          title: `대여 기간 만료 ${days === 0 ? '오늘' : `D-${days}`} 안내`,
+          body: `${deviceName} 대여 기간이 ${days === 0 ? '오늘' : `${days}일 후`} 만료됩니다.`,
+          link: '/mypage',
+          priority: days === 0 ? 3 : 2,
+          metadata: { rentalId: rental.id, daysLeft: days, expiryDate: targetDate },
         })
         if (inApp.success) totalSent++
         else failCount++
 
-        if (emailEnabled && clerkUserId) {
-          const { data: profile } = await supabase
+        // Email notification to the assigned staff member
+        if (emailEnabled && assignedStaffId) {
+          const { data: staffProfile } = await supabase
             .from('profiles')
             .select('email')
-            .eq('clerk_user_id', clerkUserId)
+            .eq('id', assignedStaffId)
             .single()
-          if (profile?.email) {
+
+          if (staffProfile?.email) {
             const email = await sendRentalExpiryEmail({
-              toEmail:    profile.email,
+              toEmail: staffProfile.email,
               deviceName,
-              daysLeft:   days,
+              daysLeft: days,
               expiryDate: targetDate,
+              clientName,
             })
             if (email.success) totalSent++
             else failCount++
@@ -82,14 +91,14 @@ export async function GET(request: Request) {
     }
 
     await createLog({
-      jobName:      'rental-expiry',
-      triggeredBy:  'cron',
-      status:       failCount === 0 ? 'success' : totalSent > 0 ? 'partial' : 'failed',
-      totalSent:    totalSent + failCount,
+      jobName: 'rental-expiry',
+      triggeredBy: 'cron',
+      status: failCount === 0 ? 'success' : totalSent > 0 ? 'partial' : 'failed',
+      totalSent: totalSent + failCount,
       successCount: totalSent,
       failCount,
-      channel:      emailEnabled ? 'email' : 'in-app',
-      metadata:     { date: today.toISOString().split('T')[0] },
+      channel: emailEnabled ? 'email' : 'in-app',
+      metadata: { date: today.toISOString().split('T')[0] },
     })
 
     return NextResponse.json({ success: true, totalSent, failCount })
