@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     description: "강원특별자치도 보조기기센터에서 제공하는 상담, 체험, 맞춤형 지원, 사후관리, 교육홍보 등 5대 핵심 서비스를 신청하고 관리할 수 있는 통합 플랫폼입니다.",
     images: [
       {
-        url: `${baseUrl}/og-image.jpg`, // TODO: 실제 OG 이미지 추가 필요
+        url: `${baseUrl}/opengraph-image`,
         width: 1200,
         height: 630,
         alt: "GWATC 보조기기센터",
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "GWATC 보조기기센터 | 강원특별자치도 통합 케어 플랫폼",
     description: "강원특별자치도 보조기기센터에서 제공하는 상담, 체험, 맞춤형 지원, 사후관리, 교육홍보 등 5대 핵심 서비스를 신청하고 관리할 수 있는 통합 플랫폼입니다.",
-    images: [`${baseUrl}/og-image.jpg`], // TODO: 실제 OG 이미지 추가 필요
+    images: [`${baseUrl}/opengraph-image`],
   },
   robots: {
     index: true,
@@ -69,10 +69,16 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    // TODO: Google Search Console 및 Naver Search Advisor 인증 코드 추가 필요
-    // google: "your-google-verification-code",
+    // Google Search Console: https://search.google.com/search-console/
+    // → 속성 추가 → URL 접두어 → gwatc.cloud → HTML 태그 인증 선택
+    // → content="..." 값만 복사해서 아래에 입력
+    // google: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    //
+    // Naver Search Advisor: https://searchadvisor.naver.com/
+    // → 사이트 등록 → 사이트 소유 확인 → HTML 태그 선택
+    // → content="..." 값만 복사해서 아래에 입력
     // other: {
-    //   "naver-site-verification": "your-naver-verification-code",
+    //   "naver-site-verification": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     // },
   },
 };
