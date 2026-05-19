@@ -1,13 +1,13 @@
 # Docs and planning
-docs/
-scripts/
+/docs/
+/scripts/
 
 # Database migrations (not needed for Next.js build)
-migrations/
-supabase/
+/migrations/
+/supabase/
 
 # Tests
-tests/
+/tests/
 
 # Screenshot artifacts committed at root
 *.png
