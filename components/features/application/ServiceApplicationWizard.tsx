@@ -14,14 +14,16 @@ import { ServiceEducationForm } from "./forms/ServiceEducationForm"
 import { ServicePromotionForm } from "./forms/ServicePromotionForm"
 import { SuccessModal } from "./success-modal"
 import { useApplicationStore } from "@/lib/stores/application-store"
-import { createApplication } from "@/actions/application-actions"
+import { createApplicationWithPendingClient } from "@/actions/application-actions"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import { useUser } from "@clerk/nextjs"
 
 const stepLabels = ["카테고리 선택", "신청서 작성", "확인 및 제출"]
 
 export function ServiceApplicationWizard() {
   const router = useRouter()
+  const { user } = useUser()
   const {
     currentStep,
     selectedCategory,
@@ -181,11 +183,25 @@ export function ServiceApplicationWizard() {
   }
 
   const handleSubmit = async () => {
-    if (!formData) return
+    if (!formData || !selectedCategory) return
+
+    const name =
+      user?.fullName ||
+      [user?.firstName, user?.lastName].filter(Boolean).join(" ") ||
+      user?.emailAddresses?.[0]?.emailAddress ||
+      "신청자"
 
     setIsSubmitting(true)
     try {
-      const result = await createApplication(formData as any)
+      const result = await createApplicationWithPendingClient({
+        name,
+        contact: formData.contact ?? null,
+        category: selectedCategory,
+        sub_category: formData.sub_category ?? null,
+        desired_date: formData.desired_date
+          ? formData.desired_date.toISOString().split("T")[0]
+          : null,
+      })
 
       if (result.success) {
         setApplicationId(result.applicationId)

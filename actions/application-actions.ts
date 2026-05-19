@@ -193,14 +193,12 @@ export async function createApplication(
 }
 
 export interface CreateApplicationWithPendingClientInput {
-  // Client info from portal
   name: string
   birth_date?: string | null
   contact?: string | null
-  // Application info
   category: string
   sub_category?: string | null
-  memo?: string | null
+  desired_date?: string | null
 }
 
 export async function createApplicationWithPendingClient(
@@ -209,7 +207,7 @@ export async function createApplicationWithPendingClient(
   try {
     const supabase = await createClient()
 
-    // 1. Create pending client (source = portal, no auth required for portal submissions)
+    // 1. Create pending client (source = portal)
     const { data: clientData, error: clientError } = await supabase
       .from("clients")
       // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
@@ -233,17 +231,21 @@ export async function createApplicationWithPendingClient(
     const clientId = (clientData as { id: string }).id
 
     // 2. Create application linked to the pending client
+    const applicationData = {
+      client_id: clientId,
+      category: input.category,
+      sub_category: input.sub_category ?? null,
+      desired_date: input.desired_date ?? null,
+      status: "접수",
+      service_year: new Date().getFullYear(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }
+
     const { data: appData, error: appError } = await supabase
       .from("applications")
       // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
-      .insert({
-        client_id: clientId,
-        category: input.category,
-        sub_category: input.sub_category ?? null,
-        status: "접수",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
+      .insert(applicationData)
       .select("id")
       .single()
 
@@ -252,7 +254,52 @@ export async function createApplicationWithPendingClient(
       return { success: false, error: "신청서 생성에 실패했습니다" }
     }
 
-    return { success: true, applicationId: (appData as { id: string }).id }
+    const applicationId = (appData as { id: string }).id
+
+    // 3. Audit log
+    const { logAuditEvent } = await import("@/lib/utils/audit-logger")
+    await logAuditEvent({
+      action_type: "create",
+      table_name: "applications",
+      record_id: applicationId,
+      new_values: applicationData as Record<string, unknown>,
+      application_id: applicationId,
+      client_id: clientId,
+      description: `포털 신청서 접수: ${input.category}${input.sub_category ? " - " + input.sub_category : ""}`,
+    })
+
+    // 4. Auto-create schedule if desired_date is set
+    if (input.desired_date) {
+      try {
+        const scheduleTypeMap: Record<string, "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education"> = {
+          consult: "consult",
+          experience: "visit",
+          custom: "visit",
+          aftercare: "visit",
+          education: "education",
+        }
+        const scheduleType = scheduleTypeMap[input.category] ?? "consult"
+
+        const { createSchedule } = await import("./schedule-actions")
+        await createSchedule({
+          application_id: applicationId,
+          client_id: clientId,
+          schedule_type: scheduleType,
+          scheduled_date: input.desired_date,
+          notes: `신청 접수 시 자동 생성된 일정 (${input.category})`,
+          status: "scheduled",
+        })
+      } catch (err) {
+        console.error("[포털 신청] 일정 자동 생성 실패:", err)
+        // non-fatal: application creation already succeeded
+      }
+    }
+
+    revalidatePath("/apply")
+    revalidatePath("/mypage")
+    revalidatePath("/")
+
+    return { success: true, applicationId }
   } catch (error) {
     console.error("Unexpected error in createApplicationWithPendingClient:", error)
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }

@@ -11,6 +11,8 @@ interface GroupedDeviceCardProps {
 }
 
 export function GroupedDeviceCard({ device }: GroupedDeviceCardProps) {
+  const unavailable = device.stored === 0
+
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative w-full h-48 bg-muted">
@@ -19,12 +21,19 @@ export function GroupedDeviceCard({ device }: GroupedDeviceCardProps) {
             src={device.image_url}
             alt={device.name}
             fill
-            className="object-cover"
+            className={`object-cover${unavailable ? " opacity-60" : ""}`}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
           <div className="flex items-center justify-center h-full">
             <Package className="h-16 w-16 text-muted-foreground/40" />
+          </div>
+        )}
+        {unavailable && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+            <span className="px-3 py-1 rounded-full bg-red-600 text-white text-xs font-semibold tracking-wide">
+              현재 대여불가
+            </span>
           </div>
         )}
       </div>
@@ -44,12 +53,19 @@ export function GroupedDeviceCard({ device }: GroupedDeviceCardProps) {
             <span className="text-muted-foreground">총 보유</span>
             <span>{device.total}대</span>
           </div>
-          {device.stored > 0 && (
-            <div className="flex justify-between">
-              <span className="text-green-600">대여가능</span>
-              <span className="font-medium text-green-600">{device.stored}대</span>
-            </div>
-          )}
+          <div className="flex justify-between">
+            {unavailable ? (
+              <>
+                <span className="text-red-500">대여가능</span>
+                <span className="font-medium text-red-500">0대 (대여불가)</span>
+              </>
+            ) : (
+              <>
+                <span className="text-green-600">대여가능</span>
+                <span className="font-medium text-green-600">{device.stored}대</span>
+              </>
+            )}
+          </div>
           {device.rented > 0 && (
             <div className="flex justify-between">
               <span className="text-blue-600">대여중</span>
@@ -69,6 +85,12 @@ export function GroupedDeviceCard({ device }: GroupedDeviceCardProps) {
             </div>
           )}
         </div>
+
+        {unavailable && (
+          <p className="mt-3 text-xs text-muted-foreground bg-muted rounded-md px-3 py-2">
+            현재 대여 가능한 재고가 없습니다. 센터에 문의하시면 대기 등록을 도와드립니다.
+          </p>
+        )}
       </CardContent>
     </Card>
   )
