@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
-import { runBackup } from "@/scripts/backup"
+import { runBackup } from "../../../lib/backup"
 
 type BackupType = "daily" | "weekly" | "monthly" | "manual"
 
