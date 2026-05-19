@@ -88,7 +88,7 @@ export async function runBackup(backupType: BackupType): Promise<BackupResult> {
         records_count: totalRecords,
         storage_location: storagePath,
         expires_at: getExpirationDate(backupType),
-      })
+      } as unknown as never)
       .eq("id", backupId)
 
     return { success: true, backupId, backupName, tablesCount: BACKUP_TABLES.length, recordsCount: totalRecords }
@@ -98,7 +98,7 @@ export async function runBackup(backupType: BackupType): Promise<BackupResult> {
       const supabase = createAdminClient()
       await supabase
         .from("backup_logs" as never)
-        .update({ status: "failed", completed_at: new Date().toISOString(), error_message: errorMessage })
+        .update({ status: "failed", completed_at: new Date().toISOString(), error_message: errorMessage } as unknown as never)
         .eq("backup_name", backupName)
     } catch {}
     return { success: false, error: errorMessage }
