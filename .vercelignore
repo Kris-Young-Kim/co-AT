@@ -1,0 +1,24 @@
+# Docs and planning
+docs/
+scripts/
+
+# Database migrations (not needed for Next.js build)
+migrations/
+supabase/
+
+# Tests
+tests/
+
+# Screenshot artifacts committed at root
+*.png
+
+# Browser automation logs
+.playwright-mcp/
+
+# AI tool caches
+.serena/
+.cursor/
+
+# Cloned repo copy
+co-AT/
+clerk-nextjs/
