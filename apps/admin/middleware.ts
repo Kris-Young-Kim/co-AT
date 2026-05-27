@@ -1,4 +1,4 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { clerkMiddleware, createRouteMatcher, clerkClient } from '@clerk/nextjs/server'
 import { NextResponse, type NextRequest } from 'next/server'
 import { detectThreatsInRequest } from '@/lib/utils/security-detector'
 import { createAdminClient } from '@/lib/supabase/admin'
@@ -136,7 +136,15 @@ export default clerkMiddleware(async (auth, req) => {
 
     if (!userId) return redirectToSignIn({ returnBackUrl: req.url })
 
-    const role = (sessionClaims?.metadata as { role?: string } | undefined)?.role
+    let role = (sessionClaims?.metadata as { role?: string } | undefined)?.role
+    if (!role) {
+      // Session token may not include publicMetadata — fetch directly from Clerk
+      try {
+        const client = await clerkClient()
+        const user = await client.users.getUser(userId)
+        role = (user.publicMetadata as { role?: string })?.role
+      } catch { /* non-critical: fall through to role check */ }
+    }
     if (!role || !['admin', 'manager', 'staff'].includes(role)) {
       return NextResponse.redirect(new URL(MAIN_SITE))
     }
