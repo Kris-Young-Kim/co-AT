@@ -66,7 +66,7 @@ export async function generateSoapNote(
     }
 
     // Gemini 모델 가져오기
-    const model = getGeminiModel("gemini-2.0-flash-lite")
+    const model = getGeminiModel("gemini-1.5-flash")
 
     // 프롬프트 구성
     const prompt = `${SOAP_SYSTEM_PROMPT}\n\n상담 내용:\n${text}`
@@ -230,7 +230,7 @@ export async function generateIntakeDraft(
             .join('\n')
         : '평가 정보 없음'
 
-    const model = getGeminiModel("gemini-2.0-flash-lite")
+    const model = getGeminiModel("gemini-1.5-flash")
     const prompt = `${INTAKE_DRAFT_SYSTEM_PROMPT}\n\n클라이언트 정보:\n${clientContext}\n\n영역별 평가 의견:\n${assessmentContext}\n\n직원 메모:\n${input.memo}`
 
     console.log("[AI Actions] Gemini API 호출 중...")
@@ -325,7 +325,7 @@ export async function generateCallLogAnswer(
       input.disabilityType && `장애유형: ${input.disabilityType}`,
     ].filter(Boolean).join("\n")
 
-    const model = getGeminiModel("gemini-2.0-flash-lite")
+    const model = getGeminiModel("gemini-1.5-flash")
     const prompt = `${CALL_LOG_ANSWER_PROMPT}
 
 ${contextLines}
