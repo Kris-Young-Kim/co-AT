@@ -2,8 +2,13 @@ export const dynamic = 'force-dynamic'
 
 import { hasAdminOrStaffPermission } from "@co-at/auth"
 import { redirect } from "next/navigation"
-import { AgentChat } from "@/components/features/chat/AgentChat"
+import nextDynamic from "next/dynamic"
 import { Bot } from "lucide-react"
+
+const AgentChat = nextDynamic(
+  () => import("@/components/features/chat/AgentChat").then((m) => ({ default: m.AgentChat })),
+  { ssr: false }
+)
 
 export const metadata = {
   title: "AI 업무 도우미 | 강원도 보조기기센터",

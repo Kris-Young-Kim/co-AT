@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -108,8 +108,14 @@ interface AgentChatProps {
 }
 
 export function AgentChat({ className }: AgentChatProps) {
-  const [mounted, setMounted] = useState(false)
-  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const welcomeMessage = useMemo<ChatMessage>(() => ({
+    id: "welcome",
+    role: "assistant",
+    content: WELCOME_MESSAGE_CONTENT,
+    timestamp: new Date(),
+  }), [])
+
+  const [messages, setMessages] = useState<ChatMessage[]>([welcomeMessage])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [activeDomain, setActiveDomain] = useState<AgentDomain | null>(null)
@@ -120,25 +126,11 @@ export function AgentChat({ className }: AgentChatProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const abortRef = useRef<AbortController | null>(null)
 
-  // 마운트 시 초기 설정
-  useEffect(() => {
-    setMounted(true)
-    setMessages([{
-      id: "welcome",
-      role: "assistant",
-      content: WELCOME_MESSAGE_CONTENT,
-      timestamp: new Date(),
-    }])
-  }, [])
-
-  // 새 메시지 도착 시 스크롤 하단 이동
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [messages])
-
-  if (!mounted) return null
 
   const sendMessage = useCallback(async () => {
     if (!input.trim() || isLoading) return
