@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -28,6 +28,10 @@ interface NoticeListProps {
 export function NoticeList({ initialNotices }: NoticeListProps) {
   const router = useRouter()
   const [notices, setNotices] = useState(initialNotices)
+
+  useEffect(() => {
+    setNotices(initialNotices)
+  }, [initialNotices])
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [noticeToDelete, setNoticeToDelete] = useState<Notice | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)

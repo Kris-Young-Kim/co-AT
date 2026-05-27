@@ -1,7 +1,8 @@
 // app/api/agents/chat/route.ts
 // AI 에이전트 엔드포인트 스트리밍 채팅 API 핸들러
 import { NextRequest, NextResponse } from "next/server"
-import { hasAdminOrStaffPermission } from "@co-at/auth"
+import { auth, clerkClient } from "@clerk/nextjs/server"
+import { ROLES } from "@co-at/types"
 import { runOrchestratorStream } from "@/lib/agents/orchestrator"
 import { ClientMainAgent } from "@/lib/agents/domains/client"
 import { ScheduleMainAgent } from "@/lib/agents/domains/schedule"
@@ -12,6 +13,24 @@ import { PostingMainAgent } from "@/lib/agents/domains/posting"
 import { PerformanceMainAgent } from "@/lib/agents/domains/performance"
 import { ApplicationMainAgent } from "@/lib/agents/domains/application"
 import type { AgentChatRequest, AgentDomain, MainAgent } from "@/lib/agents/types"
+
+async function checkAgentPermission(): Promise<boolean> {
+  try {
+    const { userId, sessionClaims } = await auth()
+    if (!userId) return false
+
+    let role = (sessionClaims?.metadata as { role?: string } | undefined)?.role
+    if (!role) {
+      const client = await clerkClient()
+      const user = await client.users.getUser(userId)
+      role = (user.publicMetadata as { role?: string })?.role
+    }
+    return !!role && (role === ROLES.ADMIN || role === ROLES.MANAGER || role === ROLES.STAFF)
+  } catch (err) {
+    console.error("[agents/chat] permission check error:", err)
+    return false
+  }
+}
 
 // 에이전트 레지스트리 - 모듈 레벨에서 한 번만 생성
 const agentRegistry = new Map<AgentDomain, MainAgent>([
@@ -26,17 +45,11 @@ const agentRegistry = new Map<AgentDomain, MainAgent>([
 ])
 
 export async function POST(req: NextRequest) {
-  // 1. 권한 확인 (기존 Server Action 패턴과 동일)
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return NextResponse.json({ error: "권한이 없습니다" }, { status: 403 })
-    }
-  } catch {
-    return NextResponse.json(
-      { error: "인증 확인 중 오류가 발생했습니다" },
-      { status: 401 }
-    )
+  // 1. 권한 확인 — clerkClient fallback for session tokens without publicMetadata
+  const hasPermission = await checkAgentPermission()
+  if (!hasPermission) {
+    console.error("[agents/chat] unauthorized — no valid role found")
+    return NextResponse.json({ error: "권한이 없습니다" }, { status: 403 })
   }
 
   // 2. 요청 바디 파싱

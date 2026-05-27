@@ -42,9 +42,10 @@ import type { ReactNode } from "react"
 
 interface NoticeCreateDialogProps {
   children: ReactNode
+  defaultCategory?: "notice" | "activity" | "support" | "case" | null
 }
 
-export function NoticeCreateDialog({ children }: NoticeCreateDialogProps) {
+export function NoticeCreateDialog({ children, defaultCategory }: NoticeCreateDialogProps) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -60,7 +61,7 @@ export function NoticeCreateDialog({ children }: NoticeCreateDialogProps) {
   } = useForm<NoticeFormData>({
     resolver: zodResolver(noticeSchema),
     defaultValues: {
-      category: null,
+      category: defaultCategory ?? null,
       is_pinned: false,
     },
   })
