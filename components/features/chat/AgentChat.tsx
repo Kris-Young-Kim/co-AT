@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, useCallback, useMemo } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -108,14 +108,7 @@ interface AgentChatProps {
 }
 
 export function AgentChat({ className }: AgentChatProps) {
-  const welcomeMessage = useMemo<ChatMessage>(() => ({
-    id: "welcome",
-    role: "assistant",
-    content: WELCOME_MESSAGE_CONTENT,
-    timestamp: new Date(),
-  }), [])
-
-  const [messages, setMessages] = useState<ChatMessage[]>([welcomeMessage])
+  const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [activeDomain, setActiveDomain] = useState<AgentDomain | null>(null)
@@ -125,6 +118,15 @@ export function AgentChat({ className }: AgentChatProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const abortRef = useRef<AbortController | null>(null)
+
+  useEffect(() => {
+    setMessages([{
+      id: "welcome",
+      role: "assistant",
+      content: WELCOME_MESSAGE_CONTENT,
+      timestamp: new Date(),
+    }])
+  }, [])
 
   useEffect(() => {
     if (scrollRef.current) {
