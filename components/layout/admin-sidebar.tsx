@@ -6,32 +6,23 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   Users,
-  Package,
   Calendar,
   Settings,
-  FileText,
+  Globe,
   Sparkles,
-  BarChart3,
   MessageSquare,
-  Wrench,
   Bot,
   ClipboardList,
-  PiggyBank,
+  MessagesSquare,
 } from "lucide-react";
 
 const menuItems = [
   { href: "/", label: "앱 목록", icon: LayoutDashboard },
-  { href: "/stats", label: "통계 대시보드", icon: BarChart3 },
-  { href: "/notices-management", label: "새 글 관리", icon: FileText },
-  { href: "/clients", label: "대상자 관리", icon: Users },
-  { href: "/inventory", label: "재고 관리", icon: Package },
-  { href: "/rentals", label: "대여 관리", icon: Package },
-  { href: "/custom-makes", label: "맞춤제작 관리", icon: Package },
-  { href: "/budget", label: "예산 계획", icon: PiggyBank },
-  { href: "/equipment", label: "장비 관리", icon: Wrench },
+  { href: "/notices-management", label: "웹 관리", icon: Globe },
   { href: "/schedule", label: "일정 관리", icon: Calendar },
   { href: "/work-tasks", label: "업무 관리", icon: ClipboardList },
   { href: "/messenger", label: "업무 메신저", icon: MessageSquare },
+  { href: "/chatbot", label: "AI 채팅", icon: MessagesSquare },
   { href: "/agent-chat", label: "AI 업무 도우미", icon: Bot },
   { href: "/users", label: "사용자 관리", icon: Users, managerOnly: true },
   { href: "/settings", label: "설정", icon: Settings },
@@ -64,7 +55,7 @@ export function AdminSidebar({ showUsersManagement = false }: AdminSidebarProps)
         {filteredItems.map((item) => {
           const Icon = item.icon;
           const isActive =
-            pathname === item.href || pathname?.startsWith(item.href + "/");
+            pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href + "/"));
 
           return (
             <Link

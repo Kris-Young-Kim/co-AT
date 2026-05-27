@@ -3,13 +3,11 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, FileText, Users, Package, Calendar, Bot, MessageSquare } from "lucide-react"
+import { LayoutDashboard, Globe, Calendar, MessageSquare, Bot } from "lucide-react"
 
 const navItems = [
-  { href: "/", label: "대시보드", icon: LayoutDashboard },
-  { href: "/notices-management", label: "공지", icon: FileText },
-  { href: "/clients", label: "대상자", icon: Users },
-  { href: "/inventory", label: "재고", icon: Package },
+  { href: "/", label: "앱 목록", icon: LayoutDashboard },
+  { href: "/notices-management", label: "웹 관리", icon: Globe },
   { href: "/schedule", label: "일정", icon: Calendar },
   { href: "/messenger", label: "메신저", icon: MessageSquare },
   { href: "/agent-chat", label: "AI도우미", icon: Bot },
@@ -23,7 +21,8 @@ export function AdminMobileBottomNav() {
       <div className="flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon
-          const isActive = pathname === item.href || pathname?.startsWith(item.href + "/")
+          const isActive =
+            pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href + "/"))
 
           return (
             <Link
