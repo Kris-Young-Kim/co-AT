@@ -69,3 +69,6 @@ next-env.d.ts
 
 # Serena AI tool (cache and local runtime data)
 .serena/
+
+# Turborepo
+.turbo

@@ -13,7 +13,6 @@ import {
   MessageSquare,
   Bot,
   ClipboardList,
-  MessagesSquare,
 } from "lucide-react";
 
 const menuItems = [
@@ -22,7 +21,6 @@ const menuItems = [
   { href: "/schedule", label: "일정 관리", icon: Calendar },
   { href: "/work-tasks", label: "업무 관리", icon: ClipboardList },
   { href: "/messenger", label: "업무 메신저", icon: MessageSquare },
-  { href: "/chatbot", label: "AI 채팅", icon: MessagesSquare },
   { href: "/agent-chat", label: "AI 업무 도우미", icon: Bot },
   { href: "/users", label: "사용자 관리", icon: Users, managerOnly: true },
   { href: "/settings", label: "설정", icon: Settings },
