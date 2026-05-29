@@ -19,9 +19,13 @@ import {
   getEventRoles,
   createEventRole,
   deleteEventRole,
-  ROLE_PRESETS,
   type EventRole,
 } from "@/actions/event-role-actions"
+
+const ROLE_PRESETS = [
+  '진행자', '등록', '안내', '촬영/기록', '차량 지원',
+  '물품 준비', '강사', '보조강사', '행정 지원', '기타',
+]
 
 interface EventRoleModalProps {
   scheduleId: string | null

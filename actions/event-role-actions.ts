@@ -23,12 +23,6 @@ export interface CreateEventRoleInput {
   notes?: string
 }
 
-// 행사에서 자주 쓰는 역할 프리셋
-export const ROLE_PRESETS = [
-  '진행자', '등록', '안내', '촬영/기록', '차량 지원',
-  '물품 준비', '강사', '보조강사', '행정 지원', '기타'
-]
-
 export async function getEventRoles(scheduleId: string): Promise<{
   success: boolean
   roles?: EventRole[]
