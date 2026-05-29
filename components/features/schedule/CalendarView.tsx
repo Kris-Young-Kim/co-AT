@@ -11,17 +11,18 @@ import { ko } from "date-fns/locale"
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Clock, MapPin, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { type Schedule, getSchedules } from "@/actions/schedule-actions"
+import { SCHEDULE_TYPE_LABELS, SCHEDULE_TYPE_COLORS, SCHEDULE_TYPE_HEX_COLORS, getScheduleColorClass } from "@/lib/schedule-constants"
+import { ScheduleBadge } from "./ScheduleBadge"
+import type { ScheduleCategory } from "@/actions/schedule-category-actions"
 
 interface CalendarViewProps {
   initialSchedules?: Schedule[]
+  categories?: ScheduleCategory[]
   onScheduleClick?: (schedule: Schedule) => void
   onDateClick?: (date: Date) => void
 }
 
-import { SCHEDULE_TYPE_LABELS, SCHEDULE_TYPE_COLORS, getScheduleColorClass } from "@/lib/schedule-constants"
-import { ScheduleBadge } from "./ScheduleBadge"
-
-export function CalendarView({ initialSchedules = [], onScheduleClick, onDateClick }: CalendarViewProps) {
+export function CalendarView({ initialSchedules = [], categories = [], onScheduleClick, onDateClick }: CalendarViewProps) {
   const [viewMode, setViewMode] = useState<"month" | "week" | "day">("month")
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
   const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules)
@@ -88,6 +89,52 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
     }),
     [schedules]
   )
+
+  // Map date string → array of unique colors for dot rendering
+  const dayColorMap = useMemo(() => {
+    const map = new Map<string, string[]>()
+    for (const s of schedules) {
+      const existing = map.get(s.scheduled_date) || []
+      const cat = categories.find(c => c.id === s.category_id)
+      const color = cat?.color ?? SCHEDULE_TYPE_HEX_COLORS[s.schedule_type as keyof typeof SCHEDULE_TYPE_HEX_COLORS] ?? "#6366f1"
+      if (!existing.includes(color)) existing.push(color)
+      map.set(s.scheduled_date, existing)
+    }
+    return map
+  }, [schedules, categories])
+
+  // Custom DayContent that renders category color dots below the date number
+  const DayContentWithDots = useMemo(() => {
+    return function DayContent({ date }: { date: Date; displayMonth?: Date; activeModifiers?: Record<string, boolean> }) {
+      const dateStr = format(date, "yyyy-MM-dd")
+      const colors = dayColorMap.get(dateStr) || []
+      return (
+        <div className="flex flex-col items-center gap-px py-0.5">
+          <span className="leading-none">{date.getDate()}</span>
+          {colors.length > 0 && (
+            <div className="flex items-center gap-0.5">
+              {colors.slice(0, 3).map((color, i) => (
+                <span
+                  key={i}
+                  className="block h-1 w-1 rounded-full"
+                  style={{ backgroundColor: color }}
+                />
+              ))}
+              {colors.length > 3 && (
+                <span className="block h-1 w-1 rounded-full bg-muted-foreground/50" />
+              )}
+            </div>
+          )}
+        </div>
+      )
+    }
+  }, [dayColorMap])
+
+  // Unique categories that appear in current view (for legend)
+  const activeCategoryIds = useMemo(() => {
+    const ids = new Set(schedules.map(s => s.category_id).filter(Boolean) as string[])
+    return categories.filter(c => ids.has(c.id))
+  }, [schedules, categories])
 
   // 날짜 클릭 핸들러
   const handleDateSelect = (date: Date | undefined) => {
@@ -178,15 +225,27 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                 onSelect={handleDateSelect}
                 month={currentDate || undefined}
                 onMonthChange={setCurrentDate}
-                modifiers={{
-                  hasSchedule: scheduleDates,
-                }}
-                modifiersClassNames={{
-                  hasSchedule: "bg-primary/10 text-primary font-semibold",
-                }}
+                modifiers={{ hasSchedule: scheduleDates }}
+                modifiersClassNames={{ hasSchedule: "font-semibold" }}
+                components={{ DayContent: DayContentWithDots }}
                 className="rounded-md border"
                 locale={ko}
               />
+
+              {/* Category legend */}
+              {activeCategoryIds.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 px-1">
+                  {activeCategoryIds.map(cat => (
+                    <div key={cat.id} className="flex items-center gap-1.5">
+                      <span
+                        className="block h-2.5 w-2.5 rounded-full ring-1 ring-black/10"
+                        style={{ backgroundColor: cat.color }}
+                      />
+                      <span className="text-xs text-muted-foreground">{cat.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
               {selectedDate && (
                 <div className="mt-4 space-y-2">
                   <h3 className="text-sm font-semibold">
@@ -206,9 +265,22 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                           onClick={() => onScheduleClick?.(schedule)}
                         >
                           <div className="flex items-start justify-between gap-2 mb-2">
-                            <Badge variant="secondary" className="text-xs">
-                              {SCHEDULE_TYPE_LABELS[schedule.schedule_type] || schedule.schedule_type}
-                            </Badge>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              {(() => {
+                                const cat = categories.find(c => c.id === schedule.category_id)
+                                return cat ? (
+                                  <span
+                                    className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium text-white"
+                                    style={{ backgroundColor: cat.color }}
+                                  >
+                                    {cat.name}
+                                  </span>
+                                ) : null
+                              })()}
+                              <Badge variant="secondary" className="text-xs">
+                                {SCHEDULE_TYPE_LABELS[schedule.schedule_type] || schedule.schedule_type}
+                              </Badge>
+                            </div>
                             <Badge
                               variant={
                                 schedule.status === "completed"
@@ -219,7 +291,7 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                                   ? "secondary"
                                   : "outline"
                               }
-                              className="text-xs"
+                              className="text-xs shrink-0"
                             >
                               {schedule.status === "completed"
                                 ? "완료"

@@ -28,12 +28,14 @@ import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 import { cn } from "@/lib/utils"
 import { type Schedule, createSchedule, updateSchedule, type CreateScheduleInput } from "@/actions/schedule-actions"
+import { type ScheduleCategory } from "@/actions/schedule-category-actions"
 import { Loader2 } from "lucide-react"
 
 interface ScheduleFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   schedule?: Schedule | null
+  categories?: ScheduleCategory[]
   onSuccess?: () => void
 }
 
@@ -65,6 +67,7 @@ export function ScheduleForm({
   open,
   onOpenChange,
   schedule,
+  categories = [],
   onSuccess,
 }: ScheduleFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -79,6 +82,7 @@ export function ScheduleForm({
     notes: null,
     status: "scheduled",
     is_web_visible: false,
+    category_id: null,
   })
   const [visitType, setVisitType] = useState<"center" | "visit" | null>(null)
   const [visitRegion, setVisitRegion] = useState<string>("")
@@ -112,6 +116,7 @@ export function ScheduleForm({
         notes: schedule.notes || null,
         status: schedule.status,
         is_web_visible: schedule.is_web_visible,
+        category_id: schedule.category_id || null,
       })
       setSelectedDate(new Date(schedule.scheduled_date))
       // 견학일 경우 항상 내방
@@ -137,6 +142,7 @@ export function ScheduleForm({
         notes: null,
         status: "scheduled",
         is_web_visible: false,
+        category_id: null,
       })
       setSelectedDate(new Date())
       // 견학일 경우 자동으로 내방으로 설정
@@ -265,6 +271,52 @@ export function ScheduleForm({
               </SelectContent>
             </Select>
           </div>
+
+          {/* 카테고리 */}
+          {categories.length > 0 && (
+            <div className="space-y-2">
+              <Label htmlFor="category_id">카테고리</Label>
+              <Select
+                value={formData.category_id || "none"}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    category_id: value === "none" ? null : value,
+                  }))
+                }
+              >
+                <SelectTrigger id="category_id">
+                  <SelectValue>
+                    {formData.category_id ? (
+                      <span className="flex items-center gap-2">
+                        <span
+                          className="h-2.5 w-2.5 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: categories.find(c => c.id === formData.category_id)?.color }}
+                        />
+                        {categories.find(c => c.id === formData.category_id)?.name}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">카테고리 없음</span>
+                    )}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">카테고리 없음</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      <span className="flex items-center gap-2">
+                        <span
+                          className="h-2.5 w-2.5 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: cat.color }}
+                        />
+                        {cat.name}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {/* 날짜 */}
           <div className="space-y-2">

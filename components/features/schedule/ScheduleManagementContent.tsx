@@ -2,12 +2,14 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Plus, Trash2, Edit, FileText, Users } from "lucide-react"
+import { Plus, Palette } from "lucide-react"
 import { ScheduleForm } from "./ScheduleForm"
 import { CalendarView } from "./CalendarView"
+import { CategoryManager } from "./CategoryManager"
 import { MeetingMinutesModal } from "./MeetingMinutesModal"
 import { EventRoleModal } from "./EventRoleModal"
 import { type Schedule, deleteSchedule } from "@/actions/schedule-actions"
+import { type ScheduleCategory } from "@/actions/schedule-category-actions"
 import { useRouter } from "next/navigation"
 import {
   AlertDialog,
@@ -19,15 +21,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+
 interface ScheduleManagementContentProps {
   initialSchedules: Schedule[]
+  initialCategories: ScheduleCategory[]
 }
 
 export function ScheduleManagementContent({
   initialSchedules,
+  initialCategories,
 }: ScheduleManagementContentProps) {
   const router = useRouter()
   const [schedules, setSchedules] = useState<Schedule[]>(initialSchedules)
+  const [categories, setCategories] = useState<ScheduleCategory[]>(initialCategories)
+  const [showCategoryManager, setShowCategoryManager] = useState(false)
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Schedule | null>(null)
@@ -113,15 +120,34 @@ export function ScheduleManagementContent({
             일정을 클릭하면 수정할 수 있습니다
           </p>
         </div>
-        <Button onClick={handleCreateClick}>
-          <Plus className="mr-2 h-4 w-4" />
-          일정 등록
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowCategoryManager(v => !v)}
+          >
+            <Palette className="mr-2 h-4 w-4" />
+            카테고리 관리
+          </Button>
+          <Button onClick={handleCreateClick}>
+            <Plus className="mr-2 h-4 w-4" />
+            일정 등록
+          </Button>
+        </div>
       </div>
+
+      {/* 카테고리 관리 패널 */}
+      {showCategoryManager && (
+        <CategoryManager
+          categories={categories}
+          onCategoriesChange={setCategories}
+        />
+      )}
 
       {/* 캘린더 뷰 */}
       <CalendarView
         initialSchedules={schedules}
+        categories={categories}
         onScheduleClick={handleScheduleClick}
         onDateClick={(date) => {
           // 날짜 클릭 시 해당 날짜의 일정이 있으면 첫 번째 일정 선택
@@ -143,6 +169,7 @@ export function ScheduleManagementContent({
         open={isFormOpen}
         onOpenChange={setIsFormOpen}
         schedule={selectedSchedule}
+        categories={categories}
         onSuccess={handleFormSuccess}
       />
 

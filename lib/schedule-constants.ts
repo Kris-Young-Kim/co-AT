@@ -43,6 +43,20 @@ export const SCHEDULE_TYPE_COLORS: Record<ScheduleType, string> = {
   external_event: "bg-cyan-100 text-cyan-800 border-cyan-200",
 }
 
+// Hex colors for calendar dot rendering (one per schedule type)
+export const SCHEDULE_TYPE_HEX_COLORS: Record<ScheduleType, string> = {
+  visit: '#3b82f6',
+  consult: '#22c55e',
+  assessment: '#a855f7',
+  delivery: '#f97316',
+  pickup: '#eab308',
+  exhibition: '#ec4899',
+  education: '#6366f1',
+  custom_make: '#14b8a6',
+  meeting: '#64748b',
+  external_event: '#06b6d4',
+}
+
 // 공개 달력에 표시될 유형들
 export const PUBLIC_SCHEDULE_TYPES: ScheduleType[] = [
   SCHEDULE_TYPES.EXHIBITION,

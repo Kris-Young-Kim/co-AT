@@ -91,6 +91,7 @@ export interface Schedule {
   notes: string | null
   status: "scheduled" | "confirmed" | "completed" | "cancelled"
   is_web_visible: boolean
+  category_id: string | null
   created_at: string | null
   updated_at: string | null
 }
@@ -105,6 +106,7 @@ export interface CreateScheduleInput {
   notes?: string | null
   status?: "scheduled" | "confirmed" | "completed" | "cancelled"
   is_web_visible?: boolean
+  category_id?: string | null
 }
 
 export interface UpdateScheduleInput {
@@ -118,6 +120,7 @@ export interface UpdateScheduleInput {
   notes?: string | null
   status?: "scheduled" | "confirmed" | "completed" | "cancelled"
   is_web_visible?: boolean
+  category_id?: string | null
 }
 
 /**
@@ -228,6 +231,7 @@ export async function getSchedules(
               notes: `맞춤제작 ${field.label}: ${cmTyped?.item_name || ""}`,
               status: scheduleStatus,
               is_web_visible: false,
+              category_id: null,
               created_at: null,
               updated_at: null,
             })
@@ -291,6 +295,7 @@ export async function createSchedule(
         notes: input.notes || null,
         status: input.status || "scheduled",
         is_web_visible: input.is_web_visible ?? false,
+        category_id: input.category_id ?? null,
       })
       .select()
       .single()
@@ -346,6 +351,7 @@ export async function updateSchedule(
     if (input.notes !== undefined) updateData.notes = input.notes
     if (input.status) updateData.status = input.status
     if (input.is_web_visible !== undefined) updateData.is_web_visible = input.is_web_visible
+    if (input.category_id !== undefined) updateData.category_id = input.category_id
 
     const { data, error } = await supabase
       .from("schedules")
