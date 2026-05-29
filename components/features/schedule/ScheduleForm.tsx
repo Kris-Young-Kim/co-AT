@@ -29,6 +29,7 @@ import { ko } from "date-fns/locale"
 import { cn } from "@/lib/utils"
 import { type Schedule, createSchedule, updateSchedule, type CreateScheduleInput } from "@/actions/schedule-actions"
 import { type ScheduleCategory } from "@/actions/schedule-category-actions"
+import { SCHEDULE_TYPE_LABELS, type ScheduleType } from "@/lib/schedule-constants"
 import { Loader2 } from "lucide-react"
 
 interface ScheduleFormProps {
@@ -38,8 +39,6 @@ interface ScheduleFormProps {
   categories?: ScheduleCategory[]
   onSuccess?: () => void
 }
-
-import { SCHEDULE_TYPE_LABELS, type ScheduleType } from "@/lib/schedule-constants"
 
 // 강원특별자치도 18개 시군 목록
 const gangwonRegions = [
