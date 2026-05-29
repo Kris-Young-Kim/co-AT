@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -77,6 +78,7 @@ export function ScheduleForm({
     address: null,
     notes: null,
     status: "scheduled",
+    is_web_visible: false,
   })
   const [visitType, setVisitType] = useState<"center" | "visit" | null>(null)
   const [visitRegion, setVisitRegion] = useState<string>("")
@@ -109,6 +111,7 @@ export function ScheduleForm({
         address: schedule.address || null,
         notes: schedule.notes || null,
         status: schedule.status,
+        is_web_visible: schedule.is_web_visible,
       })
       setSelectedDate(new Date(schedule.scheduled_date))
       // 견학일 경우 항상 내방
@@ -133,6 +136,7 @@ export function ScheduleForm({
         address: null,
         notes: null,
         status: "scheduled",
+        is_web_visible: false,
       })
       setSelectedDate(new Date())
       // 견학일 경우 자동으로 내방으로 설정
@@ -420,6 +424,28 @@ export function ScheduleForm({
                 <SelectItem value="cancelled">취소</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          {/* 웹 공개 여부 */}
+          <div className="flex items-start gap-3 rounded-md border p-3 bg-muted/30">
+            <Checkbox
+              id="is_web_visible"
+              checked={formData.is_web_visible ?? false}
+              onCheckedChange={(checked) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  is_web_visible: checked === true,
+                }))
+              }
+            />
+            <div className="space-y-0.5">
+              <Label htmlFor="is_web_visible" className="cursor-pointer font-medium">
+                메인페이지에 공개
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                체크하면 gwatc.cloud 메인 캘린더에 이 일정이 표시됩니다.
+              </p>
+            </div>
           </div>
 
           <DialogFooter>

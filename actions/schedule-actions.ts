@@ -5,7 +5,6 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { format, startOfMonth, endOfMonth } from "date-fns"
 import { hasAdminOrStaffPermission, getCurrentUserProfileId } from "@/lib/utils/permissions"
 import { revalidatePath } from "next/cache"
-import { PUBLIC_SCHEDULE_TYPES } from "@/lib/schedule-constants"
 
 export interface PublicSchedule {
   id: string
@@ -30,8 +29,8 @@ export async function getPublicSchedules(
   let query = supabase
     .from("schedules")
     .select("id, schedule_type, scheduled_date, scheduled_time, address, notes, status")
-    .in("schedule_type", PUBLIC_SCHEDULE_TYPES)
-    .eq("status", "scheduled")
+    .eq("is_web_visible", true)
+    .not("status", "eq", "cancelled")
     .order("scheduled_date", { ascending: true })
 
   // 특정 년/월 필터링
@@ -66,9 +65,9 @@ export async function getPublicSchedulesByDate(
   const { data, error } = await supabase
     .from("schedules")
     .select("id, schedule_type, scheduled_date, scheduled_time, address, notes, status")
-    .in("schedule_type", PUBLIC_SCHEDULE_TYPES)
+    .eq("is_web_visible", true)
     .eq("scheduled_date", dateStr)
-    .eq("status", "scheduled")
+    .not("status", "eq", "cancelled")
     .order("scheduled_time", { ascending: true })
 
   if (error) {
@@ -91,6 +90,7 @@ export interface Schedule {
   address: string | null
   notes: string | null
   status: "scheduled" | "confirmed" | "completed" | "cancelled"
+  is_web_visible: boolean
   created_at: string | null
   updated_at: string | null
 }
@@ -104,6 +104,7 @@ export interface CreateScheduleInput {
   address?: string | null
   notes?: string | null
   status?: "scheduled" | "confirmed" | "completed" | "cancelled"
+  is_web_visible?: boolean
 }
 
 export interface UpdateScheduleInput {
@@ -116,6 +117,7 @@ export interface UpdateScheduleInput {
   address?: string | null
   notes?: string | null
   status?: "scheduled" | "confirmed" | "completed" | "cancelled"
+  is_web_visible?: boolean
 }
 
 /**
@@ -225,6 +227,7 @@ export async function getSchedules(
               address: null,
               notes: `맞춤제작 ${field.label}: ${cmTyped?.item_name || ""}`,
               status: scheduleStatus,
+              is_web_visible: false,
               created_at: null,
               updated_at: null,
             })
@@ -287,6 +290,7 @@ export async function createSchedule(
         address: input.address || null,
         notes: input.notes || null,
         status: input.status || "scheduled",
+        is_web_visible: input.is_web_visible ?? false,
       })
       .select()
       .single()
@@ -341,6 +345,7 @@ export async function updateSchedule(
     if (input.address !== undefined) updateData.address = input.address
     if (input.notes !== undefined) updateData.notes = input.notes
     if (input.status) updateData.status = input.status
+    if (input.is_web_visible !== undefined) updateData.is_web_visible = input.is_web_visible
 
     const { data, error } = await supabase
       .from("schedules")

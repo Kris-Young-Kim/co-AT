@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -79,6 +79,15 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
     const dateStr = format(date, "yyyy-MM-dd")
     return schedules.filter((schedule) => schedule.scheduled_date === dateStr)
   }
+
+  // react-day-picker modifiers requires Date[], not a function
+  const scheduleDates = useMemo(() =>
+    schedules.map(s => {
+      const parts = s.scheduled_date.split("-")
+      return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]))
+    }),
+    [schedules]
+  )
 
   // 날짜 클릭 핸들러
   const handleDateSelect = (date: Date | undefined) => {
@@ -170,7 +179,7 @@ export function CalendarView({ initialSchedules = [], onScheduleClick, onDateCli
                 month={currentDate || undefined}
                 onMonthChange={setCurrentDate}
                 modifiers={{
-                  hasSchedule: (date) => getSchedulesForDate(date).length > 0,
+                  hasSchedule: scheduleDates,
                 }}
                 modifiersClassNames={{
                   hasSchedule: "bg-primary/10 text-primary font-semibold",
