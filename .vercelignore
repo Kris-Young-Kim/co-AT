@@ -1,5 +1,6 @@
-# Docs and planning
-/docs/
+# Docs and planning (exclude all except AI knowledge base files)
+/docs/**
+!/docs/2026년 보조기기센터 사업안내(최종).md
 /scripts/
 
 # Database migrations (not needed for Next.js build)
