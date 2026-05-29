@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -2343,13 +2343,48 @@ export type Database = {
           },
         ]
       }
+      schedule_categories: {
+        Row: {
+          color: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string | null
+        }
+        Insert: {
+          color?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Update: {
+          color?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       schedules: {
         Row: {
           address: string | null
           application_id: string | null
+          category_id: string | null
           client_id: string | null
           created_at: string | null
           id: string
+          is_web_visible: boolean
           notes: string | null
           schedule_type: string
           scheduled_date: string
@@ -2361,9 +2396,11 @@ export type Database = {
         Insert: {
           address?: string | null
           application_id?: string | null
+          category_id?: string | null
           client_id?: string | null
           created_at?: string | null
           id?: string
+          is_web_visible?: boolean
           notes?: string | null
           schedule_type: string
           scheduled_date: string
@@ -2375,9 +2412,11 @@ export type Database = {
         Update: {
           address?: string | null
           application_id?: string | null
+          category_id?: string | null
           client_id?: string | null
           created_at?: string | null
           id?: string
+          is_web_visible?: boolean
           notes?: string | null
           schedule_type?: string
           scheduled_date?: string
@@ -2392,6 +2431,13 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schedules_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "schedule_categories"
             referencedColumns: ["id"]
           },
           {
@@ -3032,3 +3078,4 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
