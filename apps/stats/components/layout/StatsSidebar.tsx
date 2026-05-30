@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, CalendarDays, Briefcase, TrendingUp, Target, FileSpreadsheet, ClipboardList } from 'lucide-react'
+import { LayoutDashboard, CalendarDays, Briefcase, TrendingUp, Target, FileSpreadsheet, ClipboardList, Megaphone } from 'lucide-react'
 
 const navItems = [
   { href: '/', label: 'KPI 대시보드', icon: LayoutDashboard },
@@ -11,6 +11,7 @@ const navItems = [
   { href: '/yearly', label: '연도별 추이', icon: TrendingUp },
   { href: '/targets', label: '목표 관리', icon: Target },
   { href: '/programs', label: '프로그램 실적', icon: ClipboardList },
+  { href: '/promotion', label: '홍보 실적', icon: Megaphone },
   { href: '/export', label: 'Excel 내보내기', icon: FileSpreadsheet },
 ]
 

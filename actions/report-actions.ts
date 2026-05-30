@@ -190,7 +190,7 @@ export async function generateBusinessReport(params: {
   const startDate = `${params.year}-01-01`
   const endDate = `${params.year}-12-31`
 
-  const [srResult, callResult, exhibitionResult, educationResult] = await Promise.all([
+  const [srResult, callResult, exhibitionResult, educationResult, promoActivitiesResult, promoMonthlyResult] = await Promise.all([
     supabase.from('eval_service_records').select('*').gte('received_at', startDate).lte('received_at', endDate),
     supabase.from('call_logs').select('*').gte('log_date', startDate).lte('log_date', endDate),
     (supabase as any)
@@ -207,10 +207,45 @@ export async function generateBusinessReport(params: {
       .gte('scheduled_date', startDate)
       .lte('scheduled_date', endDate)
       .order('scheduled_date'),
+    (supabase as any)
+      .from('stats_promotion_activities')
+      .select('*')
+      .eq('year', params.year)
+      .order('sort_order')
+      .order('activity_date'),
+    (supabase as any)
+      .from('stats_promotion_monthly')
+      .select('*')
+      .eq('year', params.year)
+      .order('month'),
   ])
 
   if (srResult.error) return { success: false, error: srResult.error.message }
   if (callResult.error) return { success: false, error: callResult.error.message }
+
+  type PromoActivity = {
+    content: string; total_count: number | null; activity_date: string | null
+    promo_material_type: string | null; promo_material_count: number | null
+    media_type: string | null; media_count: number | null
+    event_type: string | null; event_count: number | null; event_attendees: number | null
+    other_type: string | null; other_count: number | null; other_times: number | null
+    notes: string | null
+  }
+  type PromoMonthly = {
+    month: number
+    homepage_posts: number | null; facebook_posts: number | null
+    kakao_posts: number | null; instagram_posts: number | null; blog_posts: number | null
+    hp_notice: number | null; hp_gallery: number | null; hp_gov_support: number | null
+    hp_online_inquiry: number | null; hp_visitor_total: number | null
+    hp_daily_avg: number | null; hp_monthly_avg: number | null; hp_visitor_ratio: number | null
+    ig_story: number | null; ig_post: number | null; ig_online_inquiry: number | null
+    ig_follower_ratio: number | null; ig_non_follower_ratio: number | null
+    ig_total_views: number | null; ig_top_post: string | null
+  }
+  const promoActivities = (promoActivitiesResult.data ?? []) as PromoActivity[]
+  const promoMonthlyList = (promoMonthlyResult.data ?? []) as PromoMonthly[]
+  const promoMonthlyMap: Record<number, PromoMonthly> = {}
+  for (const m of promoMonthlyList) promoMonthlyMap[m.month] = m
 
   type ServiceRecord = {
     is_consult: boolean; is_assessment: boolean; is_trial: boolean
@@ -402,6 +437,69 @@ export async function generateBusinessReport(params: {
       r.getCell(7).value = rec.received_at
       r.commit()
       rowNum++
+    }
+  }
+
+  // Sheet 4: 홍보 — individual promotion activity records (rows 5–26)
+  const sheet4 = workbook.getWorksheet('4.홍보')
+  if (sheet4 && promoActivities.length > 0) {
+    for (let r = 5; r <= 26; r++) {
+      const row = sheet4.getRow(r)
+      for (let c = 1; c <= 14; c++) row.getCell(c).value = null
+      row.commit()
+    }
+    let rowNum = 5
+    for (const act of promoActivities) {
+      if (rowNum > 26) break
+      const r = sheet4.getRow(rowNum)
+      r.getCell(1).value = rowNum - 4
+      r.getCell(2).value = act.content
+      r.getCell(3).value = act.total_count
+      if (act.promo_material_type) { r.getCell(4).value = act.promo_material_type; r.getCell(5).value = act.promo_material_count }
+      if (act.media_type) { r.getCell(6).value = act.media_type; r.getCell(7).value = act.media_count }
+      if (act.event_type) { r.getCell(8).value = act.event_type; r.getCell(9).value = act.event_count; r.getCell(10).value = act.event_attendees }
+      if (act.other_type) { r.getCell(11).value = act.other_type; r.getCell(12).value = act.other_count; r.getCell(13).value = act.other_times }
+      r.getCell(14).value = act.notes
+      r.commit()
+      rowNum++
+    }
+  }
+
+  // Sheet 5: 4-1.매체 운영 기록지
+  const sheet41 = workbook.getWorksheet('4-1.매체 운영 기록지')
+  if (sheet41) {
+    for (let m = 1; m <= 12; m++) {
+      const data = promoMonthlyMap[m]
+      if (!data) continue
+      // Section 1: SNS post counts (rows 3–14, col 2–6)
+      const snsRow = sheet41.getRow(m + 2)
+      snsRow.getCell(2).value = data.homepage_posts
+      snsRow.getCell(3).value = data.facebook_posts
+      snsRow.getCell(4).value = data.kakao_posts
+      snsRow.getCell(5).value = data.instagram_posts
+      snsRow.getCell(6).value = data.blog_posts
+      snsRow.commit()
+      // Section 2: Homepage analytics (rows 18–29, col 1–9)
+      const hpRow = sheet41.getRow(m + 17)
+      hpRow.getCell(2).value = data.hp_notice
+      hpRow.getCell(3).value = data.hp_gallery
+      hpRow.getCell(4).value = data.hp_gov_support
+      hpRow.getCell(5).value = data.hp_online_inquiry
+      hpRow.getCell(6).value = data.hp_visitor_total
+      hpRow.getCell(7).value = data.hp_daily_avg
+      hpRow.getCell(8).value = data.hp_monthly_avg
+      hpRow.getCell(9).value = data.hp_visitor_ratio
+      hpRow.commit()
+      // Section 3: Instagram analytics (rows 33–44, col 1–8)
+      const igRow = sheet41.getRow(m + 32)
+      igRow.getCell(2).value = data.ig_story
+      igRow.getCell(3).value = data.ig_post
+      igRow.getCell(4).value = data.ig_online_inquiry
+      igRow.getCell(5).value = data.ig_follower_ratio
+      igRow.getCell(6).value = data.ig_non_follower_ratio
+      igRow.getCell(7).value = data.ig_total_views
+      igRow.getCell(8).value = data.ig_top_post
+      igRow.commit()
     }
   }
 
