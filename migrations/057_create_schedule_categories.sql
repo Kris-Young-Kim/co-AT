@@ -11,6 +11,11 @@ CREATE TABLE IF NOT EXISTS schedule_categories (
 
 ALTER TABLE schedule_categories ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "schedule_categories_select" ON schedule_categories;
+DROP POLICY IF EXISTS "schedule_categories_insert" ON schedule_categories;
+DROP POLICY IF EXISTS "schedule_categories_update" ON schedule_categories;
+DROP POLICY IF EXISTS "schedule_categories_delete" ON schedule_categories;
+
 CREATE POLICY "schedule_categories_select" ON schedule_categories
   FOR SELECT TO authenticated USING (true);
 CREATE POLICY "schedule_categories_insert" ON schedule_categories
@@ -29,4 +34,5 @@ INSERT INTO schedule_categories (name, color, description, sort_order) VALUES
   ('견학·교육', '#22c55e', '견학, 교육 일정', 3),
   ('행정·회의', '#6b7280', '회의, 행정 일정', 4),
   ('맞춤제작', '#8b5cf6', '맞춤제작 일정', 5),
-  ('외부행사', '#06b6d4', '외부 행사 일정', 6);
+  ('외부행사', '#06b6d4', '외부 행사 일정', 6)
+ON CONFLICT DO NOTHING;
