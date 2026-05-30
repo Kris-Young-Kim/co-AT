@@ -24,6 +24,17 @@ export interface Notice {
   created_by: string | null
 }
 
+function parseAttachments(value: unknown): Attachment[] | undefined {
+  if (!value) return undefined
+  if (Array.isArray(value)) return value as Attachment[]
+  if (typeof value === "string") {
+    try { return JSON.parse(value) } catch { return undefined }
+  }
+  return undefined
+}
+
+const NOTICE_FIELDS = "id, title, content, category, is_pinned, attachments, created_at, created_by"
+
 export interface CreateNoticeInput {
   title: string
   content: string
@@ -46,71 +57,25 @@ export interface UpdateNoticeInput {
  * 공개 페이지용 - RLS를 우회하여 모든 공지사항 조회
  */
 export async function getRecentNotices(limit: number = 5): Promise<Notice[]> {
-  // 공개 페이지이므로 RLS를 우회하여 조회
   const supabase = createAdminClient()
 
-  // 고정 공지사항 조회
-  const { data: pinned, error: pinnedError } = await supabase
+  const { data: pinned } = await supabase
     .from("notices")
-    .select("id, title, content, category, is_pinned, created_at, created_by")
+    .select(NOTICE_FIELDS)
     .eq("is_pinned", true)
     .order("created_at", { ascending: false })
     .limit(limit)
 
-  if (pinnedError) {
-    console.error("[공지사항 조회] 고정 공지사항 조회 실패:", {
-      error: pinnedError.message,
-      code: pinnedError.code,
-    })
-  }
-
-  // 최신 공지사항 조회 (고정 제외)
-  const { data: recent, error: recentError } = await supabase
+  const { data: recent } = await supabase
     .from("notices")
-    .select("id, title, content, category, is_pinned, created_at, created_by")
+    .select(NOTICE_FIELDS)
     .eq("is_pinned", false)
     .order("created_at", { ascending: false })
     .limit(limit)
 
-  if (recentError) {
-    console.error("[공지사항 조회] 최신 공지사항 조회 실패:", {
-      error: recentError.message,
-      code: recentError.code,
-    })
-  }
+  const allNotices = [...(pinned || []), ...(recent || [])].slice(0, limit)
 
-  // 고정 공지 + 최신 공지 합치기
-  const allNotices = [...(pinned || []), ...(recent || [])]
-
-  // attachments 필드가 있는 경우 추가로 조회
-  const noticesWithAttachments = await Promise.all(
-    allNotices.slice(0, limit).map(async (notice: { id: string }) => {
-      try {
-        const { data: noticeData } = await supabase
-          .from("notices")
-          .select("attachments")
-          .eq("id", notice.id)
-          .single()
-        
-        return {
-          ...notice,
-          attachments: noticeData && (noticeData as unknown as { attachments?: any }).attachments
-            ? (typeof (noticeData as unknown as { attachments: any }).attachments === "string"
-                ? JSON.parse((noticeData as unknown as { attachments: string }).attachments)
-                : (noticeData as unknown as { attachments: any }).attachments)
-            : undefined,
-        }
-      } catch {
-        // attachments 컬럼이 없거나 파싱 실패 시 무시
-        return {
-          ...notice,
-          attachments: undefined,
-        }
-      }
-    })
-  )
-
-  return noticesWithAttachments as Notice[]
+  return allNotices.map((n) => ({ ...n, attachments: parseAttachments(n.attachments) })) as Notice[]
 }
 
 /**
@@ -121,12 +86,11 @@ export async function getNoticesByCategory(
   category: "notice" | "activity" | "support" | "case",
   limit: number = 10
 ): Promise<Notice[]> {
-  // 공개 페이지이므로 RLS를 우회하여 조회
   const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from("notices")
-    .select("id, title, content, category, is_pinned, created_at, created_by")
+    .select(NOTICE_FIELDS)
     .eq("category", category)
     .order("is_pinned", { ascending: false })
     .order("created_at", { ascending: false })
@@ -137,35 +101,7 @@ export async function getNoticesByCategory(
     return []
   }
 
-  // attachments 필드가 있는 경우 추가로 조회
-  const noticesWithAttachments = await Promise.all(
-    (data || []).map(async (notice: { id: string }) => {
-      try {
-        const { data: noticeData } = await supabase
-          .from("notices")
-          .select("attachments")
-          .eq("id", notice.id)
-          .single()
-        
-        return {
-          ...notice,
-          attachments: noticeData && (noticeData as unknown as { attachments?: any }).attachments
-            ? (typeof (noticeData as unknown as { attachments: any }).attachments === "string"
-                ? JSON.parse((noticeData as unknown as { attachments: string }).attachments)
-                : (noticeData as unknown as { attachments: any }).attachments)
-            : undefined,
-        }
-      } catch {
-        // attachments 컬럼이 없거나 파싱 실패 시 무시
-        return {
-          ...notice,
-          attachments: undefined,
-        }
-      }
-    })
-  )
-
-  return noticesWithAttachments as Notice[]
+  return (data || []).map((n) => ({ ...n, attachments: parseAttachments(n.attachments) })) as Notice[]
 }
 
 /**
@@ -173,56 +109,22 @@ export async function getNoticesByCategory(
  * 공개 페이지용 - RLS를 우회하여 조회
  */
 export async function getNoticeById(id: string): Promise<Notice | null> {
-  // 공개 페이지이므로 RLS를 우회하여 조회
   const supabase = createAdminClient()
 
   const { data, error } = await supabase
     .from("notices")
-    .select("id, title, content, category, is_pinned, created_at, created_by")
+    .select(NOTICE_FIELDS)
     .eq("id", id)
     .single()
 
   if (error) {
-    console.error("[공지사항 조회] 상세 조회 실패:", {
-      error: error.message,
-      code: error.code,
-      id,
-    })
+    console.error("[공지사항 조회] 상세 조회 실패:", { error: error.message, code: error.code, id })
     return null
   }
 
-  if (!data) {
-    return null
-  }
+  if (!data) return null
 
-  // attachments 필드가 있는 경우 추가로 조회
-  try {
-    const { data: noticeData } = await supabase
-      .from("notices")
-      .select("attachments")
-      .eq("id", id)
-      .single()
-    
-    const dataTyped = data as { id: string; title: string; content: string; category: "notice" | "activity" | "support" | "case" | null; is_pinned: boolean; created_at: string; created_by: string | null }
-    return {
-      ...dataTyped,
-      attachments: noticeData && (noticeData as unknown as { attachments?: any }).attachments
-        ? (typeof (noticeData as unknown as { attachments: any }).attachments === "string"
-            ? JSON.parse((noticeData as unknown as { attachments: string }).attachments)
-            : (noticeData as unknown as { attachments: any }).attachments)
-        : undefined,
-    } as Notice
-  } catch {
-    // attachments 컬럼이 없거나 파싱 실패 시 무시
-    if (!data) {
-      return null
-    }
-    const dataTyped = data as { id: string; title: string; content: string; category: "notice" | "activity" | "support" | "case" | null; is_pinned: boolean; created_at: string; created_by: string | null }
-    return {
-      ...dataTyped,
-      attachments: undefined,
-    } as Notice
-  }
+  return { ...data, attachments: parseAttachments(data.attachments) } as Notice
 }
 
 /**
@@ -254,13 +156,8 @@ export async function createNotice(
       created_by: profileId,
     }
 
-    // attachments 컬럼이 있는 경우에만 추가
     if (input.attachments && input.attachments.length > 0) {
-      try {
-        insertData.attachments = JSON.stringify(input.attachments)
-      } catch {
-        // JSON 변환 실패 시 무시
-      }
+      insertData.attachments = input.attachments
     }
 
     const { data, error } = await supabase
@@ -316,7 +213,7 @@ export async function updateNotice(
       content?: string
       category?: string | null
       is_pinned?: boolean
-      attachments?: string | null
+      attachments?: Attachment[] | null
       updated_at?: string
     } = {
       updated_at: new Date().toISOString(),
@@ -327,9 +224,7 @@ export async function updateNotice(
     if (input.category !== undefined) updateData.category = input.category
     if (input.is_pinned !== undefined) updateData.is_pinned = input.is_pinned
     if (input.attachments !== undefined) {
-      updateData.attachments = input.attachments.length > 0
-        ? JSON.stringify(input.attachments)
-        : null
+      updateData.attachments = input.attachments.length > 0 ? input.attachments : null
     }
 
     const { error } = await supabase
@@ -342,12 +237,11 @@ export async function updateNotice(
       return { success: false, error: "공지사항 수정에 실패했습니다" }
     }
 
-    revalidatePath("/notices")
-    revalidatePath("/notices/support")
+    revalidatePath("/notices-management")
+    revalidatePath("/notices", "layout")
     revalidatePath(`/notices/${input.id}`)
     revalidatePath("/community/gallery")
     revalidatePath("/community/cases")
-    revalidatePath("/notices")
 
     return { success: true }
   } catch (error) {
@@ -404,13 +298,11 @@ export async function getAllNotices(): Promise<{
       return { success: false, error: "권한이 없습니다" }
     }
 
-    // RLS를 우회하기 위해 서비스 역할 사용
     const supabase = createAdminClient()
 
-    // attachments 컬럼이 있는지 확인하고 선택적으로 조회
     const { data, error } = await supabase
       .from("notices")
-      .select("id, title, content, category, is_pinned, created_at, created_by")
+      .select(NOTICE_FIELDS)
       .order("is_pinned", { ascending: false })
       .order("created_at", { ascending: false })
 
@@ -421,41 +313,15 @@ export async function getAllNotices(): Promise<{
         details: error.details,
         hint: error.hint,
       })
-      return { 
-        success: false, 
-        error: `공지사항 조회에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
+      return {
+        success: false,
+        error: `공지사항 조회에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}`
       }
     }
 
-    // attachments 필드가 있는 경우 추가로 조회
-    const noticesWithAttachments = await Promise.all(
-      (data || []).map(async (notice: { id: string }) => {
-        try {
-          const { data: noticeData } = await supabase
-            .from("notices")
-            .select("attachments")
-            .eq("id", notice.id)
-            .single()
-          
-          return {
-            ...notice,
-            attachments: noticeData && (noticeData as unknown as { attachments?: any }).attachments
-              ? (typeof (noticeData as unknown as { attachments: any }).attachments === "string"
-                  ? JSON.parse((noticeData as unknown as { attachments: string }).attachments)
-                  : (noticeData as unknown as { attachments: any }).attachments)
-              : undefined,
-          }
-        } catch {
-          // attachments 컬럼이 없거나 파싱 실패 시 무시
-          return {
-            ...notice,
-            attachments: undefined,
-          }
-        }
-      })
-    )
+    const notices = (data || []).map((n) => ({ ...n, attachments: parseAttachments(n.attachments) }))
 
-    return { success: true, notices: noticesWithAttachments as Notice[] }
+    return { success: true, notices: notices as Notice[] }
   } catch (error) {
     console.error("Unexpected error in getAllNotices:", error)
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }

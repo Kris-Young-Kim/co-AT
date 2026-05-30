@@ -111,7 +111,7 @@ export function NoticeList({ initialNotices }: NoticeListProps) {
                       {notice.title}
                     </CardTitle>
                   </div>
-                  <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
+                  <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground whitespace-nowrap" suppressHydrationWarning>
                     <Calendar className="h-4 w-4" />
                     {format(new Date(notice.created_at), "yyyy.MM.dd", {
                       locale: ko,
