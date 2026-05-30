@@ -463,6 +463,9 @@ export async function generateBusinessReport(params: {
     }
   }
 
+  // Sheet 5: 예산집행 실적 — TODO: populate from finance app (Phase 7)
+  // Will query finance budget execution tables once finance app is built.
+
   // Sheet 4: 홍보 — individual promotion activity records (rows 5–26)
   const sheet4 = workbook.getWorksheet('4.홍보')
   if (sheet4 && promoActivities.length > 0) {
