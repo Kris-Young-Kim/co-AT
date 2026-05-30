@@ -190,13 +190,20 @@ export async function generateBusinessReport(params: {
   const startDate = `${params.year}-01-01`
   const endDate = `${params.year}-12-31`
 
-  const [srResult, callResult, exhibitionResult] = await Promise.all([
+  const [srResult, callResult, exhibitionResult, educationResult] = await Promise.all([
     supabase.from('eval_service_records').select('*').gte('received_at', startDate).lte('received_at', endDate),
     supabase.from('call_logs').select('*').gte('log_date', startDate).lte('log_date', endDate),
     (supabase as any)
       .from('schedules')
       .select('scheduled_date, participant_count, reception_method, visitor_org_name, visitor_org_type, notes')
       .eq('schedule_type', 'exhibition')
+      .gte('scheduled_date', startDate)
+      .lte('scheduled_date', endDate)
+      .order('scheduled_date'),
+    (supabase as any)
+      .from('schedules')
+      .select('scheduled_date, education_title, education_hours, education_type, participant_count, education_audience_type, education_audience_label, notes')
+      .eq('schedule_type', 'education')
       .gte('scheduled_date', startDate)
       .lte('scheduled_date', endDate)
       .order('scheduled_date'),
@@ -320,6 +327,48 @@ export async function generateBusinessReport(params: {
         if (col) r.getCell(col).value = rec.visitor_org_name
       }
       r.getCell(12).value = rec.notes
+      r.commit()
+      rowNum++
+    }
+  }
+
+  // Sheet 3: 교육 — education schedules
+  type EducationRecord = {
+    scheduled_date: string
+    education_title: string | null
+    education_hours: number | null
+    education_type: string | null
+    participant_count: number | null
+    education_audience_type: string | null
+    education_audience_label: string | null
+    notes: string | null
+  }
+  const educationRecords = (educationResult.data ?? []) as EducationRecord[]
+  const sheet3 = workbook.getWorksheet('3.교육')
+  if (sheet3) {
+    for (let r = 5; r <= 14; r++) {
+      const row = sheet3.getRow(r)
+      for (let c = 1; c <= 13; c++) row.getCell(c).value = null
+      row.commit()
+    }
+    const AUDIENCE_COL: Record<string, number> = {
+      at_welfare: 8, edu_student: 9, guardian: 10, government: 11, other: 12,
+    }
+    let rowNum = 5
+    for (const rec of educationRecords) {
+      const r = sheet3.getRow(rowNum)
+      r.getCell(1).value = rowNum - 4
+      r.getCell(2).value = rec.education_title
+      r.getCell(3).value = 1
+      r.getCell(4).value = rec.education_hours
+      r.getCell(5).value = rec.participant_count
+      r.getCell(6).value = rec.scheduled_date
+      r.getCell(7).value = rec.education_type
+      if (rec.education_audience_type && rec.education_audience_label) {
+        const col = AUDIENCE_COL[rec.education_audience_type]
+        if (col) r.getCell(col).value = rec.education_audience_label
+      }
+      r.getCell(13).value = rec.notes
       r.commit()
       rowNum++
     }
