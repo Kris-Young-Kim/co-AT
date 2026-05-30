@@ -3,7 +3,7 @@
 > **프로젝트**: GWATC 통합 관리 플랫폼 (Co-AT)
 > **비전**: "행정은 AI에게, 사람은 클라이언트에게"
 > **아키텍처**: Turborepo 모노레포 — 앱별 독립 배포
-> **마지막 업데이트**: 2026-05-17
+> **마지막 업데이트**: 2026-05-29
 
 ---
 
@@ -43,10 +43,11 @@
 | 항목 | 상태 |
 |------|------|
 | gwatc.cloud — Primary 도메인 (isSatellite 없음) | ✅ |
-| 위성 앱 — `isSatellite: true` + `domain` 문자열 | ✅ |
+| 위성 앱 — `isSatellite` 제거, Clerk 허용 서브도메인 방식으로 전환 | ✅ |
 | middleware: 빈 문자열 fallback 제거 (`?? ''` 삭제) | ✅ |
 | Vercel 각 위성 앱에 `NEXT_PUBLIC_CLERK_DOMAIN` 설정 | ✅ |
 | `@co-at/auth` 공유 미들웨어 (`createAppMiddleware`) | ✅ |
+| ClerkProvider에서 `isSatellite` 완전 제거 (eval/inventory/stats/admin) | ✅ |
 
 ### 보안
 
@@ -101,6 +102,28 @@
 | Security logs 기록 | ✅ |
 | 권한 없는 사용자 `/unauthorized` 리다이렉트 | ✅ |
 | 신규 직원 온보딩 UI (앱 접근권한 일괄 부여) | ✅ |
+
+### 일정 관리 (`/schedule`)
+
+| 기능 | 상태 |
+|------|------|
+| 월간/주간/일간 캘린더 뷰 (`CalendarView`) | ✅ |
+| 일정 목록 + 검색 + 필터 | ✅ |
+| 일정 등록/수정/삭제 폼 (`ScheduleForm`) | ✅ |
+| 카테고리 색상 관리 (`CategoryManager`) | ✅ |
+| 캘린더 날짜 색상 도트 렌더링 (`DayContentWithDots`) | ✅ |
+| 역할 분담 (`EventRoleModal`) | ✅ |
+| 회의록 (`MeetingMinutesModal`) | ✅ |
+| 공개 가시성 토글 (`is_web_visible`) | ✅ |
+| /schedule 500 버그 수정 (`'use server'` 배열 export → local const) | ✅ |
+| Vercel Turbopack 캐시 문제 — 캐시 없이 재배포 필요 | ⚠️ 진행 중 |
+
+### AI 업무 도우미 (`/agent-chat`)
+
+| 기능 | 상태 |
+|------|------|
+| Gemini 연동 AI 채팅 (`/api/agents/chat`) | ✅ |
+| 업무 지식 기반 응답 (agent-chat page) | ✅ |
 
 ---
 
@@ -327,14 +350,22 @@
 - `048*`: 보안 강화
 - `049–051`: vector extension, eval 서비스 기록 확장
 
+### 완료된 마이그레이션 (052 ~ 057)
+
+| 파일명 | 내용 | 상태 |
+|--------|------|------|
+| `052_extend_eval_sync_logs.sql` | eval 동기화 로그 확장 | ✅ |
+| `053_add_contact_address_to_service_records.sql` | 서비스 기록 연락처·주소 컬럼 추가 | ✅ |
+| `054_notifications_add_approval_type.sql` | notifications 테이블 `approval` 타입 허용 | ✅ |
+| `055_clients_registration_workflow.sql` | 클라이언트 등록 워크플로우 | ✅ |
+| `056_add_is_web_visible_to_schedules.sql` | schedules 테이블 `is_web_visible` 컬럼 추가 | ✅ |
+| `057_create_schedule_categories.sql` | schedule_categories 테이블 생성 (색상·이름) | ✅ |
+
 ### 미실행 / 예정 마이그레이션
 
 | 파일명 (예정) | 내용 |
 |---------------|------|
-| `052_eval_ai_soap.sql` | AI SOAP 노트 저장 테이블 |
-| `053_hr_payroll.sql` | 급여 명세서 테이블 |
-| `054_approval_workflow.sql` | 결재선 순차 처리 상태 |
-| `055_finance_quarters.sql` | 분기 예산 집계 뷰 |
+| `058_eval_ai_soap.sql` | AI SOAP 노트 저장 테이블 |
 
 ---
 
@@ -381,6 +412,10 @@
 - [x] **admin** — 신규 직원 온보딩 UI
 - [x] **approval** — 결재 승인/반려 워크플로우 + 전자서명 + PDF 출력
 - [x] **approval** — notifications 타입 버그 수정 (`'approval'` CHECK 제약)
+- [x] **admin** — 일정 캘린더 (월/주/일) + 카테고리 색상 관리 + 역할분담 + 회의록
+- [x] **admin** — `is_web_visible` 토글 (일정 공개 가시성)
+- [x] **admin** — AI 업무 도우미 (agent-chat, Gemini 연동)
+- [x] **auth** — `isSatellite` 완전 제거 (모든 앱 ClerkProvider + 공유 미들웨어)
 
 ---
 
