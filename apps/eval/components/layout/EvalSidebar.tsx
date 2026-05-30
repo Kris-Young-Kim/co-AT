@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Users, BarChart3, LogOut, Phone, RefreshCw, FileDown, Clock } from 'lucide-react'
+import { Users, BarChart3, LogOut, Phone, RefreshCw, Clock } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 
 const NAV_ITEMS = [
@@ -11,7 +11,6 @@ const NAV_ITEMS = [
   { href: '/clients/pending', label: '신규 접수 대기', icon: Clock },
   { href: '/call-logs', label: '콜센터 상담', icon: Phone },
   { href: '/migration', label: 'Sheets 동기화', icon: RefreshCw },
-  { href: '/reports', label: '보고서 출력', icon: FileDown },
 ] as const
 
 function cn(...classes: (string | boolean | undefined)[]) {

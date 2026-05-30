@@ -306,3 +306,56 @@ export async function createApplicationWithPendingClient(
   }
 }
 
+export interface ApplicationDetailsInput {
+  applicationId: string
+  clientId: string
+  referral_type?: string | null
+  progress_type?: string | null
+  category?: string | null
+  sub_category?: string | null
+  requested_item?: string | null
+  service_area?: string | null
+  status?: string | null
+  visit_type?: string | null
+  notes?: string | null
+}
+
+export async function updateApplicationDetails(
+  input: ApplicationDetailsInput
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+    const supabase = await createClient()
+    const { error } = await supabase
+      .from('applications')
+      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+      .update({
+        referral_type: input.referral_type ?? null,
+        progress_type: input.progress_type ?? null,
+        category: input.category ?? null,
+        sub_category: input.sub_category ?? null,
+        requested_item: input.requested_item ?? null,
+        service_area: input.service_area ?? null,
+        status: input.status ?? null,
+        visit_type: input.visit_type ?? null,
+        notes: input.notes ?? null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', input.applicationId)
+
+    if (error) {
+      console.error('updateApplicationDetails:', error)
+      return { success: false, error: '신청서 수정에 실패했습니다: ' + error.message }
+    }
+
+    revalidatePath(`/clients/${input.clientId}`)
+    revalidatePath(`/clients/${input.clientId}/applications/${input.applicationId}`)
+    return { success: true }
+  } catch (error) {
+    console.error('Unexpected error in updateApplicationDetails:', error)
+    return { success: false, error: '예상치 못한 오류가 발생했습니다' }
+  }
+}
+

@@ -36,7 +36,25 @@ export interface CreatePendingClientInput {
   gender?: string | null
   contact?: string | null
   guardian_contact?: string | null
+  guardian_name?: string | null
+  guardian_relationship?: string | null
+  email?: string | null
   disability_type?: string | null
+  disability_grade?: string | null
+  disability_cause?: string | null
+  disability_onset_date?: string | null
+  disability_description?: string | null
+  secondary_disability_type?: string | null
+  care_level?: string | null
+  disability_progression?: string | null
+  progression_cause?: string | null
+  economic_status?: string | null
+  city?: string | null
+  address?: string | null
+  housing_type?: string | null
+  floor_number?: string | null
+  has_elevator?: boolean | null
+  obstacles?: string | null
 }
 
 export interface StaffMember {
@@ -566,7 +584,25 @@ export async function createPendingClient(
         gender: input.gender ?? null,
         contact: input.contact ?? null,
         guardian_contact: input.guardian_contact ?? null,
+        guardian_name: input.guardian_name ?? null,
+        guardian_relationship: input.guardian_relationship ?? null,
+        email: input.email ?? null,
         disability_type: input.disability_type ?? null,
+        disability_grade: input.disability_grade ?? null,
+        disability_cause: input.disability_cause ?? null,
+        disability_onset_date: input.disability_onset_date ?? null,
+        disability_description: input.disability_description ?? null,
+        secondary_disability_type: input.secondary_disability_type ?? null,
+        care_level: input.care_level ?? null,
+        disability_progression: input.disability_progression ?? null,
+        progression_cause: input.progression_cause ?? null,
+        economic_status: input.economic_status ?? null,
+        city: input.city ?? null,
+        address: input.address ?? null,
+        housing_type: input.housing_type ?? null,
+        floor_number: input.floor_number ?? null,
+        has_elevator: input.has_elevator ?? null,
+        obstacles: input.obstacles ?? null,
         status: "pending",
         source: "staff",
         created_at: new Date().toISOString(),

@@ -259,7 +259,7 @@ export function CallLogForm({ defaultValues, onSubmit, submitLabel = '저장' }:
         <input
           name="log_date"
           type="date"
-          defaultValue={defaultValues?.log_date ?? ''}
+          defaultValue={defaultValues?.log_date ?? new Date().toISOString().split('T')[0]}
           required
           className="px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />

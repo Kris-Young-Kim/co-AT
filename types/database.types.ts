@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -22,10 +22,16 @@ export type Database = {
           created_at: string | null
           desired_date: string | null
           id: string
+          notes: string | null
+          progress_type: string | null
+          referral_type: string | null
+          requested_item: string | null
+          service_area: string | null
           service_year: number | null
           status: string | null
           sub_category: string | null
           updated_at: string | null
+          visit_type: string | null
         }
         Insert: {
           assigned_staff_id?: string | null
@@ -34,10 +40,16 @@ export type Database = {
           created_at?: string | null
           desired_date?: string | null
           id?: string
+          notes?: string | null
+          progress_type?: string | null
+          referral_type?: string | null
+          requested_item?: string | null
+          service_area?: string | null
           service_year?: number | null
           status?: string | null
           sub_category?: string | null
           updated_at?: string | null
+          visit_type?: string | null
         }
         Update: {
           assigned_staff_id?: string | null
@@ -46,10 +58,16 @@ export type Database = {
           created_at?: string | null
           desired_date?: string | null
           id?: string
+          notes?: string | null
+          progress_type?: string | null
+          referral_type?: string | null
+          requested_item?: string | null
+          service_area?: string | null
           service_year?: number | null
           status?: string | null
           sub_category?: string | null
           updated_at?: string | null
+          visit_type?: string | null
         }
         Relationships: [
           {
@@ -522,21 +540,31 @@ export type Database = {
           address: string | null
           assigned_staff_id: string | null
           birth_date: string | null
+          care_level: string | null
+          city: string | null
           contact: string | null
           created_at: string | null
           disability_cause: string | null
+          disability_description: string | null
           disability_grade: string | null
           disability_onset_date: string | null
+          disability_progression: string | null
           disability_type: string | null
           economic_status: string | null
+          email: string | null
+          floor_number: string | null
           gender: string | null
           guardian_contact: string | null
+          guardian_name: string | null
+          guardian_relationship: string | null
           has_elevator: boolean | null
           housing_type: string | null
           id: string
           name: string
           obstacles: string | null
+          progression_cause: string | null
           registration_number: string | null
+          secondary_disability_type: string | null
           source: string
           status: string
           updated_at: string | null
@@ -545,21 +573,31 @@ export type Database = {
           address?: string | null
           assigned_staff_id?: string | null
           birth_date?: string | null
+          care_level?: string | null
+          city?: string | null
           contact?: string | null
           created_at?: string | null
           disability_cause?: string | null
+          disability_description?: string | null
           disability_grade?: string | null
           disability_onset_date?: string | null
+          disability_progression?: string | null
           disability_type?: string | null
           economic_status?: string | null
+          email?: string | null
+          floor_number?: string | null
           gender?: string | null
           guardian_contact?: string | null
+          guardian_name?: string | null
+          guardian_relationship?: string | null
           has_elevator?: boolean | null
           housing_type?: string | null
           id?: string
           name: string
           obstacles?: string | null
+          progression_cause?: string | null
           registration_number?: string | null
+          secondary_disability_type?: string | null
           source?: string
           status?: string
           updated_at?: string | null
@@ -568,21 +606,31 @@ export type Database = {
           address?: string | null
           assigned_staff_id?: string | null
           birth_date?: string | null
+          care_level?: string | null
+          city?: string | null
           contact?: string | null
           created_at?: string | null
           disability_cause?: string | null
+          disability_description?: string | null
           disability_grade?: string | null
           disability_onset_date?: string | null
+          disability_progression?: string | null
           disability_type?: string | null
           economic_status?: string | null
+          email?: string | null
+          floor_number?: string | null
           gender?: string | null
           guardian_contact?: string | null
+          guardian_name?: string | null
+          guardian_relationship?: string | null
           has_elevator?: boolean | null
           housing_type?: string | null
           id?: string
           name?: string
           obstacles?: string | null
+          progression_cause?: string | null
           registration_number?: string | null
+          secondary_disability_type?: string | null
           source?: string
           status?: string
           updated_at?: string | null
@@ -2343,13 +2391,48 @@ export type Database = {
           },
         ]
       }
+      schedule_categories: {
+        Row: {
+          color: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string | null
+        }
+        Insert: {
+          color?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Update: {
+          color?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       schedules: {
         Row: {
           address: string | null
           application_id: string | null
+          category_id: string | null
           client_id: string | null
           created_at: string | null
           id: string
+          is_web_visible: boolean
           notes: string | null
           schedule_type: string
           scheduled_date: string
@@ -2361,9 +2444,11 @@ export type Database = {
         Insert: {
           address?: string | null
           application_id?: string | null
+          category_id?: string | null
           client_id?: string | null
           created_at?: string | null
           id?: string
+          is_web_visible?: boolean
           notes?: string | null
           schedule_type: string
           scheduled_date: string
@@ -2375,9 +2460,11 @@ export type Database = {
         Update: {
           address?: string | null
           application_id?: string | null
+          category_id?: string | null
           client_id?: string | null
           created_at?: string | null
           id?: string
+          is_web_visible?: boolean
           notes?: string | null
           schedule_type?: string
           scheduled_date?: string
@@ -2392,6 +2479,13 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schedules_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "schedule_categories"
             referencedColumns: ["id"]
           },
           {

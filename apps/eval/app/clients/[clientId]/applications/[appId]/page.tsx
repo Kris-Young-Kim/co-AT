@@ -1,8 +1,12 @@
 import { getIntakeRecordsByApplication } from '@/actions/intake-actions'
 import { getDomainAssessments } from '@/actions/assessment-actions'
+import { getApplicationsByClientId } from '@/actions/application-actions'
+import { getClientById } from '@/actions/client-actions'
 import { AssessmentGrid } from '@/eval/components/eval/AssessmentGrid'
+import { ApplicationDetailForm } from '@/eval/components/eval/ApplicationDetailForm'
 import Link from 'next/link'
-import { ArrowLeft, FileText, ClipboardCheck, Plus, Printer } from 'lucide-react'
+import { ArrowLeft, FileText, ClipboardCheck, Plus, Printer, ClipboardList } from 'lucide-react'
+import { notFound } from 'next/navigation'
 
 interface Props {
   params: Promise<{ clientId: string; appId: string }>
@@ -11,10 +15,19 @@ interface Props {
 export default async function ApplicationDetailPage({ params }: Props) {
   const { clientId, appId } = await params
 
-  const [intakeResult, assessmentResult] = await Promise.all([
+  const [intakeResult, assessmentResult, clientResult, appsResult] = await Promise.all([
     getIntakeRecordsByApplication(appId),
     getDomainAssessments(appId),
+    getClientById(clientId),
+    getApplicationsByClientId(clientId),
   ])
+
+  if (!clientResult.success || !clientResult.client) notFound()
+
+  const client = clientResult.client
+  const applications = appsResult.success ? appsResult.applications ?? [] : []
+  const application = applications.find(a => a.id === appId)
+  if (!application) notFound()
 
   const intakeRecords = intakeResult.success ? (intakeResult.records ?? []) : []
   const assessments  = assessmentResult.success ? (assessmentResult.assessments ?? []) : []
@@ -30,6 +43,22 @@ export default async function ApplicationDetailPage({ params }: Props) {
       </Link>
 
       <h1 className="text-2xl font-bold text-gray-900 mb-8">신청서 상세</h1>
+
+      {/* ── 접수 및 상담 ── */}
+      <section className="mb-8">
+        <div className="flex items-center gap-2 mb-3">
+          <ClipboardList className="h-5 w-5 text-purple-600" />
+          <h2 className="font-semibold text-gray-900">접수 및 상담</h2>
+        </div>
+        <div className="border rounded-lg p-5 bg-white">
+          <ApplicationDetailForm
+            application={application as Parameters<typeof ApplicationDetailForm>[0]['application']}
+            clientId={clientId}
+            clientName={client.name}
+            registrationNumber={(client as { registration_number?: string | null }).registration_number}
+          />
+        </div>
+      </section>
 
       {/* ── 상담 기록지 ── */}
       <section className="mb-8">
