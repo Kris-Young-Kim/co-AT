@@ -254,10 +254,22 @@ export async function generateBusinessReport(params: {
     is_cleaning: boolean; is_reuse: boolean; is_monitoring: boolean
     name: string | null; product_name: string | null
     service_content: string | null; received_at: string | null
+    performance_date: string | null; service_area: string | null
     application_month: number | null; record_status: string | null
     service_major_category: string | null; economic_status: string | null
     disability_severity: string | null
     [key: string]: unknown
+  }
+
+  function dateMonth(d: string | null): number | null {
+    if (!d) return null
+    const m = parseInt(d.split('-')[1] ?? '')
+    return isNaN(m) ? null : m
+  }
+  function dateDay(d: string | null): number | null {
+    if (!d) return null
+    const day = parseInt(d.split('-')[2] ?? '')
+    return isNaN(day) ? null : day
   }
   const records = (srResult.data ?? []) as unknown as ServiceRecord[]
   const calls = callResult.data ?? []
@@ -409,32 +421,43 @@ export async function generateBusinessReport(params: {
     }
   }
 
-  // Sheet 7: 대여 현황 (템플릿 기준 7번째 시트)
+  // Sheet 6: 대여 현황 관리
+  // Columns: 1=연번, 2=신청인, 3=신청품목, 4=신청(월), 5=신청(일), 6=지급(월), 7=지급(일), 8=취소사유
   const rentalRecords = records.filter(r => r.is_rental)
   const rentalSheet = workbook.getWorksheet('6.대여 현황 관리(대기자 등)')
   if (rentalSheet && rentalRecords.length > 0) {
-    let rowNum = 3
+    let rowNum = 4
     for (const rec of rentalRecords) {
       const r = rentalSheet.getRow(rowNum)
+      r.getCell(1).value = rowNum - 3
       r.getCell(2).value = rec.name
       r.getCell(3).value = rec.product_name
-      r.getCell(6).value = rec.received_at
+      r.getCell(4).value = dateMonth(rec.received_at)
+      r.getCell(5).value = dateDay(rec.received_at)
+      r.getCell(6).value = dateMonth(rec.performance_date)
+      r.getCell(7).value = dateDay(rec.performance_date)
       r.commit()
       rowNum++
     }
   }
 
-  // Sheet 8: 제작 서비스 현황 (템플릿 기준 8번째 시트)
+  // Sheet 7: 맞춤 제작 서비스 현황 관리
+  // Columns: 1=연번, 2=신청인, 3=신청품목, 4=상세내용, 5=제작방법, 6=신청(월), 7=신청(일), 8=지급(월), 9=지급(일), 10=불가사유, 11=영역, 12=비고
   const makeRecords = records.filter(r => r.is_custom_make)
   const makeSheet = workbook.getWorksheet('7.제작 서비스 현황 관리')
   if (makeSheet && makeRecords.length > 0) {
-    let rowNum = 3
+    let rowNum = 4
     for (const rec of makeRecords) {
       const r = makeSheet.getRow(rowNum)
+      r.getCell(1).value = rowNum - 3
       r.getCell(2).value = rec.name
       r.getCell(3).value = rec.product_name
       r.getCell(4).value = rec.service_content
-      r.getCell(7).value = rec.received_at
+      r.getCell(6).value = dateMonth(rec.received_at)
+      r.getCell(7).value = dateDay(rec.received_at)
+      r.getCell(8).value = dateMonth(rec.performance_date)
+      r.getCell(9).value = dateDay(rec.performance_date)
+      r.getCell(11).value = rec.service_area
       r.commit()
       rowNum++
     }
