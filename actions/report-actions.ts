@@ -190,9 +190,16 @@ export async function generateBusinessReport(params: {
   const startDate = `${params.year}-01-01`
   const endDate = `${params.year}-12-31`
 
-  const [srResult, callResult] = await Promise.all([
+  const [srResult, callResult, exhibitionResult] = await Promise.all([
     supabase.from('eval_service_records').select('*').gte('received_at', startDate).lte('received_at', endDate),
     supabase.from('call_logs').select('*').gte('log_date', startDate).lte('log_date', endDate),
+    (supabase as any)
+      .from('schedules')
+      .select('scheduled_date, participant_count, reception_method, visitor_org_name, visitor_org_type, notes')
+      .eq('schedule_type', 'exhibition')
+      .gte('scheduled_date', startDate)
+      .lte('scheduled_date', endDate)
+      .order('scheduled_date'),
   ])
 
   if (srResult.error) return { success: false, error: srResult.error.message }
@@ -278,6 +285,44 @@ export async function generateBusinessReport(params: {
   // monthly breakdown (rows 31–42 assumed, one per month)
   for (let m = 1; m <= 12; m++) {
     sheet1.getCell(`E${30 + m}`).value = stats.byMonth[m] ?? 0
+  }
+
+  // Sheet 2: 체험프로그램(구, 견학) — exhibition schedules
+  type ExhibitionRecord = {
+    scheduled_date: string
+    participant_count: number | null
+    reception_method: string | null
+    visitor_org_name: string | null
+    visitor_org_type: string | null
+    notes: string | null
+  }
+  const exhibitionRecords = (exhibitionResult.data ?? []) as ExhibitionRecord[]
+  const sheet2 = workbook.getWorksheet('2.체험프로그램(구, 견학)')
+  if (sheet2) {
+    for (let r = 5; r <= 14; r++) {
+      const row = sheet2.getRow(r)
+      for (let c = 1; c <= 12; c++) row.getCell(c).value = null
+      row.commit()
+    }
+    const ORG_COL: Record<string, number> = {
+      government: 6, education: 7, welfare: 8, medical: 9, individual: 10, other: 11,
+    }
+    let rowNum = 5
+    for (const rec of exhibitionRecords) {
+      const r = sheet2.getRow(rowNum)
+      r.getCell(1).value = rowNum - 4
+      r.getCell(2).value = rec.scheduled_date
+      r.getCell(3).value = 1
+      r.getCell(4).value = rec.participant_count
+      r.getCell(5).value = rec.reception_method
+      if (rec.visitor_org_type && rec.visitor_org_name) {
+        const col = ORG_COL[rec.visitor_org_type]
+        if (col) r.getCell(col).value = rec.visitor_org_name
+      }
+      r.getCell(12).value = rec.notes
+      r.commit()
+      rowNum++
+    }
   }
 
   // Sheet 7: 대여 현황 (템플릿 기준 7번째 시트)
