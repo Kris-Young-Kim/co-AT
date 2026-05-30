@@ -11,7 +11,17 @@ const REFERRAL_TYPES = ['내방', '유선', '인터넷신청', '기관연계', '
 const PROGRESS_TYPES = ['신규', '계속', '재접수']
 const BUSINESS_CATEGORIES = ['보조기기 교부사업', '맞춤형제작지원', '대여사업', '정보제공', '교육/홍보', '상담']
 const SERVICE_CLASSIFICATIONS = ['상담', '평가', '체험', '대여', '맞춤제작', '교육', '사후관리']
-const SERVICE_AREAS = ['이동보조', '자세유지', '의사소통', '정보접근', '일상생활', '교육/학습', '여가/스포츠', '기타']
+const DOMAIN_AREAS = [
+  { value: 'WC',  label: 'WC (휠체어 및 이동)' },
+  { value: 'ADL', label: 'ADL (일상생활동작)' },
+  { value: 'S',   label: 'S (감각)' },
+  { value: 'SP',  label: 'SP (앉기 및 자세)' },
+  { value: 'EC',  label: 'EC (주택 및 환경개조)' },
+  { value: 'CA',  label: 'CA (컴퓨터접근)' },
+  { value: 'L',   label: 'L (레저)' },
+  { value: 'AAC', label: 'AAC (보완대체의사소통)' },
+  { value: 'AM',  label: 'AM (자동차개조)' },
+]
 const STATUS_OPTIONS = ['접수', '배정', '진행중', '완료', '취소']
 const VISIT_TYPES = ['내방', '방문']
 
@@ -119,7 +129,15 @@ export function ApplicationDetailForm({
       </div>
       <div className="grid grid-cols-2 gap-4">
         {txt('requested_item', '신청품목')}
-        {sel('service_area', '서비스영역', SERVICE_AREAS)}
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">서비스영역</label>
+          <select name="service_area" value={form.service_area} onChange={handleChange} className={SELECT}>
+            <option value="">선택</option>
+            {DOMAIN_AREAS.map(({ value, label }) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
         {sel('status', '접수현황', STATUS_OPTIONS)}
