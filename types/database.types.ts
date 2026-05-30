@@ -929,6 +929,7 @@ export type Database = {
       eval_service_records: {
         Row: {
           address: string | null
+          application_id: string | null
           application_month: number | null
           application_no: number | null
           application_year: number | null
@@ -988,6 +989,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          application_id?: string | null
           application_month?: number | null
           application_no?: number | null
           application_year?: number | null
@@ -1047,6 +1049,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          application_id?: string | null
           application_month?: number | null
           application_no?: number | null
           application_year?: number | null
@@ -1105,6 +1108,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "eval_service_records_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "eval_service_records_client_id_fkey"
             columns: ["client_id"]
@@ -1653,6 +1663,7 @@ export type Database = {
       }
       inventory_custom_orders: {
         Row: {
+          application_id: string | null
           approval_id: string | null
           client_id: string
           created_at: string | null
@@ -1666,6 +1677,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          application_id?: string | null
           approval_id?: string | null
           client_id: string
           created_at?: string | null
@@ -1679,6 +1691,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          application_id?: string | null
           approval_id?: string | null
           client_id?: string
           created_at?: string | null
@@ -1692,6 +1705,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "inventory_custom_orders_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "inventory_custom_orders_approval_id_fkey"
             columns: ["approval_id"]
@@ -1800,6 +1820,7 @@ export type Database = {
       }
       inventory_reuse_dispatches: {
         Row: {
+          application_id: string | null
           approval_id: string | null
           client_id: string
           created_at: string | null
@@ -1811,6 +1832,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          application_id?: string | null
           approval_id?: string | null
           client_id: string
           created_at?: string | null
@@ -1822,6 +1844,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          application_id?: string | null
           approval_id?: string | null
           client_id?: string
           created_at?: string | null
@@ -1833,6 +1856,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "inventory_reuse_dispatches_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "inventory_reuse_dispatches_approval_id_fkey"
             columns: ["approval_id"]
@@ -2993,7 +3023,11 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      backfill_eval_service_records: { Args: never; Returns: number }
+      sync_eval_service_record: {
+        Args: { p_application_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
