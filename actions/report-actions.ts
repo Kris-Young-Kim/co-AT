@@ -191,7 +191,7 @@ export async function generateBusinessReport(params: {
   const endDate = `${params.year}-12-31`
 
   const [srResult, callResult, exhibitionResult, educationResult, promoActivitiesResult, promoMonthlyResult] = await Promise.all([
-    supabase.from('eval_service_records').select('*').gte('received_at', startDate).lte('received_at', endDate),
+    supabase.from('eval_service_records').select('*').gte('received_at', startDate).lte('received_at', endDate).order('received_at'),
     supabase.from('call_logs').select('*').gte('log_date', startDate).lte('log_date', endDate),
     (supabase as any)
       .from('schedules')
@@ -426,7 +426,12 @@ export async function generateBusinessReport(params: {
   // Columns: 1=연번, 2=신청인, 3=신청품목, 4=신청(월), 5=신청(일), 6=지급(월), 7=지급(일), 8=취소사유
   const rentalRecords = records.filter(r => r.is_rental)
   const rentalSheet = workbook.getWorksheet('6.대여 현황 관리(대기자 등)')
-  if (rentalSheet && rentalRecords.length > 0) {
+  if (rentalSheet) {
+    for (let ri = 4; ri <= 103; ri++) {
+      const row = rentalSheet.getRow(ri)
+      for (let c = 1; c <= 8; c++) row.getCell(c).value = null
+      row.commit()
+    }
     let rowNum = 4
     for (const rec of rentalRecords) {
       const r = rentalSheet.getRow(rowNum)
@@ -446,7 +451,12 @@ export async function generateBusinessReport(params: {
   // Columns: 1=연번, 2=신청인, 3=신청품목, 4=상세내용, 5=제작방법, 6=신청(월), 7=신청(일), 8=지급(월), 9=지급(일), 10=불가사유, 11=영역, 12=비고
   const makeRecords = records.filter(r => r.is_custom_make)
   const makeSheet = workbook.getWorksheet('7.제작 서비스 현황 관리')
-  if (makeSheet && makeRecords.length > 0) {
+  if (makeSheet) {
+    for (let ri = 4; ri <= 103; ri++) {
+      const row = makeSheet.getRow(ri)
+      for (let c = 1; c <= 12; c++) row.getCell(c).value = null
+      row.commit()
+    }
     let rowNum = 4
     for (const rec of makeRecords) {
       const r = makeSheet.getRow(rowNum)
