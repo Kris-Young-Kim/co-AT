@@ -255,6 +255,7 @@ export async function generateBusinessReport(params: {
     name: string | null; product_name: string | null
     service_content: string | null; received_at: string | null
     performance_date: string | null; service_area: string | null
+    manufacturing_method: string | null
     application_month: number | null; record_status: string | null
     service_major_category: string | null; economic_status: string | null
     disability_severity: string | null
@@ -453,6 +454,7 @@ export async function generateBusinessReport(params: {
       r.getCell(2).value = rec.name
       r.getCell(3).value = rec.product_name
       r.getCell(4).value = rec.service_content
+      r.getCell(5).value = rec.manufacturing_method
       r.getCell(6).value = dateMonth(rec.received_at)
       r.getCell(7).value = dateDay(rec.received_at)
       r.getCell(8).value = dateMonth(rec.performance_date)
