@@ -116,7 +116,7 @@
 | 회의록 (`MeetingMinutesModal`) | ✅ |
 | 공개 가시성 토글 (`is_web_visible`) | ✅ |
 | /schedule 500 버그 수정 (`'use server'` 배열 export → local const) | ✅ |
-| Vercel Turbopack 캐시 문제 — 캐시 없이 재배포 필요 | ⚠️ 진행 중 |
+| Vercel Turbopack 캐시 — 캐시 없이 재배포 완료 | ✅ |
 
 ### AI 업무 도우미 (`/agent-chat`)
 
