@@ -280,13 +280,13 @@ export async function generateBusinessReport(params: {
     sheet1.getCell(`E${30 + m}`).value = stats.byMonth[m] ?? 0
   }
 
-  // Sheet 6: 대여 현황
+  // Sheet 7: 대여 현황 (템플릿 기준 7번째 시트)
   const rentalRecords = records.filter(r => r.is_rental)
-  const sheet6 = workbook.getWorksheet(6)
-  if (sheet6 && rentalRecords.length > 0) {
+  const rentalSheet = workbook.getWorksheet('6.대여 현황 관리(대기자 등)')
+  if (rentalSheet && rentalRecords.length > 0) {
     let rowNum = 3
     for (const rec of rentalRecords) {
-      const r = sheet6.getRow(rowNum)
+      const r = rentalSheet.getRow(rowNum)
       r.getCell(2).value = rec.name
       r.getCell(3).value = rec.product_name
       r.getCell(6).value = rec.received_at
@@ -295,13 +295,13 @@ export async function generateBusinessReport(params: {
     }
   }
 
-  // Sheet 7: 제작 서비스 현황
+  // Sheet 8: 제작 서비스 현황 (템플릿 기준 8번째 시트)
   const makeRecords = records.filter(r => r.is_custom_make)
-  const sheet7 = workbook.getWorksheet(7)
-  if (sheet7 && makeRecords.length > 0) {
+  const makeSheet = workbook.getWorksheet('7.제작 서비스 현황 관리')
+  if (makeSheet && makeRecords.length > 0) {
     let rowNum = 3
     for (const rec of makeRecords) {
-      const r = sheet7.getRow(rowNum)
+      const r = makeSheet.getRow(rowNum)
       r.getCell(2).value = rec.name
       r.getCell(3).value = rec.product_name
       r.getCell(4).value = rec.service_content
