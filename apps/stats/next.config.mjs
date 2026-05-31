@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: { externalDir: true, serverComponentsExternalPackages: ['exceljs', 'xlsx'] },
+  experimental: { externalDir: true },
+  serverExternalPackages: ['exceljs', 'xlsx'],
   transpilePackages: ['@co-at/ui', '@co-at/lib', '@co-at/auth', '@co-at/types'],
   images: {
     remotePatterns: [
