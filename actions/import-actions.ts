@@ -308,6 +308,29 @@ export async function importCallLogsFile(formData: FormData): Promise<ImportResu
   }
 }
 
+function deriveServiceFlags(cat: string | null): {
+  is_consult: boolean; is_assessment: boolean; is_trial: boolean; is_rental: boolean
+  is_custom_make: boolean; is_grant: boolean; is_education: boolean; is_other_business: boolean
+  is_info_provision: boolean; is_repair: boolean; is_cleaning: boolean; is_reuse: boolean; is_monitoring: boolean
+} {
+  const c = (cat ?? '').trim()
+  return {
+    is_consult:       c.includes('상담'),
+    is_assessment:    c.includes('평가') && !c.includes('교부'),
+    is_trial:         c.includes('체험'),
+    is_rental:        c === '대여',
+    is_custom_make:   c.includes('맞춤') && !c.includes('교부'),
+    is_grant:         c.includes('교부'),
+    is_education:     c.includes('교육'),
+    is_other_business: c.includes('기타사업'),
+    is_info_provision: c.includes('정보제공') || c === '정보',
+    is_repair:        c.includes('수리'),
+    is_cleaning:      c.includes('세척') || c.includes('소독'),
+    is_reuse:         c === '재사용',
+    is_monitoring:    c.includes('모니터링'),
+  }
+}
+
 export async function importServiceRecordsFile(formData: FormData): Promise<ImportResult> {
   if (!await hasAdminOrStaffPermission())
     return { success: false, rowsAdded: 0, rowsSkipped: 0, rowsFailed: 0, error: '권한이 없습니다' }
@@ -334,48 +357,43 @@ export async function importServiceRecordsFile(formData: FormData): Promise<Impo
         .eq('received_at', receivedAt ?? '').eq('name', name).eq('birth_date', birthDate ?? '').maybeSingle()
       if (existing) { skipped++; continue }
 
+      const serviceCategory = toStr(row[SR_COL.serviceCategory])
+      const flags = deriveServiceFlags(serviceCategory)
+      const closedStatus = toStr(row[SR_COL.isClosed])
+      const isClosed = closedStatus === '종결'
+      const rawArea = toStr(row[SR_COL.serviceArea])
+      const serviceArea = rawArea === '#N/A' ? null : rawArea
+
       const { error } = await supabase.from('eval_service_records').insert({
         received_at:       receivedAt,
-        application_year:  row[SR_COL.appYear]  ? parseInt(String(row[SR_COL.appYear]))  : null,
+        application_year:  receivedAt ? parseInt(receivedAt.split('-')[0]) : null,
         application_no:    row[SR_COL.appNo]    ? parseInt(String(row[SR_COL.appNo]))    : null,
         is_re_application: toBool(row[SR_COL.isReApplication]),
         name, birth_date: birthDate,
         gender:            toStr(row[SR_COL.gender]),
         region:            toStr(row[SR_COL.region]),
         disability_type:   toStr(row[SR_COL.disabilityType]),
-        service_category:  toStr(row[SR_COL.serviceCategory]),
+        service_category:  serviceCategory,
         product_name:      toStr(row[SR_COL.productName]),
         item_category:     toStr(row[SR_COL.itemCategory]),
         service_content:   toStr(row[SR_COL.serviceContent]),
-        service_area:      toStr(row[SR_COL.serviceArea]),
-        is_consult:        toBool(row[SR_COL.isConsult]),
-        is_assessment:     toBool(row[SR_COL.isAssessment]),
-        is_trial:          toBool(row[SR_COL.isTrial]),
-        is_rental:         toBool(row[SR_COL.isRental]),
-        is_custom_make:    toBool(row[SR_COL.isCustomMake]),
-        is_grant:          toBool(row[SR_COL.isGrant]),
-        is_education:      toBool(row[SR_COL.isEducation]),
-        is_other_business: toBool(row[SR_COL.isOtherBusiness]),
-        is_info_provision: toBool(row[SR_COL.isInfoProvision]),
+        service_area:      serviceArea,
+        ...flags,
         is_public_funding: toBool(row[SR_COL.isPublicFunding]),
         is_private_funding: toBool(row[SR_COL.isPrivateFunding]),
         is_self_pay:       toBool(row[SR_COL.isSelfPay]),
         is_funding_secured: toBool(row[SR_COL.isFundingSecured]),
-        is_repair:         toBool(row[SR_COL.isRepair]),
-        is_cleaning:       toBool(row[SR_COL.isCleaning]),
-        is_reuse:          toBool(row[SR_COL.isReuse]),
-        is_monitoring:     toBool(row[SR_COL.isMonitoring]),
         referral_type:     toStr(row[SR_COL.referralType]),
         is_phone:          toBool(row[SR_COL.isPhone]),
         is_visit_in:       toBool(row[SR_COL.isVisitIn]),
         is_visit_out:      toBool(row[SR_COL.isVisitOut]),
-        is_closed:         toBool(row[SR_COL.isClosed]),
+        is_closed:         isClosed,
         staff_name:        toStr(row[SR_COL.staffName]),
         contact:           toStr(row[SR_COL.contact]),
         address:           toStr(row[SR_COL.address]),
         source:            'csv',
         application_month: receivedAt ? parseInt(receivedAt.split('-')[1]) : null,
-        record_status:     toBool(row[SR_COL.isClosed]) ? '완료' : '미정',
+        record_status:     isClosed ? '완료' : (closedStatus === '취소' ? '취소' : '미정'),
       })
       if (!error) added++; else failed++
     }
