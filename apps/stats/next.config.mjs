@@ -1,4 +1,4 @@
-// v0.1.4
+// v0.1.5
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: { externalDir: true },
