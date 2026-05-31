@@ -1,12 +1,25 @@
 "use server"
 
 import path from 'path'
+import fs from 'fs'
 import ExcelJS from 'exceljs'
+import * as XLSX from 'xlsx'
 import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 
 function getTemplatePath(filename: string): string {
   return path.join(process.cwd(), 'public', 'templates', filename)
+}
+
+// ExcelJS throws "Shared Formula master cell not found" on some Excel files.
+// Work around by round-tripping through SheetJS which strips shared formula refs.
+async function loadTemplateWorkbook(filePath: string): Promise<ExcelJS.Workbook> {
+  const raw = fs.readFileSync(filePath)
+  const xlsxWb = XLSX.read(raw, { type: 'buffer' })
+  const clean = Buffer.from(XLSX.write(xlsxWb, { type: 'buffer', bookType: 'xlsx' }) as ArrayBuffer)
+  const workbook = new ExcelJS.Workbook()
+  await workbook.xlsx.load(clean)
+  return workbook
 }
 
 // ────────────────────────────────────────────
@@ -34,8 +47,7 @@ export async function generateCallLogReport(params: {
   const rows = data as Record<string, unknown>[]
 
   const templatePath = getTemplatePath('call_log_template.xlsx')
-  const workbook = new ExcelJS.Workbook()
-  await workbook.xlsx.readFile(templatePath)
+  const workbook = await loadTemplateWorkbook(templatePath)
 
   // Group rows by year — inject into year-named sheets (e.g. "2026", "2025")
   const yearGroups: Record<string, Record<string, unknown>[]> = {}
@@ -106,8 +118,7 @@ export async function generateServiceRecordReport(params: {
   const rows = data as Record<string, unknown>[]
 
   const templatePath = getTemplatePath('service_record_template.xlsx')
-  const workbook = new ExcelJS.Workbook()
-  await workbook.xlsx.readFile(templatePath)
+  const workbook = await loadTemplateWorkbook(templatePath)
 
   const sheet = workbook.getWorksheet('보조기기 서비스 상세')
   if (!sheet) return { success: false, error: '템플릿에서 시트를 찾을 수 없습니다' }
@@ -312,8 +323,7 @@ export async function generateBusinessReport(params: {
   }
 
   const templatePath = getTemplatePath('business_report_template.xlsx')
-  const workbook = new ExcelJS.Workbook()
-  await workbook.xlsx.readFile(templatePath)
+  const workbook = await loadTemplateWorkbook(templatePath)
 
   // Sheet 1: 전체 사업 실적 — update actual column E with stats values
   const sheet1 = workbook.getWorksheet(1)
