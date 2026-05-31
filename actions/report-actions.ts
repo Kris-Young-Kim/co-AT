@@ -16,9 +16,9 @@ function getTemplatePath(filename: string): string {
 async function loadTemplateWorkbook(filePath: string): Promise<ExcelJS.Workbook> {
   const raw = fs.readFileSync(filePath)
   const xlsxWb = XLSX.read(raw, { type: 'buffer' })
-  const clean = Buffer.from(XLSX.write(xlsxWb, { type: 'buffer', bookType: 'xlsx' }) as ArrayBuffer)
+  const clean = XLSX.write(xlsxWb, { type: 'array', bookType: 'xlsx' }) as Uint8Array
   const workbook = new ExcelJS.Workbook()
-  await workbook.xlsx.load(clean)
+  await workbook.xlsx.load(Buffer.from(clean))
   return workbook
 }
 
