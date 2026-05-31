@@ -16,11 +16,11 @@ function getTemplatePath(filename: string): string {
 async function loadTemplateWorkbook(filePath: string): Promise<ExcelJS.Workbook> {
   const raw = fs.readFileSync(filePath)
   const xlsxWb = XLSX.read(raw, { type: 'buffer' })
-  const clean = XLSX.write(xlsxWb, { type: 'array', bookType: 'xlsx' }) as Uint8Array
+  // type:'buffer' returns a proper Node.js Buffer (not a plain Array like type:'array')
+  const clean = XLSX.write(xlsxWb, { type: 'buffer', bookType: 'xlsx' }) as Buffer
   const workbook = new ExcelJS.Workbook()
-  // Buffer.from copies only the relevant bytes; .buffer would give the full Node pool
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  await workbook.xlsx.load(Buffer.from(clean.buffer, clean.byteOffset, clean.byteLength) as any)
+  await workbook.xlsx.load(clean as any)
   return workbook
 }
 
