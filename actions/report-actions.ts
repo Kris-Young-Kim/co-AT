@@ -15,9 +15,9 @@ function getTemplatePath(filename: string): string {
 // Work around by round-tripping through SheetJS which strips shared formula refs.
 async function loadTemplateWorkbook(filePath: string): Promise<ExcelJS.Workbook> {
   const raw = fs.readFileSync(filePath)
-  const xlsxWb = XLSX.read(raw, { type: 'buffer' })
+  const xlsxWb = XLSX.read(raw, { type: 'buffer', cellStyles: true })
   // type:'buffer' returns a proper Node.js Buffer (not a plain Array like type:'array')
-  const clean = XLSX.write(xlsxWb, { type: 'buffer', bookType: 'xlsx' }) as Buffer
+  const clean = XLSX.write(xlsxWb, { type: 'buffer', bookType: 'xlsx', cellStyles: true }) as Buffer
   const workbook = new ExcelJS.Workbook()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await workbook.xlsx.load(clean as any)
