@@ -18,7 +18,9 @@ async function loadTemplateWorkbook(filePath: string): Promise<ExcelJS.Workbook>
   const xlsxWb = XLSX.read(raw, { type: 'buffer' })
   const clean = XLSX.write(xlsxWb, { type: 'array', bookType: 'xlsx' }) as Uint8Array
   const workbook = new ExcelJS.Workbook()
-  await workbook.xlsx.load(clean.buffer as ArrayBuffer)
+  // Buffer.from copies only the relevant bytes; .buffer would give the full Node pool
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await workbook.xlsx.load(Buffer.from(clean.buffer, clean.byteOffset, clean.byteLength) as any)
   return workbook
 }
 
