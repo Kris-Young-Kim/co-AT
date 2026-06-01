@@ -379,7 +379,7 @@
 - [x] **eval** — Google Sheets → Supabase 마이그레이션 (File import 완료)
 - [x] **eval** — 중앙보조기기센터 보고 양식 엑셀 출력 (ExcelJS 완료)
 - [x] **eval** — 9개 영역 평가 시스템 + 결과 시각화 완료
-- [ ] **eval** — AI 상담기록 생성 (형식 미결정: SOAP 노트 vs 상담기록)
+- [x] **eval** — AI 상담기록 생성 (상담기록 형식 확정, SOAP 노트 코드 삭제)
 - [ ] **web** — OG 이미지 파일 생성, Google/Naver Search Console 등록
 - [x] **모든 앱** — Sentry DSN 환경변수 설정 (코드는 이미 준비됨)
 

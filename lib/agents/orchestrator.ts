@@ -128,20 +128,6 @@ const ROUTING_TOOL_DECLARATIONS = [
     },
   },
   {
-    name: "route_to_document_agent",
-    description: `문서 생성 에이전트로 라우팅합니다. 다음 경우에 사용하세요:
-- 상담 내용을 SOAP 노트로 변환 요청
-- "SOAP 노트 작성해줘", "상담 내용 정리해줘"
-- 구조화된 서비스 기록 작성 요청`,
-    parameters: {
-      type: SchemaType.OBJECT,
-      properties: {
-        query: { type: SchemaType.STRING, description: "사용자 질문" },
-      },
-      required: ["query"],
-    },
-  },
-  {
     name: "route_to_posting_agent",
     description: `공개 게시 에이전트로 라우팅합니다. 다음 경우에 사용하세요:
 - 공지사항 조회, 작성, 수정 요청
@@ -203,7 +189,6 @@ const DOMAIN_FROM_FUNCTION: Record<string, AgentDomain> = {
   route_to_schedule_agent: "schedule",
   route_to_inventory_agent: "inventory",
   route_to_knowledge_agent: "knowledge",
-  route_to_document_agent: "document",
   route_to_posting_agent: "posting",
   route_to_performance_agent: "performance",
   route_to_application_agent: "application",
@@ -234,11 +219,6 @@ const DOMAIN_SYSTEM_PROMPTS: Record<AgentDomain, string> = {
 규정에 없는 내용은 추측하지 말고, 확인이 필요하다고 안내하세요.
 한국어로 답변하세요.`,
 
-  document: `당신은 강원도 보조기기센터의 문서 작성 AI입니다.
-상담 내용을 SOAP 노트 형식으로 전문적으로 변환합니다.
-도구가 생성한 SOAP 노트를 그대로 전달하고 필요시 간단한 설명을 덧붙이세요.
-한국어로 답변하세요.`,
-
   posting: `당신은 강원도 보조기기센터의 공지사항 관리 AI입니다.
 공지사항 조회, 작성, 수정 업무를 처리합니다.
 게시 내용은 정확하고 공식적인 어조로 안내하세요.
@@ -255,7 +235,7 @@ const DOMAIN_SYSTEM_PROMPTS: Record<AgentDomain, string> = {
 한국어로 답변하세요.`,
 
   general: `당신은 강원도 보조기기센터의 AI 업무 도우미입니다.
-대상자 검색, 일정 확인, 재고 조회, 규정 검색, 공지사항, 실적 통계, SOAP 노트 작성을 도와드립니다.
+대상자 검색, 일정 확인, 재고 조회, 규정 검색, 공지사항, 실적 통계를 도와드립니다.
 친절하고 명확하게 답변하세요.
 한국어로 답변하세요.`,
 }

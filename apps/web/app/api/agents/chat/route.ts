@@ -8,7 +8,6 @@ import { ClientMainAgent } from "@/lib/agents/domains/client"
 import { ScheduleMainAgent } from "@/lib/agents/domains/schedule"
 import { InventoryMainAgent } from "@/lib/agents/domains/inventory"
 import { KnowledgeMainAgent } from "@/lib/agents/domains/knowledge"
-import { DocumentMainAgent } from "@/lib/agents/domains/document"
 import { PostingMainAgent } from "@/lib/agents/domains/posting"
 import { PerformanceMainAgent } from "@/lib/agents/domains/performance"
 import { ApplicationMainAgent } from "@/lib/agents/domains/application"
@@ -20,7 +19,6 @@ const agentRegistry = new Map<AgentDomain, MainAgent>([
   ["schedule", ScheduleMainAgent],
   ["inventory", InventoryMainAgent],
   ["knowledge", KnowledgeMainAgent],
-  ["document", DocumentMainAgent],
   ["posting", PostingMainAgent],
   ["performance", PerformanceMainAgent],
   ["application", ApplicationMainAgent],
