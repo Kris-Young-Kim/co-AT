@@ -2,10 +2,11 @@ import { getIntakeRecordsByApplication } from '@/actions/intake-actions'
 import { getDomainAssessments } from '@/actions/assessment-actions'
 import { getApplicationsByClientId } from '@/actions/application-actions'
 import { getClientById } from '@/actions/client-actions'
+import { getServiceRecordsByApplication } from '@/actions/service-record-actions'
 import { AssessmentGrid } from '@/eval/components/eval/AssessmentGrid'
 import { ApplicationDetailForm } from '@/eval/components/eval/ApplicationDetailForm'
 import Link from 'next/link'
-import { ArrowLeft, FileText, ClipboardCheck, Plus, Printer, ClipboardList } from 'lucide-react'
+import { ArrowLeft, FileText, ClipboardCheck, Plus, Printer, ClipboardList, ClipboardEdit } from 'lucide-react'
 import { notFound } from 'next/navigation'
 
 interface Props {
@@ -15,11 +16,12 @@ interface Props {
 export default async function ApplicationDetailPage({ params }: Props) {
   const { clientId, appId } = await params
 
-  const [intakeResult, assessmentResult, clientResult, appsResult] = await Promise.all([
+  const [intakeResult, assessmentResult, clientResult, appsResult, serviceRecordResult] = await Promise.all([
     getIntakeRecordsByApplication(appId),
     getDomainAssessments(appId),
     getClientById(clientId),
     getApplicationsByClientId(clientId),
+    getServiceRecordsByApplication(appId),
   ])
 
   if (!clientResult.success || !clientResult.client) notFound()
@@ -31,6 +33,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
 
   const intakeRecords = intakeResult.success ? (intakeResult.records ?? []) : []
   const assessments  = assessmentResult.success ? (assessmentResult.assessments ?? []) : []
+  const serviceRecords = serviceRecordResult.success ? (serviceRecordResult.records ?? []) : []
 
   return (
     <div className="p-8 max-w-4xl">
@@ -103,6 +106,40 @@ export default async function ApplicationDetailPage({ params }: Props) {
         ) : (
           <div className="border rounded-lg px-4 py-6 text-center text-sm text-gray-400 bg-gray-50">
             아직 작성된 상담 기록이 없습니다
+          </div>
+        )}
+      </section>
+
+      {/* ── 서비스 기록 ── */}
+      <section className="mb-8">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <ClipboardEdit className="h-5 w-5 text-orange-600" />
+            <h2 className="font-semibold text-gray-900">서비스 기록</h2>
+            <span className="text-xs text-gray-400">{serviceRecords.length}건</span>
+          </div>
+          <Link
+            href={`/clients/${clientId}/applications/${appId}/service-record`}
+            className="flex items-center gap-1 px-3 py-1.5 bg-orange-600 text-white rounded-md text-sm hover:bg-orange-700"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            작성하기
+          </Link>
+        </div>
+        {serviceRecords.length > 0 ? (
+          <div className="border rounded-lg divide-y bg-white">
+            {serviceRecords.map((r) => (
+              <div key={r.id} className="flex items-center justify-between px-4 py-3">
+                <span className="text-sm font-medium text-gray-700">{r.received_at} 기록</span>
+                {r.service_content && (
+                  <span className="text-xs text-gray-400 truncate max-w-xs ml-4">{r.service_content}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="border rounded-lg px-4 py-6 text-center text-sm text-gray-400 bg-gray-50">
+            아직 작성된 서비스 기록이 없습니다
           </div>
         )}
       </section>
