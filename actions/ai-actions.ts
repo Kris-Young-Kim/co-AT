@@ -278,7 +278,7 @@ export async function generateServiceRecordDraft(
     const [clientResult, intakeResult, assessmentResult] = await Promise.all([
       supabase
         .from('clients')
-        .select('name, birth_date, disability_type, disability_severity, economic_status, region')
+        .select('name, birth_date, disability_type, disability_grade, economic_status, address')
         .eq('id', input.clientId)
         .single(),
       supabase
@@ -299,7 +299,7 @@ export async function generateServiceRecordDraft(
     const assessments = assessmentResult.data ?? []
 
     const clientCtx = client
-      ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}, 장애정도: ${client.disability_severity ?? '미상'}, 경제상황: ${client.economic_status ?? '미상'}, 지역: ${client.region ?? '미상'}`
+      ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}, 장애등급: ${client.disability_grade ?? '미상'}, 경제상황: ${client.economic_status ?? '미상'}, 주소: ${client.address ?? '미상'}`
       : '클라이언트 정보 없음'
 
     const appCtx = `의뢰구분: ${appRow.referral_type ?? '미상'}, 진행분류: ${appRow.progress_type ?? '미상'}, 사업분류: ${appRow.category ?? '미상'}, 서비스분류: ${appRow.sub_category ?? '미상'}, 신청품목: ${appRow.requested_item ?? '미상'}, 서비스영역: ${appRow.service_area ?? '미상'}`
