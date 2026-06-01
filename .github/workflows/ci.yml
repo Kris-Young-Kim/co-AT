@@ -92,4 +92,6 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build
+        # Only build Phase-1 active apps — Phase 2-7 apps are not yet deployed and
+        # fail at static prerender time without real server-side secrets.
+        run: pnpm turbo run build --filter=web... --filter=admin... --filter=@co-at/eval... --filter=@co-at/stats... --filter=@co-at/inventory...
