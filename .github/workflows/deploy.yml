@@ -31,7 +31,7 @@ jobs:
       - name: Build application
         # Only build Phase-1 active apps — Phase 2-7 apps (hr, approval, automation, finance) are
         # not yet deployed and fail without server-side secrets set in CI.
-        run: pnpm turbo run build --filter=web... --filter=admin... --filter=@co-at/eval... --filter=@co-at/stats... --filter=@co-at/inventory...
+        run: pnpm turbo run build --filter=web... --filter=admin... --filter=@co-at/eval... --filter=@co-at/stats...
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
