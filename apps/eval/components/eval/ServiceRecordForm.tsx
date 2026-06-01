@@ -1,0 +1,431 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Sparkles } from 'lucide-react'
+import { createServiceRecord } from '@/actions/service-record-actions'
+import { generateServiceRecordDraft } from '@/actions/ai-actions'
+import type { ServiceRecordDraft } from '@/actions/ai-actions'
+
+const INPUT = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+const SELECT = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white'
+const SKELETON = 'w-full rounded-md bg-gray-200 animate-pulse'
+const READONLY = 'w-full border rounded-md px-3 py-2 text-sm bg-gray-50 text-gray-600 cursor-not-allowed'
+
+const MAJOR_CATEGORIES = ['공적급여', '민간지원', '기타', '서비스지원']
+const SERVICE_AREAS = [
+  { value: 'WC', label: 'WC (휠체어 및 이동)' },
+  { value: 'ADL', label: 'ADL (일상생활동작)' },
+  { value: 'S', label: 'S (감각)' },
+  { value: 'SP', label: 'SP (앉기 및 자세)' },
+  { value: 'EC', label: 'EC (주택 및 환경개조)' },
+  { value: 'CA', label: 'CA (컴퓨터접근)' },
+  { value: 'L', label: 'L (레저)' },
+  { value: 'AAC', label: 'AAC (보완대체의사소통)' },
+  { value: 'AM', label: 'AM (자동차개조)' },
+]
+const REFERRAL_TYPES = ['내방', '유선', '인터넷신청', '기관연계', '기타']
+const RECORD_STATUSES = ['접수', '진행중', '완료', '보류']
+
+interface ClientData {
+  name: string
+  birth_date: string | null
+  gender: string | null
+  disability_type: string | null
+  disability_severity: string | null
+  economic_status: string | null
+  region: string | null
+  contact: string | null
+}
+
+interface ServiceRecordFormProps {
+  clientId: string
+  applicationId: string
+  clientData?: ClientData
+  redirectTo: string
+}
+
+type CheckKey =
+  | 'is_consult' | 'is_assessment' | 'is_trial' | 'is_rental' | 'is_custom_make'
+  | 'is_grant' | 'is_education' | 'is_info_provision' | 'is_repair' | 'is_cleaning'
+  | 'is_reuse' | 'is_monitoring' | 'is_other_business' | 'is_phone' | 'is_visit_in'
+  | 'is_visit_out' | 'is_public_funding' | 'is_private_funding' | 'is_self_pay'
+  | 'is_funding_secured' | 'is_closed'
+
+const INITIAL_CHECKS: Record<CheckKey, boolean> = {
+  is_consult: false, is_assessment: false, is_trial: false, is_rental: false,
+  is_custom_make: false, is_grant: false, is_education: false, is_info_provision: false,
+  is_repair: false, is_cleaning: false, is_reuse: false, is_monitoring: false,
+  is_other_business: false, is_phone: false, is_visit_in: false, is_visit_out: false,
+  is_public_funding: false, is_private_funding: false, is_self_pay: false,
+  is_funding_secured: false, is_closed: false,
+}
+
+export function ServiceRecordForm({
+  clientId,
+  applicationId,
+  clientData,
+  redirectTo,
+}: ServiceRecordFormProps) {
+  const router = useRouter()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiError, setAiError] = useState<string | null>(null)
+  const [memo, setMemo] = useState('')
+
+  // AI-filled fields
+  const [serviceContent, setServiceContent] = useState('')
+  const [majorCategory, setMajorCategory] = useState('')
+  const [subCategory, setSubCategory] = useState('')
+  const [serviceCategory, setServiceCategory] = useState('')
+  const [serviceArea, setServiceArea] = useState('')
+  const [productName, setProductName] = useState('')
+  const [referralType, setReferralType] = useState('')
+  const [checks, setChecks] = useState<Record<CheckKey, boolean>>(INITIAL_CHECKS)
+
+  function toggleCheck(key: CheckKey) {
+    setChecks(prev => ({ ...prev, [key]: !prev[key] }))
+  }
+
+  async function handleAiGenerate() {
+    const hasContent = serviceContent || majorCategory || productName
+    if (hasContent && !window.confirm('기존 내용이 덮어씌워집니다. 계속하시겠습니까?')) return
+
+    setAiLoading(true)
+    setAiError(null)
+    try {
+      const result = await generateServiceRecordDraft({ applicationId, clientId, memo: memo || undefined })
+      if (!result.success || !result.draft) {
+        setAiError(result.error ?? 'AI 초안 생성에 실패했습니다')
+        return
+      }
+      applyDraft(result.draft)
+    } catch {
+      setAiError('AI 초안 생성에 실패했습니다')
+    } finally {
+      setAiLoading(false)
+    }
+  }
+
+  function applyDraft(draft: ServiceRecordDraft) {
+    setServiceContent(draft.service_content ?? '')
+    setMajorCategory(draft.service_major_category ?? '')
+    setSubCategory(draft.service_sub_category ?? '')
+    setServiceCategory(draft.service_category ?? '')
+    setServiceArea(draft.service_area ?? '')
+    setProductName(draft.product_name ?? '')
+    setReferralType(draft.referral_type ?? '')
+    setChecks(prev => ({
+      ...prev,
+      is_consult: draft.is_consult ?? false,
+      is_assessment: draft.is_assessment ?? false,
+      is_trial: draft.is_trial ?? false,
+      is_rental: draft.is_rental ?? false,
+      is_custom_make: draft.is_custom_make ?? false,
+      is_grant: draft.is_grant ?? false,
+      is_education: draft.is_education ?? false,
+      is_info_provision: draft.is_info_provision ?? false,
+      is_repair: draft.is_repair ?? false,
+    }))
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setSaving(true)
+    setError(null)
+    const fd = new FormData(e.currentTarget)
+    const str = (k: string) => (fd.get(k) as string) || null
+    const num = (k: string) => { const v = fd.get(k) as string; return v ? parseInt(v) : null }
+    const bool = (k: string) => fd.get(k) === 'true'
+
+    const result = await createServiceRecord({
+      application_id: applicationId,
+      client_id: clientId,
+      received_at: str('received_at') ?? new Date().toISOString().split('T')[0],
+      application_year: num('application_year'),
+      application_month: num('application_month'),
+      application_no: num('application_no'),
+      is_re_application: bool('is_re_application'),
+      record_status: str('record_status'),
+      name: clientData?.name ?? str('name'),
+      birth_date: clientData?.birth_date ?? str('birth_date'),
+      gender: clientData?.gender ?? str('gender'),
+      disability_type: clientData?.disability_type ?? str('disability_type'),
+      disability_severity: clientData?.disability_severity ?? str('disability_severity'),
+      economic_status: clientData?.economic_status ?? str('economic_status'),
+      region: clientData?.region ?? str('region'),
+      contact: clientData?.contact ?? str('contact'),
+      address: str('address'),
+      service_major_category: majorCategory || null,
+      service_sub_category: subCategory || null,
+      service_category: serviceCategory || null,
+      product_name: productName || null,
+      item_category: str('item_category'),
+      service_area: serviceArea || null,
+      service_content: serviceContent || null,
+      referral_type: referralType || null,
+      consultation_date: str('consultation_date'),
+      performance_date: str('performance_date'),
+      closed_at: str('closed_at'),
+      monitoring_date: str('monitoring_date'),
+      ...checks,
+      trial_device_count: num('trial_device_count'),
+      info_provision_area: str('info_provision_area'),
+      funding_source_detail: str('funding_source_detail'),
+      staff_name: str('staff_name'),
+    })
+
+    setSaving(false)
+    if (!result.success) { setError(result.error ?? '저장 실패'); return }
+    router.push(redirectTo)
+    router.refresh()
+  }
+
+  function CheckBox({ k, label }: { k: CheckKey; label: string }) {
+    return (
+      <label className="flex items-center gap-1.5 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={checks[k]}
+          onChange={() => toggleCheck(k)}
+          className="rounded border-gray-300"
+        />
+        <span className="text-sm">{label}</span>
+      </label>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl">
+      {error && <div className="rounded-md bg-red-50 border border-red-200 p-4 text-sm text-red-700">{error}</div>}
+
+      {/* AI 초안 */}
+      <section className="border rounded-lg p-6 bg-white space-y-3">
+        <h3 className="font-semibold text-gray-900">AI 초안 생성</h3>
+        <p className="text-xs text-gray-500">버튼을 누르면 클라이언트 정보·상담기록지·평가 결과를 자동으로 읽어 초안을 생성합니다. 메모를 추가하면 더 정확해집니다.</p>
+        <textarea
+          value={memo}
+          onChange={e => setMemo(e.target.value)}
+          rows={2}
+          placeholder="예) 전동휠체어 공적급여 상담, 건강보험 급여 신청 안내 완료"
+          disabled={aiLoading}
+          className={INPUT}
+        />
+        {aiError && <p className="text-sm text-red-600">{aiError}</p>}
+        <button
+          type="button"
+          onClick={handleAiGenerate}
+          disabled={aiLoading}
+          className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
+        >
+          {aiLoading ? (
+            <><span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />생성 중...</>
+          ) : (
+            <><Sparkles className="w-4 h-4" />AI 초안 생성</>
+          )}
+        </button>
+      </section>
+
+      {/* ① 기본 정보 */}
+      <section className="border rounded-lg p-6 bg-white space-y-4">
+        <h3 className="font-semibold text-gray-900">① 기본 정보</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">접수일 <span className="text-red-500">*</span></label>
+            <input name="received_at" type="date" required defaultValue={new Date().toISOString().split('T')[0]} className={INPUT} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">기록상태</label>
+            <select name="record_status" defaultValue="" className={SELECT}>
+              <option value="">선택</option>
+              {RECORD_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">신청년도</label>
+            <input name="application_year" type="number" defaultValue={new Date().getFullYear()} className={INPUT} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">신청월</label>
+            <input name="application_month" type="number" min="1" max="12" className={INPUT} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">신청번호</label>
+            <input name="application_no" type="number" className={INPUT} />
+          </div>
+          <div className="flex items-center gap-2 pt-5">
+            <input name="is_re_application" type="checkbox" value="true" className="rounded border-gray-300" />
+            <label className="text-sm text-gray-700">재신청</label>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4 pt-2 border-t">
+          {clientData ? (
+            <>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">성명</label><div className={READONLY}>{clientData.name}</div></div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">생년월일</label><div className={READONLY}>{clientData.birth_date ?? '—'}</div></div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">성별</label><div className={READONLY}>{clientData.gender ?? '—'}</div></div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">장애유형</label><div className={READONLY}>{clientData.disability_type ?? '—'}</div></div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">장애정도</label><div className={READONLY}>{clientData.disability_severity ?? '—'}</div></div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">경제상황</label><div className={READONLY}>{clientData.economic_status ?? '—'}</div></div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">지역</label><div className={READONLY}>{clientData.region ?? '—'}</div></div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">연락처</label><div className={READONLY}>{clientData.contact ?? '—'}</div></div>
+            </>
+          ) : (
+            <>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">성명</label><input name="name" type="text" className={INPUT} /></div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">생년월일</label><input name="birth_date" type="text" placeholder="YYYY-MM-DD" className={INPUT} /></div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">성별</label>
+                <select name="gender" defaultValue="" className={SELECT}>
+                  <option value="">선택</option>
+                  <option value="남">남</option>
+                  <option value="여">여</option>
+                </select>
+              </div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">장애유형</label><input name="disability_type" type="text" className={INPUT} /></div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">장애정도</label>
+                <select name="disability_severity" defaultValue="" className={SELECT}>
+                  <option value="">선택</option>
+                  <option value="심한">심한</option>
+                  <option value="심하지 않은">심하지 않은</option>
+                </select>
+              </div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">경제상황</label><input name="economic_status" type="text" className={INPUT} /></div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">지역</label><input name="region" type="text" className={INPUT} /></div>
+              <div><label className="block text-xs font-medium text-gray-600 mb-1">연락처</label><input name="contact" type="text" className={INPUT} /></div>
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* ② 서비스 내용 */}
+      <section className="border rounded-lg p-6 bg-white space-y-4">
+        <h3 className="font-semibold text-gray-900">② 서비스 내용</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">대분류</label>
+            {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
+              <select value={majorCategory} onChange={e => setMajorCategory(e.target.value)} className={SELECT}>
+                <option value="">선택</option>
+                {MAJOR_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">소분류</label>
+            {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
+              <input value={subCategory} onChange={e => setSubCategory(e.target.value)} type="text" className={INPUT} />
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">서비스구분</label>
+            {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
+              <input value={serviceCategory} onChange={e => setServiceCategory(e.target.value)} type="text" className={INPUT} />
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">신청품목</label>
+            {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
+              <input value={productName} onChange={e => setProductName(e.target.value)} type="text" className={INPUT} />
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">품목분류</label>
+            <input name="item_category" type="text" className={INPUT} />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">서비스영역</label>
+            {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
+              <select value={serviceArea} onChange={e => setServiceArea(e.target.value)} className={SELECT}>
+                <option value="">선택</option>
+                {SERVICE_AREAS.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
+              </select>
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">의뢰구분</label>
+            {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
+              <select value={referralType} onChange={e => setReferralType(e.target.value)} className={SELECT}>
+                <option value="">선택</option>
+                {REFERRAL_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
+              </select>
+            )}
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">서비스 내용</label>
+          {aiLoading ? <div className={`${SKELETON} h-24`} /> : (
+            <textarea value={serviceContent} onChange={e => setServiceContent(e.target.value)} rows={5} className={INPUT} placeholder="서비스 내용을 입력하세요" />
+          )}
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">상담일</label><input name="consultation_date" type="date" className={INPUT} /></div>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">실적일</label><input name="performance_date" type="date" className={INPUT} /></div>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">종결일</label><input name="closed_at" type="date" className={INPUT} /></div>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">모니터링일</label><input name="monitoring_date" type="date" className={INPUT} /></div>
+        </div>
+      </section>
+
+      {/* ③ 서비스 유형 체크박스 */}
+      <section className="border rounded-lg p-6 bg-white space-y-4">
+        <h3 className="font-semibold text-gray-900">③ 서비스 유형</h3>
+        <div>
+          <p className="text-xs font-medium text-gray-600 mb-2">서비스 유형</p>
+          <div className="flex flex-wrap gap-3">
+            <CheckBox k="is_consult" label="상담" />
+            <CheckBox k="is_assessment" label="평가" />
+            <CheckBox k="is_trial" label="체험" />
+            <CheckBox k="is_rental" label="대여" />
+            <CheckBox k="is_custom_make" label="맞춤제작" />
+            <CheckBox k="is_grant" label="교부" />
+            <CheckBox k="is_education" label="교육" />
+            <CheckBox k="is_info_provision" label="정보제공" />
+            <CheckBox k="is_repair" label="수리" />
+            <CheckBox k="is_cleaning" label="소독" />
+            <CheckBox k="is_reuse" label="재사용" />
+            <CheckBox k="is_monitoring" label="모니터링" />
+            <CheckBox k="is_other_business" label="기타사업" />
+          </div>
+        </div>
+        <div>
+          <p className="text-xs font-medium text-gray-600 mb-2">연락 방식</p>
+          <div className="flex flex-wrap gap-3">
+            <CheckBox k="is_phone" label="유선" />
+            <CheckBox k="is_visit_in" label="내방" />
+            <CheckBox k="is_visit_out" label="방문(외)" />
+          </div>
+        </div>
+        <div>
+          <p className="text-xs font-medium text-gray-600 mb-2">재원</p>
+          <div className="flex flex-wrap gap-3">
+            <CheckBox k="is_public_funding" label="공적급여" />
+            <CheckBox k="is_private_funding" label="민간지원" />
+            <CheckBox k="is_self_pay" label="자부담" />
+            <CheckBox k="is_funding_secured" label="재원확보" />
+          </div>
+        </div>
+        <div className="flex items-center">
+          <CheckBox k="is_closed" label="종결" />
+        </div>
+      </section>
+
+      {/* ④ 추가 정보 */}
+      <section className="border rounded-lg p-6 bg-white space-y-4">
+        <h3 className="font-semibold text-gray-900">④ 추가 정보</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">체험기기 수</label><input name="trial_device_count" type="number" min="0" className={INPUT} /></div>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">정보제공 지역</label><input name="info_provision_area" type="text" className={INPUT} /></div>
+          <div className="col-span-2"><label className="block text-xs font-medium text-gray-600 mb-1">재원 상세</label><input name="funding_source_detail" type="text" className={INPUT} /></div>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">담당자</label><input name="staff_name" type="text" className={INPUT} /></div>
+        </div>
+      </section>
+
+      <div className="flex gap-3 justify-end">
+        <button type="button" onClick={() => router.back()} className="px-4 py-2 border rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">취소</button>
+        <button type="submit" disabled={saving} className="px-6 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
+          {saving ? '저장 중...' : '저장'}
+        </button>
+      </div>
+    </form>
+  )
+}
