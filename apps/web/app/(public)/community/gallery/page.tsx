@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from "next"
 import { getNoticesByCategory } from "@/actions/notice-actions"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import type { Metadata } from "next"
 import { Breadcrumb } from "@/components/common/breadcrumb"
 import { getResources } from "@/actions/resource-actions"
@@ -5,8 +7,6 @@ import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { ResourceListWithCrud } from "@/components/features/resources/ResourceListWithCrud"
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
-
-export const revalidate = 300
 
 export const metadata: Metadata = {
   title: "자료실",
