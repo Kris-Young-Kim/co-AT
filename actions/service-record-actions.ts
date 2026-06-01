@@ -1,6 +1,5 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { revalidatePath } from "next/cache"
@@ -74,7 +73,7 @@ export async function createServiceRecord(
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   // eval_service_records types are stale — application_id column exists in DB but not in generated types
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await (supabase as any)
@@ -100,7 +99,7 @@ export async function updateServiceRecord(
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await (supabase as any)
     .from('eval_service_records')
@@ -119,8 +118,8 @@ export async function getServiceRecordsByApplication(
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
-  const supabase = await createClient()
-  const { data, error } = await supabase
+  const supabase = createAdminClient()
+  const { data, error } = await (supabase as any)
     .from('eval_service_records')
     .select('*')
     .eq('application_id', applicationId)

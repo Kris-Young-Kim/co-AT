@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createServiceRecord, getServiceRecordsByApplication, getServiceRecords } from '@/actions/service-record-actions'
 import { mockHasAdminOrStaffPermission } from '../../tests/setup'
-import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
 describe('service-record-actions', () => {
@@ -12,16 +11,13 @@ describe('service-record-actions', () => {
   describe('createServiceRecord', () => {
     it('성공 — id 반환', async () => {
       mockHasAdminOrStaffPermission.mockResolvedValueOnce(true)
-      const mockSupabase = {
-        from: vi.fn(() => ({
-          insert: vi.fn(() => ({
-            select: vi.fn(() => ({
-              single: vi.fn(() => Promise.resolve({ data: { id: 'sr-1' }, error: null })),
-            })),
-          })),
-        })),
+      const chain: any = {
+        from: vi.fn(() => chain),
+        insert: vi.fn(() => chain),
+        select: vi.fn(() => chain),
+        single: vi.fn(() => Promise.resolve({ data: { id: 'sr-1' }, error: null })),
       }
-      vi.mocked(createClient).mockResolvedValueOnce(mockSupabase as any)
+      vi.mocked(createAdminClient).mockReturnValueOnce(chain as any)
       const result = await createServiceRecord({ received_at: '2026-06-01' })
       expect(result.success).toBe(true)
       expect(result.id).toBe('sr-1')
@@ -39,16 +35,12 @@ describe('service-record-actions', () => {
     it('applicationId로 기록 조회', async () => {
       mockHasAdminOrStaffPermission.mockResolvedValueOnce(true)
       const records = [{ id: 'sr-1', application_id: 'app-1', received_at: '2026-06-01' }]
-      const mockSupabase = {
-        from: vi.fn(() => ({
-          select: vi.fn(() => ({
-            eq: vi.fn(() => ({
-              order: vi.fn(() => Promise.resolve({ data: records, error: null })),
-            })),
-          })),
-        })),
+      const chain: any = {
+        select: vi.fn(() => chain),
+        eq: vi.fn(() => chain),
+        order: vi.fn(() => Promise.resolve({ data: records, error: null })),
       }
-      vi.mocked(createClient).mockResolvedValueOnce(mockSupabase as any)
+      vi.mocked(createAdminClient).mockReturnValueOnce({ from: vi.fn(() => chain) } as any)
       const result = await getServiceRecordsByApplication('app-1')
       expect(result.success).toBe(true)
       expect(result.records).toHaveLength(1)
