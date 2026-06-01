@@ -102,7 +102,8 @@ export async function getNoticesByCategory(
     return []
   }
 
-  return (data || []).map((n) => ({ ...n, attachments: parseAttachments(n.attachments) })) as Notice[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data || []).map((n: any) => ({ ...n, attachments: parseAttachments(n.attachments) })) as Notice[]
 }
 
 /**
@@ -125,7 +126,8 @@ export async function getNoticeById(id: string): Promise<Notice | null> {
 
   if (!data) return null
 
-  return { ...data, attachments: parseAttachments(data.attachments) } as Notice
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return { ...(data as any), attachments: parseAttachments((data as any).attachments) } as Notice
 }
 
 /**
@@ -320,7 +322,8 @@ export async function getAllNotices(): Promise<{
       }
     }
 
-    const notices = (data || []).map((n) => ({ ...n, attachments: parseAttachments(n.attachments) }))
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const notices = (data || []).map((n: any) => ({ ...n, attachments: parseAttachments(n.attachments) }))
 
     return { success: true, notices: notices as Notice[] }
   } catch (error) {
