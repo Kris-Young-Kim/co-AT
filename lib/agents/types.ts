@@ -8,6 +8,7 @@ export type AgentDomain =
   | "schedule"
   | "inventory"
   | "knowledge"
+  | "document"
   | "posting"
   | "performance"
   | "application"
