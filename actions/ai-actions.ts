@@ -205,3 +205,136 @@ ${input.questionContent}`
     return { success: false, error: "AI 답변 생성 중 오류가 발생했습니다" }
   }
 }
+
+export interface ServiceRecordDraftInput {
+  applicationId: string
+  clientId: string
+  memo?: string
+}
+
+export interface ServiceRecordDraft {
+  service_content: string
+  service_major_category: string
+  service_sub_category: string
+  service_category: string
+  service_area: string
+  product_name: string
+  referral_type: string
+  is_consult: boolean
+  is_assessment: boolean
+  is_trial: boolean
+  is_rental: boolean
+  is_custom_make: boolean
+  is_grant: boolean
+  is_education: boolean
+  is_info_provision: boolean
+  is_repair: boolean
+}
+
+const SERVICE_RECORD_DRAFT_PROMPT = `당신은 보조기기센터 전문가입니다. 클라이언트 정보와 상담 내역을 바탕으로 서비스 기록 초안을 JSON 형식으로 생성해주세요.
+
+다음 JSON 형식으로만 응답하세요. 다른 설명은 포함하지 마세요:
+{
+  "service_content": "서비스 내용 서술 (3~5문장, 구체적으로)",
+  "service_major_category": "공적급여 | 민간지원 | 기타 | 서비스지원 중 하나",
+  "service_sub_category": "소분류 (예: 건강보험 급여, 복지용구 등)",
+  "service_category": "서비스구분 (예: 상담, 평가, 교부 등)",
+  "service_area": "WC | ADL | S | SP | EC | CA | L | AAC | AM 중 하나, 해당없으면 빈 문자열",
+  "product_name": "신청 품목명",
+  "referral_type": "내방 | 유선 | 인터넷신청 | 기관연계 | 기타 중 하나",
+  "is_consult": true/false,
+  "is_assessment": true/false,
+  "is_trial": true/false,
+  "is_rental": true/false,
+  "is_custom_make": true/false,
+  "is_grant": true/false,
+  "is_education": true/false,
+  "is_info_provision": true/false,
+  "is_repair": true/false
+}`
+
+export async function generateServiceRecordDraft(
+  input: ServiceRecordDraftInput
+): Promise<{ success: boolean; draft?: ServiceRecordDraft; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: '로그인이 필요합니다' }
+
+    const supabase = createAdminClient()
+
+    const { data: appRow } = await supabase
+      .from('applications')
+      .select('client_id, referral_type, progress_type, category, sub_category, requested_item, service_area')
+      .eq('id', input.applicationId)
+      .single()
+
+    if (!appRow || appRow.client_id !== input.clientId) {
+      return { success: false, error: '접근 권한이 없습니다' }
+    }
+
+    const [clientResult, intakeResult, assessmentResult] = await Promise.all([
+      supabase
+        .from('clients')
+        .select('name, birth_date, disability_type, disability_severity, economic_status, region')
+        .eq('id', input.clientId)
+        .single(),
+      supabase
+        .from('intake_records')
+        .select('consultation_content, main_activity_place, environment_limitations')
+        .eq('application_id', input.applicationId)
+        .order('consult_date', { ascending: false })
+        .limit(1),
+      supabase
+        .from('domain_assessments')
+        .select('domain_type, evaluator_opinion')
+        .eq('application_id', input.applicationId)
+        .not('evaluator_opinion', 'is', null),
+    ])
+
+    const client = clientResult.data
+    const latestIntake = (intakeResult.data ?? [])[0]
+    const assessments = assessmentResult.data ?? []
+
+    const clientCtx = client
+      ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}, 장애정도: ${client.disability_severity ?? '미상'}, 경제상황: ${client.economic_status ?? '미상'}, 지역: ${client.region ?? '미상'}`
+      : '클라이언트 정보 없음'
+
+    const appCtx = `의뢰구분: ${appRow.referral_type ?? '미상'}, 진행분류: ${appRow.progress_type ?? '미상'}, 사업분류: ${appRow.category ?? '미상'}, 서비스분류: ${appRow.sub_category ?? '미상'}, 신청품목: ${appRow.requested_item ?? '미상'}, 서비스영역: ${appRow.service_area ?? '미상'}`
+
+    const intakeCtx = latestIntake
+      ? `상담내용: ${latestIntake.consultation_content ?? '없음'}, 주활동장소: ${latestIntake.main_activity_place ?? '없음'}, 환경제한: ${latestIntake.environment_limitations ?? '없음'}`
+      : '상담기록지 없음'
+
+    const assessmentCtx = assessments.length > 0
+      ? assessments.map((a: { domain_type: string; evaluator_opinion: string }) => `${a.domain_type}: ${a.evaluator_opinion}`).join('\n')
+      : '평가 정보 없음'
+
+    const memoCtx = input.memo?.trim() ? `\n추가 메모:\n${input.memo.trim()}` : ''
+
+    const model = getGeminiModel('gemini-2.5-flash')
+    const prompt = `${SERVICE_RECORD_DRAFT_PROMPT}\n\n클라이언트 정보:\n${clientCtx}\n\n신청서 정보:\n${appCtx}\n\n상담기록지:\n${intakeCtx}\n\n영역별 평가:\n${assessmentCtx}${memoCtx}`
+
+    const result = await model.generateContent(prompt)
+    const generatedText = result.response.text()
+
+    const cleanedText = generatedText
+      .replace(/```json\s*/g, '')
+      .replace(/```\s*/g, '')
+      .trim()
+
+    const draft = JSON.parse(cleanedText) as ServiceRecordDraft
+
+    if (!draft.service_content) throw new Error('service_content 누락')
+
+    return { success: true, draft }
+  } catch (error) {
+    console.error('[AI Actions] 서비스 기록 초안 생성 오류:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? `AI 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+    }
+  }
+}
