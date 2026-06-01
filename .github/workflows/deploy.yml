@@ -39,9 +39,13 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          # Fetch personal user/team ID from token — removes need for VERCEL_ORG_ID secret
+          VERCEL_ORG_ID=$(curl -sf -H "Authorization: Bearer $VERCEL_TOKEN" \
+            https://api.vercel.com/v2/user | python3 -c "import sys,json; print(json.load(sys.stdin)['user']['id'])")
+          mkdir -p .vercel
+          echo "{\"projectId\":\"$VERCEL_PROJECT_ID\",\"orgId\":\"$VERCEL_ORG_ID\"}" > .vercel/project.json
+          npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
