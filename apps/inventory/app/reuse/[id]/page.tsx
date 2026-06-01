@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getReuseDispatchById } from '@/actions/reuse-actions'
 import { ReuseStatusStepper } from '@/inventory/components/reuse/ReuseStatusStepper'
 import { notFound } from 'next/navigation'

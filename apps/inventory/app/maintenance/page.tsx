@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 import { getMaintenanceLogs } from '@/actions/maintenance-actions'
 
 const TYPE_LABELS: Record<string, string> = { inspection: '점검', repair: '수리', cleaning: '세척' }

@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 import { getInventoryList } from '@/actions/inventory-actions'
 import { DeviceListTable } from '@/inventory/components/inventory/DeviceListTable'
 import Link from 'next/link'

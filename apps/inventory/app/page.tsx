@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 import { getInventoryList } from '@/actions/inventory-actions'
 import { getOverdueRentals, getExpiringRentals, getRentals } from '@/actions/rental-actions'
 import { getFabEquipment } from '@/actions/fab-equipment-actions'

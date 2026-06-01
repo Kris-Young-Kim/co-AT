@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 import { getFabEquipment } from '@/actions/fab-equipment-actions'
 import Link from 'next/link'
 

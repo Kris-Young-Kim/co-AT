@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 import { getReuseDispatches } from '@/actions/reuse-actions'
 import Link from 'next/link'
 import type { ReuseDispatchStatus } from '@co-at/types'

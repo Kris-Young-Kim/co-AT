@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getInventoryItem, updateInventoryItem } from '@/actions/inventory-actions'
 import { DeviceForm } from '@/inventory/components/inventory/DeviceForm'
 import { notFound } from 'next/navigation'

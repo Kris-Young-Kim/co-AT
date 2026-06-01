@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 import { createInventoryItem, type InventoryItem } from '@/actions/inventory-actions'
 import { DeviceForm } from '@/inventory/components/inventory/DeviceForm'
 import Link from 'next/link'

@@ -1,3 +1,5 @@
+﻿export const dynamic = 'force-dynamic'
+
 import { getCustomOrders } from '@/actions/custom-order-actions'
 import Link from 'next/link'
 import type { CustomOrderStatus } from '@co-at/types'

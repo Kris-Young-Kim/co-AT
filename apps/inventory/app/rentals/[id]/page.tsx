@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getRentalById } from '@/actions/rental-actions'
 import { RentalStatusBadge } from '@/inventory/components/rental/RentalStatusBadge'
 import { ReturnButton } from '@/inventory/components/rental/ReturnButton'

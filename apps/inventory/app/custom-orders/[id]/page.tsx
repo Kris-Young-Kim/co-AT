@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getCustomOrderById } from '@/actions/custom-order-actions'
 import { getFabEquipment } from '@/actions/fab-equipment-actions'
 import { CustomOrderStatusStepper } from '@/inventory/components/custom-order/CustomOrderStatusStepper'

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getInventoryItem } from '@/actions/inventory-actions'
 import { getMaintenanceLogs } from '@/actions/maintenance-actions'
 import { DeviceStatusBadge } from '@/inventory/components/inventory/DeviceStatusBadge'
