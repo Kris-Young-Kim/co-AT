@@ -75,7 +75,8 @@ export async function getRecentNotices(limit: number = 5): Promise<Notice[]> {
 
   const allNotices = [...(pinned || []), ...(recent || [])].slice(0, limit)
 
-  return allNotices.map((n) => ({ ...n, attachments: parseAttachments(n.attachments) })) as Notice[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return allNotices.map((n: any) => ({ ...n, attachments: parseAttachments(n.attachments) })) as Notice[]
 }
 
 /**
