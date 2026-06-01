@@ -267,7 +267,7 @@ export async function generateServiceRecordDraft(
 
     const { data: appRow } = await supabase
       .from('applications')
-      .select('client_id, referral_type, progress_type, category, sub_category, requested_item, service_area')
+      .select('client_id, category, sub_category, status')
       .eq('id', input.applicationId)
       .single()
 
@@ -302,14 +302,17 @@ export async function generateServiceRecordDraft(
       ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}, 장애등급: ${client.disability_grade ?? '미상'}, 경제상황: ${client.economic_status ?? '미상'}, 주소: ${client.address ?? '미상'}`
       : '클라이언트 정보 없음'
 
-    const appCtx = `의뢰구분: ${appRow.referral_type ?? '미상'}, 진행분류: ${appRow.progress_type ?? '미상'}, 사업분류: ${appRow.category ?? '미상'}, 서비스분류: ${appRow.sub_category ?? '미상'}, 신청품목: ${appRow.requested_item ?? '미상'}, 서비스영역: ${appRow.service_area ?? '미상'}`
+    const appCtx = `사업분류: ${appRow.category ?? '미상'}, 서비스분류: ${appRow.sub_category ?? '미상'}, 상태: ${appRow.status ?? '미상'}`
 
     const intakeCtx = latestIntake
       ? `상담내용: ${latestIntake.consultation_content ?? '없음'}, 주활동장소: ${latestIntake.main_activity_place ?? '없음'}, 환경제한: ${latestIntake.environment_limitations ?? '없음'}`
       : '상담기록지 없음'
 
     const assessmentCtx = assessments.length > 0
-      ? assessments.map((a: { domain_type: string; evaluator_opinion: string }) => `${a.domain_type}: ${a.evaluator_opinion}`).join('\n')
+      ? assessments
+          .filter((a) => a.evaluator_opinion)
+          .map((a) => `${a.domain_type}: ${a.evaluator_opinion}`)
+          .join('\n')
       : '평가 정보 없음'
 
     const memoCtx = input.memo?.trim() ? `\n추가 메모:\n${input.memo.trim()}` : ''

@@ -75,7 +75,9 @@ export async function createServiceRecord(
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
   const supabase = await createClient()
-  const { data, error } = await supabase
+  // eval_service_records types are stale — application_id column exists in DB but not in generated types
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (supabase as any)
     .from('eval_service_records')
     .insert(input)
     .select('id')
@@ -99,7 +101,8 @@ export async function updateServiceRecord(
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
   const supabase = await createClient()
-  const { error } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (supabase as any)
     .from('eval_service_records')
     .update(input)
     .eq('id', id)
