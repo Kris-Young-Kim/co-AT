@@ -3,7 +3,8 @@
 > **프로젝트**: GWATC 통합 관리 플랫폼 (Co-AT)
 > **비전**: "행정은 AI에게, 사람은 클라이언트에게"
 > **아키텍처**: Turborepo 모노레포 — 앱별 독립 배포
-> **마지막 업데이트**: 2026-06-03
+> **마지막 업데이트**: 2026-06-03  
+**진행 중**: Phase B (eval 만족도·교육이력, inventory 소독세척)
 
 ---
 
@@ -232,6 +233,8 @@
 | 기능 | 상태 |
 |------|------|
 | 9개 영역 평가 시스템 (첨부 21 기반) | ✅ |
+| 서비스 만족도 수집 (`satisfaction_score` 1-5점) | ✅ |
+| 이용자 교육 이력 페이지 (`/education`, 도메인별 집계) | ✅ |
 | 평가 결과 시각화 (허브 그리드 + 도메인 요약) | ✅ |
 | Google Sheets → Supabase 데이터 마이그레이션 (File import) | ✅ |
 | 중앙보조기기센터 보고 양식 엑셀 출력 (ExcelJS) | ✅ |
@@ -263,6 +266,7 @@
 |------|------|
 | 대여 만료 알림 (D-7/3/0 Vercel Cron) | ✅ |
 | 강원도 18개 시군 대여 현황 코로플레스 맵 (`/map`) | ✅ |
+| 소독·세척 전용 페이지 (`/cleaning`) — 기기별 마지막 세척일 + 일괄 기록 | ✅ |
 | 재고 부족 알림 | ⬜ |
 
 ---
@@ -287,6 +291,7 @@
 | 전년 동기 대비 비교 차트 | ✅ |
 | stats-actions 재작성 — `eval_service_records` boolean 플래그 기반 9개 사업 개별 집계 | ✅ |
 | EvalScoreWidget — 2026 정량평가 사업수행실적(40점) 자동 계산기 | ✅ |
+| EvalScoreWidget 서비스효과성(5점) — 만족도 평균 연동 | ✅ |
 | Excel 내보내기 수정 — 9개 사업 개별 컬럼 (대여/맞춤제작/교부평가 등 분리) | ✅ |
 | 예측 분석 (대여 패턴, 수리 예측) | ⬜ |
 
@@ -450,6 +455,12 @@
 | `055_clients_registration_workflow.sql` | 클라이언트 등록 워크플로우 | ✅ |
 | `056_add_is_web_visible_to_schedules.sql` | schedules 테이블 `is_web_visible` 컬럼 추가 | ✅ |
 | `057_create_schedule_categories.sql` | schedule_categories 테이블 생성 (색상·이름) | ✅ |
+
+### 완료된 마이그레이션 (058 ~ 066)
+
+| 파일명 | 내용 | 상태 |
+|--------|------|------|
+| `066_add_satisfaction_score.sql` | `eval_service_records`에 `satisfaction_score` (1-5), `satisfaction_comment` 추가 | ⬜ Supabase 적용 필요 |
 
 ### 미실행 / 예정 마이그레이션
 

@@ -73,6 +73,7 @@ export function ServiceRecordForm({
   const [aiLoading, setAiLoading] = useState(false)
   const [aiError, setAiError] = useState<string | null>(null)
   const [memo, setMemo] = useState('')
+  const [satisfactionScore, setSatisfactionScore] = useState<number | null>(null)
 
   // AI-filled fields
   const [serviceContent, setServiceContent] = useState('')
@@ -174,6 +175,8 @@ export function ServiceRecordForm({
       info_provision_area: str('info_provision_area'),
       funding_source_detail: str('funding_source_detail'),
       staff_name: str('staff_name'),
+      satisfaction_score: satisfactionScore,
+      satisfaction_comment: str('satisfaction_comment'),
     })
 
     setSaving(false)
@@ -419,6 +422,38 @@ export function ServiceRecordForm({
           <div><label className="block text-xs font-medium text-gray-600 mb-1">담당자</label><input name="staff_name" type="text" className={INPUT} /></div>
         </div>
       </section>
+
+      {/* ⑤ 서비스 만족도 (종결 시) */}
+      {checks.is_closed && (
+        <section className="border rounded-lg p-6 bg-white space-y-4">
+          <h3 className="font-semibold text-gray-900">⑤ 서비스 만족도</h3>
+          <p className="text-xs text-gray-500">종결 서비스에 대한 이용자 만족도를 기록합니다. (2026 정량평가 서비스효과성 5점 반영)</p>
+          <div className="flex gap-2">
+            {[1, 2, 3, 4, 5].map(score => (
+              <button
+                key={score}
+                type="button"
+                onClick={() => setSatisfactionScore(prev => prev === score ? null : score)}
+                className={`flex-1 py-2.5 rounded-lg border text-sm font-semibold transition-colors ${
+                  satisfactionScore === score
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300'
+                }`}
+              >
+                {score}점
+              </button>
+            ))}
+          </div>
+          <div className="flex justify-between text-xs text-gray-400 px-1">
+            <span>매우 불만족</span>
+            <span>매우 만족</span>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">코멘트 (선택)</label>
+            <input name="satisfaction_comment" type="text" placeholder="이용자 의견 메모" className={INPUT} />
+          </div>
+        </section>
+      )}
 
       <div className="flex gap-3 justify-end">
         <button type="button" onClick={() => router.back()} className="px-4 py-2 border rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">취소</button>

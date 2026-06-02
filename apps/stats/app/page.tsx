@@ -1,6 +1,7 @@
 import { getStatsSummary } from '@/actions/stats-actions'
 import { getAnnualTarget } from '@/actions/annual-target-actions'
 import { getCallLogMonthlyCount } from '@/actions/call-log-actions'
+import { getSatisfactionSummary } from '@/actions/satisfaction-actions'
 import { AchievementTable } from '@/stats/components/stats/AchievementTable'
 import { EvalScoreWidget } from '@/stats/components/stats/EvalScoreWidget'
 import { YearSelector } from '@/stats/components/stats/YearSelector'
@@ -14,15 +15,17 @@ export default async function StatsDashboardPage({ searchParams }: DashboardPage
   const params = await searchParams
   const year = parseInt(params.year ?? String(new Date().getFullYear()))
 
-  const [summaryResult, targetResult, callResult] = await Promise.all([
+  const [summaryResult, targetResult, callResult, satisfactionResult] = await Promise.all([
     getStatsSummary(year),
     getAnnualTarget(year),
     getCallLogMonthlyCount(year),
+    getSatisfactionSummary(year),
   ])
 
   const summary = summaryResult.success ? summaryResult.summary : null
   const target = targetResult.success ? targetResult.target ?? null : null
   const callTotal = callResult.success ? callResult.total ?? 0 : 0
+  const satisfaction = satisfactionResult.success ? satisfactionResult.summary : null
   const bs = summary?.businessSummary
 
   const actual = {
@@ -91,6 +94,7 @@ export default async function StatsDashboardPage({ searchParams }: DashboardPage
                 actuals={bs}
                 callTotal={callTotal}
                 year={year}
+                satisfaction={satisfaction}
               />
             )}
           </div>

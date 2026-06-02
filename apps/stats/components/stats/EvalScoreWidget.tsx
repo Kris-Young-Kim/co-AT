@@ -1,5 +1,6 @@
 import type { AnnualTarget } from '@/actions/annual-target-actions'
 import type { ServiceActuals } from '@/actions/stats-actions'
+import type { SatisfactionSummary } from '@/actions/satisfaction-actions'
 
 interface ScoreItem {
   label: string
@@ -13,6 +14,7 @@ interface EvalScoreWidgetProps {
   actuals: ServiceActuals
   callTotal: number
   year: number
+  satisfaction?: SatisfactionSummary | null
 }
 
 function calcPts(actual: number, target: number | null, maxPts: number): number {
@@ -20,7 +22,13 @@ function calcPts(actual: number, target: number | null, maxPts: number): number 
   return Math.min(Math.round((actual / target) * maxPts * 10) / 10, maxPts)
 }
 
-export function EvalScoreWidget({ target, actuals, callTotal, year }: EvalScoreWidgetProps) {
+function satisfactionToPts(summary: SatisfactionSummary | null | undefined): number {
+  if (!summary || summary.count === 0) return 0
+  // 5점 만점 기준: 평균 4.5+ → 5점, 4.0+ → 4점, 3.5+ → 3점, etc.
+  return Math.min(Math.round(((summary.average - 1) / 4) * 5 * 10) / 10, 5)
+}
+
+export function EvalScoreWidget({ target, actuals, callTotal, year, satisfaction }: EvalScoreWidgetProps) {
   const items: ScoreItem[] = [
     { label: '보조기기 상담', maxPts: 3, actual: actuals.consultation, target: target?.consultation ?? null },
     { label: '콜센터', maxPts: 2, actual: callTotal, target: null },
@@ -44,7 +52,7 @@ export function EvalScoreWidget({ target, actuals, callTotal, year }: EvalScoreW
   }, 0)
   const performanceMax = 40
 
-  // 사업운영관리, 서비스효과성은 자동 산정 불가 → 표시만
+  const effectivenessScore = satisfactionToPts(satisfaction)
   const managementMax = 15
   const effectivenessMax = 5
   const quantitativeMax = 60
@@ -69,15 +77,26 @@ export function EvalScoreWidget({ target, actuals, callTotal, year }: EvalScoreW
           <p className="text-2xl font-bold text-gray-400">—</p>
           <p className="text-xs text-gray-500 mt-0.5">사업운영관리 /{managementMax}점</p>
         </div>
-        <div className="bg-gray-50 rounded-lg p-3 text-center">
-          <p className="text-2xl font-bold text-gray-400">—</p>
-          <p className="text-xs text-gray-500 mt-0.5">서비스효과성 /{effectivenessMax}점</p>
+        <div className="bg-purple-50 rounded-lg p-3 text-center">
+          {satisfaction && satisfaction.count > 0 ? (
+            <>
+              <p className="text-2xl font-bold text-purple-700">{effectivenessScore.toFixed(1)}</p>
+              <p className="text-xs text-gray-500 mt-0.5">서비스효과성 /{effectivenessMax}점</p>
+              <p className="text-xs text-purple-500 mt-0.5">만족도 평균 {satisfaction.average}점 ({satisfaction.count}명)</p>
+            </>
+          ) : (
+            <>
+              <p className="text-2xl font-bold text-gray-400">—</p>
+              <p className="text-xs text-gray-500 mt-0.5">서비스효과성 /{effectivenessMax}점</p>
+              <p className="text-xs text-gray-400 mt-0.5">만족도 기록 없음</p>
+            </>
+          )}
         </div>
       </div>
 
       <p className="text-xs text-gray-400">
-        정량평가 합계 {quantitativeMax}점 중 자동 산정 가능: 사업수행실적 {performanceMax}점
-        (운영관리·효과성은 외부 평가 항목)
+        정량평가 합계 {quantitativeMax}점 중 자동 산정: 사업수행실적 {performanceMax}점 + 서비스효과성 {effectivenessMax}점
+        (사업운영관리 {managementMax}점은 외부 평가)
       </p>
 
       {/* Per-item breakdown */}

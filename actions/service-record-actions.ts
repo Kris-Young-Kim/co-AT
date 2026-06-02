@@ -59,6 +59,8 @@ export interface ServiceRecordInput {
   info_provision_area?: string | null
   funding_source_detail?: string | null
   staff_name?: string | null
+  satisfaction_score?: number | null
+  satisfaction_comment?: string | null
 }
 
 export interface ServiceRecord extends ServiceRecordInput {
