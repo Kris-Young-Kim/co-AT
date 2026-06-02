@@ -8,7 +8,7 @@ import { RotateCw } from 'lucide-react'
 
 const GEO_URL = '/gangwon.geojson'
 
-const COLOR_SCALE = ['#f1f5f9', '#bfdbfe', '#93c5fd', '#60a5fa', '#3b82f6', '#1d4ed8']
+const COLOR_SCALE = ['#dde8f0', '#bfdbfe', '#93c5fd', '#60a5fa', '#3b82f6', '#1d4ed8']
 
 function getColor(total: number, max: number): string {
   if (total === 0) return COLOR_SCALE[0]
@@ -54,7 +54,7 @@ export function GangwonMap({ initialData }: GangwonMapProps) {
       <div className="relative flex-1 min-w-0 bg-sky-50 rounded-xl border overflow-hidden">
         <ComposableMap
           projection="geoMercator"
-          projectionConfig={{ center: [128.1, 37.85], scale: 6200 }}
+          projectionConfig={{ center: [128.2, 37.85], scale: 18000 }}
           width={700}
           height={550}
           className="w-full h-auto"
@@ -71,8 +71,8 @@ export function GangwonMap({ initialData }: GangwonMapProps) {
                       key={geo.rsmKey}
                       geography={geo}
                       fill={isSelected ? '#f59e0b' : getColor(stat?.total ?? 0, maxTotal)}
-                      stroke="#ffffff"
-                      strokeWidth={0.8}
+                      stroke="#94a3b8"
+                      strokeWidth={0.5}
                       style={{
                         default: { outline: 'none' },
                         hover: { outline: 'none', opacity: 0.75, cursor: 'pointer' },
