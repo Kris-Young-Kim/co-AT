@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Package, ArrowLeftRight, Wrench, RefreshCw, Cpu, Settings, FileBarChart } from 'lucide-react'
+import { LayoutDashboard, Package, ArrowLeftRight, Wrench, RefreshCw, Cpu, Settings, FileBarChart, Map } from 'lucide-react'
 
 const navItems = [
   { href: '/', label: '대시보드', icon: LayoutDashboard },
@@ -13,6 +13,7 @@ const navItems = [
   { href: '/fab-equipment', label: '제작 장비', icon: Cpu },
   { href: '/maintenance', label: '점검/수리', icon: Settings },
   { href: '/reports', label: '리포트', icon: FileBarChart },
+  { href: '/map', label: '지역 현황 맵', icon: Map },
 ]
 
 export function InventorySidebar() {
