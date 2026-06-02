@@ -3,25 +3,26 @@
 > **프로젝트**: GWATC 통합 관리 플랫폼 (Co-AT)
 > **비전**: "행정은 AI에게, 사람은 클라이언트에게"
 > **아키텍처**: Turborepo 모노레포 — 앱별 독립 배포
-> **마지막 업데이트**: 2026-05-29
+> **마지막 업데이트**: 2026-06-03
 
 ---
 
 ## 목차
 
 1. [플랫폼 인프라](#플랫폼-인프라)
-2. [apps/web — 공개 포털](#appsweb--공개-포털-gwatccloud)
-3. [apps/admin — 권한 관리](#appsadmin--권한-관리-admingwatccloud)
-4. [apps/eval — 상담·평가 (Phase 1)](#appseval--상담평가-evalgwatccloud)
-5. [apps/inventory — 자산·재고 (Phase 2)](#appsinventory--자산재고-inventorygwatccloud)
-6. [apps/stats — 성과 대시보드 (Phase 3)](#appsstats--성과-대시보드-statsgwatccloud)
-7. [apps/automation — 자동화·알림 (Phase 4)](#appsautomation--자동화알림-automationgwatccloud)
-8. [apps/hr — 인사관리 (Phase 5)](#appshr--인사관리-hrgwatccloud)
-9. [apps/approval — 전자결재 (Phase 6)](#appsapproval--전자결재-approvalgwatccloud)
-10. [apps/finance — 예산·재무 (Phase 7)](#appsfinance--예산재무-financegwatccloud)
-11. [packages — 공유 패키지](#packages--공유-패키지)
-12. [DB 마이그레이션](#db-마이그레이션)
-13. [고도화 백로그](#고도화-백로그)
+2. [도메인 전환 계획 (gwatc.or.kr)](#도메인-전환-계획-gwatcorkr)
+3. [apps/web — 공개 포털](#appsweb--공개-포털-gwatccloud)
+4. [apps/admin — 권한 관리](#appsadmin--권한-관리-admingwatccloud)
+5. [apps/eval — 상담·평가 (Phase 1)](#appseval--상담평가-evalgwatccloud)
+6. [apps/inventory — 자산·재고 (Phase 2)](#appsinventory--자산재고-inventorygwatccloud)
+7. [apps/stats — 성과 대시보드 (Phase 3)](#appsstats--성과-대시보드-statsgwatccloud)
+8. [apps/automation — 자동화·알림 (Phase 4)](#appsautomation--자동화알림-automationgwatccloud)
+9. [apps/hr — 인사관리 (Phase 5)](#appshr--인사관리-hrgwatccloud)
+10. [apps/approval — 전자결재 (Phase 6)](#appsapproval--전자결재-approvalgwatccloud)
+11. [apps/finance — 예산·재무 (Phase 7)](#appsfinance--예산재무-financegwatccloud)
+12. [packages — 공유 패키지](#packages--공유-패키지)
+13. [DB 마이그레이션](#db-마이그레이션)
+14. [고도화 백로그](#고도화-백로그)
 
 ---
 
@@ -57,6 +58,91 @@
 | `repomix-output.*` git 추적 해제 | ✅ |
 | Supabase PAT 유출 대응 (폐기 + git 히스토리 삭제) | ✅ |
 | GitHub secret scanning 알림 해소 | ✅ |
+
+---
+
+## 도메인 전환 계획 (gwatc.or.kr)
+
+> **목표**: 공공기관 신뢰도 향상을 위해 `gwatc.cloud` → `gwatc.or.kr` 전환
+> **우선순위**: 안정화 후 진행 — 1차 앱(web·admin·eval·inventory·stats) 완성 이후
+
+### 전환 도메인 매핑
+
+| 현재 (gwatc.cloud) | 전환 후 (gwatc.or.kr) |
+|---|---|
+| gwatc.cloud | gwatc.or.kr |
+| admin.gwatc.cloud | admin.gwatc.or.kr |
+| eval.gwatc.cloud | eval.gwatc.or.kr |
+| inventory.gwatc.cloud | inventory.gwatc.or.kr |
+| stats.gwatc.cloud | stats.gwatc.or.kr |
+| automation.gwatc.cloud | automation.gwatc.or.kr |
+| hr.gwatc.cloud | hr.gwatc.or.kr |
+| approval.gwatc.cloud | approval.gwatc.or.kr |
+| finance.gwatc.cloud | finance.gwatc.or.kr |
+
+### 단계별 체크리스트
+
+#### 1단계 — 도메인 등록 및 DNS 설정
+- [ ] `gwatc.or.kr` 도메인 등록 (KISA 또는 공인 등록 대행사)
+- [ ] Cloudflare에 `gwatc.or.kr` 존 추가 (또는 기존 Cloudflare 계정에 연결)
+- [ ] Cloudflare DNS: 각 서브도메인 CNAME 레코드 추가 (Proxy ON — 주황 구름)
+  - `@` → Vercel 할당 A/CNAME
+  - `admin`, `eval`, `inventory`, `stats`, `automation`, `hr`, `approval`, `finance` → 각 Vercel CNAME
+- [ ] SSL/TLS: Cloudflare Full (Strict) 모드 유지 확인
+
+#### 2단계 — Vercel 도메인 추가
+- [ ] Vercel 각 프로젝트에 `*.gwatc.or.kr` 도메인 추가
+  - `web` → gwatc.or.kr
+  - `admin` → admin.gwatc.or.kr
+  - `eval` → eval.gwatc.or.kr
+  - `inventory` → inventory.gwatc.or.kr
+  - `stats` → stats.gwatc.or.kr
+- [ ] Vercel 도메인 DNS 검증 완료 확인 (각 프로젝트 Settings > Domains)
+- [ ] 기존 `gwatc.cloud` 도메인은 유지 (리다이렉트 소스로 활용)
+
+#### 3단계 — Clerk 인증 도메인 마이그레이션
+- [ ] Clerk Dashboard — 기존 Primary 도메인(`gwatc.cloud`) 변경 불가이므로 **새 Clerk 앱** 생성 또는 Clerk 지원팀 문의 (도메인 변경 정책 확인)
+- [ ] `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` 새 키로 교체
+- [ ] `NEXT_PUBLIC_CLERK_DOMAIN` 환경변수 전체 앱 업데이트 (`gwatc.cloud` → `gwatc.or.kr`)
+- [ ] Clerk allowed origins에 `*.gwatc.or.kr` 추가
+- [ ] Clerk 사용자 데이터 마이그레이션 방안 확인 (기존 계정 유지)
+
+#### 4단계 — 환경변수 업데이트 (Vercel)
+- [ ] `NEXT_PUBLIC_INVENTORY_URL` → `https://inventory.gwatc.or.kr`
+- [ ] `NEXT_PUBLIC_APP_URL` (각 앱) → 해당 `gwatc.or.kr` URL
+- [ ] `NEXT_PUBLIC_CLERK_DOMAIN` → `gwatc.or.kr`
+- [ ] Supabase Auth Redirect URLs에 `*.gwatc.or.kr` 추가
+- [ ] Sentry 프로젝트 설정 — allowed domains 업데이트
+
+#### 5단계 — 코드 변경
+- [ ] `apps/web/app/sitemap.ts` — `baseUrl` → `https://gwatc.or.kr`
+- [ ] `apps/web/app/robots.ts` — Sitemap URL 업데이트
+- [ ] OG 태그 `metadataBase` → `https://gwatc.or.kr`
+- [ ] `QrLabelPrint.tsx` `NEXT_PUBLIC_INVENTORY_URL` fallback URL 업데이트
+- [ ] `docs/` 내 URL 참조 일괄 업데이트
+- [ ] `CLAUDE.md` 도메인 매핑 업데이트
+
+#### 6단계 — 리다이렉트 설정 (기존 도메인 유지)
+- [ ] Cloudflare `gwatc.cloud` → `gwatc.or.kr` 301 Redirect Rule 설정
+  - `gwatc.cloud/*` → `https://gwatc.or.kr/$1` (301 Permanent)
+  - `*.gwatc.cloud/*` → `https://<subdomain>.gwatc.or.kr/$1` (301 Permanent)
+- [ ] Vercel 각 프로젝트 `next.config.mjs` — 서브도메인 리다이렉트 추가 (옵션)
+- [ ] 기존 `gwatc.cloud` 도메인 최소 1년 유지 (리다이렉트 및 SEO 안전)
+
+#### 7단계 — SEO 업데이트
+- [ ] Google Search Console — `gwatc.or.kr` 속성 추가 + 도메인 변경 신고
+- [ ] Naver Search Advisor — `gwatc.or.kr` 등록
+- [ ] 새 Sitemap 제출 (`https://gwatc.or.kr/sitemap.xml`)
+- [ ] 기존 `gwatc.cloud` 속성에서 변경 주소 제출 도구 사용
+
+#### 8단계 — 전환 후 검증
+- [ ] 전체 5개 앱 로그인/로그아웃 플로우 테스트 (새 도메인)
+- [ ] Clerk SSO 쿠키 서브도메인 공유 동작 확인
+- [ ] QR 코드 생성 URL 확인 (`inventory.gwatc.or.kr/scan/...`)
+- [ ] Cron Job URL 확인 (Vercel Cron — 절대 URL 없이 상대 경로 사용이므로 자동)
+- [ ] Sentry 에러 수집 정상 동작 확인
+- [ ] Cloudflare Analytics 새 도메인 트래픽 확인
+- [ ] 리다이렉트 체인 테스트 (`gwatc.cloud` → `gwatc.or.kr` 301)
 
 ---
 
@@ -176,6 +262,7 @@
 | 기능 | 상태 |
 |------|------|
 | 대여 만료 알림 (D-7/3/0 Vercel Cron) | ✅ |
+| 강원도 18개 시군 대여 현황 코로플레스 맵 (`/map`) | ✅ |
 | 재고 부족 알림 | ⬜ |
 
 ---
@@ -198,6 +285,9 @@
 | 기능 | 상태 |
 |------|------|
 | 전년 동기 대비 비교 차트 | ✅ |
+| stats-actions 재작성 — `eval_service_records` boolean 플래그 기반 9개 사업 개별 집계 | ✅ |
+| EvalScoreWidget — 2026 정량평가 사업수행실적(40점) 자동 계산기 | ✅ |
+| Excel 내보내기 수정 — 9개 사업 개별 컬럼 (대여/맞춤제작/교부평가 등 분리) | ✅ |
 | 예측 분석 (대여 패턴, 수리 예측) | ⬜ |
 
 ---
