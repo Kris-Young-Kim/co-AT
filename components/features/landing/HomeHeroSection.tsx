@@ -42,7 +42,7 @@ export function HomeHeroSection({ featuredVideo }: HomeHeroSectionProps) {
         ) : (
           // 기본 이미지 배경 (장식용)
           <Image
-            src="https://images.unsplash.com/photo-1709127347874-3f4674be5bc8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4MTYyMzB8MHwxfHNlYXJjaHw0fHxhc3Npc3RpdmUlMjB0ZWNobm9sb2d5JTIwY2FyZSUyMHN1cHBvcnR8ZW58MHwwfHx8MTc2NTAzNjU1Mnww&ixlib=rb-4.1.0&q=80&w=1920"
+            src="https://images.unsplash.com/photo-1773227055624-07b515ba87c5?auto=format&fit=crop&w=1920&q=80"
             alt=""
             role="presentation"
             fill
