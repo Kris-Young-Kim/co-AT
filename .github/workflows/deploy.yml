@@ -38,13 +38,42 @@ jobs:
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
-      - name: Deploy to Vercel
+      - name: Resolve Vercel org ID
+        id: vercel_org
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          # Fetch personal user/team ID from token — removes need for VERCEL_ORG_ID secret
-          export VERCEL_ORG_ID=$(curl -sf -H "Authorization: Bearer $VERCEL_TOKEN" \
+          ORG_ID=$(curl -sf -H "Authorization: Bearer $VERCEL_TOKEN" \
             https://api.vercel.com/v2/user | python3 -c "import sys,json; print(json.load(sys.stdin)['user']['id'])")
-          echo "Resolved VERCEL_ORG_ID: $VERCEL_ORG_ID"
-          npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
+          echo "VERCEL_ORG_ID=$ORG_ID" >> $GITHUB_ENV
+          echo "Resolved VERCEL_ORG_ID: $ORG_ID"
+
+      - name: Deploy web (gwatc.cloud)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: prj_DsC1KW0ZcDVV7v4Y2rcgHoaOrgZu
+        run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
+
+      - name: Deploy admin (admin.gwatc.cloud)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: prj_04LbJYRsmFt0CSbvKVtlmTdjYdA4
+        run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
+
+      - name: Deploy eval (eval.gwatc.cloud)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: prj_59Kn41eO5ZpmXv61MqVt99Sl7rVk
+        run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
+
+      - name: Deploy inventory (inventory.gwatc.cloud)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: prj_VkO6qB20a2eFq2bacH6gr3ZQ89xv
+        run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
+
+      - name: Deploy stats (stats.gwatc.cloud)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: prj_gwDFLBEFYDW4jM3ztCsuQRbIpBhu
+        run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
