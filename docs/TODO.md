@@ -460,7 +460,7 @@
 
 | 파일명 | 내용 | 상태 |
 |--------|------|------|
-| `066_add_satisfaction_score.sql` | `eval_service_records`에 `satisfaction_score` (1-5), `satisfaction_comment` 추가 | ⬜ Supabase 적용 필요 |
+| `066_add_satisfaction_score.sql` | `eval_service_records`에 `satisfaction_score` (1-5), `satisfaction_comment` 추가 | ✅ |
 
 ### 미실행 / 예정 마이그레이션
 
