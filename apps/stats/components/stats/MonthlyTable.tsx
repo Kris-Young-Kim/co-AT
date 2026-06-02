@@ -9,8 +9,8 @@ export function MonthlyTable({ stats, callCenter }: {
     (acc, s) => ({
       consultation: acc.consultation + s.consultation,
       experience: acc.experience + s.experience,
-      custom: acc.custom + s.custom,
-      aftercare: acc.aftercare + s.aftercare,
+      custom: acc.custom + s.rental + s.customMake + s.assessment,
+      aftercare: acc.aftercare + s.cleaning + s.repair + s.reuse,
       education: acc.education + s.education,
       total: acc.total + s.total,
       cc: acc.cc + (ccMap[s.month] ?? 0),
@@ -40,8 +40,8 @@ export function MonthlyTable({ stats, callCenter }: {
               <td className="px-3 py-2.5 text-center text-blue-700">{ccMap[s.month] ?? 0}</td>
               <td className="px-3 py-2.5 text-center">{s.consultation}</td>
               <td className="px-3 py-2.5 text-center">{s.experience}</td>
-              <td className="px-3 py-2.5 text-center">{s.custom}</td>
-              <td className="px-3 py-2.5 text-center">{s.aftercare}</td>
+              <td className="px-3 py-2.5 text-center">{s.rental + s.customMake + s.assessment}</td>
+              <td className="px-3 py-2.5 text-center">{s.cleaning + s.repair + s.reuse}</td>
               <td className="px-3 py-2.5 text-center">{s.education}</td>
               <td className="px-3 py-2.5 text-center font-bold text-blue-700">{s.total}</td>
             </tr>

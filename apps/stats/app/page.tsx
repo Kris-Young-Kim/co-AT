@@ -2,6 +2,7 @@ import { getStatsSummary } from '@/actions/stats-actions'
 import { getAnnualTarget } from '@/actions/annual-target-actions'
 import { getCallLogMonthlyCount } from '@/actions/call-log-actions'
 import { AchievementTable } from '@/stats/components/stats/AchievementTable'
+import { EvalScoreWidget } from '@/stats/components/stats/EvalScoreWidget'
 import { YearSelector } from '@/stats/components/stats/YearSelector'
 import Link from 'next/link'
 
@@ -12,11 +13,9 @@ interface DashboardPageProps {
 export default async function StatsDashboardPage({ searchParams }: DashboardPageProps) {
   const params = await searchParams
   const year = parseInt(params.year ?? String(new Date().getFullYear()))
-  const startDate = `${year}-01-01`
-  const endDate = `${year}-12-31`
 
   const [summaryResult, targetResult, callResult] = await Promise.all([
-    getStatsSummary(startDate, endDate),
+    getStatsSummary(year),
     getAnnualTarget(year),
     getCallLogMonthlyCount(year),
   ])
@@ -30,14 +29,14 @@ export default async function StatsDashboardPage({ searchParams }: DashboardPage
     consultation: bs?.consultation ?? 0,
     callCenter: callTotal,
     experience: bs?.experience ?? 0,
-    rental: bs?.custom ?? 0,
-    customMake: bs?.custom ?? 0,
-    assessment: 0,
-    cleaning: bs?.aftercare ?? 0,
-    repair: bs?.aftercare ?? 0,
-    reuse: bs?.aftercare ?? 0,
+    rental: bs?.rental ?? 0,
+    customMake: bs?.customMake ?? 0,
+    assessment: bs?.assessment ?? 0,
+    cleaning: bs?.cleaning ?? 0,
+    repair: bs?.repair ?? 0,
+    reuse: bs?.reuse ?? 0,
     professionalEdu: bs?.education ?? 0,
-    promotion: bs?.education ?? 0,
+    promotion: 0,
   }
 
   return (
@@ -59,10 +58,10 @@ export default async function StatsDashboardPage({ searchParams }: DashboardPage
         <p className="text-gray-500">데이터를 불러올 수 없습니다.</p>
       ) : (
         <div className="space-y-6">
-          {/* 요약 카드 */}
+          {/* Summary cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: '총 서비스', value: `${summary.totalApplications}건` },
+              { label: '총 서비스 기록', value: `${summary.totalRecords}건` },
               { label: '총 대상자', value: `${summary.totalClients}명` },
               { label: '완료율', value: `${summary.completionRate.toFixed(1)}%` },
               { label: '콜센터', value: `${callTotal}건` },
@@ -74,15 +73,26 @@ export default async function StatsDashboardPage({ searchParams }: DashboardPage
             ))}
           </div>
 
-          {/* 목표 vs 실적 */}
-          <div className="bg-white border rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-gray-900">{year}년 목표 대비 실적</h2>
-              <Link href={`/targets?year=${year}`} className="text-sm text-blue-600 hover:underline">
-                목표 수정
-              </Link>
+          {/* Target vs actual + eval score */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <div className="bg-white border rounded-lg p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-semibold text-gray-900">{year}년 목표 대비 실적</h2>
+                <Link href={`/targets?year=${year}`} className="text-sm text-blue-600 hover:underline">
+                  목표 수정
+                </Link>
+              </div>
+              <AchievementTable target={target} actual={actual} />
             </div>
-            <AchievementTable target={target} actual={actual} />
+
+            {bs && (
+              <EvalScoreWidget
+                target={target}
+                actuals={bs}
+                callTotal={callTotal}
+                year={year}
+              />
+            )}
           </div>
         </div>
       )}

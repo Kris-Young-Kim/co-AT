@@ -17,8 +17,8 @@ export function YearlyTable({ stats }: { stats: YearlyStats[] }) {
               <td className="px-4 py-2.5 text-center font-medium">{row.year}년</td>
               <td className="px-4 py-2.5 text-center">{row.consultation}</td>
               <td className="px-4 py-2.5 text-center">{row.experience}</td>
-              <td className="px-4 py-2.5 text-center">{row.custom}</td>
-              <td className="px-4 py-2.5 text-center">{row.aftercare}</td>
+              <td className="px-4 py-2.5 text-center">{row.rental + row.customMake + row.assessment}</td>
+              <td className="px-4 py-2.5 text-center">{row.cleaning + row.repair + row.reuse}</td>
               <td className="px-4 py-2.5 text-center">{row.education}</td>
               <td className="px-4 py-2.5 text-center font-bold text-blue-700">{row.total}</td>
             </tr>
