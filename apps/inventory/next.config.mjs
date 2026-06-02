@@ -3,6 +3,7 @@ const nextConfig = {
   experimental: {
     externalDir: true,
   },
+  serverExternalPackages: ['exceljs', 'qrcode'],
   transpilePackages: ['@co-at/ui', '@co-at/lib', '@co-at/auth', '@co-at/types'],
   images: {
     remotePatterns: [
