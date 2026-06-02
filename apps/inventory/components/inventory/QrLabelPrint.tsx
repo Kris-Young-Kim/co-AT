@@ -1,6 +1,7 @@
 'use client'
 
-import { QRCodeSVG } from 'qrcode.react'
+import { useEffect, useState } from 'react'
+import QRCode from 'qrcode'
 
 interface QrLabelPrintProps {
   qrToken: string
@@ -9,12 +10,17 @@ interface QrLabelPrintProps {
 }
 
 export function QrLabelPrint({ qrToken, deviceName, assetCode }: QrLabelPrintProps) {
+  const [qrDataUrl, setQrDataUrl] = useState<string>('')
   const url = `${process.env.NEXT_PUBLIC_INVENTORY_URL ?? 'https://inventory.gwatc.cloud'}/scan/${qrToken}`
+
+  useEffect(() => {
+    QRCode.toDataURL(url, { width: 160, errorCorrectionLevel: 'M' }).then(setQrDataUrl)
+  }, [url])
 
   return (
     <div>
       <div id="qr-label" className="hidden print:block p-4 border text-center w-48">
-        <QRCodeSVG value={url} size={160} level="M" />
+        {qrDataUrl && <img src={qrDataUrl} width={160} height={160} alt="QR code" />}
         <p className="mt-2 text-sm font-medium">{deviceName}</p>
         {assetCode && <p className="text-xs text-gray-500">{assetCode}</p>}
       </div>

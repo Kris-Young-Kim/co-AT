@@ -20,11 +20,12 @@
     "tailwind-merge": "^2.2.1",
     "clsx": "^2.1.0",
     "lucide-react": "^0.344.0",
-    "qrcode.react": "^4.2.0",
+    "qrcode": "^1.5.4",
     "exceljs": "^4.4.0",
     "date-fns": "^3.0.0"
   },
   "devDependencies": {
+    "@types/qrcode": "^1.5.5",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
