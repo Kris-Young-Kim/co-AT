@@ -4,7 +4,8 @@
 > **비전**: "행정은 AI에게, 사람은 클라이언트에게"
 > **아키텍처**: Turborepo 모노레포 — 앱별 독립 배포
 > **마지막 업데이트**: 2026-06-03  
-**완료**: Phase B (eval 만족도·교육이력, inventory 소독세척, stats 서비스효과성 연동) — 배포 완료 2026-06-03
+**완료**: Phase B (eval 만족도·교육이력, inventory 소독세척, stats 서비스효과성 연동) — 배포 완료 2026-06-03  
+**진행 중**: Phase C (1차 앱 마무리 + 안정화)
 
 ---
 
@@ -38,6 +39,8 @@
 | Node.js 24 (`.nvmrc`, `engines`) | ✅ |
 | pnpm 락파일 동기화 | ✅ |
 | Vercel 앱별 독립 프로젝트 배포 | ✅ |
+| GitHub Actions Node.js 24 opt-in (`FORCE_JAVASCRIPT_ACTIONS_TO_NODE24`) | ✅ |
+| CI build filter에 inventory 추가 | ✅ |
 | E2E 테스트 (Playwright) | ⬜ |
 
 ### 인증 (Clerk 멀티도메인)
@@ -267,7 +270,7 @@
 | 대여 만료 알림 (D-7/3/0 Vercel Cron) | ✅ |
 | 강원도 18개 시군 대여 현황 코로플레스 맵 (`/map`) | ✅ |
 | 소독·세척 전용 페이지 (`/cleaning`) — 기기별 마지막 세척일 + 일괄 기록 | ✅ |
-| 재고 부족 알림 | ⬜ |
+| 재고 부족 알림 Cron (`/api/cron/stock-alert`, 매일 09:00 KST) | ✅ |
 
 ---
 
@@ -482,7 +485,7 @@
 - [x] **eval** — 9개 영역 평가 시스템 + 결과 시각화 완료
 - [x] **eval** — AI 상담기록 생성 (상담기록 형식 확정, SOAP 노트 코드 삭제)
 - [ ] **web** — OG 이미지 파일 생성, Google/Naver Search Console 등록
-- [x] **모든 앱** — Sentry DSN 환경변수 설정 (코드는 이미 준비됨)
+- [ ] **모든 앱** — Sentry DSN 환경변수 설정 (코드는 이미 준비됨, Vercel 대시보드에서 수동 설정) — Phase C
 
 ### 1차 집중 — 중간 우선순위
 

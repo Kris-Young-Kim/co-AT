@@ -9,6 +9,8 @@ jobs:
   deploy:
     name: Deploy to Vercel
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -31,7 +33,7 @@ jobs:
       - name: Build application
         # Only build Phase-1 active apps — Phase 2-7 apps (hr, approval, automation, finance) are
         # not yet deployed and fail without server-side secrets set in CI.
-        run: pnpm turbo run build --filter=web... --filter=admin... --filter=@co-at/eval... --filter=@co-at/stats...
+        run: pnpm turbo run build --filter=web... --filter=admin... --filter=@co-at/eval... --filter=@co-at/inventory... --filter=@co-at/stats...
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
