@@ -26,7 +26,7 @@ export default async function WithholdingTaxPage({ searchParams }: Props) {
   // 직원별 연간 집계
   const byEmp = new Map<string, { name: string; dept: string; grossTotal: number; taxTotal: number; localTaxTotal: number }>()
   for (const records of monthlyData) {
-    for (const r of records as RecordWithEmp[]) {
+    for (const r of records as unknown as RecordWithEmp[]) {
       const empName = r.hr_employees?.name ?? '—'
       const dept = r.hr_employees?.department ?? '—'
       const existing = byEmp.get(r.employee_id) ?? { name: empName, dept, grossTotal: 0, taxTotal: 0, localTaxTotal: 0 }
