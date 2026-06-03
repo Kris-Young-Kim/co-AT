@@ -4,84 +4,186 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      app:
+        description: '배포할 앱'
+        required: true
+        default: 'all'
+        type: choice
+        options: [all, web, admin, eval, inventory, stats, hr]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
-  deploy:
-    name: Deploy to Vercel
+  # ── 1. 변경된 앱 감지 (push 이벤트 전용) ─────────────────────────────
+  changes:
+    name: Detect changed apps
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    outputs:
+      shared:    ${{ steps.filter.outputs.shared }}
+      web:       ${{ steps.filter.outputs.web }}
+      admin:     ${{ steps.filter.outputs.admin }}
+      eval:      ${{ steps.filter.outputs.eval }}
+      inventory: ${{ steps.filter.outputs.inventory }}
+      stats:     ${{ steps.filter.outputs.stats }}
+      hr:        ${{ steps.filter.outputs.hr }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            shared:
+              - 'packages/**'
+              - 'pnpm-lock.yaml'
+              - 'turbo.json'
+            web:       ['apps/web/**']
+            admin:     ['apps/admin/**']
+            eval:      ['apps/eval/**']
+            inventory: ['apps/inventory/**']
+            stats:     ['apps/stats/**']
+            hr:        ['apps/hr/**']
+
+  # ── 2. 앱별 병렬 배포 ────────────────────────────────────────────────
+  #   - push:              변경된 앱 + 공유 패키지 변경 시 전체
+  #   - workflow_dispatch: 선택한 앱만 (all 선택 시 전체)
+  #
+  #   로컬 빌드 없음 — Vercel이 자체 빌드 수행
+  # ──────────────────────────────────────────────────────────────────────
+
+  deploy-web:
+    name: "Deploy: web (gwatc.cloud)"
+    needs: changes
+    if: |
+      always() && !failure() && !cancelled() && (
+        (github.event_name == 'workflow_dispatch' &&
+          (github.event.inputs.app == 'all' || github.event.inputs.app == 'web')) ||
+        (github.event_name == 'push' &&
+          (needs.changes.outputs.web == 'true' || needs.changes.outputs.shared == 'true'))
+      )
     runs-on: ubuntu-latest
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+      VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_PROJECT_ID: prj_DsC1KW0ZcDVV7v4Y2rcgHoaOrgZu
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '24'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run tests
-        run: pnpm test
-
-      - name: Build application
-        # Only build Phase-1 active apps — Phase 2-7 apps (hr, approval, automation, finance) are
-        # not yet deployed and fail without server-side secrets set in CI.
-        run: pnpm turbo run build --filter=web... --filter=admin... --filter=@co-at/eval... --filter=@co-at/inventory... --filter=@co-at/stats...
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-
-      - name: Resolve Vercel org ID
-        id: vercel_org
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: |
-          ORG_ID=$(curl -sf -H "Authorization: Bearer $VERCEL_TOKEN" \
-            https://api.vercel.com/v2/user | python3 -c "import sys,json; print(json.load(sys.stdin)['user']['id'])")
-          echo "VERCEL_ORG_ID=$ORG_ID" >> $GITHUB_ENV
-          echo "Resolved VERCEL_ORG_ID: $ORG_ID"
-
-      - name: Deploy web (gwatc.cloud)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: prj_DsC1KW0ZcDVV7v4Y2rcgHoaOrgZu
+      - name: Deploy to Vercel
         run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
 
-      - name: Deploy admin (admin.gwatc.cloud)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: prj_04LbJYRsmFt0CSbvKVtlmTdjYdA4
+  deploy-admin:
+    name: "Deploy: admin (admin.gwatc.cloud)"
+    needs: changes
+    if: |
+      always() && !failure() && !cancelled() && (
+        (github.event_name == 'workflow_dispatch' &&
+          (github.event.inputs.app == 'all' || github.event.inputs.app == 'admin')) ||
+        (github.event_name == 'push' &&
+          (needs.changes.outputs.admin == 'true' || needs.changes.outputs.shared == 'true'))
+      )
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_PROJECT_ID: prj_04LbJYRsmFt0CSbvKVtlmTdjYdA4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Deploy to Vercel
         run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
 
-      - name: Deploy eval (eval.gwatc.cloud)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: prj_59Kn41eO5ZpmXv61MqVt99Sl7rVk
+  deploy-eval:
+    name: "Deploy: eval (eval.gwatc.cloud)"
+    needs: changes
+    if: |
+      always() && !failure() && !cancelled() && (
+        (github.event_name == 'workflow_dispatch' &&
+          (github.event.inputs.app == 'all' || github.event.inputs.app == 'eval')) ||
+        (github.event_name == 'push' &&
+          (needs.changes.outputs.eval == 'true' || needs.changes.outputs.shared == 'true'))
+      )
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_PROJECT_ID: prj_59Kn41eO5ZpmXv61MqVt99Sl7rVk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Deploy to Vercel
         run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
 
-      - name: Deploy inventory (inventory.gwatc.cloud)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: prj_VkO6qB20a2eFq2bacH6gr3ZQ89xv
+  deploy-inventory:
+    name: "Deploy: inventory (inventory.gwatc.cloud)"
+    needs: changes
+    if: |
+      always() && !failure() && !cancelled() && (
+        (github.event_name == 'workflow_dispatch' &&
+          (github.event.inputs.app == 'all' || github.event.inputs.app == 'inventory')) ||
+        (github.event_name == 'push' &&
+          (needs.changes.outputs.inventory == 'true' || needs.changes.outputs.shared == 'true'))
+      )
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_PROJECT_ID: prj_VkO6qB20a2eFq2bacH6gr3ZQ89xv
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Deploy to Vercel
         run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
 
-      - name: Deploy stats (stats.gwatc.cloud)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: prj_gwDFLBEFYDW4jM3ztCsuQRbIpBhu
+  deploy-stats:
+    name: "Deploy: stats (stats.gwatc.cloud)"
+    needs: changes
+    if: |
+      always() && !failure() && !cancelled() && (
+        (github.event_name == 'workflow_dispatch' &&
+          (github.event.inputs.app == 'all' || github.event.inputs.app == 'stats')) ||
+        (github.event_name == 'push' &&
+          (needs.changes.outputs.stats == 'true' || needs.changes.outputs.shared == 'true'))
+      )
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_PROJECT_ID: prj_gwDFLBEFYDW4jM3ztCsuQRbIpBhu
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Deploy to Vercel
         run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
 
-      - name: Deploy hr (hr.gwatc.cloud)
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: prj_MIa9cyA82b1JYwfKI4j1jjG1kr8a
+  deploy-hr:
+    name: "Deploy: hr (hr.gwatc.cloud)"
+    needs: changes
+    if: |
+      always() && !failure() && !cancelled() && (
+        (github.event_name == 'workflow_dispatch' &&
+          (github.event.inputs.app == 'all' || github.event.inputs.app == 'hr')) ||
+        (github.event_name == 'push' &&
+          (needs.changes.outputs.hr == 'true' || needs.changes.outputs.shared == 'true'))
+      )
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_PROJECT_ID: prj_MIa9cyA82b1JYwfKI4j1jjG1kr8a
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Deploy to Vercel
         run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
