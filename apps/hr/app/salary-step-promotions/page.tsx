@@ -14,7 +14,7 @@ export default async function SalaryStepPromotionsPage() {
   ])
 
   const history = histResult.success ? histResult.data : []
-  const employees = empResult.success ? empResult.employees : []
+  const employees = empResult
   const steps = stepResult.success ? stepResult.data : []
 
   return (
