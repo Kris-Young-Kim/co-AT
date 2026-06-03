@@ -226,3 +226,86 @@ export interface CreateCertificateInput {
   purpose?: string
   // issued_by is resolved from the current Clerk user in the action
 }
+
+// ============================================================
+// HR Phase D-1 — Departments, Positions, Salary Steps
+// ============================================================
+
+export interface HrDepartment {
+  id: string
+  name: string
+  code: string | null
+  description: string | null
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface HrPosition {
+  id: string
+  name: string
+  code: string | null
+  level: number
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface HrSalaryStep {
+  id: string
+  step_number: number
+  step_name: string | null
+  base_amount: number
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface HrSalaryStepHistory {
+  id: string
+  employee_id: string
+  from_step_id: string | null
+  to_step_id: string
+  effective_date: string
+  reason: string | null
+  created_by: string | null
+  created_at: string
+}
+
+export interface CreateDepartmentInput {
+  name: string
+  code?: string
+  description?: string
+}
+
+export interface UpdateDepartmentInput extends Partial<CreateDepartmentInput> {
+  is_active?: boolean
+}
+
+export interface CreatePositionInput {
+  name: string
+  code?: string
+  level?: number
+}
+
+export interface UpdatePositionInput extends Partial<CreatePositionInput> {
+  is_active?: boolean
+}
+
+export interface CreateSalaryStepInput {
+  step_number: number
+  step_name?: string
+  base_amount: number
+}
+
+export interface UpdateSalaryStepInput extends Partial<CreateSalaryStepInput> {
+  is_active?: boolean
+}
+
+export interface CreateSalaryStepHistoryInput {
+  employee_id: string
+  from_step_id?: string
+  to_step_id: string
+  effective_date: string
+  reason?: string
+}

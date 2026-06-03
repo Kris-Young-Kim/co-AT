@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState } from 'react'
 import {
   LayoutDashboard,
   Users,
@@ -12,6 +13,13 @@ import {
   Banknote,
   Receipt,
   FileText,
+  Building2,
+  Award,
+  TrendingUp,
+  ArrowUpCircle,
+  BarChart3,
+  ChevronDown,
+  ChevronRight,
 } from 'lucide-react'
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -20,44 +28,134 @@ function cn(...inputs: Parameters<typeof clsx>) {
   return twMerge(clsx(inputs))
 }
 
-const NAV_ITEMS = [
-  { href: '/',            label: '대시보드',    icon: LayoutDashboard },
-  { href: '/employees',   label: '직원 관리',   icon: Users           },
-  { href: '/attendance',  label: '출퇴근 기록',  icon: Clock           },
-  { href: '/leave',       label: '연차·휴가',   icon: CalendarDays    },
-  { href: '/careers',     label: '경력 관리',   icon: Briefcase       },
-  { href: '/salary',      label: '급여 관리',   icon: Banknote        },
-  { href: '/daily-wages',   label: '일용급여',    icon: Receipt   },
-  { href: '/certificates', label: '증명서 발급', icon: FileText  },
+type NavItem = { href: string; label: string; icon: React.ElementType }
+type NavCategory = {
+  key: string
+  label: string
+  icon: React.ElementType
+  items: NavItem[]
+}
+
+const CATEGORIES: NavCategory[] = [
+  {
+    key: 'personnel',
+    label: '인사관리',
+    icon: Users,
+    items: [
+      { href: '/departments',           label: '부서 등록',     icon: Building2    },
+      { href: '/positions',             label: '직급 등록',     icon: Award        },
+      { href: '/salary-steps',          label: '호봉 등록',     icon: TrendingUp   },
+      { href: '/salary-step-promotions',label: '호봉 승급',     icon: ArrowUpCircle},
+      { href: '/employees',             label: '인사정보',      icon: UserCog      },
+      { href: '/employees/status',      label: '인사정보현황',  icon: BarChart3    },
+      { href: '/certificates',          label: '증명서 발급',   icon: FileText     },
+    ],
+  },
+  {
+    key: 'salary',
+    label: '급여관리',
+    icon: Banknote,
+    items: [
+      { href: '/salary',       label: '급여 관리',  icon: Banknote },
+      { href: '/daily-wages',  label: '일용급여',   icon: Receipt  },
+    ],
+  },
+  {
+    key: 'attendance',
+    label: '근태관리',
+    icon: Clock,
+    items: [
+      { href: '/attendance', label: '출퇴근 기록', icon: Clock        },
+      { href: '/leave',      label: '연차·휴가',   icon: CalendarDays },
+      { href: '/careers',    label: '경력 관리',   icon: Briefcase    },
+    ],
+  },
 ]
 
 export function AppSidebar() {
   const pathname = usePathname()
 
+  const defaultOpen = CATEGORIES.reduce<Record<string, boolean>>((acc, cat) => {
+    acc[cat.key] = cat.items.some(item => pathname.startsWith(item.href))
+    return acc
+  }, {})
+
+  const [open, setOpen] = useState<Record<string, boolean>>(defaultOpen)
+
+  const toggle = (key: string) =>
+    setOpen(prev => ({ ...prev, [key]: !prev[key] }))
+
   return (
-    <aside className="w-56 min-h-screen border-r bg-white flex flex-col">
-      <div className="px-6 py-5 border-b flex items-center gap-2">
+    <aside className="w-60 min-h-screen border-r bg-white flex flex-col">
+      <div className="px-5 py-5 border-b flex items-center gap-2">
         <UserCog className="w-5 h-5 text-violet-600" />
-        <span className="font-semibold text-sm">인사관리</span>
+        <span className="font-semibold text-sm text-gray-900">인사관리시스템</span>
       </div>
-      <nav className="flex-1 px-3 py-4 space-y-1">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-          const active =
-            href === '/' ? pathname === '/' : pathname.startsWith(href)
+
+      <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
+        {/* 대시보드 */}
+        <Link
+          href="/"
+          className={cn(
+            'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors',
+            pathname === '/'
+              ? 'bg-violet-50 text-violet-700 font-medium'
+              : 'text-gray-600 hover:bg-gray-100'
+          )}
+        >
+          <LayoutDashboard className="w-4 h-4" />
+          대시보드
+        </Link>
+
+        {/* 카테고리 토글 */}
+        {CATEGORIES.map(cat => {
+          const isOpen = open[cat.key] ?? false
+          const isCatActive = cat.items.some(item => pathname.startsWith(item.href))
+
           return (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors',
-                active
-                  ? 'bg-violet-50 text-violet-700 font-medium'
-                  : 'text-gray-600 hover:bg-gray-100'
+            <div key={cat.key}>
+              <button
+                onClick={() => toggle(cat.key)}
+                className={cn(
+                  'w-full flex items-center justify-between gap-3 px-3 py-2 rounded-md text-sm transition-colors',
+                  isCatActive ? 'text-violet-700 font-medium' : 'text-gray-700 hover:bg-gray-100'
+                )}
+              >
+                <span className="flex items-center gap-3">
+                  <cat.icon className="w-4 h-4" />
+                  {cat.label}
+                </span>
+                {isOpen
+                  ? <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
+                  : <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+                }
+              </button>
+
+              {isOpen && (
+                <div className="ml-4 mt-0.5 space-y-0.5 border-l border-gray-100 pl-2">
+                  {cat.items.map(item => {
+                    const active = item.href === '/employees'
+                      ? pathname === '/employees' || pathname.startsWith('/employees/')
+                      : pathname.startsWith(item.href)
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={cn(
+                          'flex items-center gap-2.5 px-3 py-1.5 rounded-md text-sm transition-colors',
+                          active
+                            ? 'bg-violet-50 text-violet-700 font-medium'
+                            : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                        )}
+                      >
+                        <item.icon className="w-3.5 h-3.5" />
+                        {item.label}
+                      </Link>
+                    )
+                  })}
+                </div>
               )}
-            >
-              <Icon className="w-4 h-4" />
-              {label}
-            </Link>
+            </div>
           )
         })}
       </nav>
