@@ -127,6 +127,46 @@ export async function deleteSalaryRecord(id: string): Promise<boolean> {
   return !error
 }
 
+export async function generateMonthlySalaries(yearMonth: string): Promise<{ success: boolean; created: number; skipped: number; error?: string }> {
+  await assertRole(ADMIN)
+  const supabase = createSupabaseAdmin()
+
+  const { data: employees, error: empErr } = await supabase
+    .from('hr_employees')
+    .select('id, name, department, salary_step_id, hr_salary_steps(base_amount)')
+    .eq('is_active', true)
+  if (empErr) return { success: false, created: 0, skipped: 0, error: empErr.message }
+
+  const { data: existing } = await supabase
+    .from('hr_salary_records')
+    .select('employee_id')
+    .eq('year_month', yearMonth)
+  const existingSet = new Set((existing ?? []).map((r: { employee_id: string }) => r.employee_id))
+
+  let created = 0
+  let skipped = 0
+
+  for (const emp of employees ?? []) {
+    if (existingSet.has(emp.id)) { skipped++; continue }
+    const step = emp.hr_salary_steps as { base_amount?: number } | null
+    const base = step?.base_amount ?? 0
+    if (base === 0) { skipped++; continue }
+
+    const grossPay = base
+    const deductions = calcDeductions(base)
+    const netPay = calcNetPay(grossPay, deductions)
+
+    const { error } = await supabase.from('hr_salary_records').insert({
+      employee_id: emp.id, year_month: yearMonth,
+      base_salary: base, allowances: [], deductions, gross_pay: grossPay, net_pay: netPay,
+    })
+    if (!error) created++
+    else skipped++
+  }
+
+  return { success: true, created, skipped }
+}
+
 export async function getDistinctSalaryMonths(): Promise<string[]> {
   const supabase = createSupabaseAdmin()
   const { data, error } = await supabase

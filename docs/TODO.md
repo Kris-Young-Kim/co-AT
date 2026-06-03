@@ -6,7 +6,8 @@
 > **마지막 업데이트**: 2026-06-03  
 **완료**: Phase B (eval 만족도·교육이력, inventory 소독세척, stats 서비스효과성 연동) — 배포 완료 2026-06-03  
 **완료**: Phase C (1차 앱 마무리 + 안정화) — 배포 완료 2026-06-03  
-**완료**: Phase D-1 (HR 인사관리 기초)
+**완료**: Phase D-1 (HR 인사관리 기초)  
+**완료**: Phase D-2 (HR 급여관리 고도화)
 
 ---
 
@@ -355,9 +356,17 @@
 
 | 기능 | 상태 |
 |------|------|
-| 급여명세서 PDF 출력 (`@react-pdf/renderer`) | ⬜ |
-| 지급공제항목/그룹 등록, 4대보험 자동계산 엔진 | ⬜ |
-| 급상여생성, 급여대장, 급여지급현황 등 | ⬜ |
+| `@react-pdf/renderer` 설치 + 장기요양보험 계산 추가 | ✅ |
+| DB migration 068 (bank_account, hr_pay_items, hr_pay_groups) | ✅ |
+| 사이드바 급여관리 카테고리 확장 | ✅ |
+| 지급공제항목 등록 페이지 (`/salary/pay-items`) | ✅ |
+| 급상여생성 페이지 (`/salary/generate`) | ✅ |
+| 급여대장 페이지 (`/salary/ledger`) | ✅ |
+| 사원별 급여명세서 (`/salary/slips`) | ✅ |
+| 급여명세서 PDF (`SalarySlipPDF` + 다운로드) | ✅ |
+| 급여지급현황 (`/salary/payment-status`) | ✅ |
+| 급여계좌이체명세서 (`/salary/transfer-list`) | ✅ |
+| 근로소득원천징수부 (`/salary/withholding-tax`) | ✅ |
 | 시간외근무 등록/관리/수당처리, 주52시간 체크 | ⬜ |
 | 연차 자동 생성 (입사일 기준), 출근부, 근무통계 | ⬜ |
 | QR 모바일 출퇴근 (지문인식기 연동 준비) | ⬜ |

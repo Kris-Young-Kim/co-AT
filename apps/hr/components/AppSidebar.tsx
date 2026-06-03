@@ -20,6 +20,12 @@ import {
   BarChart3,
   ChevronDown,
   ChevronRight,
+  Zap,
+  BookOpen,
+  ScrollText,
+  CreditCard,
+  PiggyBank,
+  FileSpreadsheet,
 } from 'lucide-react'
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -56,8 +62,15 @@ const CATEGORIES: NavCategory[] = [
     label: '급여관리',
     icon: Banknote,
     items: [
-      { href: '/salary',       label: '급여 관리',  icon: Banknote },
-      { href: '/daily-wages',  label: '일용급여',   icon: Receipt  },
+      { href: '/salary/pay-items',       label: '지급공제항목 등록', icon: PiggyBank      },
+      { href: '/salary/generate',        label: '급상여 생성',       icon: Zap            },
+      { href: '/salary/ledger',          label: '급여대장',          icon: BookOpen       },
+      { href: '/salary/slips',           label: '급여명세서',        icon: ScrollText     },
+      { href: '/salary/payment-status',  label: '급여지급현황',      icon: BarChart3      },
+      { href: '/salary/transfer-list',   label: '계좌이체명세서',    icon: CreditCard     },
+      { href: '/salary/withholding-tax', label: '원천징수부',        icon: FileSpreadsheet},
+      { href: '/salary',                 label: '급여 기초자료',     icon: Banknote       },
+      { href: '/daily-wages',            label: '일용급여',          icon: Receipt        },
     ],
   },
   {

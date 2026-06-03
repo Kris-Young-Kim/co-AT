@@ -111,8 +111,9 @@ export interface ReviewLeaveInput {
 export interface SalaryDeductions {
   national_pension: number      // 국민연금 4.5%
   health_insurance: number      // 건강보험 3.545%
+  long_term_care: number        // 장기요양보험 건강보험료×12.81%
   employment_insurance: number  // 고용보험 0.9%
-  income_tax: number            // 소득세 3.3% (단순화)
+  income_tax: number            // 소득세 3.3% (간이세액표 단순화)
   local_income_tax: number      // 지방소득세 소득세×10%
 }
 

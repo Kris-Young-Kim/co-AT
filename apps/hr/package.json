@@ -14,6 +14,7 @@
     "@co-at/lib": "workspace:*",
     "@co-at/types": "workspace:*",
     "@co-at/ui": "workspace:*",
+    "@react-pdf/renderer": "^4.5.1",
     "clsx": "^2.1.0",
     "lucide-react": "^0.344.0",
     "next": "^16.1.1",
