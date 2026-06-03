@@ -101,7 +101,7 @@ export async function getAllStepHistory(): Promise<Result<(HrSalaryStepHistory &
       .limit(200)
     if (error) return { success: false, error: error.message }
     const rows = (data ?? []).map((r: Record<string, unknown>) => ({
-      ...(r as HrSalaryStepHistory),
+      ...(r as unknown as HrSalaryStepHistory),
       employee_name: (r.hr_employees as { name?: string } | null)?.name ?? null,
       to_step_number: (r.hr_salary_steps as { step_number?: number } | null)?.step_number ?? null,
     }))
