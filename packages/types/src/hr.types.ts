@@ -16,6 +16,9 @@ export interface HrEmployee {
   hire_date: string
   leave_date: string | null
   is_active: boolean
+  department_id: string | null
+  position_id: string | null
+  salary_step_id: string | null
   created_at: string
   updated_at: string
 }
@@ -309,4 +312,312 @@ export interface CreateSalaryStepHistoryInput {
   to_step_id: string
   effective_date: string
   reason?: string
+}
+
+// ============================================================
+// HR Phase D-3 — Leave Balances, Overtime
+// ============================================================
+
+export interface HrLeaveBalance {
+  id: string
+  employee_id: string
+  year: number
+  leave_type: LeaveType
+  entitlement: number
+  used: number
+  carry_over: number
+  created_at: string
+  updated_at: string
+}
+
+export interface HrOvertimeRecord {
+  id: string
+  employee_id: string
+  date: string
+  regular_minutes: number
+  overtime_minutes: number
+  night_minutes: number
+  holiday_minutes: number
+  total_minutes: number
+  approved: boolean
+  note: string | null
+  created_at: string
+}
+
+export interface UpsertLeaveBalanceInput {
+  employee_id: string
+  year: number
+  leave_type: LeaveType
+  entitlement?: number
+  used?: number
+  carry_over?: number
+}
+
+export interface UpsertOvertimeInput {
+  employee_id: string
+  date: string
+  regular_minutes?: number
+  overtime_minutes?: number
+  night_minutes?: number
+  holiday_minutes?: number
+  note?: string
+}
+
+// ============================================================
+// HR Phase D-4 — Business Trips, Severance
+// ============================================================
+
+export type BusinessTripStatus = 'pending' | 'approved' | 'rejected'
+
+export interface HrBusinessTrip {
+  id: string
+  employee_id: string
+  destination: string
+  purpose: string
+  start_date: string
+  end_date: string
+  days: number
+  transport: string | null
+  allowance: number
+  status: BusinessTripStatus
+  reviewed_by: string | null
+  reviewed_at: string | null
+  note: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface HrSeveranceRecord {
+  id: string
+  employee_id: string
+  leave_date: string
+  service_years: number
+  avg_daily_wage: number
+  severance_pay: number
+  tax_deducted: number
+  net_severance: number
+  note: string | null
+  created_at: string
+}
+
+export interface CreateBusinessTripInput {
+  employee_id: string
+  destination: string
+  purpose: string
+  start_date: string
+  end_date: string
+  days: number
+  transport?: string
+  allowance?: number
+  note?: string
+}
+
+export interface ReviewBusinessTripInput {
+  id: string
+  status: 'approved' | 'rejected'
+  reviewed_by: string
+}
+
+export interface CreateSeveranceInput {
+  employee_id: string
+  leave_date: string
+  avg_daily_wage: number
+  note?: string
+}
+
+// ============================================================
+// HR — Daily Absences (외출·반차·지참)
+// ============================================================
+
+export type DailyAbsenceType = 'outing' | 'half_am' | 'half_pm' | 'late'
+export type DailyAbsenceStatus = 'pending' | 'approved' | 'rejected'
+
+export interface HrDailyAbsence {
+  id: string
+  employee_id: string
+  date: string
+  type: DailyAbsenceType
+  start_time: string | null   // HH:MM
+  end_time: string | null     // HH:MM
+  duration_minutes: number    // 30분 단위
+  reason: string | null
+  status: DailyAbsenceStatus
+  reviewed_by: string | null
+  reviewed_at: string | null
+  created_at: string
+}
+
+export interface CreateDailyAbsenceInput {
+  employee_id: string
+  date: string
+  type: DailyAbsenceType
+  start_time?: string
+  end_time?: string
+  duration_minutes: number
+  reason?: string
+}
+
+export interface ReviewDailyAbsenceInput {
+  id: string
+  status: 'approved' | 'rejected'
+  reviewed_by: string
+}
+
+// ============================================================
+// HR Phase D-5 — Performance Evaluations, Trainings, Contracts
+// ============================================================
+
+export type EvalPeriod  = 'mid' | 'year_end'
+export type EvalRating  = 'S' | 'A' | 'B' | 'C' | 'D'
+export type EvalStatus  = 'draft' | 'submitted' | 'confirmed'
+export type TrainingCategory = 'mandatory' | 'voluntary' | 'external'
+export type ContractType = 'initial' | 'renewal' | 'amendment'
+
+export interface HrEvaluation {
+  id: string
+  employee_id: string
+  evaluator_id: string | null
+  year: number
+  period: EvalPeriod
+  rating: EvalRating | null
+  score: number | null
+  strengths: string | null
+  improvements: string | null
+  comment: string | null
+  status: EvalStatus
+  created_at: string
+  updated_at: string
+}
+
+export interface HrTraining {
+  id: string
+  title: string
+  category: TrainingCategory
+  start_date: string
+  end_date: string
+  hours: number
+  provider: string | null
+  description: string | null
+  created_at: string
+}
+
+export interface HrTrainingAttendee {
+  id: string
+  training_id: string
+  employee_id: string
+  attended: boolean
+  note: string | null
+  created_at: string
+}
+
+export interface HrContract {
+  id: string
+  employee_id: string
+  contract_type: ContractType
+  start_date: string
+  end_date: string | null
+  employment_type: EmploymentType
+  position: string
+  department: string
+  base_salary: number
+  work_hours: number
+  signed_at: string | null
+  note: string | null
+  created_at: string
+}
+
+// Input types
+export interface CreateEvaluationInput {
+  employee_id: string
+  evaluator_id?: string
+  year: number
+  period: EvalPeriod
+  rating?: EvalRating
+  score?: number
+  strengths?: string
+  improvements?: string
+  comment?: string
+}
+
+export interface UpdateEvaluationInput extends Partial<CreateEvaluationInput> {
+  status?: EvalStatus
+}
+
+export interface CreateTrainingInput {
+  title: string
+  category: TrainingCategory
+  start_date: string
+  end_date: string
+  hours: number
+  provider?: string
+  description?: string
+}
+
+export interface UpdateTrainingInput extends Partial<CreateTrainingInput> {}
+
+export interface UpsertTrainingAttendeeInput {
+  training_id: string
+  employee_id: string
+  attended: boolean
+  note?: string
+}
+
+export interface CreateContractInput {
+  employee_id: string
+  contract_type: ContractType
+  start_date: string
+  end_date?: string
+  employment_type: EmploymentType
+  position: string
+  department: string
+  base_salary: number
+  work_hours?: number
+  signed_at?: string
+  note?: string
+}
+
+export interface UpdateContractInput extends Partial<Omit<CreateContractInput, 'employee_id'>> {}
+
+// Joined/composite types for UI
+export interface EvaluationWithEmployee extends HrEvaluation {
+  employee: { name: string; department: string; position: string } | null
+  evaluator: { name: string } | null
+}
+
+export interface TrainingWithAttendees extends HrTraining {
+  attendees: (HrTrainingAttendee & { employee: { name: string; department: string } | null })[]
+}
+
+export interface ContractWithEmployee extends HrContract {
+  employee: { name: string; department: string } | null
+}
+
+// HR stats summary types
+export interface HrStatsSummary {
+  totalActive: number
+  newHiresThisYear: number
+  leavesThisYear: number
+  avgTenureYears: number
+}
+
+export interface HrHeadcountByDept {
+  department: string
+  count: number
+}
+
+export interface HrEmploymentTypeCount {
+  type: string
+  label: string
+  count: number
+}
+
+export interface HrMonthlyTrend {
+  month: string
+  hires: number
+  leaves: number
+}
+
+export interface HrTenureBucket {
+  range: string
+  count: number
 }

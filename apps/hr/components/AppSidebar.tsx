@@ -26,6 +26,17 @@ import {
   CreditCard,
   PiggyBank,
   FileSpreadsheet,
+  QrCode,
+  AlarmClock,
+  Wallet,
+  Activity,
+  Plane,
+  HandCoins,
+  LogOut,
+  Star,
+  GraduationCap,
+  FilePen,
+  LineChart,
 } from 'lucide-react'
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -78,9 +89,36 @@ const CATEGORIES: NavCategory[] = [
     label: '근태관리',
     icon: Clock,
     items: [
-      { href: '/attendance', label: '출퇴근 기록', icon: Clock        },
-      { href: '/leave',      label: '연차·휴가',   icon: CalendarDays },
-      { href: '/careers',    label: '경력 관리',   icon: Briefcase    },
+      { href: '/attendance',          label: '출퇴근 기록',    icon: Clock        },
+      { href: '/attendance/summary',  label: '근무현황',       icon: Activity     },
+      { href: '/attendance/absences', label: '외출·반차·지참', icon: LogOut       },
+      { href: '/attendance/overtime', label: '시간외근무',     icon: AlarmClock   },
+      { href: '/attendance/weekly',   label: '주52시간',       icon: BarChart3    },
+      { href: '/attendance/qr',       label: 'QR 출퇴근',     icon: QrCode       },
+      { href: '/leave',               label: '연차·휴가',      icon: CalendarDays },
+      { href: '/leave/balance',       label: '연차 잔여',      icon: Wallet       },
+      { href: '/leave/calendar',      label: '휴가 캘린더',    icon: CalendarDays },
+      { href: '/careers',             label: '경력 관리',      icon: Briefcase    },
+    ],
+  },
+  {
+    key: 'business',
+    label: '출장·퇴직',
+    icon: Plane,
+    items: [
+      { href: '/business-trip', label: '출장 관리',   icon: Plane      },
+      { href: '/severance',     label: '퇴직금 정산', icon: HandCoins  },
+    ],
+  },
+  {
+    key: 'development',
+    label: '인사개발',
+    icon: Star,
+    items: [
+      { href: '/performance', label: '인사평가',     icon: Star          },
+      { href: '/training',    label: '교육훈련',     icon: GraduationCap },
+      { href: '/contracts',   label: '근로계약서',   icon: FilePen       },
+      { href: '/hr-stats',    label: 'HR 통계·보고서', icon: LineChart   },
     ],
   },
 ]

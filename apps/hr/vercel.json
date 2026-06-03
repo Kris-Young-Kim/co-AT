@@ -1,3 +1,9 @@
 {
-  "ignoreCommand": "npx turbo-ignore"
+  "ignoreCommand": "npx turbo-ignore",
+  "crons": [
+    {
+      "path": "/api/cron/monthly-overtime",
+      "schedule": "0 16 1 * *"
+    }
+  ]
 }
