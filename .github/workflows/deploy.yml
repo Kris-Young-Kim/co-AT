@@ -79,3 +79,9 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_PROJECT_ID: prj_gwDFLBEFYDW4jM3ztCsuQRbIpBhu
         run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
+
+      - name: Deploy hr (hr.gwatc.cloud)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: prj_MIa9cyA82b1JYwfKI4j1jjG1kr8a
+        run: npx vercel deploy --prod --yes --token="$VERCEL_TOKEN"
