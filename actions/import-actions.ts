@@ -104,6 +104,26 @@ function parseBirthDate(v: unknown): string | null {
   return null
 }
 
+const REQUESTER_TYPE_NORM: Record<string, string> = {
+  '장애 당사자': '장애 당사자', '장애당사자': '장애 당사자',
+  '보호자 및 지인': '보호자 및 지인', '보호자및지인': '보호자 및 지인', '보호자': '보호자 및 지인',
+  '유관기관 종사자': '유관기관 종사자', '유관기관종사자': '유관기관 종사자', '유관기관': '유관기관 종사자',
+  '시군구(및 읍면동) 담당자': '시군구(및 읍면동) 담당자',
+  '시군구(읍 면동) 담당자': '시군구(및 읍면동) 담당자',
+  '시군구(읍면동) 담당자': '시군구(및 읍면동) 담당자',
+  '시군구 담당자': '시군구(및 읍면동) 담당자',
+  '시군구담당자': '시군구(및 읍면동) 담당자',
+  '읍면동 담당자': '시군구(및 읍면동) 담당자',
+  '교육기관 종사자': '교육기관 종사자', '교육기관종사자': '교육기관 종사자',
+  '기타': '기타',
+}
+
+function normalizeRequesterType(v: unknown): string | null {
+  const s = toStr(v)
+  if (!s) return null
+  return REQUESTER_TYPE_NORM[s] ?? null
+}
+
 const DISABILITY_TYPE_NORM: Record<string, string> = {
   '지체': '지체', '뇌병변': '뇌병변', '시각': '시각', '청각': '청각',
   '언어': '언어', '지적': '지적', '자폐': '자폐성', '자폐성': '자폐성',
@@ -279,7 +299,7 @@ export async function importCallLogsFile(formData: FormData): Promise<ImportResu
           requester_name:             toStr(row[CALL_COL.requesterName]),
           requester_region:           toStr(row[CALL_COL.requesterRegion]),
           requester_contact:          toStr(row[CALL_COL.requesterContact]),
-          requester_type:             toStr(row[CALL_COL.requesterType]),
+          requester_type:             normalizeRequesterType(row[CALL_COL.requesterType]),
           target_name:                toStr(row[CALL_COL.targetName]),
           target_gender:              toStr(row[CALL_COL.targetGender]),
           target_disability_type:     toStr(row[CALL_COL.disabilityType]),
