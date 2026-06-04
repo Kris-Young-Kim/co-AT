@@ -12,6 +12,7 @@ const isPublicRoute = createRouteMatcher([
   '/sign-up(.*)',
   '/api/webhooks(.*)',
   '/api/health',
+  '/unauthorized',
 ])
 
 type RateEntry = { count: number; resetAt: number }

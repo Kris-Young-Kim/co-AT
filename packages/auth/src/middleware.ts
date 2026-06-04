@@ -1,4 +1,5 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { clerkMiddleware, createRouteMatcher, clerkClient } from '@clerk/nextjs/server'
+import { NextResponse } from 'next/server'
 import type { AppKey } from '@co-at/types'
 
 const isPublicRoute = createRouteMatcher([
@@ -6,6 +7,8 @@ const isPublicRoute = createRouteMatcher([
   '/sign-up(.*)',
   '/api/webhooks(.*)',
 ])
+
+const VALID_ROLES = ['admin', 'manager', 'staff']
 
 export function createAppMiddleware(appKey?: AppKey) {
   return clerkMiddleware(async (auth, req) => {
@@ -18,15 +21,28 @@ export function createAppMiddleware(appKey?: AppKey) {
     }
 
     if (appKey) {
-      const meta = sessionClaims?.metadata as { apps?: string[] } | undefined
-      const allowedApps = meta?.apps ?? []
-      const role = (sessionClaims?.metadata as { role?: string } | undefined)?.role
+      let role = (sessionClaims?.metadata as { role?: string } | undefined)?.role
 
-      // ADMIN bypasses app-level access checks
-      if (role !== 'admin' && !allowedApps.includes(appKey)) {
-        const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL ?? 'https://admin.gwatc.cloud'
-        return Response.redirect(new URL('/unauthorized', adminUrl))
+      if (!role) {
+        // Session JWT may be stale — fetch latest publicMetadata from Clerk
+        try {
+          const client = await clerkClient()
+          const user = await client.users.getUser(userId)
+          role = (user.publicMetadata as { role?: string })?.role
+        } catch {
+          // non-critical: fall through to role check
+        }
       }
+
+      if (!role || !VALID_ROLES.includes(role)) {
+        const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL ?? 'https://admin.gwatc.cloud'
+        try {
+          return NextResponse.redirect(new URL('/unauthorized', adminUrl))
+        } catch {
+          return NextResponse.redirect('https://admin.gwatc.cloud/unauthorized')
+        }
+      }
+      // Any valid role (staff / manager / admin) may access all apps
     }
   })
 }
