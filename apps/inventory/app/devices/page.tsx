@@ -3,7 +3,7 @@
 import { getInventoryList } from '@/actions/inventory-actions'
 import { DeviceListTable } from '@/inventory/components/inventory/DeviceListTable'
 import Link from 'next/link'
-import { Plus } from 'lucide-react'
+import { Plus, FileSpreadsheet } from 'lucide-react'
 
 interface DevicesPageProps {
   searchParams: Promise<{ q?: string; status?: string; category?: string }>
@@ -27,13 +27,22 @@ export default async function DevicesPage({ searchParams }: DevicesPageProps) {
           <h1 className="text-2xl font-bold text-gray-900">기기 목록</h1>
           <p className="text-sm text-gray-500 mt-1">총 {total}개 기기</p>
         </div>
-        <Link
-          href="/devices/new"
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-        >
-          <Plus className="h-4 w-4" />
-          기기 등록
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/devices/import"
+            className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50"
+          >
+            <FileSpreadsheet className="h-4 w-4" />
+            자산관리대장 가져오기
+          </Link>
+          <Link
+            href="/devices/new"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
+          >
+            <Plus className="h-4 w-4" />
+            기기 등록
+          </Link>
+        </div>
       </div>
 
       {/* 검색/필터 */}

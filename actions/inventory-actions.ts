@@ -561,6 +561,79 @@ export async function getGroupedInventoryForPublic(): Promise<GroupedDevice[]> {
 }
 
 /**
+ * 자산관리대장 일괄 가져오기 (Excel 파싱 후 bulk insert)
+ */
+export async function importInventoryItems(
+  items: Array<{
+    name: string
+    asset_code?: string
+    category?: string
+    status?: string
+    manufacturer?: string
+    model?: string
+    purchase_date?: string
+    purchase_price?: string
+    barcode?: string
+  }>
+): Promise<{ success: boolean; inserted: number; skipped: number; errors: string[] }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) {
+    return { success: false, inserted: 0, skipped: 0, errors: ['권한이 없습니다'] }
+  }
+
+  const supabase = createAdminClient()
+  let inserted = 0
+  let skipped = 0
+  const errors: string[] = []
+
+  const parsePrice = (v?: string): number | null => {
+    if (!v) return null
+    const n = Number(v.replace(/[,\s₩원]/g, ''))
+    return isNaN(n) ? null : n
+  }
+
+  const parseDate = (v?: string): string | null => {
+    if (!v) return null
+    const normalized = v.replace(/[./]/g, '-').trim()
+    if (/^\d{4}-\d{1,2}-\d{1,2}$/.test(normalized)) {
+      const [y, m, d] = normalized.split('-')
+      return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`
+    }
+    return null
+  }
+
+  const rows = items
+    .filter((item) => item.name?.trim())
+    .map((item) => ({
+      name: item.name.trim(),
+      asset_code: item.asset_code?.trim() || null,
+      category: item.category?.trim() || null,
+      status: item.status?.trim() || '보관',
+      is_rental_available: true,
+      manufacturer: item.manufacturer?.trim() || null,
+      model: item.model?.trim() || null,
+      purchase_date: parseDate(item.purchase_date),
+      purchase_price: parsePrice(item.purchase_price),
+      barcode: item.barcode?.trim() || null,
+    }))
+
+  skipped = items.length - rows.length
+
+  // Batch insert in chunks of 50
+  for (let i = 0; i < rows.length; i += 50) {
+    const chunk = rows.slice(i, i + 50)
+    const { error, data } = await supabase.from('inventory').insert(chunk).select('id')
+    if (error) {
+      errors.push(`행 ${i + 1}~${i + chunk.length}: ${error.message}`)
+    } else {
+      inserted += data?.length ?? chunk.length
+    }
+  }
+
+  return { success: errors.length === 0, inserted, skipped, errors }
+}
+
+/**
  * 바코드로 단일 재고 항목 조회 (admin 바코드 스캔용)
  */
 export async function getInventoryItemByBarcode(
