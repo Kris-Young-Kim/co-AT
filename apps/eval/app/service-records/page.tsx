@@ -1,4 +1,6 @@
 import { getServiceRecords } from '@/actions/service-record-actions'
+import { generateServiceRecordReport } from '@/actions/report-actions'
+import { DownloadReportButton } from '@/eval/components/eval/DownloadReportButton'
 import Link from 'next/link'
 
 interface Props {
@@ -13,11 +15,26 @@ export default async function ServiceRecordsPage({ searchParams }: Props) {
   const result = await getServiceRecords({ year, month })
   const records = result.success ? result.records ?? [] : []
 
+  const startDate = month
+    ? `${year}-${String(month).padStart(2, '0')}-01`
+    : `${year}-01-01`
+  const endDate = month
+    ? `${year}-${String(month).padStart(2, '0')}-31`
+    : `${year}-12-31`
+
+  const downloadAction = generateServiceRecordReport.bind(null, { startDate, endDate })
+
   return (
     <div className="p-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">서비스 기록</h1>
-        <p className="text-sm text-gray-500 mt-1">총 {records.length}건</p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">서비스 기록</h1>
+          <p className="text-sm text-gray-500 mt-1">총 {records.length}건</p>
+        </div>
+        <DownloadReportButton
+          label={month ? `${year}년 ${month}월 Excel 다운로드` : `${year}년 Excel 다운로드`}
+          action={downloadAction}
+        />
       </div>
 
       {/* 필터 */}
