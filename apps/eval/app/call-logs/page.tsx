@@ -1,5 +1,7 @@
 import { getCallLogs } from '@/actions/call-log-actions'
+import { generateCallLogReport } from '@/actions/report-actions'
 import { CallLogTable } from '@/eval/components/eval/CallLogTable'
+import { DownloadReportButton } from '@/eval/components/eval/DownloadReportButton'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
 
@@ -11,9 +13,14 @@ export default async function CallLogsPage({ searchParams }: CallLogsPageProps) 
   const params = await searchParams
   const year = parseInt(params.year ?? String(new Date().getFullYear()))
 
-  const result = await getCallLogs({ year, limit: 200 })
+  const result = await getCallLogs({ year, limit: 500 })
   const logs = result.success ? result.logs ?? [] : []
   const total = result.success ? result.total ?? 0 : 0
+
+  const downloadAction = generateCallLogReport.bind(null, {
+    startDate: `${year}-01-01`,
+    endDate: `${year}-12-31`,
+  })
 
   return (
     <div className="p-8">
@@ -22,13 +29,19 @@ export default async function CallLogsPage({ searchParams }: CallLogsPageProps) 
           <h1 className="text-2xl font-bold text-gray-900">콜센터 상담 일지</h1>
           <p className="text-sm text-gray-500 mt-1">{year}년 총 {total}건</p>
         </div>
-        <Link
-          href="/call-logs/new"
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
-        >
-          <Plus className="h-4 w-4" />
-          상담 등록
-        </Link>
+        <div className="flex items-center gap-3">
+          <DownloadReportButton
+            label={`${year}년 Excel 다운로드`}
+            action={downloadAction}
+          />
+          <Link
+            href="/call-logs/new"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700"
+          >
+            <Plus className="h-4 w-4" />
+            상담 등록
+          </Link>
+        </div>
       </div>
 
       {/* 연도 필터 */}
