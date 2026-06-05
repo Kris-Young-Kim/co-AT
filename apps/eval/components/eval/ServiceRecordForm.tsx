@@ -6,6 +6,7 @@ import { Sparkles } from 'lucide-react'
 import { createServiceRecord } from '@/actions/service-record-actions'
 import { generateServiceRecordDraft } from '@/actions/ai-actions'
 import type { ServiceRecordDraft } from '@/actions/ai-actions'
+import { ITEM_CATEGORIES } from '@/eval/lib/item-categories'
 
 const INPUT = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
 const SELECT = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white'
@@ -13,17 +14,7 @@ const SKELETON = 'w-full rounded-md bg-gray-200 animate-pulse'
 const READONLY = 'w-full border rounded-md px-3 py-2 text-sm bg-gray-50 text-gray-600 cursor-not-allowed'
 
 const MAJOR_CATEGORIES = ['공적급여', '민간지원', '기타', '서비스지원']
-const SERVICE_AREAS = [
-  { value: 'WC', label: 'WC (휠체어 및 이동)' },
-  { value: 'ADL', label: 'ADL (일상생활동작)' },
-  { value: 'S', label: 'S (감각)' },
-  { value: 'SP', label: 'SP (앉기 및 자세)' },
-  { value: 'EC', label: 'EC (주택 및 환경개조)' },
-  { value: 'CA', label: 'CA (컴퓨터접근)' },
-  { value: 'L', label: 'L (레저)' },
-  { value: 'AAC', label: 'AAC (보완대체의사소통)' },
-  { value: 'AM', label: 'AM (자동차개조)' },
-]
+const SERVICE_AREAS = ['WC', 'ADL', 'S', 'SP', 'EC', 'CA', 'L', 'AAC', 'AM']
 const REFERRAL_TYPES = ['내방', '유선', '인터넷신청', '기관연계', '기타']
 const RECORD_STATUSES = ['접수', '진행중', '완료', '보류']
 
@@ -82,6 +73,7 @@ export function ServiceRecordForm({
   const [serviceCategory, setServiceCategory] = useState('')
   const [serviceArea, setServiceArea] = useState('')
   const [productName, setProductName] = useState('')
+  const [itemCategory, setItemCategory] = useState('')
   const [referralType, setReferralType] = useState('')
   const [checks, setChecks] = useState<Record<CheckKey, boolean>>(INITIAL_CHECKS)
 
@@ -107,6 +99,12 @@ export function ServiceRecordForm({
     } finally {
       setAiLoading(false)
     }
+  }
+
+  function handleItemCategoryChange(val: string) {
+    setItemCategory(val)
+    const match = ITEM_CATEGORIES.find(c => c.name === val)
+    if (match) setServiceArea(match.area)
   }
 
   function applyDraft(draft: ServiceRecordDraft) {
@@ -162,7 +160,7 @@ export function ServiceRecordForm({
       service_sub_category: subCategory || null,
       service_category: serviceCategory || null,
       product_name: productName || null,
-      item_category: str('item_category'),
+      item_category: itemCategory || null,
       service_area: serviceArea || null,
       service_content: serviceContent || null,
       referral_type: referralType || null,
@@ -333,17 +331,35 @@ export function ServiceRecordForm({
             )}
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">품목분류</label>
-            <input name="item_category" type="text" className={INPUT} />
+            <label className="block text-xs font-medium text-gray-600 mb-1">품목고시 명칭</label>
+            <input
+              list="item-categories-list"
+              value={itemCategory}
+              onChange={e => handleItemCategoryChange(e.target.value)}
+              className={INPUT}
+              placeholder="품목명 입력 후 선택"
+              autoComplete="off"
+            />
+            <datalist id="item-categories-list">
+              {ITEM_CATEGORIES.map(c => (
+                <option key={c.name} value={c.name} />
+              ))}
+            </datalist>
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">서비스영역</label>
             {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
-              <select value={serviceArea} onChange={e => setServiceArea(e.target.value)} className={SELECT}>
-                <option value="">선택</option>
-                {SERVICE_AREAS.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
-              </select>
+              <input
+                list="service-areas-list"
+                value={serviceArea}
+                onChange={e => setServiceArea(e.target.value)}
+                className={INPUT}
+                placeholder="품목고시 선택 시 자동 설정"
+              />
             )}
+            <datalist id="service-areas-list">
+              {SERVICE_AREAS.map(a => <option key={a} value={a} />)}
+            </datalist>
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">의뢰구분</label>
