@@ -3,6 +3,8 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { EvalSidebar } from '@/eval/components/layout/EvalSidebar'
 import './globals.css'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'GWATC — 상담/평가',
   description: '보조공학 전문가 상담 및 평가 툴',
