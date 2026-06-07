@@ -143,8 +143,16 @@ export async function getServiceRecords(
     .select('*')
     .order('received_at', { ascending: false })
 
-  if (params.year) query = query.eq('application_year', params.year)
-  if (params.month) query = query.eq('application_month', params.month)
+  if (params.year) {
+    const m = params.month
+    const start = m
+      ? `${params.year}-${String(m).padStart(2, '0')}-01`
+      : `${params.year}-01-01`
+    const end = m
+      ? `${params.year}-${String(m).padStart(2, '0')}-31`
+      : `${params.year}-12-31`
+    query = query.gte('received_at', start).lte('received_at', end)
+  }
 
   const { data, error } = await query.limit(500)
   if (error) return { success: false, error: error.message }

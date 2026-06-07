@@ -1,7 +1,7 @@
 "use server"
 
 import { revalidatePath } from 'next/cache'
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { Database } from "@/types/database.types"
 import { clerkClient } from '@clerk/nextjs/server'
@@ -78,7 +78,7 @@ export async function searchClients(params: ClientSearchParams = {}): Promise<{
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const { query, disability_type, limit = 50, offset = 0 } = params
 
     // Only return registered clients; pending clients are managed via getPendingClients
@@ -158,7 +158,7 @@ export async function getClientById(clientId: string): Promise<{
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from("clients")
@@ -194,11 +194,11 @@ export async function createClientRecord(
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     const { data, error } = await supabase
       .from("clients")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+
       .insert({
         ...clientData,
         created_at: new Date().toISOString(),
@@ -250,7 +250,7 @@ export async function updateClient(
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // 기존 데이터 조회 (변경 전 값)
     const { data: oldData } = await supabase
@@ -265,7 +265,7 @@ export async function updateClient(
     // updated_at 자동 업데이트
     const { data, error } = await supabase
       .from("clients")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+
       .update({
         ...updates,
         updated_at: new Date().toISOString(),
@@ -316,7 +316,7 @@ export async function deleteClient(clientId: string): Promise<{
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // 기존 데이터 조회 (삭제 전 값)
     const { data: oldData } = await supabase
@@ -380,7 +380,7 @@ export async function getClientHistory(clientId: string): Promise<{
       return { success: false, error: "권한이 없습니다" }
     }
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // 1. 신청서 이력
     const { data: applications, error: appsError } = await supabase
@@ -532,7 +532,7 @@ export async function getPendingCount(): Promise<number> {
   try {
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return 0
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const { count } = await supabase
       .from("clients")
       .select("*", { count: "exact", head: true })
@@ -551,7 +551,7 @@ export async function getPendingClients(): Promise<{
   try {
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return { success: false, error: "권한이 없습니다" }
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const { data, error } = await supabase
       .from("clients")
       .select("*")
@@ -574,10 +574,10 @@ export async function createPendingClient(
   try {
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return { success: false, error: "권한이 없습니다" }
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     const { data, error } = await supabase
       .from("clients")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+
       .insert({
         name: input.name,
         birth_date: input.birth_date ?? null,
@@ -624,7 +624,7 @@ export async function createPendingClient(
 export async function getNextRegistrationCode(): Promise<string> {
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) throw new Error('권한이 없습니다')
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const year = new Date().getFullYear()
   const { data, error } = await supabase
     .from("clients")
@@ -649,12 +649,12 @@ export async function registerClient(
   try {
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return { success: false, error: "권한이 없습니다" }
-    const supabase = await createClient()
+    const supabase = createAdminClient()
     // Sequential code generation is acceptable for single-center small-team use
     const registrationNumber = await getNextRegistrationCode()
     const { data, error } = await supabase
       .from("clients")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+
       .update({
         status: "registered",
         registration_number: registrationNumber,
