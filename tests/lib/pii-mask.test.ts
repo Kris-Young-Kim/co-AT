@@ -27,4 +27,17 @@ describe('maskPii', () => {
     expect(maskPii(null)).toBe('')
     expect(maskPii(undefined)).toBe('')
   })
+
+  it('빈 문자열 입력 시 빈 문자열 반환', () => {
+    expect(maskPii('')).toBe('')
+  })
+
+  it('동일 문자열 내 여러 PII 동시 마스킹', () => {
+    expect(maskPii('전화 010-1234-5678 주민번호 900101-1234567'))
+      .toBe('전화 ***-****-**** 주민번호 ******-*******')
+  })
+
+  it('일반 숫자(날짜, 코드)는 마스킹하지 않음', () => {
+    expect(maskPii('상담일: 2026-06-08, 코드 1234')).toBe('상담일: 2026-06-08, 코드 1234')
+  })
 })
