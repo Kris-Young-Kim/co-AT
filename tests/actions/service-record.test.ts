@@ -55,6 +55,8 @@ describe('service-record-actions', () => {
         select: vi.fn(() => chain),
         order: vi.fn(() => chain),
         eq: vi.fn(() => chain),
+        gte: vi.fn(() => chain),
+        lte: vi.fn(() => chain),
         limit: vi.fn(() => Promise.resolve({ data: records, error: null })),
       }
       vi.mocked(createAdminClient).mockReturnValueOnce({ from: vi.fn(() => chain) } as any)
