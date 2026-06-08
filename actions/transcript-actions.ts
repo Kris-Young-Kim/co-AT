@@ -41,7 +41,7 @@ export async function saveTranscript(
   const payload = {
     ...input,
     transcript: maskedTranscript,
-    raw_transcript: input.raw_transcript ?? null,
+    raw_transcript: input.consent_given ? (input.raw_transcript ?? null) : null,
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
