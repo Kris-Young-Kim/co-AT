@@ -369,6 +369,9 @@ export async function summarizeTranscript(
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
+  const { userId } = await auth()
+  if (!userId) return { success: false, error: '로그인이 필요합니다' }
+
   if (!transcript.trim()) return { success: false, error: '대화 내용이 없습니다' }
 
   try {
@@ -384,7 +387,10 @@ export async function summarizeTranscript(
     return { success: true, keyPoints }
   } catch (error) {
     console.error('[AI Actions] 대화록 요약 오류:', error)
-    return { success: false, error: 'AI 요약 중 오류가 발생했습니다' }
+    return {
+      success: false,
+      error: error instanceof Error ? `AI 요약 오류: ${error.message}` : 'AI 요약 중 오류가 발생했습니다',
+    }
   }
 }
 
@@ -426,6 +432,9 @@ export async function generateCallLogDraftFromTranscript(
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
+  const { userId } = await auth()
+  if (!userId) return { success: false, error: '로그인이 필요합니다' }
+
   if (!input.transcript.trim()) return { success: false, error: '대화 내용이 없습니다' }
 
   try {
@@ -444,9 +453,17 @@ export async function generateCallLogDraftFromTranscript(
       .trim()
     const draft = JSON.parse(raw) as CallLogDraftFromTranscript
     if (!draft.question_content) throw new Error('question_content 누락')
+    draft.q_public_benefit = Boolean(draft.q_public_benefit)
+    draft.q_private_benefit = Boolean(draft.q_private_benefit)
+    draft.q_device = Boolean(draft.q_device)
+    draft.q_case_management = Boolean(draft.q_case_management)
+    draft.q_other = Boolean(draft.q_other)
     return { success: true, draft }
   } catch (error) {
     console.error('[AI Actions] 콜로그 초안 생성 오류:', error)
-    return { success: false, error: 'AI 콜로그 초안 생성 중 오류가 발생했습니다' }
+    return {
+      success: false,
+      error: error instanceof Error ? `AI 콜로그 초안 생성 오류: ${error.message}` : 'AI 콜로그 초안 생성 중 오류가 발생했습니다',
+    }
   }
 }
