@@ -1,5 +1,6 @@
 "use server"
 
+import { auth } from "@clerk/nextjs/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { maskPii } from "@/lib/utils/pii-mask"
@@ -7,7 +8,7 @@ import { revalidatePath } from "next/cache"
 
 export interface TranscriptInput {
   client_id?: string | null
-  staff_id: string
+  staff_id?: string
   session_type: 'call' | 'video' | 'visit' | 'meeting'
   session_date: string
   duration_sec?: number | null
@@ -37,9 +38,13 @@ export async function saveTranscript(
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
+  const { userId } = await auth()
+  if (!userId) return { success: false, error: '로그인이 필요합니다' }
+
   const maskedTranscript = maskPii(input.transcript)
   const payload = {
     ...input,
+    staff_id: userId,  // server-derived, overrides any client-supplied value
     transcript: maskedTranscript,
     raw_transcript: input.consent_given ? (input.raw_transcript ?? null) : null,
   }

@@ -11,7 +11,6 @@ interface TranscriptPanelProps {
   clientName?: string | null
   disabilityType?: string | null
   sessionDate: string
-  staffId: string
   onCallLogDraft?: (draft: CallLogDraftFromTranscript) => void
   onTranscriptSaved?: (transcriptId: string) => void
 }
@@ -23,7 +22,6 @@ export function TranscriptPanel({
   clientName,
   disabilityType,
   sessionDate,
-  staffId,
   onCallLogDraft,
   onTranscriptSaved,
 }: TranscriptPanelProps) {
@@ -68,7 +66,6 @@ export function TranscriptPanel({
     try {
       const input: TranscriptInput = {
         client_id: clientId ?? null,
-        staff_id: staffId,
         session_type: 'call',
         session_date: sessionDate,
         duration_sec: durationSec || null,

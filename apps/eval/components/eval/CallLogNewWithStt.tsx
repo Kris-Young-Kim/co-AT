@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useUser } from '@clerk/nextjs'
 import { TranscriptPanel } from './TranscriptPanel'
 import { CallLogForm } from './CallLogForm'
 import { createCallLog } from '@/actions/call-log-actions'
@@ -13,8 +12,6 @@ interface CallLogNewWithSttProps {
 }
 
 export function CallLogNewWithStt({ defaultDate }: CallLogNewWithSttProps) {
-  const { user } = useUser()
-  const staffId = user?.id ?? ''
   const [draftValues, setDraftValues] = useState<Partial<CallLog>>({})
   const [showTranscript, setShowTranscript] = useState(false)
   const [hasDraft, setHasDraft] = useState(false)
@@ -54,12 +51,12 @@ export function CallLogNewWithStt({ defaultDate }: CallLogNewWithSttProps) {
       {showTranscript && (
         <TranscriptPanel
           sessionDate={defaultDate}
-          staffId={staffId}
           onCallLogDraft={handleCallLogDraft}
         />
       )}
 
       <CallLogForm
+        key={hasDraft ? 'with-draft' : 'empty'}
         defaultValues={draftValues}
         onSubmit={createCallLog}
         submitLabel="등록"

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { Mic, MicOff, Square } from 'lucide-react'
 
 interface SpeechRecognitionAPI {
@@ -45,8 +45,15 @@ export function SttRecorder({ onTranscriptChange, onRecordingStop, disabled }: S
   const fullTextRef = useRef('')
   const startTimeRef = useRef<number>(0)
 
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.stop()
+    }
+  }, [])
+
   const startRecording = useCallback(() => {
     if (!isSupported) return
+    recognitionRef.current?.stop()  // Stop any existing instance
 
     const SpeechRecognition = window.SpeechRecognition ?? window.webkitSpeechRecognition!
     const recognition = new SpeechRecognition()
