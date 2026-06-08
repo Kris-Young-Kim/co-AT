@@ -52,6 +52,41 @@ const INITIAL_CHECKS: Record<CheckKey, boolean> = {
   is_funding_secured: false, is_closed: false,
 }
 
+type SmartDefaultFields = Partial<Record<CheckKey, boolean> & { service_content: string }>
+
+const SMART_DEFAULTS: Record<string, SmartDefaultFields> = {
+  '교부사업(맞춤형평가)': {
+    is_assessment: true,
+    is_consult: true,
+    service_content: '9개 영역 기능 평가 및 맞춤형 보조기기 교부사업 신청 지원을 위한 상담을 진행하였습니다.',
+  },
+  '대여': {
+    is_rental: true,
+    is_consult: true,
+    service_content: '보조기기 대여 서비스 상담 및 대여 신청을 진행하였습니다.',
+  },
+  '맞춤제작': {
+    is_custom_make: true,
+    is_assessment: true,
+    is_consult: true,
+    service_content: '맞춤형 보조기기 제작 지원을 위한 상담 및 평가를 진행하였습니다.',
+  },
+  '정보제공': {
+    is_info_provision: true,
+    is_consult: true,
+    service_content: '보조기기 관련 정보 제공 및 자원 연계 안내를 진행하였습니다.',
+  },
+  '재사용': {
+    is_reuse: true,
+    is_consult: true,
+    service_content: '재사용 보조기기 배분 서비스 상담 및 기기 상태 확인을 진행하였습니다.',
+  },
+  '수리': {
+    is_repair: true,
+    service_content: '보조기기 수리 서비스 접수 및 상태 확인을 진행하였습니다.',
+  },
+}
+
 export function ServiceRecordForm({
   clientId,
   applicationId,
@@ -127,6 +162,17 @@ export function ServiceRecordForm({
       is_info_provision: draft.is_info_provision ?? false,
       is_repair: draft.is_repair ?? false,
     }))
+  }
+
+  function handleServiceCategoryChange(val: string) {
+    setServiceCategory(val)
+    const defaults = SMART_DEFAULTS[val]
+    if (!defaults) return
+    const { service_content, ...checkDefaults } = defaults
+    if (service_content !== undefined) setServiceContent(service_content)
+    if (Object.keys(checkDefaults).length > 0) {
+      setChecks(prev => ({ ...prev, ...(checkDefaults as Partial<Record<CheckKey, boolean>>) }))
+    }
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -321,7 +367,7 @@ export function ServiceRecordForm({
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">서비스구분</label>
             {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
-              <input value={serviceCategory} onChange={e => setServiceCategory(e.target.value)} type="text" className={INPUT} />
+              <input value={serviceCategory} onChange={e => handleServiceCategoryChange(e.target.value)} type="text" className={INPUT} />
             )}
           </div>
           <div>
