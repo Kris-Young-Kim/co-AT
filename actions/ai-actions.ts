@@ -341,3 +341,112 @@ export async function generateServiceRecordDraft(
     }
   }
 }
+
+// ────────────────────────────────────────────
+// E-5: 세션 대화록 AI 요약
+// ────────────────────────────────────────────
+
+export interface TranscriptKeyPoints {
+  chief_complaint?: string
+  requested_device?: string
+  agreed_action?: string
+  next_step?: string
+}
+
+const TRANSCRIPT_SUMMARY_PROMPT = `당신은 보조공학센터 전문 기록사입니다.
+아래 상담 대화 내용에서 핵심 정보를 JSON으로 추출해주세요.
+다른 설명 없이 JSON만 반환하세요:
+{
+  "chief_complaint": "주요 호소 내용 (1~2문장)",
+  "requested_device": "요청 보조기기명 (없으면 빈 문자열)",
+  "agreed_action": "합의된 조치 사항",
+  "next_step": "다음 단계 또는 팔로업"
+}`
+
+export async function summarizeTranscript(
+  transcript: string
+): Promise<{ success: boolean; keyPoints?: TranscriptKeyPoints; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  if (!transcript.trim()) return { success: false, error: '대화 내용이 없습니다' }
+
+  try {
+    const model = getGeminiModel('gemini-2.5-flash')
+    const result = await model.generateContent(
+      `${TRANSCRIPT_SUMMARY_PROMPT}\n\n대화 내용:\n${transcript}`
+    )
+    const raw = result.response.text()
+      .replace(/```json\s*/g, '')
+      .replace(/```\s*/g, '')
+      .trim()
+    const keyPoints = JSON.parse(raw) as TranscriptKeyPoints
+    return { success: true, keyPoints }
+  } catch (error) {
+    console.error('[AI Actions] 대화록 요약 오류:', error)
+    return { success: false, error: 'AI 요약 중 오류가 발생했습니다' }
+  }
+}
+
+export interface CallLogDraftFromTranscriptInput {
+  transcript: string
+  sessionDate: string
+  clientName?: string | null
+  disabilityType?: string | null
+}
+
+export interface CallLogDraftFromTranscript {
+  question_content: string
+  answer: string
+  requester_type: string
+  q_public_benefit: boolean
+  q_private_benefit: boolean
+  q_device: boolean
+  q_case_management: boolean
+  q_other: boolean
+}
+
+const CALL_LOG_FROM_TRANSCRIPT_PROMPT = `당신은 보조공학센터 전문 기록사입니다.
+상담 대화 내용을 바탕으로 콜센터 상담일지를 JSON으로 작성해주세요.
+다른 설명 없이 JSON만 반환하세요:
+{
+  "question_content": "질문 내용 요약 (2~4문장)",
+  "answer": "답변 및 조치 내용 (2~4문장)",
+  "requester_type": "장애 당사자 | 보호자 및 지인 | 유관기관 종사자 | 시군구(및 읍면동) 담당자 | 교육기관 종사자 | 기타 중 하나",
+  "q_public_benefit": true/false,
+  "q_private_benefit": true/false,
+  "q_device": true/false,
+  "q_case_management": true/false,
+  "q_other": true/false
+}`
+
+export async function generateCallLogDraftFromTranscript(
+  input: CallLogDraftFromTranscriptInput
+): Promise<{ success: boolean; draft?: CallLogDraftFromTranscript; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  if (!input.transcript.trim()) return { success: false, error: '대화 내용이 없습니다' }
+
+  try {
+    const contextLines = [
+      input.clientName && `대상자: ${input.clientName}`,
+      input.disabilityType && `장애유형: ${input.disabilityType}`,
+      `상담일: ${input.sessionDate}`,
+    ].filter(Boolean).join('\n')
+
+    const model = getGeminiModel('gemini-2.5-flash')
+    const prompt = `${CALL_LOG_FROM_TRANSCRIPT_PROMPT}\n\n${contextLines}\n\n대화 내용:\n${input.transcript}`
+    const result = await model.generateContent(prompt)
+    const raw = result.response.text()
+      .replace(/```json\s*/g, '')
+      .replace(/```\s*/g, '')
+      .trim()
+    const draft = JSON.parse(raw) as CallLogDraftFromTranscript
+    if (!draft.question_content) throw new Error('question_content 누락')
+    return { success: true, draft }
+  } catch (error) {
+    console.error('[AI Actions] 콜로그 초안 생성 오류:', error)
+    return { success: false, error: 'AI 콜로그 초안 생성 중 오류가 발생했습니다' }
+  }
+}
