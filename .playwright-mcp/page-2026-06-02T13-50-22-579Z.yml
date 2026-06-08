@@ -1,0 +1,111 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "GW GWATC" [ref=e6] [cursor=pointer]:
+          - /url: https://gwatc.cloud
+          - generic [ref=e7]:
+            - generic [ref=e9]: GW
+            - generic [ref=e10]: GWATC
+        - navigation [ref=e11]:
+          - link "홈으로" [ref=e12] [cursor=pointer]:
+            - /url: https://gwatc.cloud
+            - img
+            - generic [ref=e13]: 홈으로
+          - button "관리자 로그아웃" [ref=e14] [cursor=pointer]:
+            - img
+            - generic [ref=e15]: 관리자 로그아웃
+    - generic [ref=e17]:
+      - complementary [ref=e18]:
+        - generic [ref=e20]:
+          - img [ref=e22]
+          - generic [ref=e24]:
+            - generic [ref=e25]: 관리자
+            - generic [ref=e26]: Admin Panel
+        - navigation [ref=e27]:
+          - link "앱 목록" [ref=e28] [cursor=pointer]:
+            - /url: /
+            - img [ref=e29]
+            - generic [ref=e34]: 앱 목록
+          - link "웹 관리" [ref=e36] [cursor=pointer]:
+            - /url: /notices-management
+            - img [ref=e37]
+            - generic [ref=e40]: 웹 관리
+          - link "일정 관리" [ref=e41] [cursor=pointer]:
+            - /url: /schedule
+            - img [ref=e42]
+            - generic [ref=e44]: 일정 관리
+          - link "업무 관리" [ref=e45] [cursor=pointer]:
+            - /url: /work-tasks
+            - img [ref=e46]
+            - generic [ref=e49]: 업무 관리
+          - link "업무 메신저" [ref=e50] [cursor=pointer]:
+            - /url: /messenger
+            - img [ref=e51]
+            - generic [ref=e53]: 업무 메신저
+          - link "AI 업무 도우미" [ref=e54] [cursor=pointer]:
+            - /url: /agent-chat
+            - img [ref=e55]
+            - generic [ref=e58]: AI 업무 도우미
+          - link "사용자 관리" [ref=e59] [cursor=pointer]:
+            - /url: /users
+            - img [ref=e60]
+            - generic [ref=e65]: 사용자 관리
+          - link "설정" [ref=e66] [cursor=pointer]:
+            - /url: /settings
+            - img [ref=e67]
+            - generic [ref=e70]: 설정
+      - main [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - heading "앱 목록" [level=1] [ref=e74]
+            - paragraph [ref=e75]: GWATC 업무 시스템 전체 앱에 접근합니다.
+          - link "공개 포털 대민 서비스 웹사이트 — 센터 소개, 공지사항, 신청 접수" [ref=e77] [cursor=pointer]:
+            - /url: https://gwatc.cloud
+            - generic [ref=e80]:
+              - generic [ref=e81]:
+                - heading "공개 포털" [level=3] [ref=e82]
+                - paragraph [ref=e83]: 대민 서비스 웹사이트 — 센터 소개, 공지사항, 신청 접수
+              - img [ref=e84]
+          - generic [ref=e88]:
+            - heading "서비스 중" [level=2] [ref=e89]
+            - generic [ref=e90]:
+              - link "상담·평가 내담자 상담일지, 평가 기록 관리" [ref=e91] [cursor=pointer]:
+                - /url: https://eval.gwatc.cloud
+                - generic [ref=e93]:
+                  - generic [ref=e94]:
+                    - heading "상담·평가" [level=3] [ref=e95]
+                    - img [ref=e96]
+                  - paragraph [ref=e100]: 내담자 상담일지, 평가 기록 관리
+              - link "자산·재고 보조기기 재고 현황 및 대여 관리" [ref=e101] [cursor=pointer]:
+                - /url: https://inventory.gwatc.cloud
+                - generic [ref=e103]:
+                  - generic [ref=e104]:
+                    - heading "자산·재고" [level=3] [ref=e105]
+                    - img [ref=e106]
+                  - paragraph [ref=e110]: 보조기기 재고 현황 및 대여 관리
+              - link "성과 대시보드 업무 통계 및 성과 지표 조회" [ref=e111] [cursor=pointer]:
+                - /url: https://stats.gwatc.cloud
+                - generic [ref=e113]:
+                  - generic [ref=e114]:
+                    - heading "성과 대시보드" [level=3] [ref=e115]
+                    - img [ref=e116]
+                  - paragraph [ref=e120]: 업무 통계 및 성과 지표 조회
+          - generic [ref=e121]:
+            - heading "준비 중" [level=2] [ref=e122]
+            - generic [ref=e123]:
+              - generic [ref=e125]:
+                - heading "자동화·알림" [level=3] [ref=e126]
+                - paragraph [ref=e127]: 업무 자동화 및 알림 설정
+              - generic [ref=e129]:
+                - heading "인사관리" [level=3] [ref=e130]
+                - paragraph [ref=e131]: 직원 정보 및 근태 관리
+              - generic [ref=e133]:
+                - heading "전자결재" [level=3] [ref=e134]
+                - paragraph [ref=e135]: 기안·승인·결재 워크플로우
+              - generic [ref=e137]:
+                - heading "예산·재무" [level=3] [ref=e138]
+                - paragraph [ref=e139]: 예산 계획 및 재무 현황
+    - button "규정 검색 챗봇 열기" [ref=e140] [cursor=pointer]:
+      - img [ref=e141]
+  - alert [ref=e143]

@@ -1,0 +1,123 @@
+- generic [ref=e4]:
+  - navigation [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - link "Unsplash 홈" [ref=e8] [cursor=pointer]:
+          - /url: /ko
+          - img "Unsplash 홈" [ref=e9]
+        - link "사진" [ref=e11] [cursor=pointer]:
+          - /url: /ko
+          - img [ref=e12]
+        - link "일러스트" [ref=e14] [cursor=pointer]:
+          - /url: /ko/%EC%9D%BC%EB%9F%AC%EC%8A%A4%ED%8A%B8
+          - img [ref=e15]
+      - generic [ref=e17]:
+        - button "탐색" [ref=e18] [cursor=pointer]:
+          - img [ref=e19]
+        - button "컬렉션" [ref=e21] [cursor=pointer]:
+          - img [ref=e22]
+        - button "다운로드 내역" [ref=e24] [cursor=pointer]:
+          - img [ref=e25]
+      - button "북마크" [ref=e28] [cursor=pointer]:
+        - img [ref=e29]
+    - generic [ref=e31]:
+      - link "로그인 / 가입" [ref=e32] [cursor=pointer]:
+        - /url: /ko/%EB%A1%9C%EA%B7%B8%EC%9D%B8?referrer=%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fdisability-care-center-warm%3Forientation%3Dlandscape
+        - img [ref=e33]
+      - button "언어" [ref=e35] [cursor=pointer]:
+        - img [ref=e36]
+      - button "메뉴" [ref=e38] [cursor=pointer]:
+        - img [ref=e39]
+  - generic [ref=e41]:
+    - generic [ref=e42]:
+      - navigation [ref=e43]:
+        - search "사이트 전체에서 이미지 찾기" [ref=e45]:
+          - button "Unsplash 검색" [ref=e46] [cursor=pointer]:
+            - img [ref=e47]
+          - combobox [ref=e49]:
+            - searchbox "Unsplash 검색" [ref=e50]: disability care center warm
+            - listbox
+          - button "삭제" [ref=e51] [cursor=pointer]:
+            - img [ref=e52]
+          - button "시각적 검색" [ref=e56] [cursor=pointer]:
+            - img [ref=e57]
+        - generic [ref=e59]:
+          - link "Unsplash+ 구독" [ref=e60] [cursor=pointer]:
+            - /url: /ko/%ED%94%8C%EB%9F%AC%EC%8A%A4
+          - link "로그인" [ref=e61] [cursor=pointer]:
+            - /url: /ko/%EB%A1%9C%EA%B7%B8%EC%9D%B8?referrer=%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fdisability-care-center-warm%3Forientation%3Dlandscape
+        - button "이미지 제출" [ref=e63] [cursor=pointer]
+      - generic [ref=e64]:
+        - generic [ref=e70]:
+          - list [ref=e71]:
+            - listitem [ref=e72]:
+              - link "사진 0":
+                - /url: /ko/s/%EC%82%AC%EC%A7%84/disability-care-center-warm?orientation=landscape
+                - img
+                - text: 사진
+                - generic: "0"
+            - listitem [ref=e73]:
+              - link "일러스트 0" [ref=e74] [cursor=pointer]:
+                - /url: /ko/s/%EC%9D%BC%EB%9F%AC%EC%8A%A4%ED%8A%B8/disability-care-center-warm?orientation=landscape
+                - img [ref=e75]
+                - text: 일러스트
+                - generic [ref=e77]: "0"
+            - listitem [ref=e78]:
+              - button "더 보기" [ref=e79] [cursor=pointer]
+          - generic [ref=e81]:
+            - button "삭제" [ref=e82] [cursor=pointer]
+            - generic [ref=e83]:
+              - button "라이선스" [ref=e84] [cursor=pointer]:
+                - img [ref=e85]
+                - generic [ref=e87]: 라이선스
+                - img [ref=e88]
+              - button "가로" [ref=e90] [cursor=pointer]:
+                - img [ref=e91]
+                - generic [ref=e93]: 가로
+                - img [ref=e94]
+              - button "정렬 기준 관련성" [ref=e96] [cursor=pointer]:
+                - img [ref=e97]
+                - generic [ref=e99]: 정렬 기준 관련성
+                - img [ref=e100]
+        - heading "Disability care center warm" [level=1] [ref=e104]
+        - generic [ref=e106]:
+          - img "사용 가능한 콘텐츠 없음" [ref=e108]
+          - generic [ref=e110]:
+            - heading "iStock에서 프리미엄 이미지 찾아보기 | 지금 바로 할인 요청하기" [level=2] [ref=e111]:
+              - text: iStock에서 프리미엄 이미지 찾아보기
+              - generic [ref=e112]: "| 지금 바로 할인 요청하기"
+            - generic [ref=e114]:
+              - link "담요에 노인 여성의 손" [ref=e115] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/senior-womans-hands-on-blanket-gm2185908002-604636159?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_zsr&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fdisability-care-center-warm%3Forientation%3Dlandscape&utm_term=disability+care+center+warm%3A%3A%3A%3A
+                - img "담요에 노인 여성의 손" [ref=e116]
+              - link "영국 햄프셔, 햄프셔에서 휠체어에 앉아 노인." [ref=e117] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/old-man-sitting-in-a-wheelchair-in-his-back-yard-hampshire-england-united-kingdom-gm1250545280-364774280?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_zsr&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fdisability-care-center-warm%3Forientation%3Dlandscape&utm_term=disability+care+center+warm%3A%3A%3A%3A
+                - img "영국 햄프셔, 햄프셔에서 휠체어에 앉아 노인." [ref=e118]
+              - link "집 벽난로 앞에 앉아 지팡이를 짚고 웃고 있는 선배" [ref=e119] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/smiling-senior-man-using-walking-cane-sitting-in-front-of-the-fireplace-at-home-gm2236113626-651421098?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_zsr&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fdisability-care-center-warm%3Forientation%3Dlandscape&utm_term=disability+care+center+warm%3A%3A%3A%3A
+                - img "집 벽난로 앞에 앉아 지팡이를 짚고 웃고 있는 선배" [ref=e120]
+              - link "집에서 벽난로 앞에 앉아 지팡이를 사용하는 노인" [ref=e121] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/senior-man-using-walking-cane-sitting-in-front-of-the-fireplace-at-home-gm2236100629-651409030?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_zsr&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fdisability-care-center-warm%3Forientation%3Dlandscape&utm_term=disability+care+center+warm%3A%3A%3A%3A
+                - img "집에서 벽난로 앞에 앉아 지팡이를 사용하는 노인" [ref=e122]
+              - link "치유하는 손, 따뜻한 마음. 따뜻함의 한 살짝." [ref=e123] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/healing-hands-caring-hearts-a-touch-of-warmth-gm2272178672-684611309?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_zsr&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fdisability-care-center-warm%3Forientation%3Dlandscape&utm_term=disability+care+center+warm%3A%3A%3A%3A
+                - img "치유하는 손, 따뜻한 마음. 따뜻함의 한 살짝." [ref=e124]
+              - link "남자와 여자는 손을 잡고 서로를 돌봅니다." [ref=e125] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/hands-together-man-and-a-woman-take-care-of-each-other-gm2270295270-682814620?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_zsr&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fdisability-care-center-warm%3Forientation%3Dlandscape&utm_term=disability+care+center+warm%3A%3A%3A%3A
+                - img "남자와 여자는 손을 잡고 서로를 돌봅니다." [ref=e126]
+              - link "집에서 벽난로 앞에 앉아 지팡이를 사용하는 노인" [ref=e127] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/senior-man-using-walking-cane-sitting-in-front-of-the-fireplace-at-home-gm2236102112-651410630?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_zsr&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fdisability-care-center-warm%3Forientation%3Dlandscape&utm_term=disability+care+center+warm%3A%3A%3A%3A
+                - img "집에서 벽난로 앞에 앉아 지팡이를 사용하는 노인" [ref=e128]
+              - generic [ref=e129]:
+                - link "집에 앉아 지팡이를 들고 수심에 잠긴 듯한 노인" [ref=e130] [cursor=pointer]:
+                  - /url: https://www.istockphoto.com/photo/senior-man-sitting-at-home-holding-walking-cane-looking-pensive-gm2211733725-628705143?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_zsr&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fdisability-care-center-warm%3Forientation%3Dlandscape&utm_term=disability+care+center+warm%3A%3A%3A%3A
+                  - img "집에 앉아 지팡이를 들고 수심에 잠긴 듯한 노인" [ref=e131]
+                - link "iStock에서 더 많은 자료 보기 ↗" [ref=e132] [cursor=pointer]:
+                  - /url: https://www.istockphoto.com/search/2/image?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_zsr&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fdisability-care-center-warm%3Forientation%3Dlandscape&utm_term=disability+care+center+warm%3A%3A%3A%3A&phrase=disability+care+center+warm&alloweduse=availableforalluses&excludenudity=true&sort=best&mediatype=photography
+          - generic [ref=e134]:
+            - link [ref=e135] [cursor=pointer]:
+              - /url: /ko
+              - img [ref=e136]
+            - paragraph [ref=e138]: 멋진 것을 만들어 보세요
+    - generic:
+      - region "Notifications"

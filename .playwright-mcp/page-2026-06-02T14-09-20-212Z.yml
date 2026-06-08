@@ -1,0 +1,110 @@
+- generic [ref=e4]:
+  - navigation [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - link "Unsplash 홈" [ref=e8] [cursor=pointer]:
+          - /url: /ko
+          - img "Unsplash 홈" [ref=e9]
+        - link "사진" [ref=e11] [cursor=pointer]:
+          - /url: /ko
+          - img [ref=e12]
+        - link "일러스트" [ref=e14] [cursor=pointer]:
+          - /url: /ko/%EC%9D%BC%EB%9F%AC%EC%8A%A4%ED%8A%B8
+          - img [ref=e15]
+      - generic [ref=e17]:
+        - button "탐색" [ref=e18] [cursor=pointer]:
+          - img [ref=e19]
+        - button "컬렉션" [ref=e21] [cursor=pointer]:
+          - img [ref=e22]
+        - button "다운로드 내역" [ref=e24] [cursor=pointer]:
+          - img [ref=e25]
+      - button "북마크" [ref=e28] [cursor=pointer]:
+        - img [ref=e29]
+    - generic [ref=e31]:
+      - link "로그인 / 가입" [ref=e32] [cursor=pointer]:
+        - /url: /ko/%EB%A1%9C%EA%B7%B8%EC%9D%B8?referrer=%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fphysical-therapy-care%3Forientation%3Dlandscape
+        - img [ref=e33]
+      - button "언어" [ref=e35] [cursor=pointer]:
+        - img [ref=e36]
+      - button "메뉴" [ref=e38] [cursor=pointer]:
+        - img [ref=e39]
+  - generic [ref=e41]:
+    - generic [ref=e42]:
+      - navigation [ref=e43]:
+        - search "사이트 전체에서 이미지 찾기" [ref=e45]:
+          - button "Unsplash 검색" [ref=e46] [cursor=pointer]:
+            - img [ref=e47]
+          - combobox [ref=e49]:
+            - searchbox "Unsplash 검색" [ref=e50]: physical therapy care
+            - listbox
+          - button "삭제" [ref=e51] [cursor=pointer]:
+            - img [ref=e52]
+          - button "시각적 검색" [ref=e56] [cursor=pointer]:
+            - img [ref=e57]
+        - generic [ref=e59]:
+          - link "Unsplash+ 구독" [ref=e60] [cursor=pointer]:
+            - /url: /ko/%ED%94%8C%EB%9F%AC%EC%8A%A4
+          - link "로그인" [ref=e61] [cursor=pointer]:
+            - /url: /ko/%EB%A1%9C%EA%B7%B8%EC%9D%B8?referrer=%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fphysical-therapy-care%3Forientation%3Dlandscape
+        - button "이미지 제출" [ref=e63] [cursor=pointer]
+      - generic [ref=e64]:
+        - generic [ref=e70]:
+          - list [ref=e71]:
+            - listitem [ref=e72]:
+              - link "사진 6.4천":
+                - /url: /ko/s/%EC%82%AC%EC%A7%84/physical-therapy-care?orientation=landscape
+                - img
+                - text: 사진
+                - generic: 6.4천
+            - listitem [ref=e73]:
+              - link "일러스트 346" [ref=e74] [cursor=pointer]:
+                - /url: /ko/s/%EC%9D%BC%EB%9F%AC%EC%8A%A4%ED%8A%B8/physical-therapy-care?orientation=landscape
+                - img [ref=e75]
+                - text: 일러스트
+                - generic [ref=e77]: "346"
+            - listitem [ref=e78]:
+              - button "더 보기" [ref=e79] [cursor=pointer]
+          - generic [ref=e81]:
+            - button "삭제" [ref=e82] [cursor=pointer]
+            - generic [ref=e83]:
+              - button "라이선스" [ref=e84] [cursor=pointer]:
+                - img [ref=e85]
+                - generic [ref=e87]: 라이선스
+                - img [ref=e88]
+              - button "가로" [ref=e90] [cursor=pointer]:
+                - img [ref=e91]
+                - generic [ref=e93]: 가로
+                - img [ref=e94]
+              - button "정렬 기준 관련성" [ref=e96] [cursor=pointer]:
+                - img [ref=e97]
+                - generic [ref=e99]: 정렬 기준 관련성
+                - img [ref=e100]
+        - generic [ref=e102]:
+          - heading "Physical therapy care" [level=1] [ref=e104]
+          - generic [ref=e108]:
+            - link "재활" [ref=e110] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%9E%AC%ED%99%9C?orientation=landscape
+            - link "의료 지원" [ref=e112] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%9D%98%EB%A3%8C-%EC%A7%80%EC%9B%90?orientation=landscape
+            - link "건강과 웰빙" [ref=e114] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EA%B1%B4%EA%B0%95%EA%B3%BC-%EC%9B%B0%EB%B9%99?orientation=landscape
+            - link "복구" [ref=e116] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EB%B3%B5%EA%B5%AC?orientation=landscape
+            - link "물리 요법" [ref=e118] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EB%AC%BC%EB%A6%AC-%EC%9A%94%EB%B2%95?orientation=landscape
+            - link "환자" [ref=e120] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%ED%99%98%EC%9E%90?orientation=landscape
+            - link "치료" [ref=e122] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%B9%98%EB%A3%8C?orientation=landscape
+            - link "물리 치료" [ref=e124] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EB%AC%BC%EB%A6%AC-%EC%B9%98%EB%A3%8C?orientation=landscape
+            - link "의료 종사자" [ref=e126] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%9D%98%EB%A3%8C-%EC%A2%85%EC%82%AC%EC%9E%90?orientation=landscape
+            - link "물리 치료사" [ref=e128] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EB%AC%BC%EB%A6%AC-%EC%B9%98%EB%A3%8C%EC%82%AC?orientation=landscape
+            - link "척추 지압사" [ref=e130] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%B2%99%EC%B6%94-%EC%A7%80%EC%95%95%EC%82%AC?orientation=landscape
+            - link "카이로프랙틱" [ref=e132] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%B9%B4%EC%9D%B4%EB%A1%9C%ED%94%84%EB%9E%99%ED%8B%B1?orientation=landscape
+    - generic:
+      - region "Notifications"

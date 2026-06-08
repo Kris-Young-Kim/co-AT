@@ -1,0 +1,4 @@
+[40877076ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://clerk.gwatc.cloud/v1/client/sessions/sess_3EOvo7rveD7AlD6vW8YFzewQTJC/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.125.12:0
+[40880189ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://clerk.gwatc.cloud/v1/client/sessions/sess_3EOvo7rveD7AlD6vW8YFzewQTJC/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.125.12:0
+[52566231ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://clerk.gwatc.cloud/v1/client/sessions/sess_3EOvo7rveD7AlD6vW8YFzewQTJC/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.125.12:0
+[52569262ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://clerk.gwatc.cloud/v1/client/sessions/sess_3EOvo7rveD7AlD6vW8YFzewQTJC/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.125.12:0

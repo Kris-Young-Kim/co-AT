@@ -1,0 +1,14 @@
+[    3612ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://admin.gwatc.cloud/favicon.ico:0
+[    3809ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://admin.gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Fadmin.gwatc.cloud%2Fschedule:0
+[  536675ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://admin.gwatc.cloud/schedule:0
+[  537466ms] [ERROR] TypeError: rg.map is not a function
+    at rb (https://admin.gwatc.cloud/_next/static/chunks/10529380efc176b0.js:8:13657)
+    at av (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:61326)
+    at oY (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:81599)
+    at io (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:93031)
+    at sc (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:136052)
+    at https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:135897
+    at ss (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:135905)
+    at u9 (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:131830)
+    at sV (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:157425)
+    at MessagePort.z (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:6349) @ https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:1

@@ -1,0 +1,90 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - heading "성과 대시보드" [level=1] [ref=e5]
+        - paragraph [ref=e6]: stats.gwatc.cloud
+      - navigation [ref=e7]:
+        - link "KPI 대시보드" [ref=e8] [cursor=pointer]:
+          - /url: /
+          - img [ref=e9]
+          - text: KPI 대시보드
+        - link "월별 현황" [ref=e14] [cursor=pointer]:
+          - /url: /monthly
+          - img [ref=e15]
+          - text: 월별 현황
+        - link "사업별 현황" [ref=e17] [cursor=pointer]:
+          - /url: /business
+          - img [ref=e18]
+          - text: 사업별 현황
+        - link "연도별 추이" [ref=e21] [cursor=pointer]:
+          - /url: /yearly
+          - img [ref=e22]
+          - text: 연도별 추이
+        - link "목표 관리" [ref=e25] [cursor=pointer]:
+          - /url: /targets
+          - img [ref=e26]
+          - text: 목표 관리
+        - link "Excel 내보내기" [ref=e30] [cursor=pointer]:
+          - /url: /export
+          - img [ref=e31]
+          - text: Excel 내보내기
+    - main [ref=e34]:
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - generic [ref=e37]:
+            - heading "Excel 내보내기" [level=1] [ref=e38]
+            - paragraph [ref=e39]: 중앙기관 보고용 및 내부 분석용 Excel 파일을 생성합니다.
+          - generic [ref=e40]:
+            - generic [ref=e41]: 연도
+            - combobox [ref=e42]:
+              - option "2026년" [selected]
+              - option "2025년"
+              - option "2024년"
+              - option "2023년"
+        - generic [ref=e43]:
+          - generic [ref=e44]:
+            - generic [ref=e45]:
+              - img [ref=e46]
+              - generic [ref=e49]:
+                - heading "사업 실적 보고서" [level=2] [ref=e50]
+                - paragraph [ref=e51]: 중앙기관 제출용 (7개 시트)
+            - paragraph [ref=e52]:
+              - text: 대여 현황, 맞춤제작 서비스 현황 등
+              - text: 중앙기관 보고 양식 그대로 출력됩니다.
+            - button "2026년 사업 실적 보고서 다운로드" [ref=e53] [cursor=pointer]:
+              - img [ref=e54]
+              - text: 2026년 사업 실적 보고서 다운로드
+          - generic [ref=e57]:
+            - generic [ref=e58]:
+              - img [ref=e59]
+              - generic [ref=e62]:
+                - heading "서비스 실적 리스트" [level=2] [ref=e63]
+                - paragraph [ref=e64]: 기간별 서비스 건 목록
+            - paragraph [ref=e65]:
+              - text: 대상자별 상담·평가·체험·대여·맞춤제작 등
+              - text: 서비스 상세 내역 전체를 추출합니다.
+            - generic [ref=e66]:
+              - generic [ref=e67]:
+                - generic [ref=e68]:
+                  - generic [ref=e69]: 시작일
+                  - textbox [ref=e70]: 2026-01-01
+                - generic [ref=e71]:
+                  - generic [ref=e72]: 종료일
+                  - textbox [ref=e73]: 2026-12-31
+              - button "서비스 실적 리스트 다운로드" [ref=e74] [cursor=pointer]:
+                - img [ref=e75]
+                - text: 서비스 실적 리스트 다운로드
+          - generic [ref=e78]:
+            - generic [ref=e79]:
+              - img [ref=e80]
+              - generic [ref=e83]:
+                - heading "KPI 요약 보고서" [level=2] [ref=e84]
+                - paragraph [ref=e85]: 내부용 (2개 시트)
+            - paragraph [ref=e86]:
+              - text: 전체 사업 실적 (목표/실적/달성률) +
+              - text: 월별 서비스 현황 요약표
+            - button "2026년 Excel 내보내기" [ref=e87] [cursor=pointer]:
+              - img [ref=e88]
+              - text: 2026년 Excel 내보내기
+  - alert [ref=e91]

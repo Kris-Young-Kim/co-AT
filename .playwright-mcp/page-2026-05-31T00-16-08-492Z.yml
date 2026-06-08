@@ -1,0 +1,95 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - heading "GWATC 평가툴" [level=1] [ref=e5]
+      - navigation [ref=e6]:
+        - link "대시보드" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img [ref=e8]
+          - text: 대시보드
+        - link "클라이언트" [ref=e10] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e11]
+          - text: 클라이언트
+        - link "신규 접수 대기" [ref=e16] [cursor=pointer]:
+          - /url: /clients/pending
+          - img [ref=e17]
+          - text: 신규 접수 대기
+        - link "콜센터 상담" [ref=e20] [cursor=pointer]:
+          - /url: /call-logs
+          - img [ref=e21]
+          - text: 콜센터 상담
+        - link "Sheets 동기화" [ref=e23] [cursor=pointer]:
+          - /url: /migration
+          - img [ref=e24]
+          - text: Sheets 동기화
+      - button "로그아웃" [ref=e29] [cursor=pointer]:
+        - img [ref=e30]
+        - text: 로그아웃
+    - main [ref=e33]:
+      - generic [ref=e34]:
+        - heading "데이터 가져오기" [level=1] [ref=e35]
+        - paragraph [ref=e36]: Excel / CSV 파일을 업로드해 Supabase로 가져옵니다. 중복 데이터는 자동으로 건너뜁니다.
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - generic [ref=e39]:
+              - heading "대상자 정보" [level=2] [ref=e40]
+              - paragraph [ref=e41]: "1588명 등록됨 · 마지막: 2026. 5. 13. PM 11:49:16"
+            - generic [ref=e43] [cursor=pointer]:
+              - img [ref=e44]
+              - generic [ref=e47]: .xlsx / .csv 파일을 올려주세요
+            - button "가져오기 실행" [disabled] [ref=e48]
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - heading "콜센터 상담 일지" [level=2] [ref=e51]
+              - paragraph [ref=e52]: "0건 등록됨 · 마지막: —"
+            - generic [ref=e54] [cursor=pointer]:
+              - img [ref=e55]
+              - generic [ref=e58]: .xlsx / .csv 파일을 올려주세요
+            - button "가져오기 실행" [disabled] [ref=e59]
+          - generic [ref=e60]:
+            - generic [ref=e61]:
+              - heading "서비스 실적" [level=2] [ref=e62]
+              - paragraph [ref=e63]: "0건 등록됨 · 마지막: —"
+            - generic [ref=e65] [cursor=pointer]:
+              - img [ref=e113]
+              - generic [ref=e69]: 2. (강원특별자치도보조기기센터)2026년 지역보조기기센터 서비스 실적.xlsx
+            - button "가져오기 실행" [ref=e70] [cursor=pointer]
+        - heading "최근 가져오기 이력" [level=2] [ref=e71]
+        - table [ref=e73]:
+          - rowgroup [ref=e74]:
+            - row "일시 유형 결과 추가 건너뜀" [ref=e75]:
+              - columnheader "일시" [ref=e76]
+              - columnheader "유형" [ref=e77]
+              - columnheader "결과" [ref=e78]
+              - columnheader "추가" [ref=e79]
+              - columnheader "건너뜀" [ref=e80]
+          - rowgroup [ref=e81]:
+            - row "2026. 5. 13. PM 11:49:16 대상자 정보 성공 0건 1949건" [ref=e82]:
+              - cell "2026. 5. 13. PM 11:49:16" [ref=e83]
+              - cell "대상자 정보" [ref=e84]
+              - cell "성공" [ref=e85]:
+                - generic [ref=e86]:
+                  - img [ref=e87]
+                  - text: 성공
+              - cell "0건" [ref=e90]
+              - cell "1949건" [ref=e91]
+            - row "2026. 5. 13. PM 10:37:30 대상자 정보 성공 0건 1949건" [ref=e92]:
+              - cell "2026. 5. 13. PM 10:37:30" [ref=e93]
+              - cell "대상자 정보" [ref=e94]
+              - cell "성공" [ref=e95]:
+                - generic [ref=e96]:
+                  - img [ref=e97]
+                  - text: 성공
+              - cell "0건" [ref=e100]
+              - cell "1949건" [ref=e101]
+            - row "2026. 5. 13. PM 10:35:43 대상자 정보 성공 1588건 361건" [ref=e102]:
+              - cell "2026. 5. 13. PM 10:35:43" [ref=e103]
+              - cell "대상자 정보" [ref=e104]
+              - cell "성공" [ref=e105]:
+                - generic [ref=e106]:
+                  - img [ref=e107]
+                  - text: 성공
+              - cell "1588건" [ref=e110]
+              - cell "361건" [ref=e111]
+  - alert [ref=e112]

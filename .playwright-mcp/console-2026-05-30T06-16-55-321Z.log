@@ -1,0 +1,14 @@
+[   22809ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://admin.gwatc.cloud/favicon.ico:0
+[   23492ms] Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at rK (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:44851)
+    at https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:141208
+    at sp (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:144773)
+    at sc (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:136113)
+    at https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:130942
+    at u9 (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:131043)
+    at sV (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:157425)
+    at MessagePort.z (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:6349)
+[ 4931250ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://clerk.gwatc.cloud/v1/client/sessions/sess_3EOvo7rveD7AlD6vW8YFzewQTJC/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.125.12:0
+[ 4934255ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://clerk.gwatc.cloud/v1/client/sessions/sess_3EOvo7rveD7AlD6vW8YFzewQTJC/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.125.12:0
+[20197804ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://clerk.gwatc.cloud/v1/client/sessions/sess_3EOvo7rveD7AlD6vW8YFzewQTJC/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.125.12:0
+[20201008ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://clerk.gwatc.cloud/v1/client/sessions/sess_3EOvo7rveD7AlD6vW8YFzewQTJC/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.125.12:0

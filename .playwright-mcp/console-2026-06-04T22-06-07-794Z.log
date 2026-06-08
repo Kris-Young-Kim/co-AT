@@ -1,0 +1,22 @@
+[     511ms] [ERROR] Failed to load resource: net::ERR_FAILED @ chrome-extension://invalid/:0
+[    2154ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://docs.google.com/drivesharing/clientmodel?id=1ZU3XmcSOKi3tWj_ePGQaFYr8N1eJTTFI&foreignService=ritz&authuser=0&origin=https%3A%2F%2Fdocs.google.com:0
+[    2773ms] [INFO] Autofocus processing was blocked because a document already has a focused element. @ https://docs.google.com/spreadsheets/d/1ZU3XmcSOKi3tWj_ePGQaFYr8N1eJTTFI/edit?gid=1636799679#gid=1636799679:0
+[    2967ms] [ERROR] Failed to load resource: net::ERR_FAILED @ chrome-extension://invalid/:0
+[    3007ms] [ERROR] Failed to load resource: net::ERR_FAILED @ chrome-extension://invalid/:0
+[    3119ms] [ERROR] Failed to load resource: net::ERR_FAILED @ chrome-extension://invalid/:0
+[    3125ms] [ERROR] Failed to load resource: net::ERR_FAILED @ chrome-extension://invalid/:0
+[48202752ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://play.google.com/log?format=json&hasfast=true&authuser=0:0
+[48202753ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://waa-pa.clients6.google.com/$rpc/google.internal.waa.v1.Waa/Create:0
+[48202758ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://peoplestackwebexperiments-pa.clients6.google.com/$rpc/peoplestackwebexperiments.PeopleStackExperimentsService/GetExperimentFlags:0
+[48202759ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://docs.google.com/spreadsheets/d/1ZU3XmcSOKi3tWj_ePGQaFYr8N1eJTTFI/bind?id=1ZU3XmcSOKi3tWj_ePGQaFYr8N1eJTTFI&sid=17e9d96ed19d558f&token=ABg6iWQgXbNGwOdSdyvAprjDXbzP%3A1780610767437&ouid=107048148176393844491&includes_info_params=true&cros_files=false&nded=false&VER=8&lsq=1780609560526&u=04636756165525873218&vc=1&c=1&w=1&flr=0&gsi=0&smv=2147483647&smb=%5B2147483647%2C%20APxr%5D&cimpl=1&RID=rpc&SID=9069710D21F9265&CI=0&AID=49&TYPE=xmlhttp&zx=e3904r3j6st1&t=2:0
+[48202776ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://ssl.gstatic.com/docs/common/netcheck.gif?zx=c5lsm1vza04b:0
+[48202776ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://play.google.com/log?format=json&hasfast=true&authuser=0:0
+[48202777ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://waa-pa.clients6.google.com/$rpc/google.internal.waa.v1.Waa/Ping:0
+[48202778ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://peoplestackwebexperiments-pa.clients6.google.com/$rpc/peoplestackwebexperiments.PeopleStackExperimentsService/GetExperimentFlags:0
+[48202794ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://addons-pa.clients6.google.com/$rpc/google.internal.apps.addons.v1.AddOnService/ListInstallations:0
+[48202861ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://ssl.gstatic.com/docs/common/netcheck.gif?zx=dnzwyuid3j6v:0
+[48203023ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://accounts.google.com/RotateCookies:0
+[48203716ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://play.google.com/log?hasfast=true&auth=SAPISIDHASH+c3fbbc81425fe72ab9bfed6034cae56f94e54573+SAPISID1PHASH+c3fbbc81425fe72ab9bfed6034cae56f94e54573+SAPISID3PHASH+c3fbbc81425fe72ab9bfed6034cae56f94e54573&authuser=0&format=json:0
+[48203797ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://waa-pa.googleapis.com/$rpc/google.internal.waa.v1.Waa/Ping:0
+[48205315ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://play.google.com/log?format=json&hasfast=true&authuser=0:0
+[48221827ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://docs.google.com/spreadsheets/d/1ZU3XmcSOKi3tWj_ePGQaFYr8N1eJTTFI/bind?id=1ZU3XmcSOKi3tWj_ePGQaFYr8N1eJTTFI&sid=17e9d96ed19d558f&token=ABg6iWQgXbNGwOdSdyvAprjDXbzP%3A1780610767437&ouid=107048148176393844491&includes_info_params=true&cros_files=false&nded=false&VER=8&lsq=1780609560526&u=04636756165525873218&vc=1&c=1&w=1&flr=0&gsi=0&smv=2147483647&smb=%5B2147483647%2C%20APxr%5D&cimpl=1&RID=rpc&SID=9069710D21F9265&CI=0&AID=49&TYPE=xmlhttp&zx=8xacwq2pihto&t=3:0

@@ -1,0 +1,208 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "GW GWATC" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e6]:
+            - generic [ref=e8]: GW
+            - generic [ref=e9]: GWATC
+        - navigation [ref=e10]:
+          - button "주요사업 메뉴" [ref=e11] [cursor=pointer]: 주요사업
+          - button "커뮤니티 메뉴" [ref=e12] [cursor=pointer]: 커뮤니티
+          - button "보조기기 정보 메뉴" [ref=e13] [cursor=pointer]: 보조기기 정보
+          - button "서비스 신청 메뉴" [ref=e14] [cursor=pointer]: 서비스 신청
+          - button "센터소개 메뉴" [ref=e15] [cursor=pointer]: 센터소개
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - img [ref=e18] [cursor=pointer]
+            - searchbox "검색..." [ref=e21]
+          - button "로딩 중..." [disabled]
+    - main [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - img [ref=e26]
+          - generic [ref=e28]:
+            - heading "Co-AT" [level=1] [ref=e29]
+            - paragraph [ref=e30]: 행정은 AI에게, 사람은 클라이언트에게
+            - generic [ref=e31]:
+              - link "서비스 이용하기 페이지로 이동" [ref=e32] [cursor=pointer]:
+                - /url: /mypage
+                - text: 서비스 이용하기
+                - img
+              - link "공지사항 페이지로 이동" [ref=e33] [cursor=pointer]:
+                - /url: /notices
+                - text: 공지사항 보기
+        - generic [ref=e35]:
+          - heading "5대 핵심 사업" [level=2] [ref=e36]
+          - generic [ref=e37]:
+            - 'link "상담: 보조기기 상담 및 평가" [ref=e38] [cursor=pointer]':
+              - /url: /apply?category=consult
+              - generic [ref=e40]:
+                - img [ref=e42]
+                - generic [ref=e44]:
+                  - heading "상담" [level=3] [ref=e45]
+                  - paragraph [ref=e46]: 보조기기 상담 및 평가
+            - 'link "체험: 보조기기 체험 및 견학" [ref=e47] [cursor=pointer]':
+              - /url: /apply?category=experience
+              - generic [ref=e49]:
+                - img [ref=e51]
+                - generic [ref=e54]:
+                  - heading "체험" [level=3] [ref=e55]
+                  - paragraph [ref=e56]: 보조기기 체험 및 견학
+            - 'link "맞춤형: 맞춤 제작 및 대여" [ref=e57] [cursor=pointer]':
+              - /url: /apply?category=custom
+              - generic [ref=e59]:
+                - img [ref=e61]
+                - generic [ref=e63]:
+                  - heading "맞춤형" [level=3] [ref=e64]
+                  - paragraph [ref=e65]: 맞춤 제작 및 대여
+            - 'link "사후관리: 수리 및 세척 서비스" [ref=e66] [cursor=pointer]':
+              - /url: /apply?category=aftercare
+              - generic [ref=e68]:
+                - img [ref=e70]
+                - generic [ref=e74]:
+                  - heading "사후관리" [level=3] [ref=e75]
+                  - paragraph [ref=e76]: 수리 및 세척 서비스
+            - 'link "교육홍보: 교육 프로그램 신청" [ref=e77] [cursor=pointer]':
+              - /url: /apply?category=education
+              - generic [ref=e79]:
+                - img [ref=e81]
+                - generic [ref=e84]:
+                  - heading "교육홍보" [level=3] [ref=e85]
+                  - paragraph [ref=e86]: 교육 프로그램 신청
+        - region "공지사항 및 일정 정보" [ref=e87]:
+          - generic [ref=e89]:
+            - generic [ref=e93]:
+              - tablist "커뮤니티 정보 탭" [ref=e94]:
+                - tab "공지사항" [selected] [ref=e95] [cursor=pointer]
+                - tab "지원사업" [ref=e96] [cursor=pointer]
+                - tab "활동 소식" [ref=e97] [cursor=pointer]
+                - tab "서비스 사례" [ref=e98] [cursor=pointer]
+              - tabpanel "공지사항" [ref=e99]:
+                - status [ref=e100]: 등록된 공지사항이 없습니다.
+                - link "더보기" [ref=e102] [cursor=pointer]:
+                  - /url: /notices
+                  - img
+                  - text: 더보기
+            - generic [ref=e104]: 캘린더 로딩 중...
+        - generic [ref=e105]:
+          - paragraph [ref=e107]: 협력기관
+          - generic [ref=e109]:
+            - link "보건복지부" [ref=e110] [cursor=pointer]:
+              - /url: https://www.mohw.go.kr
+              - generic [ref=e112]: 보건복지부
+            - link "강원특별자치도" [ref=e113] [cursor=pointer]:
+              - /url: http://www.provin.gangwon.kr
+              - generic [ref=e115]: 강원특별자치도
+            - link "국립재활원 중앙보조기기센터" [ref=e116] [cursor=pointer]:
+              - /url: https://knat.go.kr/
+              - generic [ref=e118]: 국립재활원 중앙보조기기센터
+            - link "강원특별자치도재활병원" [ref=e119] [cursor=pointer]:
+              - /url: https://www.grh.or.kr/
+              - generic [ref=e121]: 강원특별자치도재활병원
+            - link "보조기기 열린플랫폼" [ref=e122] [cursor=pointer]:
+              - /url: http://www.nrc.go.kr/at_rd/web/index.do
+              - generic [ref=e124]: 보조기기 열린플랫폼
+            - link "지역장애인보건의료센터" [ref=e125] [cursor=pointer]:
+              - /url: http://www.grhm.or.kr/
+              - generic [ref=e127]: 지역장애인보건의료센터
+            - link "보건복지부" [ref=e128] [cursor=pointer]:
+              - /url: https://www.mohw.go.kr
+              - generic [ref=e130]: 보건복지부
+            - link "강원특별자치도" [ref=e131] [cursor=pointer]:
+              - /url: http://www.provin.gangwon.kr
+              - generic [ref=e133]: 강원특별자치도
+            - link "국립재활원 중앙보조기기센터" [ref=e134] [cursor=pointer]:
+              - /url: https://knat.go.kr/
+              - generic [ref=e136]: 국립재활원 중앙보조기기센터
+            - link "강원특별자치도재활병원" [ref=e137] [cursor=pointer]:
+              - /url: https://www.grh.or.kr/
+              - generic [ref=e139]: 강원특별자치도재활병원
+            - link "보조기기 열린플랫폼" [ref=e140] [cursor=pointer]:
+              - /url: http://www.nrc.go.kr/at_rd/web/index.do
+              - generic [ref=e142]: 보조기기 열린플랫폼
+            - link "지역장애인보건의료센터" [ref=e143] [cursor=pointer]:
+              - /url: http://www.grhm.or.kr/
+              - generic [ref=e145]: 지역장애인보건의료센터
+            - link "보건복지부" [ref=e146] [cursor=pointer]:
+              - /url: https://www.mohw.go.kr
+              - generic [ref=e148]: 보건복지부
+            - link "강원특별자치도" [ref=e149] [cursor=pointer]:
+              - /url: http://www.provin.gangwon.kr
+              - generic [ref=e151]: 강원특별자치도
+            - link "국립재활원 중앙보조기기센터" [ref=e152] [cursor=pointer]:
+              - /url: https://knat.go.kr/
+              - generic [ref=e154]: 국립재활원 중앙보조기기센터
+            - link "강원특별자치도재활병원" [ref=e155] [cursor=pointer]:
+              - /url: https://www.grh.or.kr/
+              - generic [ref=e157]: 강원특별자치도재활병원
+            - link "보조기기 열린플랫폼" [ref=e158] [cursor=pointer]:
+              - /url: http://www.nrc.go.kr/at_rd/web/index.do
+              - generic [ref=e160]: 보조기기 열린플랫폼
+            - link "지역장애인보건의료센터" [ref=e161] [cursor=pointer]:
+              - /url: http://www.grhm.or.kr/
+              - generic [ref=e163]: 지역장애인보건의료센터
+    - generic [ref=e164]:
+      - link "서비스 이용안내" [ref=e165] [cursor=pointer]:
+        - /url: /apply/guide
+        - img [ref=e166]
+        - generic [ref=e169]: 서비스 이용안내
+      - link "온라인 신청" [ref=e170] [cursor=pointer]:
+        - /url: /apply
+        - img [ref=e171]
+        - generic [ref=e174]: 온라인 신청
+      - link "보유기기 검색" [ref=e175] [cursor=pointer]:
+        - /url: /info/devices
+        - img [ref=e176]
+        - generic [ref=e179]: 보유기기 검색
+      - link "중앙보조 기기센터" [ref=e180] [cursor=pointer]:
+        - /url: http://knat.go.kr/knw/home/knat_DB/prod_search.php
+        - img [ref=e181]
+        - generic [ref=e185]: 중앙보조 기기센터
+      - button "맨 위로 이동":
+        - img
+        - generic: TOP
+    - button "지원사업 안내 챗봇 열기" [ref=e186] [cursor=pointer]:
+      - img [ref=e187]
+    - contentinfo [ref=e189]:
+      - generic [ref=e190]:
+        - generic [ref=e191]:
+          - link "개인정보처리방침" [ref=e192] [cursor=pointer]:
+            - /url: /privacy
+          - link "이메일무단수집거부" [ref=e193] [cursor=pointer]:
+            - /url: /email-policy
+        - generic [ref=e194]:
+          - generic [ref=e195]:
+            - generic [ref=e196]:
+              - generic [ref=e198]: GW
+              - generic [ref=e199]: GWATC
+            - generic [ref=e200]:
+              - paragraph [ref=e201]: 강원특별자치도 보조기기센터
+              - paragraph [ref=e202]: 강원특별자치도 춘천시 충열로 142번길 24-16(우두동 291-2)
+              - paragraph [ref=e203]: 강원특별자치도재활병원 2층
+              - paragraph [ref=e204]: "대표 : 이승준"
+              - paragraph [ref=e205]: "고유번호증 : 221-82-10983"
+              - paragraph [ref=e206]:
+                - generic [ref=e207]: "대표전화 : 033-248-7751~4"
+                - generic [ref=e208]: "Fax : 033-248-7755"
+                - generic [ref=e209]: "Email : gatc2019@naver.com"
+              - paragraph [ref=e210]: Copyright(c) 강원특별자치도보조기기센터 All rights reserved.
+          - generic [ref=e211]:
+            - generic [ref=e212]:
+              - link "카카오톡" [ref=e213] [cursor=pointer]:
+                - /url: http://pf.kakao.com/_hjxmRxb
+                - img [ref=e215]
+                - generic [ref=e218]:
+                  - img [ref=e219]
+                  - text: 카카오톡
+              - link "페이스북" [ref=e221] [cursor=pointer]:
+                - /url: https://www.facebook.com/GATC2019
+                - img [ref=e223]
+                - generic [ref=e226]:
+                  - img [ref=e227]
+                  - text: 페이스북
+            - button "패밀리 사이트" [ref=e230] [cursor=pointer]:
+              - generic [ref=e231]: 패밀리 사이트
+              - img [ref=e232]
+  - alert [ref=e234]

@@ -1,0 +1,3 @@
+[    4682ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://gwatc.cloud/sign-in?redirect_url=https%3A%2F%2Feval.gwatc.cloud%2Fservice-records:0
+[19023001ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://clerk.gwatc.cloud/v1/client/sessions/sess_3EoKMB3XHQX1S14GUOOEXFL5vNn/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.125.12:0
+[19026008ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://clerk.gwatc.cloud/v1/client/sessions/sess_3EoKMB3XHQX1S14GUOOEXFL5vNn/tokens?__clerk_api_version=2025-11-10&_clerk_js_version=5.125.12:0

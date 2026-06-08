@@ -1,0 +1,9 @@
+[    1198ms] [ERROR] Failed to load resource: net::ERR_FAILED @ chrome-extension://invalid/:0
+[    1489ms] [ERROR] Failed to load resource: net::ERR_FILE_NOT_FOUND @ filesystem:https://docs.google.com/persistent/docs/fonts/PbyxFmXiEBPT4ITbgNA5Cgms3VYcOA-vvnIzzuoyeLE.woff2:0
+[    1489ms] [ERROR] Failed to load resource: net::ERR_FILE_NOT_FOUND @ filesystem:https://docs.google.com/persistent/docs/fonts/PbyxFmXiEBPT4ITbgNA5Cgms3VYcOA-vvnIzzg01eLE.woff2:0
+[    3299ms] [WARNING] An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing. @ https://docs.google.com/drivesharing/clientmodel?id=19MVpL2ZiSe8crKhnaiLqGZ3FbLwUOrO1&foreignService=ritz&authuser=0&origin=https%3A%2F%2Fdocs.google.com:0
+[    3638ms] [INFO] Autofocus processing was blocked because a document already has a focused element. @ https://docs.google.com/spreadsheets/d/19MVpL2ZiSe8crKhnaiLqGZ3FbLwUOrO1/edit?gid=1564589298#gid=1564589298:0
+[    4577ms] [ERROR] Failed to load resource: net::ERR_FAILED @ chrome-extension://invalid/:0
+[    4648ms] [ERROR] Failed to load resource: net::ERR_FAILED @ chrome-extension://invalid/:0
+[    4712ms] [ERROR] Failed to load resource: net::ERR_FAILED @ chrome-extension://invalid/:0
+[    4714ms] [ERROR] Failed to load resource: net::ERR_FAILED @ chrome-extension://invalid/:0

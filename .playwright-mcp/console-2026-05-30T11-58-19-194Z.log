@@ -1,0 +1,21 @@
+[   13601ms] Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at rK (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:44851)
+    at https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:141208
+    at sp (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:144773)
+    at sc (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:136113)
+    at https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:130942
+    at u9 (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:131043)
+    at sV (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:157425)
+    at MessagePort.z (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:6349)
+[ 1270249ms] Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at rK (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:44851)
+    at https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:141208
+    at sp (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:144773)
+    at sc (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:136113)
+    at https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:130942
+    at u9 (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:131043)
+    at sV (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:157425)
+    at MessagePort.z (https://admin.gwatc.cloud/_next/static/chunks/f06019b9de32bf03.js:2:6349)
+[ 1477508ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://admin.gwatc.cloud/settings:0
+[ 1477509ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://admin.gwatc.cloud/settings:0
+[ 1477509ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://admin.gwatc.cloud/settings:0

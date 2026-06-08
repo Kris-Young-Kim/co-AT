@@ -1,0 +1,7 @@
+[      52ms] [LOG] %cmetric: color:gray {name: LCP, entries: Array(1), value: 1768, rating: good, delta: 1768} @ https://unsplash.com/a/ko-KR/4160.49989f47.js:13
+[      52ms] [LOG] %cusr: color:gray {locale: ko-KR} @ https://unsplash.com/a/ko-KR/4160.49989f47.js:13
+[      52ms] [LOG] %croute_data: color:gray Search-Photos @ https://unsplash.com/a/ko-KR/4160.49989f47.js:13
+[      53ms] [LOG] %cmetric: color:gray {name: CLS, entries: Array(0), value: 0, rating: good, delta: 0} @ https://unsplash.com/a/ko-KR/4160.49989f47.js:13
+[      53ms] [LOG] %cusr: color:gray {locale: ko-KR} @ https://unsplash.com/a/ko-KR/4160.49989f47.js:13
+[      53ms] [LOG] %croute_data: color:gray Search-Photos @ https://unsplash.com/a/ko-KR/4160.49989f47.js:13
+[      77ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://images.unsplash.com/favicon.ico:0

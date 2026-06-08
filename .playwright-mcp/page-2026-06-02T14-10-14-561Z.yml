@@ -1,0 +1,29 @@
+- generic [ref=e3]:
+  - img [ref=e4]
+  - generic [ref=e7]:
+    - link "Unsplash 홈" [ref=e9] [cursor=pointer]:
+      - /url: /ko
+      - img "Unsplash 홈" [ref=e10]
+    - generic [ref=e13]:
+      - heading "페이지를 찾을 수 없음" [level=1] [ref=e14]:
+        - generic [ref=e15]:
+          - generic [ref=e16]: 페
+          - generic [ref=e17]: 이
+          - generic [ref=e18]: 지
+          - generic [ref=e19]: 를
+        - generic [ref=e20]:
+          - generic [ref=e21]: 찾
+          - generic [ref=e22]: 을
+        - generic [ref=e24]: 수
+        - generic [ref=e25]:
+          - generic [ref=e26]: 없
+          - generic [ref=e27]: 음
+      - paragraph [ref=e28]: 흠, 찾는 페이지가 더 이상 존재하지 않는 것 같습니다.
+      - link "Unsplash로 돌아가기" [ref=e30] [cursor=pointer]:
+        - /url: /ko
+    - contentinfo [ref=e31]:
+      - generic [ref=e32]:
+        - text: "사진작가:"
+        - link "@intricateexplorer" [ref=e33] [cursor=pointer]:
+          - /url: /ko/@intricateexplorer
+      - generic [ref=e34]: "404"

@@ -1,0 +1,153 @@
+- application [ref=e1]:
+  - iframe [ref=e2]:
+    
+  - iframe [ref=e3]:
+    
+  - banner "메뉴 바" [ref=e4]:
+    - generic [ref=e7]:
+      - link "스프레드시트 홈" [ref=e9] [cursor=pointer]:
+        - /url: https://docs.google.com/spreadsheets/u/0/?authuser=0&usp=sheets_web
+      - generic [ref=e16]:
+        - generic "2. (강원특별자치도보조기기센터)2026년 지역보조기기센터 서비스 실적" [ref=e18]:
+          - generic [ref=e19]:
+            - generic: 2. (강원특별자치도보조기기센터)2026년 지역보조기기센터 서비스 실적
+            - textbox "이름 바꾸기" [ref=e21]: 2. (강원특별자치도보조기기센터)2026년 지역보조기기센터 서비스 실적
+          - button "Microsoft Excel 형식" [ref=e22] [cursor=pointer]:
+            - generic [ref=e23]: .xlsx
+          - generic [ref=e24]:
+            - checkbox "별표" [ref=e26] [cursor=pointer]
+            - 'button "문서 상태: 드라이브에 저장됨" [ref=e30]':
+              - generic [ref=e35] [cursor=pointer]: 드라이브에 저장됨
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - button "gwatc" [ref=e44]:
+              - img "gwatc" [ref=e49] [cursor=pointer]
+            - button "채팅 표시" [ref=e51] [cursor=pointer]
+          - button "15분 전에 마지막으로 수정했습니다." [ref=e55] [cursor=pointer]
+          - button "모든 댓글 보기" [ref=e59] [cursor=pointer]
+          - button "여기에서 통화에 참여하거나 통화에서 이 탭 발표" [ref=e63] [cursor=pointer]
+          - generic [ref=e68]:
+            - button "공유하기. 링크가 있는 모든 사용자. 링크가 있는 모든 사용자가 액세스할 수 있습니다. 이 경우 로그인할 필요가 없습니다." [ref=e69] [cursor=pointer]: 공유
+            - button "빠른 공유 작업" [ref=e71] [cursor=pointer]
+          - generic [ref=e74]:
+            - generic:
+              - button "Gemini에게 물어보기" [ref=e77] [cursor=pointer]:
+                - img [ref=e80]
+              - tooltip [ref=e83]: Gemini에게 물어보기
+          - 'button "Google 계정: 김영기 (youngkiss3181@gmail.com)" [ref=e86] [cursor=pointer]':
+            - img [ref=e88]
+            - img [ref=e93]
+    - generic [ref=e94]:
+      - menubar [ref=e96]:
+        - menuitem "파일" [ref=e97] [cursor=pointer]
+        - menuitem "수정" [ref=e98] [cursor=pointer]
+        - menuitem "보기" [ref=e99] [cursor=pointer]
+        - menuitem "삽입" [ref=e100] [cursor=pointer]
+        - menuitem "서식" [ref=e101] [cursor=pointer]
+        - menuitem "데이터" [ref=e102] [cursor=pointer]
+        - menuitem "도구" [ref=e103] [cursor=pointer]
+        - menuitem "Gemini" [ref=e104] [cursor=pointer]
+        - menuitem "도움말" [ref=e105] [cursor=pointer]
+      - generic [ref=e106]:
+        - generic [ref=e107]:
+          - toolbar "메뉴 검색 (Alt+/)" [ref=e108]:
+            - combobox "메뉴" [ref=e110]
+          - toolbar "기본" [ref=e111]:
+            - button "실행취소 (Ctrl+Z)" [ref=e112] [cursor=pointer]
+            - button "재실행 (Ctrl+Y)" [ref=e117] [cursor=pointer]
+            - button "인쇄 (Ctrl+P)" [ref=e122] [cursor=pointer]
+            - button "서식 복사" [ref=e127] [cursor=pointer]
+            - combobox "확대/축소" [ref=e132] [cursor=pointer]:
+              - option "확대/축소 목록입니다. 100%(이)가 선택되었습니다." [selected] [ref=e135]:
+                - textbox "확대/축소" [ref=e136]: 100%
+            - separator [disabled] [ref=e140]
+            - button "통화 형식" [ref=e141] [cursor=pointer]:
+              - generic [ref=e143]: ₩
+            - button "퍼센트 형식" [ref=e144] [cursor=pointer]:
+              - generic [ref=e146]: "%"
+            - button "소수점 이하 자릿수 감소" [ref=e147] [cursor=pointer]
+            - button "소수점 이하 자릿수 증가" [ref=e152] [cursor=pointer]
+            - button "서식 더보기" [ref=e157] [cursor=pointer]:
+              - generic [ref=e160]: "123"
+            - separator [disabled] [ref=e161]
+            - listbox "글꼴" [ref=e162] [cursor=pointer]:
+              - option "글꼴 목록입니다. 맑은 고딕(이)가 선택되었습니다." [selected] [ref=e165]: 맑은 고딕
+            - separator [disabled] [ref=e169]
+            - button "글꼴 크기 작게 (Ctrl+Shift+쉼표)" [ref=e170] [cursor=pointer]
+            - combobox "글꼴 크기" [ref=e175] [cursor=pointer]:
+              - option "글꼴 크기 목록입니다. 9(이)가 선택되었습니다." [selected] [ref=e178]:
+                - textbox "글꼴 크기" [ref=e179]: "9"
+            - button "글꼴 크기 크게 (Ctrl+Shift+마침표)" [ref=e180] [cursor=pointer]
+            - separator [disabled] [ref=e185]
+            - button "굵게 (Ctrl+B)" [ref=e186] [cursor=pointer]
+            - button "기울임 (Ctrl+I)" [ref=e191] [cursor=pointer]
+            - button "취소선 (Alt+Shift+5)" [ref=e196] [cursor=pointer]
+            - button "텍스트 색상" [ref=e201] [cursor=pointer]
+            - separator [disabled] [ref=e208]
+            - button "채우기 색상" [ref=e209] [cursor=pointer]
+            - button "테두리" [ref=e216] [cursor=pointer]
+            - button "셀 병합" [disabled] [ref=e222]
+            - button "병합 유형 선택" [disabled] [ref=e227]
+            - separator [disabled] [ref=e233]
+            - button "가로 맞춤" [ref=e234] [cursor=pointer]
+            - button "세로 맞춤" [ref=e243] [cursor=pointer]
+            - button "텍스트 줄바꿈" [ref=e252] [cursor=pointer]
+            - button "텍스트 회전" [ref=e261] [cursor=pointer]
+            - separator [disabled] [ref=e270]
+            - button "링크 삽입 (Ctrl+K)" [ref=e271] [cursor=pointer]
+            - button "댓글 삽입 (Ctrl+Alt+M)" [ref=e276] [cursor=pointer]
+            - button "차트 삽입" [ref=e281] [cursor=pointer]
+            - button "필터 삭제" [pressed] [ref=e286] [cursor=pointer]
+            - button "필터 보기" [ref=e291] [cursor=pointer]
+            - button "함수" [ref=e300] [cursor=pointer]
+            - separator [disabled] [ref=e306]
+            - button "입력 도구 (Ctrl+Shift+K)" [ref=e307] [cursor=pointer]
+            - button "입력 도구 선택 (Ctrl+Alt+Shift+K)" [ref=e312] [cursor=pointer]
+        - toolbar "모드 및 보기" [ref=e318]:
+          - button "메뉴 숨기기 (Ctrl+Shift+F)" [ref=e319] [cursor=pointer]
+    - generic [ref=e324]:
+      - complementary "측면 패널" [ref=e325]:
+        - tablist [ref=e327]:
+          - tab "Calendar"
+          - tab "Keep"
+          - tab "할 일 목록"
+          - tab "주소록"
+          - tab "지도"
+          - separator [disabled] [ref=e333]
+          - tab "Lucidchart"
+          - tab "부가기능 설치하기"
+      - generic:
+        - button "측면 패널 숨기기":
+          - img [ref=e337] [cursor=pointer]
+    - generic [ref=e342]:
+      - generic "이름 상자 (Ctrl + J)" [ref=e343]:
+        - textbox [ref=e344]: A1
+        - button "이름 상자 메뉴 버튼입니다. 메뉴 항목 중 하나를 선택하여 해당하는 이름이 지정된 범위로 이동하세요." [ref=e346] [cursor=pointer]
+      - textbox [ref=e359]
+      - button "이 데이터 요약" [ref=e360] [cursor=pointer]:
+        - img [ref=e361]
+        - generic [ref=e363]: 이 데이터 요약
+  - navigation "시트 탭 바" [ref=e405]:
+    - toolbar [ref=e406]:
+      - button "시트 추가" [ref=e407] [cursor=pointer]
+      - button "모든 시트" [ref=e412] [cursor=pointer]
+    - toolbar [ref=e419]:
+      - button "7 보조기기 서비스 상세" [ref=e420] [cursor=pointer]:
+        - generic [ref=e423]:
+          - generic [ref=e424]:
+            - img [ref=e425]
+            - generic [ref=e427]: "7"
+          - generic [ref=e428]: 보조기기 서비스 상세
+      - button "제품명" [ref=e432]:
+        - generic [ref=e436]: 제품명
+      - button "품목명" [ref=e440] [cursor=pointer]:
+        - generic [ref=e444]: 품목명
+    - toolbar [ref=e448]
+  - generic [ref=e449]:
+    - textbox [active]
+  - link "스크린 리더 지원 사용 설정" [ref=e450] [cursor=pointer]:
+    - /url: "#"
+  - textbox [ref=e451]
+  - region [ref=e452]: 스크린 리더 기능을 사용하려면 Ctrl+Alt+Z을(를) 누르세요. 키보드 단축키에 대해 알아보려면 Ctrl+슬래시을(를) 누르세요.
+  - region
+  - generic [ref=e453]: gwatc님이 문서 작업에 참여했습니다.

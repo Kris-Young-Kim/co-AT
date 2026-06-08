@@ -1,0 +1,73 @@
+- generic [ref=e2]:
+  - complementary [ref=e3]:
+    - generic [ref=e4]:
+      - heading "자산/재고 관리" [level=1] [ref=e5]
+      - paragraph [ref=e6]: inventory.gwatc.cloud
+    - navigation [ref=e7]:
+      - link "대시보드" [ref=e8] [cursor=pointer]:
+        - /url: /
+        - img [ref=e9]
+        - text: 대시보드
+      - link "기기 목록" [ref=e14] [cursor=pointer]:
+        - /url: /devices
+        - img [ref=e15]
+        - text: 기기 목록
+      - link "대여 관리" [ref=e19] [cursor=pointer]:
+        - /url: /rentals
+        - img [ref=e20]
+        - text: 대여 관리
+      - link "맞춤제작" [ref=e23] [cursor=pointer]:
+        - /url: /custom-orders
+        - img [ref=e24]
+        - text: 맞춤제작
+      - link "재사용" [ref=e26] [cursor=pointer]:
+        - /url: /reuse
+        - img [ref=e27]
+        - text: 재사용
+      - link "제작 장비" [ref=e32] [cursor=pointer]:
+        - /url: /fab-equipment
+        - img [ref=e33]
+        - text: 제작 장비
+      - link "점검/수리" [ref=e36] [cursor=pointer]:
+        - /url: /maintenance
+        - img [ref=e37]
+        - text: 점검/수리
+      - link "리포트" [ref=e40] [cursor=pointer]:
+        - /url: /reports
+        - img [ref=e41]
+        - text: 리포트
+      - link "지역 현황 맵" [ref=e44] [cursor=pointer]:
+        - /url: /map
+        - img [ref=e45]
+        - text: 지역 현황 맵
+  - main [ref=e47]:
+    - generic [ref=e48]:
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - heading "강원도 대여 현황 맵" [level=1] [ref=e51]:
+            - img [ref=e52]
+            - text: 강원도 대여 현황 맵
+          - paragraph [ref=e55]: 강원특별자치도 18개 시군 · 활성 대여 실시간 분포
+        - generic [ref=e56]:
+          - generic [ref=e57]:
+            - paragraph [ref=e58]: "0"
+            - paragraph [ref=e59]: 활성 대여
+          - generic [ref=e60]:
+            - paragraph [ref=e61]: "0"
+            - paragraph [ref=e62]: 대여 시군
+      - generic [ref=e63]:
+        - img [ref=e65]
+        - generic [ref=e68]:
+          - generic [ref=e69]:
+            - generic [ref=e70]:
+              - paragraph [ref=e71]: 시군별 활성 대여
+              - paragraph [ref=e72]: 대여중 + 연체
+            - button "새로고침" [ref=e73] [cursor=pointer]:
+              - img [ref=e74]
+          - generic [ref=e77]:
+            - paragraph [ref=e78]: 대여 건수
+            - generic [ref=e86]:
+              - generic [ref=e87]: 0건
+              - generic [ref=e88]: 1건
+          - paragraph [ref=e89]: 시군을 클릭하면 상세 정보를 볼 수 있습니다.
+          - paragraph [ref=e91]: 현재 활성 대여 없음

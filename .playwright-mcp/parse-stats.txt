@@ -1,0 +1,2 @@
+Header ends at logical line 9 (physical SKIP_LINES was 43)
+Parsed: 278 rows, skipped: 313

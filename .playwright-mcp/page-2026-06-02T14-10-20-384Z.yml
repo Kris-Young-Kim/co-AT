@@ -1,0 +1,235 @@
+- generic [ref=e4]:
+  - navigation [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - link "Unsplash 홈" [ref=e8] [cursor=pointer]:
+          - /url: /ko
+          - img "Unsplash 홈" [ref=e9]
+        - link "사진" [ref=e11] [cursor=pointer]:
+          - /url: /ko
+          - img [ref=e12]
+        - link "일러스트" [ref=e14] [cursor=pointer]:
+          - /url: /ko/%EC%9D%BC%EB%9F%AC%EC%8A%A4%ED%8A%B8
+          - img [ref=e15]
+      - generic [ref=e17]:
+        - button "탐색" [ref=e18] [cursor=pointer]:
+          - img [ref=e19]
+        - button "컬렉션" [ref=e21] [cursor=pointer]:
+          - img [ref=e22]
+        - button "다운로드 내역" [ref=e24] [cursor=pointer]:
+          - img [ref=e25]
+      - button "북마크" [ref=e28] [cursor=pointer]:
+        - img [ref=e29]
+    - generic [ref=e31]:
+      - link "로그인 / 가입" [ref=e32] [cursor=pointer]:
+        - /url: /ko/%EB%A1%9C%EA%B7%B8%EC%9D%B8?referrer=%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fcaregiver-helping-senior%3Forientation%3Dlandscape
+        - img [ref=e33]
+      - button "언어" [ref=e35] [cursor=pointer]:
+        - img [ref=e36]
+      - button "메뉴" [ref=e38] [cursor=pointer]:
+        - img [ref=e39]
+  - generic [ref=e41]:
+    - generic [ref=e42]:
+      - navigation [ref=e43]:
+        - search "사이트 전체에서 이미지 찾기" [ref=e45]:
+          - button "Unsplash 검색" [ref=e46] [cursor=pointer]:
+            - img [ref=e47]
+          - combobox [ref=e49]:
+            - searchbox "Unsplash 검색" [ref=e50]: caregiver helping senior
+            - listbox
+          - button "삭제" [ref=e51] [cursor=pointer]:
+            - img [ref=e52]
+          - button "시각적 검색" [ref=e56] [cursor=pointer]:
+            - img [ref=e57]
+        - generic [ref=e59]:
+          - link "Unsplash+ 구독" [ref=e60] [cursor=pointer]:
+            - /url: /ko/%ED%94%8C%EB%9F%AC%EC%8A%A4
+          - link "로그인" [ref=e61] [cursor=pointer]:
+            - /url: /ko/%EB%A1%9C%EA%B7%B8%EC%9D%B8?referrer=%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fcaregiver-helping-senior%3Forientation%3Dlandscape
+        - button "이미지 제출" [ref=e63] [cursor=pointer]
+      - generic [ref=e64]:
+        - generic [ref=e70]:
+          - list [ref=e71]:
+            - listitem [ref=e72]:
+              - link "사진 6.2천":
+                - /url: /ko/s/%EC%82%AC%EC%A7%84/caregiver-helping-senior?orientation=landscape
+                - img
+                - text: 사진
+                - generic: 6.2천
+            - listitem [ref=e73]:
+              - link "일러스트 264" [ref=e74] [cursor=pointer]:
+                - /url: /ko/s/%EC%9D%BC%EB%9F%AC%EC%8A%A4%ED%8A%B8/caregiver-helping-senior?orientation=landscape
+                - img [ref=e75]
+                - text: 일러스트
+                - generic [ref=e77]: "264"
+            - listitem [ref=e78]:
+              - button "더 보기" [ref=e79] [cursor=pointer]
+          - generic [ref=e81]:
+            - button "삭제" [ref=e82] [cursor=pointer]
+            - generic [ref=e83]:
+              - button "라이선스" [ref=e84] [cursor=pointer]:
+                - img [ref=e85]
+                - generic [ref=e87]: 라이선스
+                - img [ref=e88]
+              - button "가로" [ref=e90] [cursor=pointer]:
+                - img [ref=e91]
+                - generic [ref=e93]: 가로
+                - img [ref=e94]
+              - button "정렬 기준 관련성" [ref=e96] [cursor=pointer]:
+                - img [ref=e97]
+                - generic [ref=e99]: 정렬 기준 관련성
+                - img [ref=e100]
+        - generic [ref=e102]:
+          - heading "Caregiver helping senior" [level=1] [ref=e104]
+          - generic [ref=e108]:
+            - link "노인 간호" [ref=e110] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EB%85%B8%EC%9D%B8-%EA%B0%84%ED%98%B8?orientation=landscape
+            - link "의료 지원" [ref=e112] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%9D%98%EB%A3%8C-%EC%A7%80%EC%9B%90?orientation=landscape
+            - link "간병인" [ref=e114] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EA%B0%84%EB%B3%91%EC%9D%B8?orientation=landscape
+            - link "요양원" [ref=e116] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%9A%94%EC%96%91%EC%9B%90?orientation=landscape
+            - link "지원" [ref=e118] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%A7%80%EC%9B%90?orientation=landscape
+            - link "생활 보조" [ref=e120] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%83%9D%ED%99%9C-%EB%B3%B4%EC%A1%B0?orientation=landscape
+            - link "노인 생활" [ref=e122] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EB%85%B8%EC%9D%B8-%EC%83%9D%ED%99%9C?orientation=landscape
+            - link "안락" [ref=e124] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%95%88%EB%9D%BD?orientation=landscape
+            - link "시니어 케어" [ref=e126] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%8B%9C%EB%8B%88%EC%96%B4-%EC%BC%80%EC%96%B4?orientation=landscape
+            - link "퇴직" [ref=e128] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%ED%87%B4%EC%A7%81?orientation=landscape
+            - link "가정 간호" [ref=e130] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EA%B0%80%EC%A0%95-%EA%B0%84%ED%98%B8?orientation=landscape
+            - link "웰빙" [ref=e132] [cursor=pointer]:
+              - /url: /ko/s/%EC%82%AC%EC%A7%84/%EC%9B%B0%EB%B9%99?orientation=landscape
+        - generic [ref=e134]:
+          - generic [ref=e138]:
+            - generic [ref=e139]:
+              - figure [ref=e140]:
+                - link "휠체어를 탄 노인 여성과 건강 방문자가 집 테이블에 앉아 식사를 하고 있다." [ref=e143]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%ED%9C%A0%EC%B2%B4%EC%96%B4%EB%A5%BC-%ED%83%84-%EB%85%B8%EC%9D%B8-%EC%97%AC%EC%84%B1%EA%B3%BC-%EA%B1%B4%EA%B0%95-%EB%B0%A9%EB%AC%B8%EC%9E%90%EA%B0%80-%EC%A7%91-%ED%85%8C%EC%9D%B4%EB%B8%94%EC%97%90-%EC%95%89%EC%95%84-%EC%8B%9D%EC%82%AC%EB%A5%BC-%ED%95%98%EA%B3%A0-%EC%9E%88%EB%8B%A4-VR2hXb87Szg
+                  - img "휠체어를 탄 노인 여성과 건강 방문자가 집 테이블에 앉아 식사를 하고 있다." [ref=e144]
+              - figure [ref=e145]:
+                - link "서로를 비웃고 있는 두 남자" [ref=e148]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EC%84%9C%EB%A1%9C%EB%A5%BC-%EB%B9%84%EC%9B%83%EA%B3%A0-%EC%9E%88%EB%8A%94-%EB%91%90-%EB%82%A8%EC%9E%90-FHiJWoBodrs
+                  - img "서로를 비웃고 있는 두 남자" [ref=e149]
+              - figure [ref=e150]:
+                - link "나무 근처에 있는 두 남자" [ref=e153]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EB%82%98%EB%AC%B4-%EA%B7%BC%EC%B2%98%EC%97%90-%EC%9E%88%EB%8A%94-%EB%91%90-%EB%82%A8%EC%9E%90-itLoG1RK02U
+                  - img "나무 근처에 있는 두 남자" [ref=e154]
+              - figure [ref=e155]:
+                - link "집에서 소파에 앉아 있는 노인 여성의 머리를 빗고 있는 알아볼 수 없는 건강 방문자." [ref=e158]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EC%A7%91%EC%97%90%EC%84%9C-%EC%86%8C%ED%8C%8C%EC%97%90-%EC%95%89%EC%95%84-%EC%9E%88%EB%8A%94-%EB%85%B8%EC%9D%B8-%EC%97%AC%EC%84%B1%EC%9D%98-%EB%A8%B8%EB%A6%AC%EB%A5%BC-%EB%B9%97%EA%B3%A0-%EC%9E%88%EB%8A%94-%EC%95%8C%EC%95%84%EB%B3%BC-%EC%88%98-%EC%97%86%EB%8A%94-%EA%B1%B4%EA%B0%95-%EB%B0%A9%EB%AC%B8%EC%9E%90-JYDJq_eFIm0
+                  - img "집에서 소파에 앉아 있는 노인 여성의 머리를 빗고 있는 알아볼 수 없는 건강 방문자." [ref=e159]
+              - figure [ref=e160]:
+                - link "두 명의 노부인이 젊은 여성과 손을 잡고 있다" [ref=e163]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EB%91%90-%EB%AA%85%EC%9D%98-%EB%85%B8%EB%B6%80%EC%9D%B8%EC%9D%B4-%EC%A0%8A%EC%9D%80-%EC%97%AC%EC%84%B1%EA%B3%BC-%EC%86%90%EC%9D%84-%EC%9E%A1%EA%B3%A0-%EC%9E%88%EB%8B%A4-80r_dq-hFZw
+                  - img "두 명의 노부인이 젊은 여성과 손을 잡고 있다" [ref=e164]
+              - figure [ref=e165]:
+                - link "간호사가 방 안에서 노인 환자와 미소 짓고 있다" [ref=e168]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EA%B0%84%ED%98%B8%EC%82%AC%EA%B0%80-%EB%B0%A9-%EC%95%88%EC%97%90%EC%84%9C-%EB%85%B8%EC%9D%B8-%ED%99%98%EC%9E%90%EC%99%80-%EB%AF%B8%EC%86%8C-%EC%A7%93%EA%B3%A0-%EC%9E%88%EB%8B%A4-dMhB7w99ju8
+                  - img "간호사가 방 안에서 노인 환자와 미소 짓고 있다" [ref=e169]
+              - figure [ref=e170]:
+                - link "포옹하는 남자와 여자" [ref=e173]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%ED%8F%AC%EC%98%B9%ED%95%98%EB%8A%94-%EB%82%A8%EC%9E%90%EC%99%80-%EC%97%AC%EC%9E%90-C-FAYPsxyKU
+                  - img "포옹하는 남자와 여자" [ref=e174]
+              - figure [ref=e175]:
+                - link "파란 셔츠를 입은 남자가 머리를 자르는 남자" [ref=e178]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%ED%8C%8C%EB%9E%80-%EC%85%94%EC%B8%A0%EB%A5%BC-%EC%9E%85%EC%9D%80-%EB%82%A8%EC%9E%90%EA%B0%80-%EB%A8%B8%EB%A6%AC%EB%A5%BC-%EC%9E%90%EB%A5%B4%EB%8A%94-%EB%82%A8%EC%9E%90-MIKR9F31lfU
+                  - img "파란 셔츠를 입은 남자가 머리를 자르는 남자" [ref=e179]
+            - generic [ref=e180]:
+              - figure [ref=e181]:
+                - link "안경을 쓰고 보라색 폴로 셔츠를 입은 여자" [ref=e184]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EC%95%88%EA%B2%BD%EC%9D%84-%EC%93%B0%EA%B3%A0-%EB%B3%B4%EB%9D%BC%EC%83%89-%ED%8F%B4%EB%A1%9C-%EC%85%94%EC%B8%A0%EB%A5%BC-%EC%9E%85%EC%9D%80-%EC%97%AC%EC%9E%90-eO_JhqabBY0
+                  - img "안경을 쓰고 보라색 폴로 셔츠를 입은 여자" [ref=e185]
+              - figure [ref=e186]:
+                - link "흰색 버튼 업 셔츠를 입은 남자가 검은 민소매 셔츠를 입은 여자 옆에 앉아 있다" [ref=e189]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%ED%9D%B0%EC%83%89-%EB%B2%84%ED%8A%BC-%EC%97%85-%EC%85%94%EC%B8%A0%EB%A5%BC-%EC%9E%85%EC%9D%80-%EB%82%A8%EC%9E%90%EA%B0%80-%EA%B2%80%EC%9D%80-%EB%AF%BC%EC%86%8C%EB%A7%A4-%EC%85%94%EC%B8%A0%EB%A5%BC-%EC%9E%85%EC%9D%80-%EC%97%AC%EC%9E%90-%EC%98%86%EC%97%90-%EC%95%89%EC%95%84-%EC%9E%88%EB%8B%A4-fJ6AeCf6YRw
+                  - img "흰색 버튼 업 셔츠를 입은 남자가 검은 민소매 셔츠를 입은 여자 옆에 앉아 있다" [ref=e190]
+              - figure [ref=e191]:
+                - link "크리스마스 시간에 집에서 건강 방문자와 함께 휠체어를 탄 알아볼 수 없는 노인 여성." [ref=e194]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%ED%81%AC%EB%A6%AC%EC%8A%A4%EB%A7%88%EC%8A%A4-%EC%8B%9C%EA%B0%84%EC%97%90-%EC%A7%91%EC%97%90%EC%84%9C-%EA%B1%B4%EA%B0%95-%EB%B0%A9%EB%AC%B8%EC%9E%90%EC%99%80-%ED%95%A8%EA%BB%98-%ED%9C%A0%EC%B2%B4%EC%96%B4%EB%A5%BC-%ED%83%84-%EC%95%8C%EC%95%84%EB%B3%BC-%EC%88%98-%EC%97%86%EB%8A%94-%EB%85%B8%EC%9D%B8-%EC%97%AC%EC%84%B1-7SgaiTbrKoY
+                  - img "크리스마스 시간에 집에서 건강 방문자와 함께 휠체어를 탄 알아볼 수 없는 노인 여성." [ref=e195]
+              - figure [ref=e196]:
+                - link "노부부의 색칠을 돕는 간병인" [ref=e199]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EB%85%B8%EB%B6%80%EB%B6%80%EC%9D%98-%EC%83%89%EC%B9%A0%EC%9D%84-%EB%8F%95%EB%8A%94-%EA%B0%84%EB%B3%91%EC%9D%B8-bSXk1lOp8T0
+                  - img "노부부의 색칠을 돕는 간병인" [ref=e200]
+              - figure [ref=e201]:
+                - link "노부인이 방에서 남자와 춤추고 있어." [ref=e204]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EB%85%B8%EB%B6%80%EC%9D%B8%EC%9D%B4-%EB%B0%A9%EC%97%90%EC%84%9C-%EB%82%A8%EC%9E%90%EC%99%80-%EC%B6%A4%EC%B6%94%EA%B3%A0-%EC%9E%88%EC%96%B4-IkfMxGU3yLc
+                  - img "노부인이 방에서 남자와 춤추고 있어." [ref=e205]
+              - figure [ref=e206]:
+                - link "파란색 폴로 셔츠와 파란색 데님 청바지를 입은 남자가 흑백의 여자 옆에 서 있다" [ref=e209]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%ED%8C%8C%EB%9E%80%EC%83%89-%ED%8F%B4%EB%A1%9C-%EC%85%94%EC%B8%A0%EC%99%80-%ED%8C%8C%EB%9E%80%EC%83%89-%EB%8D%B0%EB%8B%98-%EC%B2%AD%EB%B0%94%EC%A7%80%EB%A5%BC-%EC%9E%85%EC%9D%80-%EB%82%A8%EC%9E%90%EA%B0%80-%ED%9D%91%EB%B0%B1%EC%9D%98-%EC%97%AC%EC%9E%90-%EC%98%86%EC%97%90-%EC%84%9C-%EC%9E%88%EB%8B%A4-I626rRZB-xE
+                  - img "파란색 폴로 셔츠와 파란색 데님 청바지를 입은 남자가 흑백의 여자 옆에 서 있다" [ref=e210]
+              - figure [ref=e211]:
+                - link "인식 할 수없는 건강 방문자와 가정 방문 중 노인 여성. 엘델리 여자의 양손을 잡고 있는 간호사. 닫으십시오." [ref=e214]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EC%9D%B8%EC%8B%9D-%ED%95%A0-%EC%88%98%EC%97%86%EB%8A%94-%EA%B1%B4%EA%B0%95-%EB%B0%A9%EB%AC%B8%EC%9E%90%EC%99%80-%EA%B0%80%EC%A0%95-%EB%B0%A9%EB%AC%B8-%EC%A4%91-%EB%85%B8%EC%9D%B8-%EC%97%AC%EC%84%B1-%EC%97%98%EB%8D%B8%EB%A6%AC-%EC%97%AC%EC%9E%90%EC%9D%98-%EC%96%91%EC%86%90%EC%9D%84-%EC%9E%A1%EA%B3%A0-%EC%9E%88%EB%8A%94-%EA%B0%84%ED%98%B8%EC%82%AC-%EB%8B%AB%EC%9C%BC%EC%8B%AD%EC%8B%9C%EC%98%A4-3_SfGfLl3Yo
+                  - img "인식 할 수없는 건강 방문자와 가정 방문 중 노인 여성. 엘델리 여자의 양손을 잡고 있는 간호사. 닫으십시오." [ref=e215]
+            - generic [ref=e216]:
+              - contentinfo [ref=e221]:
+                - generic [ref=e227]: –– ––– ––– –– ––– – ––– ––– –––– – – –– ––– – – ––– –– –– –––– ––
+              - figure [ref=e229]:
+                - link "젊은 여성이 휠체어에 탄 노인을 돕고 있다" [ref=e232]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EC%A0%8A%EC%9D%80-%EC%97%AC%EC%84%B1%EC%9D%B4-%ED%9C%A0%EC%B2%B4%EC%96%B4%EC%97%90-%ED%83%84-%EB%85%B8%EC%9D%B8%EC%9D%84-%EB%8F%95%EA%B3%A0-%EC%9E%88%EB%8B%A4-XjoI1OjweWo
+                  - img "젊은 여성이 휠체어에 탄 노인을 돕고 있다" [ref=e233]
+              - figure [ref=e234]:
+                - link "노부인이 젊은 남자와 춤을 추다" [ref=e237]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EB%85%B8%EB%B6%80%EC%9D%B8%EC%9D%B4-%EC%A0%8A%EC%9D%80-%EB%82%A8%EC%9E%90%EC%99%80-%EC%B6%A4%EC%9D%84-%EC%B6%94%EB%8B%A4-LwDjjYDaijA
+                  - img "노부인이 젊은 남자와 춤을 추다" [ref=e238]
+              - figure [ref=e239]:
+                - link "모두 괜찮을 것입니다. 여자 친구와 함께 테이블에 앉아 있는 동안 간호사를 껴안고 있는 행복한 노인의 허리 위로 초상화 보기. 스톡 사진" [ref=e242]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EB%AA%A8%EB%91%90-%EA%B4%9C%EC%B0%AE%EC%9D%84-%EA%B2%83%EC%9E%85%EB%8B%88%EB%8B%A4-%EC%97%AC%EC%9E%90-%EC%B9%9C%EA%B5%AC%EC%99%80-%ED%95%A8%EA%BB%98-%ED%85%8C%EC%9D%B4%EB%B8%94%EC%97%90-%EC%95%89%EC%95%84-%EC%9E%88%EB%8A%94-%EB%8F%99%EC%95%88-%EA%B0%84%ED%98%B8%EC%82%AC%EB%A5%BC-%EA%BB%B4%EC%95%88%EA%B3%A0-%EC%9E%88%EB%8A%94-%ED%96%89%EB%B3%B5%ED%95%9C-%EB%85%B8%EC%9D%B8%EC%9D%98-%ED%97%88%EB%A6%AC-%EC%9C%84%EB%A1%9C-%EC%B4%88%EC%83%81%ED%99%94-%EB%B3%B4%EA%B8%B0-%EC%8A%A4%ED%86%A1-%EC%82%AC%EC%A7%84-z356KmWbajg
+                  - img "모두 괜찮을 것입니다. 여자 친구와 함께 테이블에 앉아 있는 동안 간호사를 껴안고 있는 행복한 노인의 허리 위로 초상화 보기. 스톡 사진" [ref=e243]
+              - figure [ref=e244]:
+                - link "여자 왼팔에 주사기를 들고 있는 남자의 회색조 사진" [ref=e247]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EC%97%AC%EC%9E%90-%EC%99%BC%ED%8C%94%EC%97%90-%EC%A3%BC%EC%82%AC%EA%B8%B0%EB%A5%BC-%EB%93%A4%EA%B3%A0-%EC%9E%88%EB%8A%94-%EB%82%A8%EC%9E%90%EC%9D%98-%ED%9A%8C%EC%83%89%EC%A1%B0-%EC%82%AC%EC%A7%84-ubGv9pDWfrg
+                  - img "여자 왼팔에 주사기를 들고 있는 남자의 회색조 사진" [ref=e248]
+              - figure [ref=e249]:
+                - link "돌보미가 보행기를 사용하는 노부인을 돕습니다." [ref=e252]:
+                  - /url: /ko/%EC%82%AC%EC%A7%84/%EB%8F%8C%EB%B3%B4%EB%AF%B8%EA%B0%80-%EB%B3%B4%ED%96%89%EA%B8%B0%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%85%B8%EB%B6%80%EC%9D%B8%EC%9D%84-%EB%8F%95%EC%8A%B5%EB%8B%88%EB%8B%A4-2obyM4zYt3Y
+                  - img "돌보미가 보행기를 사용하는 노부인을 돕습니다." [ref=e253]
+          - generic [ref=e256]:
+            - heading "iStock에서 프리미엄 이미지 찾아보기 | 지금 바로 할인 요청하기" [level=2] [ref=e257]:
+              - text: iStock에서 프리미엄 이미지 찾아보기
+              - generic [ref=e258]: "| 지금 바로 할인 요청하기"
+            - generic [ref=e260]:
+              - link "딸 집에서 Walker와 함께 노인 여성을 돕습니다." [ref=e261] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/daughter-assisting-senior-woman-with-walker-at-home-gm2216846787-633469460?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_bottom&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fcaregiver-helping-senior%3Forientation%3Dlandscape&utm_term=caregiver+helping+senior%3A%3A%3A%3A
+                - img "딸 집에서 Walker와 함께 노인 여성을 돕습니다." [ref=e262]
+              - link "할머니의 손을 잡고 있는 손" [ref=e263] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/hands-holding-old-womans-hands-gm2229081908-644826142?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_bottom&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fcaregiver-helping-senior%3Forientation%3Dlandscape&utm_term=caregiver+helping+senior%3A%3A%3A%3A
+                - img "할머니의 손을 잡고 있는 손" [ref=e264]
+              - link "소파에서 포옹하는 선배 여성과 젊은 여성 간호사의 초상화" [ref=e265] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/portrait-of-a-senior-woman-and-a-young-female-nurse-hugging-on-the-couch-gm2228883201-644641885?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_bottom&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fcaregiver-helping-senior%3Forientation%3Dlandscape&utm_term=caregiver+helping+senior%3A%3A%3A%3A
+                - img "소파에서 포옹하는 선배 여성과 젊은 여성 간호사의 초상화" [ref=e266]
+              - link "홈 케어 의료 전문가 포옹 노인 patien" [ref=e267] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/home-care-healthcare-professional-hugging-elderly-patien-gm2227757715-643607032?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_bottom&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fcaregiver-helping-senior%3Forientation%3Dlandscape&utm_term=caregiver+helping+senior%3A%3A%3A%3A
+                - img "홈 케어 의료 전문가 포옹 노인 patien" [ref=e268]
+              - link "늙은 여자는 마음, 평가 또는 평가를 위해 상담실에서 심리학자와 함께 생각합니다." [ref=e269] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/old-woman-thinking-with-psychologist-in-consultation-office-for-mind-evaluation-or-gm2202262593-619870698?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_bottom&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fcaregiver-helping-senior%3Forientation%3Dlandscape&utm_term=caregiver+helping+senior%3A%3A%3A%3A
+                - img "늙은 여자는 마음, 평가 또는 평가를 위해 상담실에서 심리학자와 함께 생각합니다." [ref=e270]
+              - link "성숙한 여성, 엑스레이를 위한 의사 및 태블릿, 사무실에서 심장 검진을 지원하거나 대화합니다. 여성, 의료 전문가 및 클리닉 예약에서 고령 환자에 대한 진단 대화" [ref=e271] [cursor=pointer]:
+                - /url: https://www.istockphoto.com/photo/mature-woman-doctor-and-tablet-for-xray-support-or-conversation-with-cardiology-gm2216587796-633221362?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_bottom&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fcaregiver-helping-senior%3Forientation%3Dlandscape&utm_term=caregiver+helping+senior%3A%3A%3A%3A
+                - img "성숙한 여성, 엑스레이를 위한 의사 및 태블릿, 사무실에서 심장 검진을 지원하거나 대화합니다. 여성, 의료 전문가 및 클리닉 예약에서 고령 환자에 대한 진단 대화" [ref=e272]
+              - 'link "Everyday Strength: 노화 성인의 움직임 장려" [ref=e273] [cursor=pointer]':
+                - /url: https://www.istockphoto.com/photo/encouraging-movement-in-aging-adults-gm2221037821-637419070?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_bottom&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fcaregiver-helping-senior%3Forientation%3Dlandscape&utm_term=caregiver+helping+senior%3A%3A%3A%3A
+                - 'img "Everyday Strength: 노화 성인의 움직임 장려" [ref=e274]'
+              - generic [ref=e275]:
+                - link "양로원에서 고령의 여성과 함께 정원을 걷는 자원봉사" [ref=e276] [cursor=pointer]:
+                  - /url: https://www.istockphoto.com/photo/volunteer-walking-in-garden-with-elderly-woman-in-nursing-home-gm2207018387-624289382?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_bottom&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fcaregiver-helping-senior%3Forientation%3Dlandscape&utm_term=caregiver+helping+senior%3A%3A%3A%3A
+                  - img "양로원에서 고령의 여성과 함께 정원을 걷는 자원봉사" [ref=e277]
+                - link "iStock에서 더 많은 자료 보기 ↗" [ref=e278] [cursor=pointer]:
+                  - /url: https://www.istockphoto.com/search/2/image?utm_source=unsplash&utm_medium=affiliate&utm_campaign=srp_photos_bottom&utm_content=https%3A%2F%2Funsplash.com%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fcaregiver-helping-senior%3Forientation%3Dlandscape&utm_term=caregiver+helping+senior%3A%3A%3A%3A&phrase=caregiver+helping+senior&alloweduse=availableforalluses&excludenudity=true&sort=best&mediatype=photography
+          - button "더 로드" [ref=e282] [cursor=pointer]
+          - generic [ref=e283]:
+            - link [ref=e284] [cursor=pointer]:
+              - /url: /ko
+              - img [ref=e285]
+            - paragraph [ref=e287]: 멋진 것을 만들어 보세요
+    - generic:
+      - region "Notifications"

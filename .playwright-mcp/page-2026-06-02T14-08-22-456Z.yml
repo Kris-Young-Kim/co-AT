@@ -1,0 +1,50 @@
+- generic [ref=e4]:
+  - navigation [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - link "Unsplash 홈" [ref=e8] [cursor=pointer]:
+          - /url: /ko
+          - img "Unsplash 홈" [ref=e9]
+        - link "사진" [ref=e11] [cursor=pointer]:
+          - /url: /ko
+          - img [ref=e12]
+        - link "일러스트" [ref=e14] [cursor=pointer]:
+          - /url: /ko/%EC%9D%BC%EB%9F%AC%EC%8A%A4%ED%8A%B8
+          - img [ref=e15]
+      - generic [ref=e17]:
+        - button "탐색" [ref=e18] [cursor=pointer]:
+          - img [ref=e19]
+        - button "컬렉션" [ref=e21] [cursor=pointer]:
+          - img [ref=e22]
+        - button "다운로드 내역" [ref=e24] [cursor=pointer]:
+          - img [ref=e25]
+      - button "북마크" [ref=e28] [cursor=pointer]:
+        - img [ref=e29]
+    - generic [ref=e31]:
+      - link "로그인 / 가입" [ref=e32] [cursor=pointer]:
+        - /url: /ko/%EB%A1%9C%EA%B7%B8%EC%9D%B8?referrer=%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fassistive-technology-care%3Forientation%3Dlandscape
+        - img [ref=e33]
+      - button "언어" [ref=e35] [cursor=pointer]:
+        - img [ref=e36]
+      - button "메뉴" [ref=e38] [cursor=pointer]:
+        - img [ref=e39]
+  - generic [ref=e41]:
+    - navigation [ref=e43]:
+      - search "사이트 전체에서 이미지 찾기" [ref=e45]:
+        - button "Unsplash 검색" [ref=e46] [cursor=pointer]:
+          - img [ref=e47]
+        - combobox [ref=e49]:
+          - searchbox "Unsplash 검색" [ref=e50]: assistive technology care
+          - listbox
+        - button "삭제" [ref=e51] [cursor=pointer]:
+          - img [ref=e52]
+        - button "시각적 검색" [ref=e56] [cursor=pointer]:
+          - img [ref=e57]
+      - generic [ref=e59]:
+        - link "Unsplash+ 구독" [ref=e60] [cursor=pointer]:
+          - /url: /ko/%ED%94%8C%EB%9F%AC%EC%8A%A4
+        - link "로그인" [ref=e61] [cursor=pointer]:
+          - /url: /ko/%EB%A1%9C%EA%B7%B8%EC%9D%B8?referrer=%2Fko%2Fs%2F%25EC%2582%25AC%25EC%25A7%2584%2Fassistive-technology-care%3Forientation%3Dlandscape
+      - button "이미지 제출" [ref=e63] [cursor=pointer]
+    - generic:
+      - region "Notifications"

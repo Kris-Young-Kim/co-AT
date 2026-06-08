@@ -1,0 +1,52 @@
+﻿=== 시트 목록 ===
+  Sheet 1: 1.전체 사업 실적
+  Sheet 2: 2.체험프로그램(구, 견학)
+  Sheet 3: 3.교육
+  Sheet 4: 4.홍보
+  Sheet 5: 4-1.매체 운영 기록지
+  Sheet 6: 5.예산집행 실적
+  Sheet 7: 6.대여 현황 관리(대기자 등)
+  Sheet 8: 7.제작 서비스 현황 관리
+
+=== Sheet 1: 1.전체 사업 실적 ===
+('보조기기센터 사업 실적', None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, None, '단위 : 건, 명', None, None, '○ 보조기기 상담(서비스 이용자 현황)', None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+('사업내용', None, None, '목표', '실적', '달성률', None, None, '사업명', None, '합 계', None, '접수 정보(실인원)', None, '서비스 제공 현황', None, None, None, None, None, None, None, None, None, None, None)
+('보조기기 상담 \n및 정보제공 사업', '보조기기 상담(연인원)', None, 600, None, 0, None, None, None, None, '연인원', '실인원', '신규 이용자', '기존 이용자', '유선', '내방', '방문\n(출장)', None, None, None, None, None, None, None, None, None)
+(None, '콜센터', None, '상시', 36, '-', None, None, None, None, None, None, '(당해연도)', '(이전연도)', None, None, None, None, None, None, None, None, None, None, None, None)
+(None, '보조기기\n체험지원', '보조기기 사용 체험', 30, 0, 0, None, None, '보조기기상담', None, 0, 0, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, '체험 프로그램', '상시', None, '-', None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+('보조기기 \n맞춤형 지원사업', '대여', None, 77, 12, 0.2077922078, None, None, '○ 콜센터', None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, '보조기기 맞춤 제작 지원', None, 100, 8, 0.25, None, None, '사업명', '합계', '1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월', None, None, None, None)
+(None, '장애인보조기기 교부사업 맞춤형 평가지원', None, '상시', 0, '-', None, None, '콜센터 ', 34, 14, 14, 6, None, None, None, None, None, None, None, None, None, None, None, None, None)
+('사후관리\n지원사업', '보조기기 소독 및 세척', None, 84, 0, 0, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, '보조기기  점검 및 수리', None, 15, 0, 0, None, None, '○ 사업별 세부 실적(서비스 관련 실적)', None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, '보조기기 재사용 지원', None, 9, 0, 0.3333333333, None, None, '사업명', None, '합계', 'WC', 'ADL', 'S', 'SP', 'EC', 'CA', 'L', 'AAC', 'AM', '실인원', '연인원', None, None, None, None)
+('교육 및\n홍보사업', '보조기기 이용자교육(명)', None, '상시', 0, '-', None, None, '보조기기 상담 및 정보제공사업', '보조기기 사용체험', 0, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, '전문인력 교육 등', None, 10, 0, 0, None, None, '보조기기 맞춤형 지원사업', '대여', 16, 6, 6, 2, None, None, 1, None, 1, None, 14, 16, None, None, None, None)
+(None, '홍보', None, 22, 24, 0.4545454545, None, None, None, '보조기기 맞춤 제작 지원', 35, 17, 15, None, None, 2, 1, None, None, None, 34, 35, '5/7 업데이트', None, None, None)
+('기타사업', '(사업명)', None, 0, 8, '-', None, None, None, '교부사업 맞춤형 평가지원', 52, 6, 32, 7, 2, 3, 2, None, None, None, 38, 52, None, None, None, None)
+(None, '(사업명)', None, 0, 4, '-', None, None, '사후관리 지원사업', '보조기기 소독 및 세척', 0, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 12, None, None, None, None, '보조기기 점검 및 수리', 0, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, None, None, None, None, None, '보조기기 재사용 지원', 3, 3, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(' ', None, None, None, None, None, None, None, '보조기기 이용자교육', '보조기기 안전교육', 0, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 27, None, None, None, None, '보조기기 사용교육', 0, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 14, None, None, None, None, '보조기기 관리교육', 0, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 7, None, None, None, None, '보조기기 점검교육', 0, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, None, None, None, None, None, '기타', 0, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 39, None, None, None, '○ 장애인보조기기 교부사업 현황 조사', None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 9, None, None, None, '맞춤형 \n평가 건수', '평가결과', None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, None, None, None, None, None, '적합', '품목변경', '부적합', '기타', None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, None, None, None, None, 52, 33, 1, 5, 13, '취소:10\n추가:3', None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 6, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+(None, None, None, None, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
