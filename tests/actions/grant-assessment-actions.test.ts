@@ -107,6 +107,12 @@ describe('deleteGrantAssessment', () => {
     const result = await deleteGrantAssessment('a-1')
     expect(result.success).toBe(true)
   })
+
+  it('권한 없으면 오류', async () => {
+    mockHasAdminOrStaffPermission.mockResolvedValueOnce(false)
+    const result = await deleteGrantAssessment('a-1')
+    expect(result.success).toBe(false)
+  })
 })
 
 describe('submitGrantAssessment', () => {
@@ -119,5 +125,11 @@ describe('submitGrantAssessment', () => {
     vi.mocked(createAdminClient).mockReturnValueOnce(chain as any)
     const result = await submitGrantAssessment('a-1')
     expect(result.success).toBe(true)
+  })
+
+  it('권한 없으면 오류', async () => {
+    mockHasAdminOrStaffPermission.mockResolvedValueOnce(false)
+    const result = await submitGrantAssessment('a-1')
+    expect(result.success).toBe(false)
   })
 })
