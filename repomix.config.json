@@ -4,11 +4,47 @@
     "filePath": "repomix-output.md",
     "style": "markdown",
     "compress": true,
-    "truncateBase64": true
+    "truncateBase64": true,
+    "showLineNumbers": false,
+    "topFilesLength": 15,
+    "headerText": "GWATC 보조공학센터 Co-AT 모노레포\n\n스택: Next.js 16 · React 19 · TypeScript · Tailwind · Clerk · Supabase · Turborepo · Vercel\n앱: web · admin · eval · inventory · stats · automation · hr · approval · finance\n공유 패키지: @co-at/ui · @co-at/lib · @co-at/auth · @co-at/types\n공유 서버액션: /actions/\nDB 네임스페이스: eval_* · inventory_* · hr_* · approval_* · finance_*\n인증: Clerk (role: ADMIN/MANAGER/STAFF)"
   },
+  "include": [
+    "actions/**/*.ts",
+    "apps/*/app/**/*.tsx",
+    "apps/*/app/**/*.ts",
+    "apps/*/components/**/*.tsx",
+    "apps/*/components/**/*.ts",
+    "apps/*/lib/**/*.ts",
+    "apps/*/actions/**/*.ts",
+    "apps/*/middleware.ts",
+    "apps/*/CLAUDE.md",
+    "packages/ui/ui/**/*.tsx",
+    "packages/lib/**/*.ts",
+    "packages/auth/**/*.ts",
+    "packages/types/src/**/*.ts",
+    "types/*.ts",
+    "CLAUDE.md",
+    "**/package.json",
+    "**/tsconfig.json",
+    "apps/*/next.config.mjs",
+    "apps/*/tailwind.config.ts",
+    "turbo.json"
+  ],
   "ignore": {
     "useGitignore": true,
     "useDefaultPatterns": true,
-    "customPatterns": ["repomix-output.md", "repomix-output.xml", "repomix-output.*.md", "repomix-output.*.xml"]
+    "customPatterns": [
+      "repomix-output*.md",
+      "repomix-output*.xml",
+      "types/database.types.ts",
+      "packages/lib/types/database.types.ts",
+      "packages/types/database.types.ts",
+      "**/node_modules/**",
+      "**/.next/**",
+      "*.tsbuildinfo",
+      "**/*.test.ts",
+      "**/*.spec.ts"
+    ]
   }
 }
