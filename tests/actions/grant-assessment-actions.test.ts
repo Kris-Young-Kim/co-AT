@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import {
   listGrantAssessments,
+  getGrantAssessmentById,
   createGrantAssessment,
   updateGrantAssessment,
   deleteGrantAssessment,
@@ -51,6 +52,56 @@ describe('listGrantAssessments', () => {
     const result = await listGrantAssessments()
     expect(result.success).toBe(true)
     expect(result.assessments).toHaveLength(1)
+  })
+})
+
+describe('getGrantAssessmentById', () => {
+  beforeEach(() => vi.clearAllMocks())
+
+  it('권한 없으면 오류', async () => {
+    mockHasAdminOrStaffPermission.mockResolvedValueOnce(false)
+    const result = await getGrantAssessmentById('a-1')
+    expect(result.success).toBe(false)
+    expect(result.error).toBe('권한이 없습니다')
+  })
+
+  it('성공 — assessment + items 반환', async () => {
+    mockHasAdminOrStaffPermission.mockResolvedValueOnce(true)
+    const mockAssessment = { id: 'a-1', client_id: 'c-1', assessment_year: 2026, status: 'draft' }
+    const mockItems = [{ id: 'item-1', item_order: 1, item_category: '전동휠체어' }]
+    const chain = makeChain({
+      single: vi.fn(() => Promise.resolve({ data: mockAssessment, error: null })),
+      order: vi.fn(() => Promise.resolve({ data: mockItems, error: null })),
+    })
+    vi.mocked(createAdminClient).mockReturnValueOnce(chain as any)
+    const result = await getGrantAssessmentById('a-1')
+    expect(result.success).toBe(true)
+    expect(result.assessment?.id).toBe('a-1')
+    expect(result.assessment?.items).toHaveLength(1)
+  })
+
+  it('assessment 없으면 오류', async () => {
+    mockHasAdminOrStaffPermission.mockResolvedValueOnce(true)
+    const chain = makeChain({
+      single: vi.fn(() => Promise.resolve({ data: null, error: { message: 'not found' } })),
+    })
+    vi.mocked(createAdminClient).mockReturnValueOnce(chain as any)
+    const result = await getGrantAssessmentById('a-1')
+    expect(result.success).toBe(false)
+    expect(result.error).toBe('교부사업 평가를 찾을 수 없습니다')
+  })
+
+  it('items 조회 실패면 오류', async () => {
+    mockHasAdminOrStaffPermission.mockResolvedValueOnce(true)
+    const mockAssessment = { id: 'a-1', client_id: 'c-1', assessment_year: 2026, status: 'draft' }
+    const chain = makeChain({
+      single: vi.fn(() => Promise.resolve({ data: mockAssessment, error: null })),
+      order: vi.fn(() => Promise.resolve({ data: null, error: { message: 'DB error' } })),
+    })
+    vi.mocked(createAdminClient).mockReturnValueOnce(chain as any)
+    const result = await getGrantAssessmentById('a-1')
+    expect(result.success).toBe(false)
+    expect(result.error).toBe('품목 조회에 실패했습니다')
   })
 })
 
