@@ -5,7 +5,7 @@ const nextConfig = {
   async redirects() {
     return []
   },
-  transpilePackages: ['@co-at/ui', '@co-at/lib', '@co-at/auth', '@co-at/types'],
+  transpilePackages: ['@co-at/ui', '@co-at/lib', '@co-at/auth', '@co-at/types', 'remotion', '@remotion/player'],
   images: {
     // 이미지 품질 설정
     qualities: [75, 90],

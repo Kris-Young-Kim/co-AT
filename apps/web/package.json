@@ -2,7 +2,6 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
-
   "scripts": {
     "dev": "next dev -p 3000 --webpack",
     "build": "next build",
@@ -12,7 +11,8 @@
     "test:watch": "vitest --watch",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "gen:types": "npx -y supabase gen types typescript --project-id uyjbndiwyddjyjkdfuyi --schema public > types/database.types.ts"
+    "gen:types": "npx -y supabase gen types typescript --project-id uyjbndiwyddjyjkdfuyi --schema public > types/database.types.ts",
+    "studio": "remotion studio remotion/index.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.3",
@@ -34,6 +34,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
+    "@remotion/player": "^4.0.474",
     "@sentry/nextjs": "^10.38.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.89.0",
@@ -53,6 +54,7 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.68.0",
     "recharts": "^3.6.0",
+    "remotion": "^4.0.474",
     "svix": "^1.84.1",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",

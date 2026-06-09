@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS eval_session_transcripts (
 
 ALTER TABLE eval_session_transcripts ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "staff_all_transcripts" ON eval_session_transcripts;
+
 CREATE POLICY "staff_all_transcripts"
   ON eval_session_transcripts
   FOR ALL
@@ -32,10 +34,10 @@ CREATE POLICY "staff_all_transcripts"
     )
   );
 
-CREATE INDEX idx_session_transcripts_client_id
+CREATE INDEX IF NOT EXISTS idx_session_transcripts_client_id
   ON eval_session_transcripts (client_id);
-CREATE INDEX idx_session_transcripts_session_date
+CREATE INDEX IF NOT EXISTS idx_session_transcripts_session_date
   ON eval_session_transcripts (session_date DESC);
-CREATE INDEX idx_session_transcripts_linked_call_log
+CREATE INDEX IF NOT EXISTS idx_session_transcripts_linked_call_log
   ON eval_session_transcripts (linked_call_log_id)
   WHERE linked_call_log_id IS NOT NULL;

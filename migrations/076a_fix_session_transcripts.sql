@@ -36,6 +36,8 @@ BEGIN
 END;
 $$;
 
+DROP TRIGGER IF EXISTS trg_eval_session_transcripts_updated_at ON eval_session_transcripts;
+
 CREATE TRIGGER trg_eval_session_transcripts_updated_at
   BEFORE UPDATE ON eval_session_transcripts
   FOR EACH ROW EXECUTE FUNCTION update_eval_session_transcripts_updated_at();
