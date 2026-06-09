@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      annual_targets: {
+        Row: {
+          cleaning: number
+          consultation: number
+          created_at: string | null
+          custom_make: number
+          experience: number
+          id: string
+          professional_edu: number
+          promotion: number
+          rental: number
+          repair: number
+          reuse: number
+          updated_at: string | null
+          year: number
+        }
+        Insert: {
+          cleaning?: number
+          consultation?: number
+          created_at?: string | null
+          custom_make?: number
+          experience?: number
+          id?: string
+          professional_edu?: number
+          promotion?: number
+          rental?: number
+          repair?: number
+          reuse?: number
+          updated_at?: string | null
+          year: number
+        }
+        Update: {
+          cleaning?: number
+          consultation?: number
+          created_at?: string | null
+          custom_make?: number
+          experience?: number
+          id?: string
+          professional_edu?: number
+          promotion?: number
+          rental?: number
+          repair?: number
+          reuse?: number
+          updated_at?: string | null
+          year?: number
+        }
+        Relationships: []
+      }
       applications: {
         Row: {
           assigned_staff_id: string | null
@@ -22,10 +70,16 @@ export type Database = {
           created_at: string | null
           desired_date: string | null
           id: string
+          notes: string | null
+          progress_type: string | null
+          referral_type: string | null
+          requested_item: string | null
+          service_area: string | null
           service_year: number | null
           status: string | null
           sub_category: string | null
           updated_at: string | null
+          visit_type: string | null
         }
         Insert: {
           assigned_staff_id?: string | null
@@ -34,10 +88,16 @@ export type Database = {
           created_at?: string | null
           desired_date?: string | null
           id?: string
+          notes?: string | null
+          progress_type?: string | null
+          referral_type?: string | null
+          requested_item?: string | null
+          service_area?: string | null
           service_year?: number | null
           status?: string | null
           sub_category?: string | null
           updated_at?: string | null
+          visit_type?: string | null
         }
         Update: {
           assigned_staff_id?: string | null
@@ -46,10 +106,16 @@ export type Database = {
           created_at?: string | null
           desired_date?: string | null
           id?: string
+          notes?: string | null
+          progress_type?: string | null
+          referral_type?: string | null
+          requested_item?: string | null
+          service_area?: string | null
           service_year?: number | null
           status?: string | null
           sub_category?: string | null
           updated_at?: string | null
+          visit_type?: string | null
         }
         Relationships: [
           {
@@ -522,21 +588,31 @@ export type Database = {
           address: string | null
           assigned_staff_id: string | null
           birth_date: string | null
+          care_level: string | null
+          city: string | null
           contact: string | null
           created_at: string | null
           disability_cause: string | null
+          disability_description: string | null
           disability_grade: string | null
           disability_onset_date: string | null
+          disability_progression: string | null
           disability_type: string | null
           economic_status: string | null
+          email: string | null
+          floor_number: string | null
           gender: string | null
           guardian_contact: string | null
+          guardian_name: string | null
+          guardian_relationship: string | null
           has_elevator: boolean | null
           housing_type: string | null
           id: string
           name: string
           obstacles: string | null
+          progression_cause: string | null
           registration_number: string | null
+          secondary_disability_type: string | null
           source: string
           status: string
           updated_at: string | null
@@ -545,21 +621,31 @@ export type Database = {
           address?: string | null
           assigned_staff_id?: string | null
           birth_date?: string | null
+          care_level?: string | null
+          city?: string | null
           contact?: string | null
           created_at?: string | null
           disability_cause?: string | null
+          disability_description?: string | null
           disability_grade?: string | null
           disability_onset_date?: string | null
+          disability_progression?: string | null
           disability_type?: string | null
           economic_status?: string | null
+          email?: string | null
+          floor_number?: string | null
           gender?: string | null
           guardian_contact?: string | null
+          guardian_name?: string | null
+          guardian_relationship?: string | null
           has_elevator?: boolean | null
           housing_type?: string | null
           id?: string
           name: string
           obstacles?: string | null
+          progression_cause?: string | null
           registration_number?: string | null
+          secondary_disability_type?: string | null
           source?: string
           status?: string
           updated_at?: string | null
@@ -568,21 +654,31 @@ export type Database = {
           address?: string | null
           assigned_staff_id?: string | null
           birth_date?: string | null
+          care_level?: string | null
+          city?: string | null
           contact?: string | null
           created_at?: string | null
           disability_cause?: string | null
+          disability_description?: string | null
           disability_grade?: string | null
           disability_onset_date?: string | null
+          disability_progression?: string | null
           disability_type?: string | null
           economic_status?: string | null
+          email?: string | null
+          floor_number?: string | null
           gender?: string | null
           guardian_contact?: string | null
+          guardian_name?: string | null
+          guardian_relationship?: string | null
           has_elevator?: boolean | null
           housing_type?: string | null
           id?: string
           name?: string
           obstacles?: string | null
+          progression_cause?: string | null
           registration_number?: string | null
+          secondary_disability_type?: string | null
           source?: string
           status?: string
           updated_at?: string | null
@@ -878,9 +974,290 @@ export type Database = {
           },
         ]
       }
+      eval_grant_assessments: {
+        Row: {
+          application_id: string | null
+          assessment_month: number | null
+          assessment_year: number
+          change_cancel_reason: string | null
+          client_id: string
+          created_at: string | null
+          evaluation_date: string | null
+          evaluator_name: string | null
+          evaluator_staff_id: string | null
+          final_result: string | null
+          general_opinion: string | null
+          id: string
+          prior_grant_records: Json | null
+          referral_doc_id: string | null
+          referral_org: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          assessment_month?: number | null
+          assessment_year?: number
+          change_cancel_reason?: string | null
+          client_id: string
+          created_at?: string | null
+          evaluation_date?: string | null
+          evaluator_name?: string | null
+          evaluator_staff_id?: string | null
+          final_result?: string | null
+          general_opinion?: string | null
+          id?: string
+          prior_grant_records?: Json | null
+          referral_doc_id?: string | null
+          referral_org?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          assessment_month?: number | null
+          assessment_year?: number
+          change_cancel_reason?: string | null
+          client_id?: string
+          created_at?: string | null
+          evaluation_date?: string | null
+          evaluator_name?: string | null
+          evaluator_staff_id?: string | null
+          final_result?: string | null
+          general_opinion?: string | null
+          id?: string
+          prior_grant_records?: Json | null
+          referral_doc_id?: string | null
+          referral_org?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_grant_assessments_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eval_grant_assessments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eval_grant_assessments_referral_doc_id_fkey"
+            columns: ["referral_doc_id"]
+            isOneToOne: false
+            referencedRelation: "eval_grant_referral_docs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eval_grant_items: {
+        Row: {
+          assessment_id: string
+          checklist_responses: Json | null
+          created_at: string | null
+          final_item_name: string | null
+          has_self_pay: boolean | null
+          id: string
+          item_category: string
+          item_name: string | null
+          item_opinion: string | null
+          item_order: number
+          item_result: string | null
+          recommended_model: string | null
+          score_disability: number | null
+          score_effectiveness: number | null
+          score_env: number | null
+          score_operation: number | null
+          score_use_plan: number | null
+          self_usage_possible: boolean | null
+          support_amount: number | null
+          support_person: string | null
+          total_score: number | null
+          updated_at: string | null
+          usage_experience: boolean | null
+          use_location: string | null
+          use_location_detail: string | null
+          use_plan: string | null
+          vendor_name: string | null
+          vendor_phone: string | null
+        }
+        Insert: {
+          assessment_id: string
+          checklist_responses?: Json | null
+          created_at?: string | null
+          final_item_name?: string | null
+          has_self_pay?: boolean | null
+          id?: string
+          item_category: string
+          item_name?: string | null
+          item_opinion?: string | null
+          item_order: number
+          item_result?: string | null
+          recommended_model?: string | null
+          score_disability?: number | null
+          score_effectiveness?: number | null
+          score_env?: number | null
+          score_operation?: number | null
+          score_use_plan?: number | null
+          self_usage_possible?: boolean | null
+          support_amount?: number | null
+          support_person?: string | null
+          total_score?: number | null
+          updated_at?: string | null
+          usage_experience?: boolean | null
+          use_location?: string | null
+          use_location_detail?: string | null
+          use_plan?: string | null
+          vendor_name?: string | null
+          vendor_phone?: string | null
+        }
+        Update: {
+          assessment_id?: string
+          checklist_responses?: Json | null
+          created_at?: string | null
+          final_item_name?: string | null
+          has_self_pay?: boolean | null
+          id?: string
+          item_category?: string
+          item_name?: string | null
+          item_opinion?: string | null
+          item_order?: number
+          item_result?: string | null
+          recommended_model?: string | null
+          score_disability?: number | null
+          score_effectiveness?: number | null
+          score_env?: number | null
+          score_operation?: number | null
+          score_use_plan?: number | null
+          self_usage_possible?: boolean | null
+          support_amount?: number | null
+          support_person?: string | null
+          total_score?: number | null
+          updated_at?: string | null
+          usage_experience?: boolean | null
+          use_location?: string | null
+          use_location_detail?: string | null
+          use_plan?: string | null
+          vendor_name?: string | null
+          vendor_phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_grant_items_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "eval_grant_assessment_list"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eval_grant_items_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "eval_grant_assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eval_grant_referral_docs: {
+        Row: {
+          assessment_count: number | null
+          assessment_items_count: number | null
+          cancel_count: number | null
+          created_at: string | null
+          created_by: string | null
+          doc_date: string | null
+          doc_number: string | null
+          doc_year: number
+          id: string
+          note: string | null
+          receive_date: string | null
+          referral_count: number | null
+          referral_round: number | null
+          result_send_date: string | null
+          sending_org: string
+          updated_at: string | null
+        }
+        Insert: {
+          assessment_count?: number | null
+          assessment_items_count?: number | null
+          cancel_count?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          doc_date?: string | null
+          doc_number?: string | null
+          doc_year: number
+          id?: string
+          note?: string | null
+          receive_date?: string | null
+          referral_count?: number | null
+          referral_round?: number | null
+          result_send_date?: string | null
+          sending_org: string
+          updated_at?: string | null
+        }
+        Update: {
+          assessment_count?: number | null
+          assessment_items_count?: number | null
+          cancel_count?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          doc_date?: string | null
+          doc_number?: string | null
+          doc_year?: number
+          id?: string
+          note?: string | null
+          receive_date?: string | null
+          referral_count?: number | null
+          referral_round?: number | null
+          result_send_date?: string | null
+          sending_org?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      eval_item_checklist_templates: {
+        Row: {
+          created_at: string | null
+          hint_text: string | null
+          id: string
+          is_active: boolean | null
+          item_category: string
+          question_id: string
+          question_order: number
+          question_text: string
+        }
+        Insert: {
+          created_at?: string | null
+          hint_text?: string | null
+          id?: string
+          is_active?: boolean | null
+          item_category: string
+          question_id: string
+          question_order?: number
+          question_text: string
+        }
+        Update: {
+          created_at?: string | null
+          hint_text?: string | null
+          id?: string
+          is_active?: boolean | null
+          item_category?: string
+          question_id?: string
+          question_order?: number
+          question_text?: string
+        }
+        Relationships: []
+      }
       eval_service_records: {
         Row: {
           address: string | null
+          application_id: string | null
           application_month: number | null
           application_no: number | null
           application_year: number | null
@@ -920,6 +1297,7 @@ export type Database = {
           is_visit_in: boolean | null
           is_visit_out: boolean | null
           item_category: string | null
+          manufacturing_method: string | null
           monitoring_date: string | null
           name: string | null
           performance_date: string | null
@@ -928,6 +1306,8 @@ export type Database = {
           record_status: string | null
           referral_type: string | null
           region: string | null
+          satisfaction_comment: string | null
+          satisfaction_score: number | null
           service_area: string | null
           service_category: string | null
           service_content: string | null
@@ -940,6 +1320,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          application_id?: string | null
           application_month?: number | null
           application_no?: number | null
           application_year?: number | null
@@ -979,6 +1360,7 @@ export type Database = {
           is_visit_in?: boolean | null
           is_visit_out?: boolean | null
           item_category?: string | null
+          manufacturing_method?: string | null
           monitoring_date?: string | null
           name?: string | null
           performance_date?: string | null
@@ -987,6 +1369,8 @@ export type Database = {
           record_status?: string | null
           referral_type?: string | null
           region?: string | null
+          satisfaction_comment?: string | null
+          satisfaction_score?: number | null
           service_area?: string | null
           service_category?: string | null
           service_content?: string | null
@@ -999,6 +1383,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          application_id?: string | null
           application_month?: number | null
           application_no?: number | null
           application_year?: number | null
@@ -1038,6 +1423,7 @@ export type Database = {
           is_visit_in?: boolean | null
           is_visit_out?: boolean | null
           item_category?: string | null
+          manufacturing_method?: string | null
           monitoring_date?: string | null
           name?: string | null
           performance_date?: string | null
@@ -1046,6 +1432,8 @@ export type Database = {
           record_status?: string | null
           referral_type?: string | null
           region?: string | null
+          satisfaction_comment?: string | null
+          satisfaction_score?: number | null
           service_area?: string | null
           service_category?: string | null
           service_content?: string | null
@@ -1058,7 +1446,76 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "eval_service_records_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "eval_service_records_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eval_session_transcripts: {
+        Row: {
+          ai_summary: string | null
+          client_id: string | null
+          consent_given: boolean | null
+          created_at: string | null
+          duration_sec: number | null
+          id: string
+          key_points: Json | null
+          linked_call_log_id: string | null
+          linked_service_record_id: string | null
+          raw_transcript: string | null
+          session_date: string
+          session_type: string
+          staff_id: string
+          transcript: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          ai_summary?: string | null
+          client_id?: string | null
+          consent_given?: boolean | null
+          created_at?: string | null
+          duration_sec?: number | null
+          id?: string
+          key_points?: Json | null
+          linked_call_log_id?: string | null
+          linked_service_record_id?: string | null
+          raw_transcript?: string | null
+          session_date?: string
+          session_type: string
+          staff_id: string
+          transcript?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          ai_summary?: string | null
+          client_id?: string | null
+          consent_given?: boolean | null
+          created_at?: string | null
+          duration_sec?: number | null
+          id?: string
+          key_points?: Json | null
+          linked_call_log_id?: string | null
+          linked_service_record_id?: string | null
+          raw_transcript?: string | null
+          session_date?: string
+          session_type?: string
+          staff_id?: string
+          transcript?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_session_transcripts_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
@@ -1155,6 +1612,75 @@ export type Database = {
           },
         ]
       }
+      hr_business_trips: {
+        Row: {
+          allowance: number
+          created_at: string
+          days: number
+          destination: string
+          employee_id: string
+          end_date: string
+          id: string
+          note: string | null
+          purpose: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          start_date: string
+          status: string
+          transport: string | null
+          updated_at: string
+        }
+        Insert: {
+          allowance?: number
+          created_at?: string
+          days?: number
+          destination: string
+          employee_id: string
+          end_date: string
+          id?: string
+          note?: string | null
+          purpose: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          start_date: string
+          status?: string
+          transport?: string | null
+          updated_at?: string
+        }
+        Update: {
+          allowance?: number
+          created_at?: string
+          days?: number
+          destination?: string
+          employee_id?: string
+          end_date?: string
+          id?: string
+          note?: string | null
+          purpose?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          start_date?: string
+          status?: string
+          transport?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_business_trips_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_business_trips_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hr_careers: {
         Row: {
           created_at: string
@@ -1190,6 +1716,122 @@ export type Database = {
           {
             foreignKeyName: "hr_careers_employee_id_fkey"
             columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_contracts: {
+        Row: {
+          base_salary: number
+          contract_type: string
+          created_at: string
+          department: string
+          employee_id: string
+          employment_type: string
+          end_date: string | null
+          id: string
+          note: string | null
+          position: string
+          signed_at: string | null
+          start_date: string
+          work_hours: number
+        }
+        Insert: {
+          base_salary?: number
+          contract_type?: string
+          created_at?: string
+          department: string
+          employee_id: string
+          employment_type?: string
+          end_date?: string | null
+          id?: string
+          note?: string | null
+          position: string
+          signed_at?: string | null
+          start_date: string
+          work_hours?: number
+        }
+        Update: {
+          base_salary?: number
+          contract_type?: string
+          created_at?: string
+          department?: string
+          employee_id?: string
+          employment_type?: string
+          end_date?: string | null
+          id?: string
+          note?: string | null
+          position?: string
+          signed_at?: string | null
+          start_date?: string
+          work_hours?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_contracts_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_daily_absences: {
+        Row: {
+          created_at: string
+          date: string
+          duration_minutes: number
+          employee_id: string
+          end_time: string | null
+          id: string
+          reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          start_time: string | null
+          status: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          duration_minutes?: number
+          employee_id: string
+          end_time?: string | null
+          id?: string
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          start_time?: string | null
+          status?: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          duration_minutes?: number
+          employee_id?: string
+          end_time?: string | null
+          id?: string
+          reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          start_time?: string | null
+          status?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_daily_absences_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_daily_absences_reviewed_by_fkey"
+            columns: ["reviewed_by"]
             isOneToOne: false
             referencedRelation: "hr_employees"
             referencedColumns: ["id"]
@@ -1243,11 +1885,44 @@ export type Database = {
           },
         ]
       }
+      hr_departments: {
+        Row: {
+          code: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       hr_employees: {
         Row: {
+          bank_account: string | null
+          bank_name: string | null
           clerk_user_id: string | null
           created_at: string
           department: string
+          department_id: string | null
           email: string
           employment_type: string
           hire_date: string
@@ -1257,12 +1932,17 @@ export type Database = {
           name: string
           phone: string | null
           position: string
+          position_id: string | null
+          salary_step_id: string | null
           updated_at: string
         }
         Insert: {
+          bank_account?: string | null
+          bank_name?: string | null
           clerk_user_id?: string | null
           created_at?: string
           department: string
+          department_id?: string | null
           email: string
           employment_type: string
           hire_date: string
@@ -1272,12 +1952,17 @@ export type Database = {
           name: string
           phone?: string | null
           position: string
+          position_id?: string | null
+          salary_step_id?: string | null
           updated_at?: string
         }
         Update: {
+          bank_account?: string | null
+          bank_name?: string | null
           clerk_user_id?: string | null
           created_at?: string
           department?: string
+          department_id?: string | null
           email?: string
           employment_type?: string
           hire_date?: string
@@ -1287,9 +1972,140 @@ export type Database = {
           name?: string
           phone?: string | null
           position?: string
+          position_id?: string | null
+          salary_step_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "hr_employees_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "hr_departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_employees_position_id_fkey"
+            columns: ["position_id"]
+            isOneToOne: false
+            referencedRelation: "hr_positions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_employees_salary_step_id_fkey"
+            columns: ["salary_step_id"]
+            isOneToOne: false
+            referencedRelation: "hr_salary_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_evaluations: {
+        Row: {
+          comment: string | null
+          created_at: string
+          employee_id: string
+          evaluator_id: string | null
+          id: string
+          improvements: string | null
+          period: string
+          rating: string | null
+          score: number | null
+          status: string
+          strengths: string | null
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          employee_id: string
+          evaluator_id?: string | null
+          id?: string
+          improvements?: string | null
+          period?: string
+          rating?: string | null
+          score?: number | null
+          status?: string
+          strengths?: string | null
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          employee_id?: string
+          evaluator_id?: string | null
+          id?: string
+          improvements?: string | null
+          period?: string
+          rating?: string | null
+          score?: number | null
+          status?: string
+          strengths?: string | null
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_evaluations_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_evaluations_evaluator_id_fkey"
+            columns: ["evaluator_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_leave_balances: {
+        Row: {
+          carry_over: number
+          created_at: string
+          employee_id: string
+          entitlement: number
+          id: string
+          leave_type: string
+          updated_at: string
+          used: number
+          year: number
+        }
+        Insert: {
+          carry_over?: number
+          created_at?: string
+          employee_id: string
+          entitlement?: number
+          id?: string
+          leave_type?: string
+          updated_at?: string
+          used?: number
+          year: number
+        }
+        Update: {
+          carry_over?: number
+          created_at?: string
+          employee_id?: string
+          entitlement?: number
+          id?: string
+          leave_type?: string
+          updated_at?: string
+          used?: number
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_leave_balances_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hr_leave_requests: {
         Row: {
@@ -1347,6 +2163,176 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      hr_overtime_records: {
+        Row: {
+          approved: boolean
+          created_at: string
+          date: string
+          employee_id: string
+          holiday_minutes: number
+          id: string
+          night_minutes: number
+          note: string | null
+          overtime_minutes: number
+          regular_minutes: number
+          total_minutes: number
+        }
+        Insert: {
+          approved?: boolean
+          created_at?: string
+          date: string
+          employee_id: string
+          holiday_minutes?: number
+          id?: string
+          night_minutes?: number
+          note?: string | null
+          overtime_minutes?: number
+          regular_minutes?: number
+          total_minutes?: number
+        }
+        Update: {
+          approved?: boolean
+          created_at?: string
+          date?: string
+          employee_id?: string
+          holiday_minutes?: number
+          id?: string
+          night_minutes?: number
+          note?: string | null
+          overtime_minutes?: number
+          regular_minutes?: number
+          total_minutes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_overtime_records_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_pay_group_items: {
+        Row: {
+          group_id: string
+          id: string
+          pay_item_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          pay_item_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          pay_item_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_pay_group_items_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "hr_pay_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_pay_group_items_pay_item_id_fkey"
+            columns: ["pay_item_id"]
+            isOneToOne: false
+            referencedRelation: "hr_pay_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_pay_groups: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
+      hr_pay_items: {
+        Row: {
+          created_at: string
+          fixed_amount: number | null
+          id: string
+          is_active: boolean
+          is_statutory: boolean
+          name: string
+          rate: number | null
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          fixed_amount?: number | null
+          id?: string
+          is_active?: boolean
+          is_statutory?: boolean
+          name: string
+          rate?: number | null
+          type: string
+        }
+        Update: {
+          created_at?: string
+          fixed_amount?: number | null
+          id?: string
+          is_active?: boolean
+          is_statutory?: boolean
+          name?: string
+          rate?: number | null
+          type?: string
+        }
+        Relationships: []
+      }
+      hr_positions: {
+        Row: {
+          code: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          level: number
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          level?: number
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          level?: number
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       hr_salary_grades: {
         Row: {
@@ -1437,6 +2423,216 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      hr_salary_step_history: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          effective_date: string
+          employee_id: string
+          from_step_id: string | null
+          id: string
+          reason: string | null
+          to_step_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          effective_date: string
+          employee_id: string
+          from_step_id?: string | null
+          id?: string
+          reason?: string | null
+          to_step_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          effective_date?: string
+          employee_id?: string
+          from_step_id?: string | null
+          id?: string
+          reason?: string | null
+          to_step_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_salary_step_history_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_salary_step_history_from_step_id_fkey"
+            columns: ["from_step_id"]
+            isOneToOne: false
+            referencedRelation: "hr_salary_steps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_salary_step_history_to_step_id_fkey"
+            columns: ["to_step_id"]
+            isOneToOne: false
+            referencedRelation: "hr_salary_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_salary_steps: {
+        Row: {
+          base_amount: number
+          created_at: string
+          id: string
+          is_active: boolean
+          step_name: string | null
+          step_number: number
+          updated_at: string
+        }
+        Insert: {
+          base_amount?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          step_name?: string | null
+          step_number: number
+          updated_at?: string
+        }
+        Update: {
+          base_amount?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          step_name?: string | null
+          step_number?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      hr_severance_records: {
+        Row: {
+          avg_daily_wage: number
+          created_at: string
+          employee_id: string
+          id: string
+          leave_date: string
+          net_severance: number
+          note: string | null
+          service_years: number
+          severance_pay: number
+          tax_deducted: number
+        }
+        Insert: {
+          avg_daily_wage: number
+          created_at?: string
+          employee_id: string
+          id?: string
+          leave_date: string
+          net_severance: number
+          note?: string | null
+          service_years: number
+          severance_pay: number
+          tax_deducted?: number
+        }
+        Update: {
+          avg_daily_wage?: number
+          created_at?: string
+          employee_id?: string
+          id?: string
+          leave_date?: string
+          net_severance?: number
+          note?: string | null
+          service_years?: number
+          severance_pay?: number
+          tax_deducted?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_severance_records_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_training_attendees: {
+        Row: {
+          attended: boolean
+          created_at: string
+          employee_id: string
+          id: string
+          note: string | null
+          training_id: string
+        }
+        Insert: {
+          attended?: boolean
+          created_at?: string
+          employee_id: string
+          id?: string
+          note?: string | null
+          training_id: string
+        }
+        Update: {
+          attended?: boolean
+          created_at?: string
+          employee_id?: string
+          id?: string
+          note?: string | null
+          training_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_training_attendees_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hr_training_attendees_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "hr_trainings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_trainings: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          end_date: string
+          hours: number
+          id: string
+          provider: string | null
+          start_date: string
+          title: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          end_date: string
+          hours?: number
+          id?: string
+          provider?: string | null
+          start_date: string
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          end_date?: string
+          hours?: number
+          id?: string
+          provider?: string | null
+          start_date?: string
+          title?: string
+        }
+        Relationships: []
       }
       intake_records: {
         Row: {
@@ -1605,6 +2801,7 @@ export type Database = {
       }
       inventory_custom_orders: {
         Row: {
+          application_id: string | null
           approval_id: string | null
           client_id: string
           created_at: string | null
@@ -1618,6 +2815,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          application_id?: string | null
           approval_id?: string | null
           client_id: string
           created_at?: string | null
@@ -1631,6 +2829,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          application_id?: string | null
           approval_id?: string | null
           client_id?: string
           created_at?: string | null
@@ -1644,6 +2843,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "inventory_custom_orders_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "inventory_custom_orders_approval_id_fkey"
             columns: ["approval_id"]
@@ -1752,6 +2958,7 @@ export type Database = {
       }
       inventory_reuse_dispatches: {
         Row: {
+          application_id: string | null
           approval_id: string | null
           client_id: string
           created_at: string | null
@@ -1763,6 +2970,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          application_id?: string | null
           approval_id?: string | null
           client_id: string
           created_at?: string | null
@@ -1774,6 +2982,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          application_id?: string | null
           approval_id?: string | null
           client_id?: string
           created_at?: string | null
@@ -1785,6 +2994,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "inventory_reuse_dispatches_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "inventory_reuse_dispatches_approval_id_fkey"
             columns: ["approval_id"]
@@ -2383,15 +3599,24 @@ export type Database = {
           category_id: string | null
           client_id: string | null
           created_at: string | null
+          education_audience_label: string | null
+          education_audience_type: string | null
+          education_hours: number | null
+          education_title: string | null
+          education_type: string | null
           id: string
           is_web_visible: boolean
           notes: string | null
+          participant_count: number | null
+          reception_method: string | null
           schedule_type: string
           scheduled_date: string
           scheduled_time: string | null
           staff_id: string
           status: string | null
           updated_at: string | null
+          visitor_org_name: string | null
+          visitor_org_type: string | null
         }
         Insert: {
           address?: string | null
@@ -2399,15 +3624,24 @@ export type Database = {
           category_id?: string | null
           client_id?: string | null
           created_at?: string | null
+          education_audience_label?: string | null
+          education_audience_type?: string | null
+          education_hours?: number | null
+          education_title?: string | null
+          education_type?: string | null
           id?: string
           is_web_visible?: boolean
           notes?: string | null
+          participant_count?: number | null
+          reception_method?: string | null
           schedule_type: string
           scheduled_date: string
           scheduled_time?: string | null
           staff_id: string
           status?: string | null
           updated_at?: string | null
+          visitor_org_name?: string | null
+          visitor_org_type?: string | null
         }
         Update: {
           address?: string | null
@@ -2415,15 +3649,24 @@ export type Database = {
           category_id?: string | null
           client_id?: string | null
           created_at?: string | null
+          education_audience_label?: string | null
+          education_audience_type?: string | null
+          education_hours?: number | null
+          education_title?: string | null
+          education_type?: string | null
           id?: string
           is_web_visible?: boolean
           notes?: string | null
+          participant_count?: number | null
+          reception_method?: string | null
           schedule_type?: string
           scheduled_date?: string
           scheduled_time?: string | null
           staff_id?: string
           status?: string | null
           updated_at?: string | null
+          visitor_org_name?: string | null
+          visitor_org_type?: string | null
         }
         Relationships: [
           {
@@ -2630,6 +3873,153 @@ export type Database = {
           },
         ]
       }
+      stats_promotion_activities: {
+        Row: {
+          activity_date: string | null
+          content: string
+          created_at: string | null
+          event_attendees: number | null
+          event_count: number | null
+          event_type: string | null
+          id: string
+          media_count: number | null
+          media_type: string | null
+          notes: string | null
+          other_count: number | null
+          other_times: number | null
+          other_type: string | null
+          promo_material_count: number | null
+          promo_material_type: string | null
+          sort_order: number | null
+          total_count: number | null
+          year: number
+        }
+        Insert: {
+          activity_date?: string | null
+          content: string
+          created_at?: string | null
+          event_attendees?: number | null
+          event_count?: number | null
+          event_type?: string | null
+          id?: string
+          media_count?: number | null
+          media_type?: string | null
+          notes?: string | null
+          other_count?: number | null
+          other_times?: number | null
+          other_type?: string | null
+          promo_material_count?: number | null
+          promo_material_type?: string | null
+          sort_order?: number | null
+          total_count?: number | null
+          year: number
+        }
+        Update: {
+          activity_date?: string | null
+          content?: string
+          created_at?: string | null
+          event_attendees?: number | null
+          event_count?: number | null
+          event_type?: string | null
+          id?: string
+          media_count?: number | null
+          media_type?: string | null
+          notes?: string | null
+          other_count?: number | null
+          other_times?: number | null
+          other_type?: string | null
+          promo_material_count?: number | null
+          promo_material_type?: string | null
+          sort_order?: number | null
+          total_count?: number | null
+          year?: number
+        }
+        Relationships: []
+      }
+      stats_promotion_monthly: {
+        Row: {
+          blog_posts: number | null
+          created_at: string | null
+          facebook_posts: number | null
+          homepage_posts: number | null
+          hp_daily_avg: number | null
+          hp_gallery: number | null
+          hp_gov_support: number | null
+          hp_monthly_avg: number | null
+          hp_notice: number | null
+          hp_online_inquiry: number | null
+          hp_visitor_ratio: number | null
+          hp_visitor_total: number | null
+          id: string
+          ig_follower_ratio: number | null
+          ig_non_follower_ratio: number | null
+          ig_online_inquiry: number | null
+          ig_post: number | null
+          ig_story: number | null
+          ig_top_post: string | null
+          ig_total_views: number | null
+          instagram_posts: number | null
+          kakao_posts: number | null
+          month: number
+          updated_at: string | null
+          year: number
+        }
+        Insert: {
+          blog_posts?: number | null
+          created_at?: string | null
+          facebook_posts?: number | null
+          homepage_posts?: number | null
+          hp_daily_avg?: number | null
+          hp_gallery?: number | null
+          hp_gov_support?: number | null
+          hp_monthly_avg?: number | null
+          hp_notice?: number | null
+          hp_online_inquiry?: number | null
+          hp_visitor_ratio?: number | null
+          hp_visitor_total?: number | null
+          id?: string
+          ig_follower_ratio?: number | null
+          ig_non_follower_ratio?: number | null
+          ig_online_inquiry?: number | null
+          ig_post?: number | null
+          ig_story?: number | null
+          ig_top_post?: string | null
+          ig_total_views?: number | null
+          instagram_posts?: number | null
+          kakao_posts?: number | null
+          month: number
+          updated_at?: string | null
+          year: number
+        }
+        Update: {
+          blog_posts?: number | null
+          created_at?: string | null
+          facebook_posts?: number | null
+          homepage_posts?: number | null
+          hp_daily_avg?: number | null
+          hp_gallery?: number | null
+          hp_gov_support?: number | null
+          hp_monthly_avg?: number | null
+          hp_notice?: number | null
+          hp_online_inquiry?: number | null
+          hp_visitor_ratio?: number | null
+          hp_visitor_total?: number | null
+          id?: string
+          ig_follower_ratio?: number | null
+          ig_non_follower_ratio?: number | null
+          ig_online_inquiry?: number | null
+          ig_post?: number | null
+          ig_story?: number | null
+          ig_top_post?: string | null
+          ig_total_views?: number | null
+          instagram_posts?: number | null
+          kakao_posts?: number | null
+          month?: number
+          updated_at?: string | null
+          year?: number
+        }
+        Relationships: []
+      }
       supplies: {
         Row: {
           category: string | null
@@ -2709,6 +4099,35 @@ export type Database = {
       }
     }
     Views: {
+      eval_grant_assessment_list: {
+        Row: {
+          assessment_month: number | null
+          assessment_year: number | null
+          birth_date: string | null
+          client_id: string | null
+          client_name: string | null
+          created_at: string | null
+          disability_grade: string | null
+          disability_type: string | null
+          evaluation_date: string | null
+          final_result: string | null
+          id: string | null
+          item_categories: string[] | null
+          item_count: number | null
+          referral_org: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_grant_assessments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inventory_dispatch_summary: {
         Row: {
           approval_id: string | null
@@ -2945,7 +4364,11 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      backfill_eval_service_records: { Args: never; Returns: number }
+      sync_eval_service_record: {
+        Args: { p_application_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
@@ -3078,4 +4501,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-
