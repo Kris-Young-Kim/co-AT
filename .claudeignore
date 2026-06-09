@@ -1,0 +1,29 @@
+# Auto-generated / large files — Claude reads on-demand only
+types/database.types.ts
+packages/lib/types/database.types.ts
+packages/types/database.types.ts
+
+# Lockfiles & build artifacts
+pnpm-lock.yaml
+*.tsbuildinfo
+.next/
+node_modules/
+
+# Stale worktrees
+.claude/worktrees/
+
+# Completed plan documents (2000+ lines each — read explicitly when needed)
+docs/superpowers/plans/
+
+# Supabase temp
+supabase/.temp/
+
+# Static assets
+public/
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.ico
+*.woff
+*.woff2
