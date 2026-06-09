@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+﻿export const dynamic = 'force-dynamic'
 
 import type { Metadata } from "next"
 import { getNoticesByCategory } from "@/actions/notice-actions"
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: "보조기기 서비스 사례",
   description: "실제 보조기기 서비스 사례를 확인하세요. 다양한 상황에서의 보조기기 활용 사례를 공유합니다.",
   openGraph: {
-    title: "보조기기 서비스 사례 | GWATC 보조기기센터",
+    title: "보조기기 서비스 사례 | GWATC AX PLATFORM",
     description: "실제 보조기기 서비스 사례를 확인하세요. 다양한 상황에서의 보조기기 활용 사례를 공유합니다.",
     url: `${baseUrl}/community/cases`,
     type: "website",

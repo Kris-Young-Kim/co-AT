@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+﻿export const dynamic = 'force-dynamic'
 
 import type { Metadata } from "next"
 import { Breadcrumb } from "@/components/common/breadcrumb"
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: "자료실",
   description: "보조기기 관련 영상자료 및 문서자료를 제공합니다.",
   openGraph: {
-    title: "자료실 | GWATC 보조기기센터",
+    title: "자료실 | GWATC AX PLATFORM",
     description: "보조기기 관련 영상자료 및 문서자료를 제공합니다.",
     url: `${baseUrl}/info/resources`,
     type: "website",

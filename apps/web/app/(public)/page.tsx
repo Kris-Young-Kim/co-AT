@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import { HomeHeroSection } from "@/components/features/landing/HomeHeroSection"
 import { HomeQuickMenuGrid } from "@/components/features/landing/HomeQuickMenuGrid"
 import { HomePageClientSections } from "@/components/features/landing/HomePageClientSections"
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: "홈",
   description: "강원특별자치도 보조기기센터 홈페이지입니다. 상담, 체험, 맞춤형 지원, 사후관리, 교육홍보 등 5대 핵심 서비스를 확인하고 신청하실 수 있습니다.",
   openGraph: {
-    title: "GWATC 보조기기센터 | 강원특별자치도 통합 케어 플랫폼",
+    title: "GWATC AX PLATFORM | 강원특별자치도 통합 관리 플랫폼",
     description: "강원특별자치도 보조기기센터에서 제공하는 상담, 체험, 맞춤형 지원, 사후관리, 교육홍보 등 5대 핵심 서비스를 신청하고 관리할 수 있는 통합 플랫폼입니다.",
     url: baseUrl,
     type: "website",
@@ -39,7 +39,7 @@ export default async function Home() {
   const organizationStructuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "GWATC 보조기기센터",
+    name: "GWATC AX PLATFORM",
     url: baseUrl,
     description: "강원특별자치도 보조기기센터에서 제공하는 상담, 체험, 맞춤형 지원, 사후관리, 교육홍보 등 5대 핵심 서비스",
     address: {

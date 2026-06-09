@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import { Breadcrumb } from "@/components/common/breadcrumb"
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "사후관리",
   description: "보조기기의 지속적인 사후관리 서비스를 제공합니다. 소독/세척, 점검/수리, 재사용 서비스를 확인하세요.",
   openGraph: {
-    title: "사후관리 | GWATC 보조기기센터",
+    title: "사후관리 | GWATC AX PLATFORM",
     description: "보조기기의 지속적인 사후관리 서비스를 제공합니다. 소독/세척, 점검/수리, 재사용 서비스를 확인하세요.",
     url: `${baseUrl}/services/aftercare`,
     type: "website",

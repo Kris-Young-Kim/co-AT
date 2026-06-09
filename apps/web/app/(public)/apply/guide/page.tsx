@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import Link from "next/link"
 import { Breadcrumb } from "@/components/common/breadcrumb"
 import { Phone, Mail, Printer, Globe } from "lucide-react"
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "서비스 이용 안내",
   description: "강원특별자치도 보조기기센터 서비스 이용 방법과 신청 절차를 안내합니다.",
   openGraph: {
-    title: "서비스 이용 안내 | GWATC 보조기기센터",
+    title: "서비스 이용 안내 | GWATC AX PLATFORM",
     description: "강원특별자치도 보조기기센터 서비스 이용 방법과 신청 절차를 안내합니다.",
     url: `${baseUrl}/apply/guide`,
     type: "website",

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { ClerkProvider } from "@/components/providers/clerk-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
@@ -6,13 +6,13 @@ import { ClientOnlyProviders } from "@/components/layout/client-only-providers";
 import "./globals.css";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app";
-const siteName = "GWATC 보조기기센터";
+const siteName = "GWATC AX PLATFORM";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "GWATC 보조기기센터 | 강원특별자치도 통합 케어 플랫폼",
-    template: "%s | GWATC 보조기기센터",
+    default: "GWATC AX PLATFORM | 강원특별자치도 통합 관리 플랫폼",
+    template: "%s | GWATC AX PLATFORM",
   },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -45,9 +45,9 @@ export const metadata: Metadata = {
     "재활보조기기",
     "GWATC",
   ],
-  authors: [{ name: "GWATC 보조기기센터" }],
-  creator: "GWATC 보조기기센터",
-  publisher: "GWATC 보조기기센터",
+  authors: [{ name: "GWATC AX PLATFORM" }],
+  creator: "GWATC AX PLATFORM",
+  publisher: "GWATC AX PLATFORM",
   formatDetection: {
     email: false,
     address: false,
@@ -58,20 +58,20 @@ export const metadata: Metadata = {
     locale: "ko_KR",
     url: baseUrl,
     siteName,
-    title: "GWATC 보조기기센터 | 강원특별자치도 통합 케어 플랫폼",
+    title: "GWATC AX PLATFORM | 강원특별자치도 통합 관리 플랫폼",
     description: "강원특별자치도 보조기기센터에서 제공하는 상담, 체험, 맞춤형 지원, 사후관리, 교육홍보 등 5대 핵심 서비스를 신청하고 관리할 수 있는 통합 플랫폼입니다.",
     images: [
       {
         url: `${baseUrl}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "GWATC 보조기기센터",
+        alt: "GWATC AX PLATFORM",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GWATC 보조기기센터 | 강원특별자치도 통합 케어 플랫폼",
+    title: "GWATC AX PLATFORM | 강원특별자치도 통합 관리 플랫폼",
     description: "강원특별자치도 보조기기센터에서 제공하는 상담, 체험, 맞춤형 지원, 사후관리, 교육홍보 등 5대 핵심 서비스를 신청하고 관리할 수 있는 통합 플랫폼입니다.",
     images: [`${baseUrl}/opengraph-image`],
   },

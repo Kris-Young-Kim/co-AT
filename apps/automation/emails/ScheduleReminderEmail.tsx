@@ -1,4 +1,4 @@
-import {
+﻿import {
   Html, Head, Body, Container, Heading, Text, Hr
 } from '@react-email/components'
 
@@ -29,7 +29,7 @@ export function ScheduleReminderEmail({
             {clientName && <>대상: {clientName}</>}
           </Text>
           <Hr />
-          <Text style={{ fontSize: 12, color: '#6b7280' }}>본 메일은 GWATC 보조공학센터 자동 발송 메일입니다.</Text>
+          <Text style={{ fontSize: 12, color: '#6b7280' }}>본 메일은 GWATC AX PLATFORM 자동 발송 메일입니다.</Text>
         </Container>
       </Body>
     </Html>

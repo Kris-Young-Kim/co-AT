@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import { Breadcrumb } from "@/components/common/breadcrumb"
 import { PublicDeviceList } from "@/components/features/inventory/PublicDeviceList"
 
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "보유 보조기기",
   description: "강원특별자치도 보조기기센터에서 보유하고 있는 다양한 보조기기 목록을 확인하세요. 실시간으로 대여 가능 여부와 상태를 확인할 수 있습니다.",
   openGraph: {
-    title: "보유 보조기기 | GWATC 보조기기센터",
+    title: "보유 보조기기 | GWATC AX PLATFORM",
     description: "강원특별자치도 보조기기센터에서 보유하고 있는 다양한 보조기기 목록을 확인하세요. 실시간으로 대여 가능 여부와 상태를 확인할 수 있습니다.",
     url: `${baseUrl}/info/devices`,
     type: "website",

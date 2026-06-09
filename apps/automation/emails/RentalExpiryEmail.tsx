@@ -1,4 +1,4 @@
-import {
+﻿import {
   Html, Head, Body, Container, Heading, Text, Hr
 } from '@react-email/components'
 
@@ -25,7 +25,7 @@ export function RentalExpiryEmail({ deviceName, daysLeft, expiryDate, clientName
           <Text>보조기기 <strong>{deviceName}</strong>의 대여 기간이 <strong>{urgency}({expiryDate})</strong> 만료됩니다.</Text>
           <Text>반납 처리 또는 연장이 필요한 경우 확인해 주세요.</Text>
           <Hr />
-          <Text style={{ fontSize: 12, color: '#6b7280' }}>본 메일은 GWATC 보조공학센터 자동 발송 메일입니다.</Text>
+          <Text style={{ fontSize: 12, color: '#6b7280' }}>본 메일은 GWATC AX PLATFORM 자동 발송 메일입니다.</Text>
         </Container>
       </Body>
     </Html>

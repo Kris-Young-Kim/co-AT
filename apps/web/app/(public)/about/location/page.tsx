@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import { Breadcrumb } from "@/components/common/breadcrumb"
 import { LocationMapClient } from "@/components/features/location/LocationMapClient"
 import { Train, Bus, Car, MapPin } from "lucide-react"
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "찾아오시는 길",
   description: "강원특별자치도 보조기기센터 위치와 오시는 길을 안내합니다. 대중교통 및 자가용 이용 방법을 확인하세요.",
   openGraph: {
-    title: "찾아오시는 길 | GWATC 보조기기센터",
+    title: "찾아오시는 길 | GWATC AX PLATFORM",
     description: "강원특별자치도 보조기기센터 위치와 오시는 길을 안내합니다. 대중교통 및 자가용 이용 방법을 확인하세요.",
     url: `${baseUrl}/about/location`,
     type: "website",

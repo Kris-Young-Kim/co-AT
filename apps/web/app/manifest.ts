@@ -1,8 +1,8 @@
-import type { MetadataRoute } from 'next'
+﻿import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'GWATC 보조기기센터',
+    name: 'GWATC AX PLATFORM',
     short_name: 'GWATC',
     description: '강원특별자치도 보조기기센터 통합 플랫폼',
     start_url: '/',

@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import { Breadcrumb } from "@/components/common/breadcrumb"
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app"
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "보조기기 서비스",
   description: "서비스 대상자에게 맞는 적합한 보조기기를 확보하고 보조기기 사용 효율성을 높이기 위해 상담에서 사후관리까지 one-stop으로 진행하는 보조기기 종합 서비스입니다.",
   openGraph: {
-    title: "보조기기 서비스 | GWATC 보조기기센터",
+    title: "보조기기 서비스 | GWATC AX PLATFORM",
     description: "서비스 대상자에게 맞는 적합한 보조기기를 확보하고 보조기기 사용 효율성을 높이기 위해 상담에서 사후관리까지 one-stop으로 진행하는 보조기기 종합 서비스입니다.",
     url: `${baseUrl}/services/device-service`,
     type: "website",

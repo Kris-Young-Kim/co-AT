@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import Link from "next/link"
 import { Breadcrumb } from "@/components/common/breadcrumb"
 import { FileText } from "lucide-react"
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "정부지원사업안내",
   description: "보조기기 관련 정부 지원사업 정보를 확인하세요. 각종 지원사업의 신청 방법과 자격 요건을 안내합니다.",
   openGraph: {
-    title: "정부지원사업안내 | GWATC 보조기기센터",
+    title: "정부지원사업안내 | GWATC AX PLATFORM",
     description: "보조기기 관련 정부 지원사업 정보를 확인하세요. 각종 지원사업의 신청 방법과 자격 요건을 안내합니다.",
     url: `${baseUrl}/info/government-support`,
     type: "website",

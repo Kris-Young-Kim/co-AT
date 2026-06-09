@@ -1,4 +1,4 @@
-# GWATC 보조공학센터 — Claude Code 가이드
+﻿# GWATC AX PLATFORM — Claude Code 가이드
 
 ## 스택
 Next.js 16 · React 19 · TypeScript · Tailwind + shadcn/ui · Clerk · Supabase · Turborepo · Vercel · Cloudflare · Sentry

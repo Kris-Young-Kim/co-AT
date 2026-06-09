@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import { Breadcrumb } from "@/components/common/breadcrumb"
 import { Phone } from "lucide-react"
 
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "조직도",
   description: "강원특별자치도 보조기기센터의 조직 구조와 부서별 역할을 확인하세요.",
   openGraph: {
-    title: "조직도 | GWATC 보조기기센터",
+    title: "조직도 | GWATC AX PLATFORM",
     description: "강원특별자치도 보조기기센터의 조직 구조와 부서별 역할을 확인하세요.",
     url: `${baseUrl}/about/organization`,
     type: "website",

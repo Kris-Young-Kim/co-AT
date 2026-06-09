@@ -1,4 +1,4 @@
-{
+﻿{
   "$schema": "https://repomix.com/schemas/latest/schema.json",
   "output": {
     "filePath": "repomix-output.md",
@@ -7,7 +7,7 @@
     "truncateBase64": true,
     "showLineNumbers": false,
     "topFilesLength": 15,
-    "headerText": "GWATC 보조공학센터 Co-AT 모노레포\n\n스택: Next.js 16 · React 19 · TypeScript · Tailwind · Clerk · Supabase · Turborepo · Vercel\n앱: web · admin · eval · inventory · stats · automation · hr · approval · finance\n공유 패키지: @co-at/ui · @co-at/lib · @co-at/auth · @co-at/types\n공유 서버액션: /actions/\nDB 네임스페이스: eval_* · inventory_* · hr_* · approval_* · finance_*\n인증: Clerk (role: ADMIN/MANAGER/STAFF)"
+    "headerText": "GWATC AX PLATFORM Co-AT 모노레포\n\n스택: Next.js 16 · React 19 · TypeScript · Tailwind · Clerk · Supabase · Turborepo · Vercel\n앱: web · admin · eval · inventory · stats · automation · hr · approval · finance\n공유 패키지: @co-at/ui · @co-at/lib · @co-at/auth · @co-at/types\n공유 서버액션: /actions/\nDB 네임스페이스: eval_* · inventory_* · hr_* · approval_* · finance_*\n인증: Clerk (role: ADMIN/MANAGER/STAFF)"
   },
   "include": [
     "actions/**/*.ts",

@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import Link from "next/link"
 import { Breadcrumb } from "@/components/common/breadcrumb"
 
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "주요사업",
   description: "강원특별자치도 보조기기센터의 5대 핵심 사업을 소개합니다. 상담 및 정보제공, 맞춤형 지원, 사후관리, 교육/홍보 서비스를 확인하세요.",
   openGraph: {
-    title: "주요사업 | GWATC 보조기기센터",
+    title: "주요사업 | GWATC AX PLATFORM",
     description: "강원특별자치도 보조기기센터의 5대 핵심 사업을 소개합니다. 상담 및 정보제공, 맞춤형 지원, 사후관리, 교육/홍보 서비스를 확인하세요.",
     url: `${baseUrl}/services`,
     type: "website",
