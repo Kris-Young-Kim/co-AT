@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Users, BarChart3, LogOut, Phone, RefreshCw, Clock, FileEdit, GraduationCap, Gift } from 'lucide-react'
+import { Users, BarChart3, LogOut, Phone, RefreshCw, Clock, FileEdit, GraduationCap, Gift, FileText, BarChart2 } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 
 const NAV_ITEMS = [
@@ -13,6 +13,8 @@ const NAV_ITEMS = [
   { href: '/service-records', label: '서비스 기록', icon: FileEdit },
   { href: '/education', label: '교육 이력', icon: GraduationCap },
   { href: '/grant-eval', label: '교부사업 평가', icon: Gift },
+  { href: '/grant-eval/referrals', label: '접수공문 관리', icon: FileText },
+  { href: '/grant-eval/statistics', label: '교부사업 통계', icon: BarChart2 },
   { href: '/migration', label: 'Sheets 동기화', icon: RefreshCw },
 ] as const
 
