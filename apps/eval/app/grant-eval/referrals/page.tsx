@@ -1,5 +1,5 @@
 import { listGrantReferralDocs } from '@/actions/grant-referral-actions'
-import { ReferralDocForm } from '@/components/grant-eval/ReferralDocForm'
+import { ReferralDocForm } from '@/eval/components/grant-eval/ReferralDocForm'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 

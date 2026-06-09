@@ -266,54 +266,54 @@
 
 | 파일 | 내용 | 상태 |
 |------|------|------|
-| `077_create_grant_eval_tables.sql` | `eval_grant_assessments`, `eval_grant_items`, `eval_grant_referral_docs`, `eval_item_checklist_templates` 4개 테이블 + 뷰 + 파이프라인 트리거 | ⬜ |
+| `077_create_grant_eval_tables.sql` | `eval_grant_assessments`, `eval_grant_items`, `eval_grant_referral_docs`, `eval_item_checklist_templates` 4개 테이블 + 뷰 + 파이프라인 트리거 | ✅ |
 
 #### F-1. 기반 구축
 
 | 기능 | 상태 |
 |------|------|
-| DB 마이그레이션 077 적용 + `pnpm gen:types` | ⬜ |
-| Server Actions — `grant-assessment-actions.ts` (CRUD) | ⬜ |
-| Server Actions — `grant-item-actions.ts` (CRUD, 최대 3품목 검증) | ⬜ |
-| Server Actions — `checklist-template-actions.ts` (품목별 체크리스트 로드) | ⬜ |
-| Server Actions — `grant-referral-actions.ts` (접수공문 CRUD) | ⬜ |
+| DB 마이그레이션 077 적용 + `pnpm gen:types` | ✅ |
+| Server Actions — `grant-assessment-actions.ts` (CRUD) | ✅ |
+| Server Actions — `grant-item-actions.ts` (CRUD, 최대 3품목 검증) | ✅ |
+| Server Actions — `checklist-template-actions.ts` (품목별 체크리스트 로드) | ✅ |
+| Server Actions — `grant-referral-actions.ts` (접수공문 CRUD) | ✅ |
 
 #### F-2. 공통 컴포넌트
 
 | 기능 | 파일 | 상태 |
 |------|------|------|
-| 점수 선택 UI (2/4/6/8/10점 라디오) | `ScoreSlider.tsx` | ⬜ |
-| 품목별 체크리스트 동적 렌더링 | `ChecklistSection.tsx` | ⬜ |
-| 품목 1개 카드 (점수 + 체크리스트 + 의견) | `GrantItemCard.tsx` | ⬜ |
+| 점수 선택 UI (2/4/6/8/10점 라디오) | `ScoreSelector.tsx` | ✅ |
+| 품목별 체크리스트 동적 렌더링 | `ChecklistSection.tsx` | ✅ |
+| 품목 1개 카드 (점수 + 체크리스트 + 의견) | `GrantItemCard.tsx` | ✅ |
 
 #### F-3. 평가 상세 탭 (5단계 URL searchParam 방식)
 
 | 탭 | URL | 기능 | 상태 |
 |----|-----|------|------|
-| 기본정보 | `?tab=basic` | 클라이언트 정보(자동 로드), 기교부 실적, 평가자 정보 | ⬜ |
-| 신청품목/사용자실태 | `?tab=items` | 1~3개 품목 입력 (카테고리·활용계획·사용환경·사용경험) | ⬜ |
-| 적정성 평가 | `?tab=suitability` | 품목별 5개 항목 점수(2~10), 총점 자동계산 | ⬜ |
-| 종합의견 | `?tab=opinion` | 품목별 기본확인사항(체크리스트) + 종합의견 + 변경/취소 사유 | ⬜ |
-| 평가결과 | `?tab=result` | 최종 결과, 지원금액, PDF 출력 버튼 | ⬜ |
+| 기본정보 | `?tab=basic` | 클라이언트 정보(자동 로드), 기교부 실적, 평가자 정보 | ✅ |
+| 신청품목/사용자실태 | `?tab=items` | 1~3개 품목 입력 (카테고리·활용계획·사용환경·사용경험) | ✅ |
+| 적정성 평가 | `?tab=suitability` | 품목별 5개 항목 점수(2~10), 총점 자동계산 | ✅ |
+| 종합의견 | `?tab=opinion` | 품목별 기본확인사항(체크리스트) + 종합의견 + 변경/취소 사유 | ✅ |
+| 평가결과 | `?tab=result` | 최종 결과, 지원금액, PDF 출력 버튼 | ✅ |
 
 #### F-4. 라우트 페이지
 
 | 라우트 | 기능 | 상태 |
 |--------|------|------|
-| `/grant-eval` | 목록 (연도·기관 필터, 결과 현황) | ⬜ |
-| `/grant-eval/new` | 새 평가 등록 (클라이언트 검색 → 기본정보 입력) | ⬜ |
-| `/grant-eval/[id]?tab=...` | 평가 상세 (5탭) | ⬜ |
-| `/grant-eval/referrals` | 접수공문 목록·등록 | ⬜ |
-| `/grant-eval/statistics` | 의뢰현황통계 대시보드 (기관별·결과별 집계) | ⬜ |
-| `/print/grant-eval/[id]` | 평가기록지 PDF 출력 | ⬜ |
+| `/grant-eval` | 목록 (연도·기관 필터, 결과 현황) | ✅ |
+| `/grant-eval/new` | 새 평가 등록 (클라이언트 검색 → 기본정보 입력) | ✅ |
+| `/grant-eval/[id]?tab=...` | 평가 상세 (5탭) | ✅ |
+| `/grant-eval/referrals` | 접수공문 목록·등록 | ✅ |
+| `/grant-eval/statistics` | 의뢰현황통계 대시보드 (기관별·결과별 집계) | ✅ |
+| `/print/grant-eval/[id]` | 평가기록지 PDF 출력 | ✅ |
 
 #### F-5. 연동
 
 | 기능 | 상태 |
 |------|------|
-| EvalSidebar에 "교부사업 평가" 메뉴 추가 | ⬜ |
+| EvalSidebar에 "교부사업 평가" 메뉴 추가 | ✅ |
 | stats 앱 — `eval_service_records.is_grant` 트리거 자동 반영 | ⬜ |
-| 품목별 체크리스트 초기 데이터 SEED (12개 품목 카테고리) | ⬜ |
+| 품목별 체크리스트 초기 데이터 SEED (12개 품목 카테고리) | ✅ |
 
 ---
 
