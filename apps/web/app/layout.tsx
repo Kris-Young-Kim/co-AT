@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+﻿import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { ClerkProvider } from "@/components/providers/clerk-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
@@ -7,6 +7,15 @@ import "./globals.css";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app";
 const siteName = "GWATC AX PLATFORM";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: "cover",
+  themeColor: "#4338ca",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -19,13 +28,6 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "default",
     title: "GWATC",
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-    viewportFit: "cover",
   },
   other: {
     "mobile-web-app-capable": "yes",
@@ -112,7 +114,6 @@ export default function RootLayout({
         <html lang="ko" suppressHydrationWarning>
           <head>
             <link rel="apple-touch-icon" href="/icons/apple-touch-icon.svg" />
-            <meta name="theme-color" content="#4338ca" />
           </head>
           <body suppressHydrationWarning>
             {children}
