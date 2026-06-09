@@ -1,4 +1,4 @@
-# Public CRUD + Barcode Management Implementation Plan
+﻿# Public CRUD + Barcode Management Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -263,7 +263,7 @@ export const metadata: Metadata = {
   title: "공지사항",
   description: "강원특별자치도 보조기기센터의 공지사항을 확인하실 수 있습니다.",
   openGraph: {
-    title: "공지사항 | GWATC 보조기기센터",
+    title: "공지사항 | GWATC AX PLATFORM",
     description: "강원특별자치도 보조기기센터의 공지사항을 확인하실 수 있습니다.",
     url: `${baseUrl}/notices`,
     type: "website",
@@ -306,7 +306,7 @@ export const metadata: Metadata = {
   title: "지원사업",
   description: "강원특별자치도 보조기기센터의 지원사업 정보를 확인하실 수 있습니다.",
   openGraph: {
-    title: "지원사업 | GWATC 보조기기센터",
+    title: "지원사업 | GWATC AX PLATFORM",
     description: "강원특별자치도 보조기기센터의 지원사업 정보를 확인하실 수 있습니다.",
     url: `${baseUrl}/notices/support`,
     type: "website",
@@ -355,7 +355,7 @@ export const metadata: Metadata = {
   title: "활동갤러리",
   description: "강원특별자치도 보조기기센터의 다양한 활동 소식을 확인하세요. 교육, 홍보, 서비스 제공 활동을 만나보세요.",
   openGraph: {
-    title: "활동갤러리 | GWATC 보조기기센터",
+    title: "활동갤러리 | GWATC AX PLATFORM",
     description: "강원특별자치도 보조기기센터의 다양한 활동 소식을 확인하세요.",
     url: `${baseUrl}/community/gallery`,
     type: "website",
@@ -404,7 +404,7 @@ export const metadata: Metadata = {
   title: "보조기기 서비스 사례",
   description: "실제 보조기기 서비스 사례를 확인하세요. 다양한 상황에서의 보조기기 활용 사례를 공유합니다.",
   openGraph: {
-    title: "보조기기 서비스 사례 | GWATC 보조기기센터",
+    title: "보조기기 서비스 사례 | GWATC AX PLATFORM",
     description: "실제 보조기기 서비스 사례를 확인하세요.",
     url: `${baseUrl}/community/cases`,
     type: "website",
@@ -1297,7 +1297,7 @@ export const metadata: Metadata = {
   title: "자료실",
   description: "보조기기 관련 영상자료 및 문서자료를 제공합니다.",
   openGraph: {
-    title: "자료실 | GWATC 보조기기센터",
+    title: "자료실 | GWATC AX PLATFORM",
     description: "보조기기 관련 영상자료 및 문서자료를 제공합니다.",
     url: `${baseUrl}/info/resources`,
     type: "website",

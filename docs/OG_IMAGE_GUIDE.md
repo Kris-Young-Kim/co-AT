@@ -1,4 +1,4 @@
-# 🖼️ OG 이미지 생성 가이드
+﻿# 🖼️ OG 이미지 생성 가이드
 
 > **Open Graph 이미지 생성 및 설정 가이드**
 
@@ -57,9 +57,9 @@ Open Graph (OG) 이미지는 소셜 미디어(페이스북, 트위터, 카카오
 │                                     │
 │         [로고]                      │
 │                                     │
-│    GWATC 보조기기센터              │
+│    GWATC AX PLATFORM              │
 │                                     │
-│  강원특별자치도 통합 케어 플랫폼    │
+│  강원특별자치도 통합 관리 플랫폼    │
 │                                     │
 │         [배경 이미지]               │
 │                                     │
@@ -147,7 +147,7 @@ export const metadata: Metadata = {
         url: `${baseUrl}/og-image.jpg`,
         width: 1200,
         height: 630,
-        alt: "GWATC 보조기기센터",
+        alt: "GWATC AX PLATFORM",
       },
     ],
   },
@@ -164,7 +164,7 @@ export const metadata: Metadata = {
         url: `${baseUrl}/og/services.jpg`,
         width: 1200,
         height: 630,
-        alt: "주요사업 | GWATC 보조기기센터",
+        alt: "주요사업 | GWATC AX PLATFORM",
       },
     ],
   },
@@ -230,8 +230,8 @@ export const metadata: Metadata = {
 
 ### 텍스트 내용
 
-- **메인 제목**: "GWATC 보조기기센터"
-- **서브 제목**: "강원특별자치도 통합 케어 플랫폼"
+- **메인 제목**: "GWATC AX PLATFORM"
+- **서브 제목**: "강원특별자치도 통합 관리 플랫폼"
 - **추가 정보**: "상담 · 체험 · 맞춤형 지원 · 사후관리 · 교육/홍보"
 
 ### 이미지 요소

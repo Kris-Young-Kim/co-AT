@@ -1,4 +1,4 @@
-# GWATC 보조공학센터 모노레포 전체 아키텍처 설계
+﻿# GWATC AX PLATFORM 모노레포 전체 아키텍처 설계
 
 **작성일:** 2026-05-01
 **도메인:** gwatc.cloud (추후 gwatc.or.kr 전환, 시기 미정)

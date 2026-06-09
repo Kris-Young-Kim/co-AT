@@ -1,5 +1,5 @@
-📂 Project Co-AT: Directory Structure (DIR.md)
-프로젝트: GWATC 통합 케어 플랫폼
+﻿📂 Project Co-AT: Directory Structure (DIR.md)
+프로젝트: GWATC 통합 관리 플랫폼
 원칙: 기능 중심(Feature-First) 설계 & 관심사 분리(Separation of Concerns)
 설명: 유지보수와 협업을 위한 폴더 구조 및 파일 배치 가이드
 

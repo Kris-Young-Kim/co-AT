@@ -1,4 +1,4 @@
-# Phase 4 Automation App Implementation Plan
+﻿# Phase 4 Automation App Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -275,7 +275,7 @@ export function RentalExpiryEmail({ deviceName, daysLeft, expiryDate }: Props) {
           <Text>보조기기 <strong>{deviceName}</strong>의 대여 기간이 <strong>{urgency}({expiryDate})</strong> 만료됩니다.</Text>
           <Text>반납이 필요한 경우 담당자에게 연락해 주세요.</Text>
           <Hr />
-          <Text style={{ fontSize: 12, color: '#6b7280' }}>본 메일은 GWATC 보조공학센터 자동 발송 메일입니다.</Text>
+          <Text style={{ fontSize: 12, color: '#6b7280' }}>본 메일은 GWATC AX PLATFORM 자동 발송 메일입니다.</Text>
         </Container>
       </Body>
     </Html>
@@ -326,7 +326,7 @@ export function ScheduleReminderEmail({
           </Text>
           {(addrStr || clientStr) && <Text>{addrStr}{clientStr}</Text>}
           <Hr />
-          <Text style={{ fontSize: 12, color: '#6b7280' }}>본 메일은 GWATC 보조공학센터 자동 발송 메일입니다.</Text>
+          <Text style={{ fontSize: 12, color: '#6b7280' }}>본 메일은 GWATC AX PLATFORM 자동 발송 메일입니다.</Text>
         </Container>
       </Body>
     </Html>

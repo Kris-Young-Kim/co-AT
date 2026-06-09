@@ -1,7 +1,7 @@
-📝 Co-AT: Product Requirements Document (v3.0)
+﻿📝 Co-AT: Product Requirements Document (v3.0)
 Refined with Unified Development Guidelines
 프로젝트 정보 내용
-프로젝트명 GWATC 통합 케어 플랫폼 (Co-AT)
+프로젝트명 GWATC 통합 관리 플랫폼 (Co-AT)
 버전 v3.0 (Boilerplate Applied)
 작성일 2025년 12월 06일
 기술 스택 Next.js 15, Clerk, Supabase, React Query, Zustand

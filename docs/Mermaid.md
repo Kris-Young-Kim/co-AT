@@ -1,5 +1,5 @@
-📊 Project Co-AT: Visual Documentation (Mermaid.md)
-프로젝트: GWATC 통합 케어 플랫폼 (Co-AT)
+﻿📊 Project Co-AT: Visual Documentation (Mermaid.md)
+프로젝트: GWATC 통합 관리 플랫폼 (Co-AT)
 버전: 3.0 (Architecture Locked)
 설명: 시스템 아키텍처, 데이터베이스 모델링, 핵심 로직 시각화
 작성일: 2025. 12. 06.

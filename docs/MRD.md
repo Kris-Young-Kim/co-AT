@@ -1,4 +1,4 @@
-📄 Co-AT: GWATC 통합 케어 플랫폼 MRD
+﻿📄 Co-AT: GWATC 통합 관리 플랫폼 MRD
 Market Requirements Document (시장 요구사항 정의서)
 프로젝트 정보	내용
 프로젝트명	Co-AT (Collaboration for Assistive Technology)

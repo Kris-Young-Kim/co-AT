@@ -1,13 +1,13 @@
----
+﻿---
 name: co-at-reference
-description: GWATC 보조기기센터 Co-AT 프로젝트의 구조, 컨벤션, 기술 스택을 안내합니다. 이 코드베이스에서 작업할 때 참조하세요.
+description: GWATC AX PLATFORM Co-AT 프로젝트의 구조, 컨벤션, 기술 스택을 안내합니다. 이 코드베이스에서 작업할 때 참조하세요.
 ---
 
 # Co-AT 프로젝트 레퍼런스
 
 ## 프로젝트 개요
 
-- **이름**: Co-AT (GWATC 통합 케어 플랫폼)
+- **이름**: Co-AT (GWATC 통합 관리 플랫폼)
 - **목적**: 강원특별자치도 보조기기센터의 5대 핵심 사업(상담, 체험, 맞춤형, 사후관리, 교육홍보) 관리
 - **원칙**: 기능 중심(Feature-First) 설계, 관심사 분리(Separation of Concerns)
 
