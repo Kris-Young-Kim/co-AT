@@ -821,6 +821,35 @@
 - [x] **inventory** — 대여 만료 Vercel Cron 알림 (D-7/3/0)
 - [x] **stats** — 전년 동기 대비 차트
 
+### DB 정리 (기술 부채)
+
+> 2026-06-10 분석 완료. 아래 항목은 기능 개발 여유 시 정리.
+
+#### 레거시 테이블 삭제 검토 (0행 + 기능 대체됨)
+
+| 테이블 | 대체 테이블 | 비고 |
+|--------|-------------|------|
+| `service_logs` | `eval_service_records` | applications 기반 구버전 |
+| `applications` | `clients` | 0행, 설계 전환 후 미사용 |
+| `equipment` | `inventory` | 0행, 용도 불명 |
+| `custom_makes` | `inventory_custom_orders` | 동일 기능 재구현됨 |
+| `custom_make_progress` | `inventory_custom_orders` | 동일 |
+| `rentals` | inventory 앱에서 재구현 예정 | 0행 |
+| `schedules` | — | 0행 (schedule_categories만 18행 존재) |
+| `regulations` | — | 0행, 활용 계획 없음 |
+| `client_voc` | — | 0행 |
+| `meeting_minutes` | — | 0행 |
+| `resources` | — | 0행 |
+| `notice_reads` | — | 0행 |
+
+> ⚠️ `applications`는 `intake_records`, `domain_assessments`, `process_logs`가 FK로 참조 중 — 삭제 전 해당 3개 테이블도 함께 정리 필요
+
+#### 마이그레이션 역추출 완료 (078)
+- `intake_records`, `domain_assessments`, `process_logs` — applications 기반 평가 워크플로우 (0행)
+- `supplies`, `supply_transactions` — 소모품 재고 관리 (0행)
+
+---
+
 ### 1차 집중 — 낮은 우선순위
 
 - [ ] **web** — PWA 오프라인 지원
