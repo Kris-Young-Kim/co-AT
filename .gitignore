@@ -72,3 +72,11 @@ next-env.d.ts
 
 # Turborepo
 .turbo
+
+# PWA generated files (next-pwa / workbox)
+apps/web/public/sw.js
+apps/web/public/sw.js.map
+apps/web/public/workbox-*.js
+apps/web/public/workbox-*.js.map
+apps/web/public/fallback-*.js
+apps/web/public/fallback-*.js.map

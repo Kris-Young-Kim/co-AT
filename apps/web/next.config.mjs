@@ -1,4 +1,33 @@
 import { withSentryConfig } from "@sentry/nextjs"
+import withPWAInit from "@ducanh2912/next-pwa"
+
+const withPWA = withPWAInit({
+  dest: "public",
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  reloadOnOnline: true,
+  disable: process.env.NODE_ENV === "development",
+  workboxOptions: {
+    disableDevLogs: true,
+    runtimeCaching: [
+      {
+        urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
+        handler: "NetworkFirst",
+        options: { cacheName: "supabase-cache", expiration: { maxEntries: 32, maxAgeSeconds: 60 * 60 } },
+      },
+      {
+        urlPattern: /\/_next\/static\/.*/i,
+        handler: "CacheFirst",
+        options: { cacheName: "static-assets", expiration: { maxEntries: 128, maxAgeSeconds: 60 * 60 * 24 * 30 } },
+      },
+      {
+        urlPattern: /\/_next\/image\?.*/i,
+        handler: "StaleWhileRevalidate",
+        options: { cacheName: "next-image", expiration: { maxEntries: 64, maxAgeSeconds: 60 * 60 * 24 } },
+      },
+    ],
+  },
+})
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -59,7 +88,7 @@ const nextConfig = {
   },
 };
 
-export default withSentryConfig(nextConfig, {
+export default withSentryConfig(withPWA(nextConfig), {
   org: process.env.SENTRY_ORG || "",
   project: process.env.SENTRY_PROJECT || "",
   authToken: process.env.SENTRY_AUTH_TOKEN,

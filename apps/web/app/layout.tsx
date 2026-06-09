@@ -14,6 +14,24 @@ export const metadata: Metadata = {
     default: "GWATC 보조기기센터 | 강원특별자치도 통합 케어 플랫폼",
     template: "%s | GWATC 보조기기센터",
   },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "GWATC",
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+    viewportFit: "cover",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+    "msapplication-TileColor": "#4338ca",
+    "msapplication-tap-highlight": "no",
+  },
   description: "강원특별자치도 보조기기센터에서 제공하는 상담, 체험, 맞춤형 지원, 사후관리, 교육홍보 등 5대 핵심 서비스를 신청하고 관리할 수 있는 통합 플랫폼입니다.",
   keywords: [
     "보조기기센터",
@@ -92,6 +110,10 @@ export default function RootLayout({
     <ClerkProvider>
       <QueryProvider>
         <html lang="ko" suppressHydrationWarning>
+          <head>
+            <link rel="apple-touch-icon" href="/icons/apple-touch-icon.svg" />
+            <meta name="theme-color" content="#4338ca" />
+          </head>
           <body suppressHydrationWarning>
             {children}
             <ClientOnlyProviders />
