@@ -1,10 +1,15 @@
 import { getGrantAssessmentById } from '@/actions/grant-assessment-actions'
 import { getClientById } from '@/actions/client-actions'
+import { getChecklistTemplates } from '@/actions/checklist-template-actions'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Printer } from 'lucide-react'
 import { GrantAssessmentBasicForm } from '@/eval/components/grant-eval/GrantAssessmentBasicForm'
 import { GrantItemsForm } from '@/eval/components/grant-eval/GrantItemsForm'
+import { GrantSuitabilityForm } from '@/eval/components/grant-eval/GrantSuitabilityForm'
+import { GrantOpinionForm } from '@/eval/components/grant-eval/GrantOpinionForm'
+import { GrantResultForm } from '@/eval/components/grant-eval/GrantResultForm'
+import type { ChecklistItem } from '@/eval/components/grant-eval/ChecklistSection'
 
 const TABS = [
   { key: 'basic', label: '기본정보' },
@@ -39,6 +44,17 @@ export default async function GrantAssessmentDetailPage({ params, searchParams }
   const assessment = result.assessment
   const clientResult = await getClientById(assessment.client_id)
   const client = clientResult.success ? clientResult.client : null
+
+  let checklistMap: Record<string, ChecklistItem[]> = {}
+  if (tab === 'opinion') {
+    const entries = await Promise.all(
+      assessment.items.map(async (item) => {
+        const r = await getChecklistTemplates(item.item_category)
+        return [item.item_category, r.templates ?? []] as [string, ChecklistItem[]]
+      })
+    )
+    checklistMap = Object.fromEntries(entries)
+  }
 
   return (
     <div className="p-8">
@@ -99,10 +115,14 @@ export default async function GrantAssessmentDetailPage({ params, searchParams }
       {tab === 'items' && (
         <GrantItemsForm assessmentId={id} items={assessment.items} />
       )}
-      {(tab === 'suitability' || tab === 'opinion' || tab === 'result') && (
-        <div className="text-sm text-gray-400 py-8 text-center">
-          이 탭은 다음 단계에서 구현됩니다
-        </div>
+      {tab === 'suitability' && (
+        <GrantSuitabilityForm assessmentId={id} items={assessment.items} />
+      )}
+      {tab === 'opinion' && (
+        <GrantOpinionForm assessmentId={id} assessment={assessment} checklistMap={checklistMap} />
+      )}
+      {tab === 'result' && (
+        <GrantResultForm assessmentId={id} assessment={assessment} />
       )}
     </div>
   )
