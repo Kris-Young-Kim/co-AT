@@ -854,3 +854,110 @@ export async function getClientActiveServices(clientId: string): Promise<{
   }
 }
 
+export async function getActiveServiceBadgesByClientIds(
+  clientIds: string[]
+): Promise<{ success: boolean; data?: Record<string, ActiveService[]>; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+    const uniqueIds = [...new Set(clientIds)]
+    if (uniqueIds.length === 0) return { success: true, data: {} }
+
+    const supabase = createAdminClient()
+
+    const [grantResult, rentalResult, customResult, appResult] = await Promise.all([
+      (supabase as any)
+        .from('eval_grant_assessments')
+        .select('id, client_id, status, created_at, referral_org')
+        .in('client_id', uniqueIds)
+        .in('status', ['draft', 'submitted']),
+      (supabase as any)
+        .from('rentals')
+        .select('id, client_id, status, rental_start_date')
+        .in('client_id', uniqueIds)
+        .in('status', ['rented', 'overdue']),
+      (supabase as any)
+        .from('custom_makes')
+        .select('id, client_id, progress_status, created_at')
+        .in('client_id', uniqueIds)
+        .not('progress_status', 'in', '("completed","cancelled")'),
+      (supabase as any)
+        .from('applications')
+        .select('id, client_id, category, status, created_at')
+        .in('client_id', uniqueIds)
+        .in('status', ['접수', '배정', '진행중']),
+    ])
+
+    const data: Record<string, ActiveService[]> = {}
+
+    const add = (clientId: string, service: ActiveService) => {
+      if (!data[clientId]) data[clientId] = []
+      data[clientId].push(service)
+    }
+
+    const GRANT_STATUS: Record<string, string> = { draft: '작성 중', submitted: '제출 완료' }
+    ;(grantResult.data ?? []).forEach((r: any) => {
+      add(r.client_id, {
+        id: r.id,
+        service_type: 'grant_eval',
+        label: '교부사업 적합성 평가',
+        status: r.status,
+        status_label: GRANT_STATUS[r.status] ?? r.status,
+        started_at: r.created_at,
+        detail_url: `/grant-eval/${r.id}`,
+        metadata: r.referral_org ? { referral_org: r.referral_org } : undefined,
+      })
+    })
+
+    const RENTAL_STATUS: Record<string, string> = { rented: '대여 중', overdue: '연체' }
+    ;(rentalResult.data ?? []).forEach((r: any) => {
+      add(r.client_id, {
+        id: r.id,
+        service_type: 'rental',
+        label: '대여',
+        status: r.status,
+        status_label: RENTAL_STATUS[r.status] ?? r.status,
+        started_at: r.rental_start_date,
+        detail_url: `/rentals/${r.id}`,
+      })
+    })
+
+    const CUSTOM_STATUS: Record<string, string> = {
+      design: '설계', manufacturing: '제작', inspection: '검수', delivery: '납품',
+    }
+    ;(customResult.data ?? []).forEach((r: any) => {
+      add(r.client_id, {
+        id: r.id,
+        service_type: 'custom_make',
+        label: '맞춤제작',
+        status: r.progress_status,
+        status_label: CUSTOM_STATUS[r.progress_status] ?? r.progress_status,
+        started_at: r.created_at,
+        detail_url: `/custom-makes/${r.id}`,
+      })
+    })
+
+    const APP_CATEGORY: Record<string, string> = {
+      consult: '상담', experience: '체험', custom: '맞춤형',
+      aftercare: '사후관리', education: '교육/홍보',
+    }
+    ;(appResult.data ?? []).forEach((r: any) => {
+      add(r.client_id, {
+        id: r.id,
+        service_type: 'application',
+        label: APP_CATEGORY[r.category] ?? r.category ?? '기타',
+        status: r.status,
+        status_label: r.status,
+        started_at: r.created_at,
+        detail_url: `/clients/${r.client_id}/applications/${r.id}`,
+      })
+    })
+
+    return { success: true, data }
+  } catch (e) {
+    console.error('getActiveServiceBadgesByClientIds:', e)
+    return { success: false, error: '예상치 못한 오류가 발생했습니다' }
+  }
+}
+
