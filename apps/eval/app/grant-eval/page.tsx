@@ -1,4 +1,6 @@
 import { listGrantAssessments } from '@/actions/grant-assessment-actions'
+import { getActiveServiceBadgesByClientIds } from '@/actions/client-actions'
+import { ClientServiceBadges } from '@/eval/components/eval/ClientServiceBadges'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import GrantEvalKanban from '@/eval/components/grant-eval/GrantEvalKanban'
@@ -31,6 +33,9 @@ export default async function GrantEvalListPage({ searchParams }: Props) {
 
   const result = await listGrantAssessments({ year, referralOrg: org, status })
   const assessments = result.success ? result.assessments ?? [] : []
+
+  const badgeResult = await getActiveServiceBadgesByClientIds(assessments.map(a => a.client_id))
+  const badgeMap = badgeResult.success ? badgeResult.data ?? {} : {}
 
   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i)
 
@@ -119,12 +124,13 @@ export default async function GrantEvalListPage({ searchParams }: Props) {
               <th className="px-4 py-3 text-left font-medium text-gray-600">신청품목</th>
               <th className="px-4 py-3 text-left font-medium text-gray-600">결과</th>
               <th className="px-4 py-3 text-left font-medium text-gray-600">상태</th>
+              <th className="px-4 py-3 text-left font-medium text-gray-600">진행 중 서비스</th>
             </tr>
           </thead>
           <tbody className="divide-y">
             {assessments.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={8} className="px-4 py-8 text-center text-gray-400">
                   {year}년 교부사업 평가 내역이 없습니다
                 </td>
               </tr>
@@ -160,6 +166,12 @@ export default async function GrantEvalListPage({ searchParams }: Props) {
                   </td>
                   <td className="px-4 py-3">
                     <span className="text-xs text-gray-500">{STATUS_LABEL[a.status] ?? a.status}</span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <ClientServiceBadges
+                      services={badgeMap[a.client_id] ?? []}
+                      excludeType="grant_eval"
+                    />
                   </td>
                 </tr>
               ))
