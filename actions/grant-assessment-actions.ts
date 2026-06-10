@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
+import { upsertGrantItem } from "./grant-item-actions"
 
 export interface GrantAssessmentListItem {
   id: string
@@ -260,6 +261,64 @@ export async function submitGrantAssessment(id: string): Promise<{ success: bool
     return { success: true }
   } catch (e) {
     console.error("submitGrantAssessment:", e)
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
+
+export interface ExtractedGrantFields {
+  referral_org?: string | null
+  general_opinion?: string | null
+  prior_grant_records?: Array<{ year: number; agency: string; item: string }> | null
+  items: Array<{
+    item_order: number
+    item_category?: string
+    use_plan?: string | null
+    use_location?: string | null
+    use_location_detail?: string | null
+    usage_experience?: boolean | null
+    self_usage_possible?: boolean | null
+    support_person?: string | null
+    item_opinion?: string | null
+  }>
+}
+
+export async function applyInterviewExtract(
+  assessmentId: string,
+  fields: ExtractedGrantFields
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+
+    const assessmentUpdates: UpdateGrantAssessmentInput = {}
+    if (fields.referral_org != null) assessmentUpdates.referral_org = fields.referral_org
+    if (fields.general_opinion != null) assessmentUpdates.general_opinion = fields.general_opinion
+    if (fields.prior_grant_records != null) assessmentUpdates.prior_grant_records = fields.prior_grant_records
+
+    if (Object.keys(assessmentUpdates).length > 0) {
+      const result = await updateGrantAssessment(assessmentId, assessmentUpdates)
+      if (!result.success) return { success: false, error: result.error }
+    }
+
+    for (const item of fields.items) {
+      const itemInput: Parameters<typeof upsertGrantItem>[2] = {}
+      if (item.item_category != null) itemInput.item_category = item.item_category
+      if (item.use_plan != null) itemInput.use_plan = item.use_plan
+      if (item.use_location != null) itemInput.use_location = item.use_location
+      if (item.use_location_detail != null) itemInput.use_location_detail = item.use_location_detail
+      if (item.usage_experience != null) itemInput.usage_experience = item.usage_experience
+      if (item.self_usage_possible != null) itemInput.self_usage_possible = item.self_usage_possible
+      if (item.support_person != null) itemInput.support_person = item.support_person
+      if (item.item_opinion != null) itemInput.item_opinion = item.item_opinion
+
+      const result = await upsertGrantItem(assessmentId, item.item_order, itemInput)
+      if (!result.success) return { success: false, error: result.error }
+    }
+
+    revalidatePath(`/grant-eval/${assessmentId}`)
+    return { success: true }
+  } catch (e) {
+    console.error("applyInterviewExtract:", e)
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }
   }
 }
