@@ -39,9 +39,24 @@ export async function POST(req: Request): Promise<NextResponse> {
       return NextResponse.json({ error: "audio 및 assessmentId는 필수입니다" }, { status: 400 })
     }
 
-    const existingItems: Array<{ item_order: number; item_category: string }> = existingItemsRaw
-      ? JSON.parse(existingItemsRaw)
-      : []
+    let existingItems: Array<{ item_order: number; item_category: string }> = []
+    if (existingItemsRaw) {
+      try {
+        const parsed = JSON.parse(existingItemsRaw)
+        if (Array.isArray(parsed)) {
+          existingItems = parsed.filter(
+            (x) => typeof x === 'object' && x !== null && typeof x.item_order === 'number'
+          )
+        }
+      } catch {
+        return NextResponse.json({ error: "existingItems 형식이 올바르지 않습니다" }, { status: 400 })
+      }
+    }
+
+    const MAX_BYTES = 25 * 1024 * 1024 // 25 MB
+    if (audioFile.size > MAX_BYTES) {
+      return NextResponse.json({ error: "파일 크기는 25MB 이하여야 합니다" }, { status: 413 })
+    }
 
     const base64Audio = Buffer.from(await audioFile.arrayBuffer()).toString("base64")
 
