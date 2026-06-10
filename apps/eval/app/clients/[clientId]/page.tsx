@@ -1,6 +1,7 @@
-import { getClientById } from '@/actions/client-actions'
+import { getClientById, getClientActiveServices } from '@/actions/client-actions'
 import { getApplicationsByClientId } from '@/actions/application-actions'
 import { ApplicationListCard } from '@/eval/components/eval/ApplicationListCard'
+import { ClientActiveServices } from '@/eval/components/eval/ClientActiveServices'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, AlertCircle } from 'lucide-react'
@@ -12,18 +13,20 @@ interface ClientDetailPageProps {
 export default async function ClientDetailPage({ params }: ClientDetailPageProps) {
   const { clientId } = await params
 
-  const [clientResult, appsResult] = await Promise.all([
+  const [clientResult, appsResult, activeResult] = await Promise.all([
     getClientById(clientId),
     getApplicationsByClientId(clientId),
+    getClientActiveServices(clientId),
   ])
 
   if (!clientResult.success || !clientResult.client) notFound()
 
   const client = clientResult.client
   const applications = appsResult.success ? appsResult.applications ?? [] : []
+  const activeServices = activeResult.success ? activeResult.services ?? [] : []
 
   return (
-    <div className="p-8">
+    <div className="p-8 max-w-4xl">
       <Link href="/clients" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-6">
         <ArrowLeft className="h-4 w-4" />
         목록으로
@@ -45,7 +48,8 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
         </div>
       )}
 
-      <div className="border rounded-lg p-6 mb-8 bg-white">
+      {/* 기본 정보 */}
+      <div className="border rounded-lg p-6 mb-6 bg-white">
         <h1 className="text-xl font-bold text-gray-900 mb-4">{client.name}</h1>
         <dl className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div>
@@ -69,9 +73,23 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
         </dl>
       </div>
 
+      {/* 진행 중 서비스 */}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-3">
+          <h2 className="text-base font-semibold text-gray-900">진행 중 서비스</h2>
+          {activeServices.length > 0 && (
+            <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 text-blue-700 text-xs font-bold">
+              {activeServices.length}
+            </span>
+          )}
+        </div>
+        <ClientActiveServices services={activeServices} />
+      </div>
+
+      {/* 신청 이력 */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
-          신청서 ({applications.length}건)
+        <h2 className="text-base font-semibold text-gray-900 mb-3">
+          신청 이력 ({applications.length}건)
         </h2>
         <ApplicationListCard applications={applications} clientId={clientId} />
       </div>
