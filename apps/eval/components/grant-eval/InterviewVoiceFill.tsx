@@ -42,16 +42,20 @@ export function InterviewVoiceFill({ assessmentId, existingItems }: Props) {
 
   async function startRecording() {
     setError(null)
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    const mr = new MediaRecorder(stream)
-    chunksRef.current = []
-    mr.ondataavailable = (e) => {
-      if (e.data.size > 0) chunksRef.current.push(e.data)
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mr = new MediaRecorder(stream)
+      chunksRef.current = []
+      mr.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data)
+      }
+      mr.onstop = handleRecordingStop
+      mediaRecorderRef.current = mr
+      mr.start()
+      setStatus('recording')
+    } catch {
+      setError('마이크 접근 권한이 필요합니다. 브라우저 설정을 확인해주세요.')
     }
-    mr.onstop = handleRecordingStop
-    mediaRecorderRef.current = mr
-    mr.start()
-    setStatus('recording')
   }
 
   function stopRecording() {
@@ -62,23 +66,27 @@ export function InterviewVoiceFill({ assessmentId, existingItems }: Props) {
   async function handleRecordingStop() {
     setStatus('uploading')
     const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
+    try {
+      const fd = new FormData()
+      fd.append('audio', blob, 'interview.webm')
+      fd.append('assessmentId', assessmentId)
+      fd.append('existingItems', JSON.stringify(existingItems))
 
-    const fd = new FormData()
-    fd.append('audio', blob, 'interview.webm')
-    fd.append('assessmentId', assessmentId)
-    fd.append('existingItems', JSON.stringify(existingItems))
-
-    const res = await fetch('/api/interview-extract', { method: 'POST', body: fd })
-    if (!res.ok) {
+      const res = await fetch('/api/interview-extract', { method: 'POST', body: fd })
+      if (!res.ok) {
+        const data = await res.json()
+        setError(data.error ?? '추출에 실패했습니다')
+        setStatus('idle')
+        return
+      }
       const data = await res.json()
-      setError(data.error ?? '추출에 실패했습니다')
+      setTranscript(data.transcript ?? '')
+      setFields(data.fields)
+      setStatus('preview')
+    } catch {
+      setError('네트워크 오류가 발생했습니다. 다시 시도해주세요.')
       setStatus('idle')
-      return
     }
-    const data = await res.json()
-    setTranscript(data.transcript ?? '')
-    setFields(data.fields)
-    setStatus('preview')
   }
 
   function handleApply() {
