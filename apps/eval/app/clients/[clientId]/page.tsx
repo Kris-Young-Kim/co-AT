@@ -105,7 +105,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
             <span className="ml-2 text-sm font-normal text-gray-400">({historyItems.length}건)</span>
           )}
         </h2>
-        <ClientTimeline items={historyItems} clientId={clientId} />
+        <ClientTimeline items={historyItems} />
       </div>
     </div>
   )

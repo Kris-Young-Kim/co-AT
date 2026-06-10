@@ -406,13 +406,7 @@ export async function getClientHistory(clientId: string): Promise<{
     }
 
     // 3. 서비스 로그 이력 (applications를 통해 조회)
-    // 먼저 해당 클라이언트의 applications를 조회
-    const { data: clientApplications } = await supabase
-      .from("applications")
-      .select("id")
-      .eq("client_id", clientId)
-
-    const applicationIds = clientApplications?.map((app: { id: string }) => app.id) || []
+    const applicationIds = applications?.map((app: { id: string }) => app.id) ?? []
     let serviceLogs: any[] = []
 
     if (applicationIds.length > 0) {
@@ -430,18 +424,26 @@ export async function getClientHistory(clientId: string): Promise<{
     }
 
     // 4. 교부사업 평가 이력
-    const { data: grantAssessments } = await (supabase as any)
+    const { data: grantAssessments, error: grantError } = await (supabase as any)
       .from('eval_grant_assessments')
       .select('id, status, created_at, evaluation_date')
       .eq('client_id', clientId)
       .order('created_at', { ascending: false })
 
+    if (grantError) {
+      console.error("교부사업 평가 이력 조회 실패:", grantError)
+    }
+
     // 5. 서비스 기록 이력
-    const { data: serviceRecords } = await (supabase as any)
+    const { data: serviceRecords, error: serviceRecordError } = await (supabase as any)
       .from('eval_service_records')
       .select('id, received_at, service_category, service_major_category, consultation_date, created_at')
       .eq('client_id', clientId)
       .order('received_at', { ascending: false })
+
+    if (serviceRecordError) {
+      console.error("서비스 기록 이력 조회 실패:", serviceRecordError)
+    }
 
     // 모든 이력을 하나의 배열로 통합
     const history: ClientHistoryItem[] = []
@@ -558,8 +560,8 @@ export async function getClientHistory(clientId: string): Promise<{
 
     // 날짜순으로 정렬 (최신순)
     history.sort((a, b) => {
-      const dateA = new Date(a.date).getTime()
-      const dateB = new Date(b.date).getTime()
+      const dateA = a.date ? new Date(a.date).getTime() : 0
+      const dateB = b.date ? new Date(b.date).getTime() : 0
       return dateB - dateA
     })
 

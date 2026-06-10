@@ -2,7 +2,6 @@ import type { ClientHistoryItem } from '@/actions/client-actions'
 
 interface Props {
   items: ClientHistoryItem[]
-  clientId: string
 }
 
 const TYPE_CONFIG: Record<ClientHistoryItem['type'], { label: string; color: string; dot: string }> = {
@@ -33,7 +32,7 @@ function formatDate(dateStr: string): string {
   }
 }
 
-export function ClientTimeline({ items, clientId }: Props) {
+export function ClientTimeline({ items }: Props) {
   if (items.length === 0) {
     return (
       <div className="text-center py-8 text-sm text-gray-400 border rounded-lg bg-gray-50">
