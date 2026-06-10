@@ -312,7 +312,7 @@
 | 기능 | 상태 |
 |------|------|
 | EvalSidebar에 "교부사업 평가" 메뉴 추가 | ✅ |
-| stats 앱 — `eval_service_records.is_grant` 트리거 자동 반영 | ⬜ |
+| stats 앱 — `eval_service_records.is_grant` 트리거 자동 반영 | ✅ |
 | 품목별 체크리스트 초기 데이터 SEED (12개 품목 카테고리) | ✅ |
 
 ---

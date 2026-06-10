@@ -11,14 +11,27 @@ interface BusinessPageProps {
 const DOMAINS = ['WC','ADL','S','SP','EC','CA','L','AAC','AM'] as const
 type Domain = typeof DOMAINS[number]
 
-const SERVICE_ROWS = [
-  { key: 'rental',       label: '대여' },
-  { key: 'custom_make',  label: '보조기기 맞춤 제작 지원' },
-  { key: 'assessment',   label: '교부사업 맞춤형 평가지원' },
-  { key: 'cleaning',     label: '보조기기 소독 및 세척' },
-  { key: 'repair',       label: '보조기기 점검 및 수리' },
-  { key: 'reuse',        label: '보조기기 재사용 지원' },
-]
+const SERVICE_FLAGS = [
+  { flag: 'is_rental',      label: '대여' },
+  { flag: 'is_custom_make', label: '보조기기 맞춤 제작 지원' },
+  { flag: 'is_grant',       label: '교부사업 맞춤형 평가지원' },
+  { flag: 'is_cleaning',    label: '보조기기 소독 및 세척' },
+  { flag: 'is_repair',      label: '보조기기 점검 및 수리' },
+  { flag: 'is_reuse',       label: '보조기기 재사용 지원' },
+] as const
+
+type ServiceFlag = typeof SERVICE_FLAGS[number]['flag']
+
+type ServiceRecord = {
+  client_id: string | null
+  service_area: string | null
+  is_rental: boolean | null
+  is_custom_make: boolean | null
+  is_grant: boolean | null
+  is_cleaning: boolean | null
+  is_repair: boolean | null
+  is_reuse: boolean | null
+}
 
 export default async function BusinessPage({ searchParams }: BusinessPageProps) {
   const params = await searchParams
@@ -29,17 +42,25 @@ export default async function BusinessPage({ searchParams }: BusinessPageProps) 
 
   const supabase = createAdminClient()
   const { data } = await supabase
-    .from('applications')
-    .select('sub_category, client_id, status')
-    .gte('created_at', `${year}-01-01`)
-    .lte('created_at', `${year}-12-31`)
+    .from('eval_service_records')
+    .select('client_id, service_area, is_rental, is_custom_make, is_grant, is_cleaning, is_repair, is_reuse')
+    .eq('application_year', year)
 
-  const apps = data ?? []
+  const records = (data ?? []) as ServiceRecord[]
 
-  const rows: DomainRow[] = SERVICE_ROWS.map(({ key, label }) => {
-    const filtered = apps.filter(a => a.sub_category === key)
+  const rows: DomainRow[] = SERVICE_FLAGS.map(({ flag, label }) => {
+    const filtered = records.filter(r => r[flag as ServiceFlag] === true)
+
     const byDomain: Partial<Record<Domain, number>> = {}
-    const uniqueClients = new Set(filtered.map(a => a.client_id).filter(Boolean)).size
+    for (const d of DOMAINS) {
+      const count = filtered.filter(r => r.service_area === d).length
+      if (count > 0) byDomain[d] = count
+    }
+
+    const uniqueClients = new Set(
+      filtered.map(r => r.client_id).filter((id): id is string => id !== null)
+    ).size
+
     return {
       label,
       total: filtered.length,
