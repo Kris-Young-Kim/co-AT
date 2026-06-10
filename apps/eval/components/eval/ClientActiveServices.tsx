@@ -39,7 +39,7 @@ export function ClientActiveServices({ services }: Props) {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {services.map((svc) => {
-        const Icon = SERVICE_ICONS[svc.service_type]
+        const Icon = SERVICE_ICONS[svc.service_type] ?? ClipboardList
         const colorClass = STATUS_COLORS[svc.status] ?? 'bg-gray-100 text-gray-600'
         return (
           <Link
