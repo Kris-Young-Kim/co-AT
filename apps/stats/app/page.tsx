@@ -2,8 +2,10 @@ import { getStatsSummary } from '@/actions/stats-actions'
 import { getAnnualTarget } from '@/actions/annual-target-actions'
 import { getCallLogMonthlyCount } from '@/actions/call-log-actions'
 import { getSatisfactionSummary } from '@/actions/satisfaction-actions'
+import { getIPPASummary } from '@/actions/ippa-stats-actions'
 import { AchievementTable } from '@/stats/components/stats/AchievementTable'
 import { EvalScoreWidget } from '@/stats/components/stats/EvalScoreWidget'
+import { IPPAWidget } from '@/stats/components/stats/IPPAWidget'
 import { YearSelector } from '@/stats/components/stats/YearSelector'
 import Link from 'next/link'
 
@@ -15,17 +17,19 @@ export default async function StatsDashboardPage({ searchParams }: DashboardPage
   const params = await searchParams
   const year = parseInt(params.year ?? String(new Date().getFullYear()))
 
-  const [summaryResult, targetResult, callResult, satisfactionResult] = await Promise.all([
+  const [summaryResult, targetResult, callResult, satisfactionResult, ippaResult] = await Promise.all([
     getStatsSummary(year),
     getAnnualTarget(year),
     getCallLogMonthlyCount(year),
     getSatisfactionSummary(year),
+    getIPPASummary(year),
   ])
 
   const summary = summaryResult.success ? summaryResult.summary : null
   const target = targetResult.success ? targetResult.target ?? null : null
   const callTotal = callResult.success ? callResult.total ?? 0 : 0
   const satisfaction = satisfactionResult.success ? satisfactionResult.summary : null
+  const ippaSummary = ippaResult.success ? ippaResult.summary : null
   const bs = summary?.businessSummary
 
   const actual = {
@@ -98,6 +102,9 @@ export default async function StatsDashboardPage({ searchParams }: DashboardPage
               />
             )}
           </div>
+
+          {/* K-IPPA 기능성과 위젯 */}
+          <IPPAWidget summary={ippaSummary} year={year} />
         </div>
       )}
     </div>
