@@ -42,6 +42,84 @@ function OutcomeDisplay({ score }: { score: number | null }) {
   )
 }
 
+function IPPARadarChart({ items }: { items: IPPAItem[] }) {
+  const n = items.length
+  if (n < 3 || items.every((it) => it.post_score === null)) return null
+
+  const cx = 100, cy = 100, maxR = 72, size = 200
+
+  function toPoints(scores: (number | null)[]) {
+    return scores
+      .map((s, i) => {
+        const angle = (2 * Math.PI * i) / n - Math.PI / 2
+        const r = ((s ?? 0) / 5) * maxR
+        return `${(cx + r * Math.cos(angle)).toFixed(1)},${(cy + r * Math.sin(angle)).toFixed(1)}`
+      })
+      .join(' ')
+  }
+
+  return (
+    <div className="mt-3 flex justify-center">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        {/* Grid circles */}
+        {[1, 2, 3, 4, 5].map((level) => (
+          <circle
+            key={level}
+            cx={cx} cy={cy}
+            r={(level / 5) * maxR}
+            fill="none" stroke={level === 5 ? '#e5e7eb' : '#f3f4f6'} strokeWidth="1"
+          />
+        ))}
+
+        {/* Axis lines */}
+        {Array.from({ length: n }).map((_, i) => {
+          const angle = (2 * Math.PI * i) / n - Math.PI / 2
+          return (
+            <line
+              key={i}
+              x1={cx} y1={cy}
+              x2={(cx + maxR * Math.cos(angle)).toFixed(1)}
+              y2={(cy + maxR * Math.sin(angle)).toFixed(1)}
+              stroke="#e5e7eb" strokeWidth="1"
+            />
+          )
+        })}
+
+        {/* Pre polygon (orange) */}
+        <polygon
+          points={toPoints(items.map((it) => it.pre_score))}
+          fill="rgba(251,146,60,0.15)" stroke="#f97316" strokeWidth="1.5" strokeLinejoin="round"
+        />
+
+        {/* Post polygon (green) */}
+        <polygon
+          points={toPoints(items.map((it) => it.post_score))}
+          fill="rgba(34,197,94,0.2)" stroke="#22c55e" strokeWidth="1.5" strokeLinejoin="round"
+        />
+
+        {/* Axis labels */}
+        {items.map((item, i) => {
+          const angle = (2 * Math.PI * i) / n - Math.PI / 2
+          const lx = cx + (maxR + 15) * Math.cos(angle)
+          const ly = cy + (maxR + 15) * Math.sin(angle)
+          const label = item.problem.length > 6 ? item.problem.slice(0, 5) + '…' : item.problem
+          return (
+            <text key={i} x={lx.toFixed(1)} y={ly.toFixed(1)} textAnchor="middle" dominantBaseline="middle" fontSize="8" fill="#9ca3af">
+              {label}
+            </text>
+          )
+        })}
+
+        {/* Legend */}
+        <rect x={52} y={187} width={8} height={8} fill="rgba(251,146,60,0.4)" stroke="#f97316" strokeWidth="1" />
+        <text x={63} y={191} fontSize="8" fill="#6b7280" dominantBaseline="middle">사전</text>
+        <rect x={88} y={187} width={8} height={8} fill="rgba(34,197,94,0.4)" stroke="#22c55e" strokeWidth="1" />
+        <text x={99} y={191} fontSize="8" fill="#6b7280" dominantBaseline="middle">사후</text>
+      </svg>
+    </div>
+  )
+}
+
 function IPPACard({
   assessment,
   onDelete,
@@ -222,6 +300,11 @@ function IPPACard({
             </form>
           )}
         </div>
+      )}
+
+      {/* Radar chart for completed assessments */}
+      {assessment.status === 'completed' && (
+        <IPPARadarChart items={assessment.items} />
       )}
 
       {assessment.notes && (
