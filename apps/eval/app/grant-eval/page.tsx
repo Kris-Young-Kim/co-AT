@@ -52,6 +52,7 @@ export default async function GrantEvalListPage({ searchParams }: Props) {
 
       {/* 필터 */}
       <form method="GET" className="flex gap-3 mb-6 flex-wrap">
+        <input type="hidden" name="view" value={view} />
         <select
           name="year"
           defaultValue={year}

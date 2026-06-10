@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { GrantAssessmentListItem } from '@/actions/grant-assessment-actions'
+import type { GrantAssessmentListItem } from '@/actions/grant-assessment-actions'
 
 interface Props {
   assessments: GrantAssessmentListItem[]
