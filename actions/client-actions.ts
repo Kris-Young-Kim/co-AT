@@ -22,7 +22,7 @@ export interface ClientSearchParams {
 
 export interface ClientHistoryItem {
   id: string
-  type: "application" | "schedule" | "service_log"
+  type: "application" | "schedule" | "service_log" | "grant_assessment" | "service_record"
   date: string
   title: string
   description: string | null
@@ -429,6 +429,20 @@ export async function getClientHistory(clientId: string): Promise<{
       }
     }
 
+    // 4. 교부사업 평가 이력
+    const { data: grantAssessments } = await (supabase as any)
+      .from('eval_grant_assessments')
+      .select('id, status, created_at, evaluation_date')
+      .eq('client_id', clientId)
+      .order('created_at', { ascending: false })
+
+    // 5. 서비스 기록 이력
+    const { data: serviceRecords } = await (supabase as any)
+      .from('eval_service_records')
+      .select('id, received_at, service_category, service_major_category, consultation_date, created_at')
+      .eq('client_id', clientId)
+      .order('received_at', { ascending: false })
+
     // 모든 이력을 하나의 배열로 통합
     const history: ClientHistoryItem[] = []
 
@@ -511,6 +525,34 @@ export async function getClientHistory(clientId: string): Promise<{
         date: log.service_date || log.created_at || "",
         title: typeName,
         description: areaName,
+      })
+    })
+
+    // 교부사업 평가 이력 추가
+    const GRANT_STATUS_MAP: Record<string, string> = { draft: '작성 중', submitted: '제출 완료', completed: '완료' }
+    ;(grantAssessments ?? []).forEach((r: any) => {
+      history.push({
+        id: r.id,
+        type: 'grant_assessment',
+        date: r.evaluation_date ?? r.created_at ?? '',
+        title: '교부사업 적합성 평가',
+        description: GRANT_STATUS_MAP[r.status] ?? r.status,
+        status: r.status,
+        category: 'grant_eval',
+      })
+    })
+
+    // 서비스 기록 이력 추가
+    ;(serviceRecords ?? []).forEach((r: any) => {
+      const label = [r.service_major_category, r.service_category].filter(Boolean).join(' > ')
+      history.push({
+        id: r.id,
+        type: 'service_record',
+        date: r.consultation_date ?? r.received_at ?? r.created_at ?? '',
+        title: '서비스 기록',
+        description: label || null,
+        status: null,
+        category: r.service_major_category ?? null,
       })
     })
 

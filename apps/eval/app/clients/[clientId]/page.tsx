@@ -1,7 +1,8 @@
-import { getClientById, getClientActiveServices } from '@/actions/client-actions'
+import { getClientById, getClientActiveServices, getClientHistory } from '@/actions/client-actions'
 import { getApplicationsByClientId } from '@/actions/application-actions'
 import { ApplicationListCard } from '@/eval/components/eval/ApplicationListCard'
 import { ClientActiveServices } from '@/eval/components/eval/ClientActiveServices'
+import { ClientTimeline } from '@/eval/components/eval/ClientTimeline'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, AlertCircle } from 'lucide-react'
@@ -13,10 +14,11 @@ interface ClientDetailPageProps {
 export default async function ClientDetailPage({ params }: ClientDetailPageProps) {
   const { clientId } = await params
 
-  const [clientResult, appsResult, activeResult] = await Promise.all([
+  const [clientResult, appsResult, activeResult, historyResult] = await Promise.all([
     getClientById(clientId),
     getApplicationsByClientId(clientId),
     getClientActiveServices(clientId),
+    getClientHistory(clientId),
   ])
 
   if (!clientResult.success || !clientResult.client) notFound()
@@ -24,6 +26,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const client = clientResult.client
   const applications = appsResult.success ? appsResult.applications ?? [] : []
   const activeServices = activeResult.success ? activeResult.services ?? [] : []
+  const historyItems = historyResult.success ? historyResult.history ?? [] : []
 
   return (
     <div className="p-8 max-w-4xl">
@@ -92,6 +95,17 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
           신청 이력 ({applications.length}건)
         </h2>
         <ApplicationListCard applications={applications} clientId={clientId} />
+      </div>
+
+      {/* 전체 이력 타임라인 */}
+      <div className="mt-6">
+        <h2 className="text-base font-semibold text-gray-900 mb-3">
+          전체 이력 타임라인
+          {historyItems.length > 0 && (
+            <span className="ml-2 text-sm font-normal text-gray-400">({historyItems.length}건)</span>
+          )}
+        </h2>
+        <ClientTimeline items={historyItems} clientId={clientId} />
       </div>
     </div>
   )
