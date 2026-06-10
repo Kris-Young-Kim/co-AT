@@ -1,4 +1,4 @@
-export type ApprovalDocumentType = 'expenditure' | 'leave' | 'business_report' | 'rental' | 'custom_make' | 'reuse'
+export type ApprovalDocumentType = 'expenditure' | 'leave' | 'business_report' | 'rental' | 'custom_make' | 'reuse' | 'grant_referral'
 export type ApprovalDocumentStatus = 'draft' | 'pending' | 'approved' | 'rejected'
 export type ApprovalStepStatus = 'pending' | 'approved' | 'rejected'
 export type ApprovalStepRole = 'manager' | 'admin'
@@ -43,6 +43,16 @@ export interface ReuseApprovalContent {
   notes?: string
 }
 
+export interface GrantReferralContent {
+  doc_number?: string
+  sending_org: string
+  doc_date?: string
+  receive_date?: string
+  referral_round?: number
+  referral_count?: number
+  note?: string
+}
+
 export type ApprovalDocumentContent =
   | ExpenditureContent
   | LeaveContent
@@ -50,6 +60,7 @@ export type ApprovalDocumentContent =
   | RentalApprovalContent
   | CustomMakeApprovalContent
   | ReuseApprovalContent
+  | GrantReferralContent
 
 // ── Core entities ─────────────────────────────────────────
 

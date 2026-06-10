@@ -10,6 +10,7 @@ import type {
   ExpenditureContent,
   LeaveContent,
   BusinessReportContent,
+  GrantReferralContent,
 } from '@co-at/types'
 import { ApprovePanel } from './ApprovePanel'
 import { FileDown, Send } from 'lucide-react'
@@ -21,6 +22,7 @@ const TYPE_LABELS: Record<string, string> = {
   expenditure:     '지출 결의서',
   leave:           '휴가/출장 신청서',
   business_report: '업무 보고서/기안문',
+  grant_referral:  '교부사업 접수공문',
 }
 
 const STATUS_STYLES: Record<string, { label: string; className: string }> = {
@@ -76,10 +78,25 @@ function BusinessReportDetail({ c }: { c: BusinessReportContent }) {
   )
 }
 
+function GrantReferralDetail({ c }: { c: GrantReferralContent }) {
+  return (
+    <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm">
+      <div><dt className="text-gray-500">발송기관</dt><dd className="font-medium mt-0.5">{c.sending_org}</dd></div>
+      {c.doc_number && <div><dt className="text-gray-500">공문번호</dt><dd className="font-medium mt-0.5">{c.doc_number}</dd></div>}
+      {c.doc_date && <div><dt className="text-gray-500">공문일</dt><dd className="font-medium mt-0.5">{c.doc_date}</dd></div>}
+      {c.receive_date && <div><dt className="text-gray-500">접수일</dt><dd className="font-medium mt-0.5">{c.receive_date}</dd></div>}
+      {c.referral_round != null && <div><dt className="text-gray-500">의뢰 회차</dt><dd className="font-medium mt-0.5">{c.referral_round}차</dd></div>}
+      {c.referral_count != null && <div><dt className="text-gray-500">의뢰 건수</dt><dd className="font-medium mt-0.5">{c.referral_count}건</dd></div>}
+      {c.note && <div className="col-span-2"><dt className="text-gray-500">비고</dt><dd className="font-medium mt-0.5 whitespace-pre-wrap">{c.note}</dd></div>}
+    </dl>
+  )
+}
+
 function DocumentContent({ doc }: { doc: ApprovalDocumentWithSteps }) {
   const c = doc.content
-  if (doc.type === 'expenditure') return <ExpenditureDetail c={c as ExpenditureContent} />
-  if (doc.type === 'leave')       return <LeaveDetail c={c as LeaveContent} />
+  if (doc.type === 'expenditure')   return <ExpenditureDetail c={c as ExpenditureContent} />
+  if (doc.type === 'leave')         return <LeaveDetail c={c as LeaveContent} />
+  if (doc.type === 'grant_referral') return <GrantReferralDetail c={c as GrantReferralContent} />
   return <BusinessReportDetail c={c as BusinessReportContent} />
 }
 

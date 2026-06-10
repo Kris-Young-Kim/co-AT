@@ -8,13 +8,15 @@ import type {
   ExpenditureContent,
   LeaveContent,
   BusinessReportContent,
+  GrantReferralContent,
   LeaveSubType,
 } from '@co-at/types'
 
 const DOC_TYPES: { value: ApprovalDocumentType; label: string; desc: string }[] = [
-  { value: 'expenditure',     label: '지출 결의서',        desc: '구매·비용 지출 승인 요청' },
+  { value: 'grant_referral',  label: '교부사업 접수공문',   desc: '시군구 의뢰 공문 접수 및 결재 처리' },
+  { value: 'expenditure',     label: '지출 결의서',         desc: '구매·비용 지출 승인 요청' },
   { value: 'leave',           label: '휴가/출장 신청서',    desc: '연차·반차·출장 등 신청' },
-  { value: 'business_report', label: '업무 보고서/기안문', desc: '업무 보고 및 기안 작성' },
+  { value: 'business_report', label: '업무 보고서/기안문',  desc: '업무 보고 및 기안 작성' },
 ]
 
 const LEAVE_SUBTYPES: { value: LeaveSubType; label: string }[] = [
@@ -48,7 +50,16 @@ export default function NewDocumentPage() {
   const [background, setBackground] = useState('')
   const [body, setBody]             = useState('')
 
-  function buildContent(): ExpenditureContent | LeaveContent | BusinessReportContent | null {
+  // Grant referral fields
+  const [grDocNumber, setGrDocNumber]           = useState('')
+  const [grSendingOrg, setGrSendingOrg]         = useState('')
+  const [grDocDate, setGrDocDate]               = useState('')
+  const [grReceiveDate, setGrReceiveDate]       = useState(new Date().toISOString().slice(0, 10))
+  const [grReferralRound, setGrReferralRound]   = useState('')
+  const [grReferralCount, setGrReferralCount]   = useState('')
+  const [grNote, setGrNote]                     = useState('')
+
+  function buildContent(): ExpenditureContent | LeaveContent | BusinessReportContent | GrantReferralContent | null {
     if (docType === 'expenditure') {
       if (!itemName || !amount || !spendDate) return null
       return { item_name: itemName, amount: Number(amount), spend_date: spendDate, note: expNote || undefined }
@@ -60,6 +71,18 @@ export default function NewDocumentPage() {
     if (docType === 'business_report') {
       if (!background || !body) return null
       return { background, body }
+    }
+    if (docType === 'grant_referral') {
+      if (!grSendingOrg) return null
+      return {
+        doc_number: grDocNumber || undefined,
+        sending_org: grSendingOrg,
+        doc_date: grDocDate || undefined,
+        receive_date: grReceiveDate || undefined,
+        referral_round: grReferralRound ? Number(grReferralRound) : undefined,
+        referral_count: grReferralCount ? Number(grReferralCount) : undefined,
+        note: grNote || undefined,
+      }
     }
     return null
   }
@@ -194,6 +217,41 @@ export default function NewDocumentPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">내용 *</label>
               <textarea value={body} onChange={e => setBody(e.target.value)} rows={6} className="w-full border rounded-md px-3 py-2 text-sm" />
+            </div>
+          </>
+        )}
+
+        {docType === 'grant_referral' && (
+          <>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">발송기관 *</label>
+                <input value={grSendingOrg} onChange={e => setGrSendingOrg(e.target.value)} placeholder="예) 강릉시청 복지과" className="w-full border rounded-md px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">공문번호</label>
+                <input value={grDocNumber} onChange={e => setGrDocNumber(e.target.value)} placeholder="예) 복지-1234" className="w-full border rounded-md px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">공문일</label>
+                <input type="date" value={grDocDate} onChange={e => setGrDocDate(e.target.value)} className="w-full border rounded-md px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">접수일</label>
+                <input type="date" value={grReceiveDate} onChange={e => setGrReceiveDate(e.target.value)} className="w-full border rounded-md px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">의뢰 회차</label>
+                <input type="number" min="1" value={grReferralRound} onChange={e => setGrReferralRound(e.target.value)} placeholder="예) 1" className="w-full border rounded-md px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">의뢰 건수</label>
+                <input type="number" min="0" value={grReferralCount} onChange={e => setGrReferralCount(e.target.value)} placeholder="예) 5" className="w-full border rounded-md px-3 py-2 text-sm" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">비고</label>
+              <textarea value={grNote} onChange={e => setGrNote(e.target.value)} rows={2} className="w-full border rounded-md px-3 py-2 text-sm" />
             </div>
           </>
         )}

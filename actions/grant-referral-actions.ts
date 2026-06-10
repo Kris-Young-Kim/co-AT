@@ -4,6 +4,67 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
+import type { GrantReferralContent } from "@co-at/types"
+
+// ── Approval-sourced grant referral documents ─────────────
+
+export interface ApprovalGrantDoc {
+  id: string
+  title: string
+  status: 'draft' | 'pending' | 'approved' | 'rejected'
+  created_at: string
+  content: GrantReferralContent
+  step1_status: string | null
+  step2_status: string | null
+}
+
+export async function listApprovalGrantDocs(
+  year?: number
+): Promise<{ success: boolean; docs?: ApprovalGrantDoc[]; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+
+    const supabase = createAdminClient()
+
+    let query = (supabase as any)
+      .from("approval_documents")
+      .select(`
+        id,
+        title,
+        status,
+        created_at,
+        content,
+        approval_steps ( step, status )
+      `)
+      .eq("type", "grant_referral")
+      .order("created_at", { ascending: false })
+
+    if (year) {
+      query = query
+        .gte("created_at", `${year}-01-01`)
+        .lt("created_at", `${year + 1}-01-01`)
+    }
+
+    const { data, error } = await query
+    if (error) return { success: false, error: "접수공문 조회에 실패했습니다" }
+
+    const docs: ApprovalGrantDoc[] = (data ?? []).map((row: any) => ({
+      id: row.id,
+      title: row.title,
+      status: row.status,
+      created_at: row.created_at,
+      content: row.content as GrantReferralContent,
+      step1_status: (row.approval_steps ?? []).find((s: any) => s.step === 1)?.status ?? null,
+      step2_status: (row.approval_steps ?? []).find((s: any) => s.step === 2)?.status ?? null,
+    }))
+
+    return { success: true, docs }
+  } catch (e) {
+    console.error("listApprovalGrantDocs:", e)
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
 
 export interface GrantReferralDoc {
   id: string
