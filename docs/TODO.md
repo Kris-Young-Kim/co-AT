@@ -3,7 +3,7 @@
 > **프로젝트**: GWATC 통합 관리 플랫폼 (Co-AT)
 > **비전**: "행정은 AI에게, 사람은 클라이언트에게"
 > **아키텍처**: Turborepo 모노레포 — 앱별 독립 배포
-> **마지막 업데이트**: 2026-06-07  
+> **마지막 업데이트**: 2026-06-10  
 **완료**: Phase B (eval 만족도·교육이력, inventory 소독세척, stats 서비스효과성 연동) — 배포 완료 2026-06-03  
 **완료**: Phase C (1차 앱 마무리 + 안정화) — 배포 완료 2026-06-03  
 **완료**: Phase D-1 (HR 인사관리 기초)  
@@ -605,6 +605,7 @@
 | `077_create_grant_eval_tables.sql` | `eval_grant_assessments`, `eval_grant_items`, `eval_grant_referral_docs`, `eval_item_checklist_templates` + 뷰 + 트리거 | ✅ |
 | `081_create_eval_cases.sql` | `eval_cases` 테이블 (AX-2 다중 서비스 케이스 구조) | ✅ |
 | `082_sync_grant_eval_to_service_records.sql` | `eval_grant_assessments` → `eval_service_records` 자동 동기화 트리거 (`is_grant=true`) | ✅ |
+| `083_create_eval_ippa_assessments.sql` | `eval_ippa_assessments` 테이블 (K-IPPA 기능 성과 측정) + RLS + updated_at 트리거 | ✅ |
 
 ### 미실행 / 예정 마이그레이션
 
@@ -639,11 +640,12 @@
 
 | 기능 | 상태 |
 |------|------|
-| DB migration 075: `eval_ippa_assessments` 테이블 | ⬜ |
-| K-IPPA 평가 폼 — 활동 문제 3~5개 선정 + 5점 척도 입력 | ⬜ |
-| 사전(Pre) 측정 → 보조기기 지원 → 사후(Post) 측정 워크플로우 | ⬜ |
-| K-IPPA 성과 점수 자동 계산 + 시각화 (레이더 차트) | ⬜ |
-| `/clients/[id]` 상세 페이지 → K-IPPA 탭 추가 | ⬜ |
+| DB migration 083: `eval_ippa_assessments` 테이블 + RLS + 트리거 | ✅ |
+| K-IPPA 평가 폼 — 활동 문제 3~5개 선정 + 5점 척도 입력 | ✅ |
+| 사전(Pre) 측정 → 보조기기 지원 → 사후(Post) 측정 워크플로우 | ✅ |
+| K-IPPA 성과 점수 자동 계산 (Σ(pre-post)/n) | ✅ |
+| `/clients/[id]` 상세 페이지 → K-IPPA 섹션 추가 | ✅ |
+| 시각화 (레이더 차트) | ⬜ |
 | 팔로업 알림 Cron — 지원일 +4주/+12주/+24주 자동 안내 | ⬜ |
 | 기관 전체 K-IPPA 집계 → stats 앱 대시보드 연동 | ⬜ |
 
