@@ -1,1 +1,9 @@
-{}
+{
+  "ignoreCommand": "npx turbo-ignore",
+  "crons": [
+    {
+      "path": "/api/cron/ippa-followup",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
