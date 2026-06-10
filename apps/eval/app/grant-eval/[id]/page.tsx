@@ -82,7 +82,7 @@ export default async function GrantAssessmentDetailPage({ params, searchParams }
               {client?.name ?? '—'} · {assessment.assessment_year}년 교부사업 평가
             </h1>
             <p className="text-sm text-gray-500 mt-1">
-              {client?.birth_date ?? '—'} · {(client as any)?.disability_type ?? '장애유형 없음'}
+              {client?.birth_date ?? '—'} · {client?.disability_type ?? '장애유형 없음'}
             </p>
           </div>
           <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${STATUS_BADGE[assessment.status] ?? 'bg-gray-100 text-gray-600'}`}>

@@ -248,13 +248,15 @@ export async function submitGrantAssessment(id: string): Promise<{ success: bool
     if (!hasPermission) return { success: false, error: "권한이 없습니다" }
 
     const supabase = createAdminClient()
-    const { error } = await (supabase as any)
+    const { data, error } = await (supabase as any)
       .from("eval_grant_assessments")
       .update({ status: "submitted" })
       .eq("id", id)
       .eq("status", "draft")
+      .select("id")
+      .single()
 
-    if (error) return { success: false, error: "제출에 실패했습니다" }
+    if (error || !data) return { success: false, error: "제출에 실패했습니다. 이미 제출됐거나 존재하지 않는 평가입니다." }
 
     revalidatePath("/grant-eval")
     revalidatePath(`/grant-eval/${id}`)

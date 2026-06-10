@@ -36,9 +36,9 @@ export default async function PrintGrantEvalPage({ params }: Props) {
       <section className="mb-6">
         <h2 className="font-bold border-b pb-1 mb-3">대상자 정보</h2>
         <div className="grid grid-cols-3 gap-2">
-          <div><span className="text-gray-500">성명:</span> {(client as any)?.name ?? '—'}</div>
-          <div><span className="text-gray-500">생년월일:</span> {(client as any)?.birth_date ?? '—'}</div>
-          <div><span className="text-gray-500">장애유형:</span> {(client as any)?.disability_type ?? '—'}</div>
+          <div><span className="text-gray-500">성명:</span> {client?.name ?? '—'}</div>
+          <div><span className="text-gray-500">생년월일:</span> {client?.birth_date ?? '—'}</div>
+          <div><span className="text-gray-500">장애유형:</span> {client?.disability_type ?? '—'}</div>
           <div><span className="text-gray-500">의뢰기관:</span> {assessment.referral_org ?? '—'}</div>
           <div><span className="text-gray-500">평가일:</span> {assessment.evaluation_date ?? '—'}</div>
           <div><span className="text-gray-500">평가자:</span> {assessment.evaluator_name ?? '—'}</div>

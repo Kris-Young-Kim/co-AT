@@ -171,11 +171,23 @@ describe('submitGrantAssessment', () => {
 
   it('성공', async () => {
     mockHasAdminOrStaffPermission.mockResolvedValueOnce(true)
-    // .from().update().eq("id", id).eq("status", "draft") — second eq is terminal
-    const chain = makeChain()
+    const chain = makeChain({
+      single: vi.fn(() => Promise.resolve({ data: { id: 'a-1' }, error: null })),
+    })
     vi.mocked(createAdminClient).mockReturnValueOnce(chain as any)
     const result = await submitGrantAssessment('a-1')
     expect(result.success).toBe(true)
+  })
+
+  it('이미 제출된 평가는 오류 반환', async () => {
+    mockHasAdminOrStaffPermission.mockResolvedValueOnce(true)
+    const chain = makeChain({
+      single: vi.fn(() => Promise.resolve({ data: null, error: null })),
+    })
+    vi.mocked(createAdminClient).mockReturnValueOnce(chain as any)
+    const result = await submitGrantAssessment('a-1')
+    expect(result.success).toBe(false)
+    expect(result.error).toMatch(/이미 제출/)
   })
 
   it('권한 없으면 오류', async () => {
