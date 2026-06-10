@@ -111,10 +111,13 @@ export function ClientCases({ initialCases, clientId }: Props) {
   }
 
   async function handleDelete(caseId: string) {
+    setError(null)
     startTransition(async () => {
       const result = await deleteCase(caseId, clientId)
       if (result.success) {
         setCases((prev) => prev.filter((c) => c.id !== caseId))
+      } else {
+        setError(result.error ?? '삭제에 실패했습니다')
       }
     })
   }

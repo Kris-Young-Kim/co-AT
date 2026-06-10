@@ -91,6 +91,7 @@ export async function updateCase(
     .from("eval_cases")
     .update(updates)
     .eq("id", caseId)
+    .eq("client_id", clientId)
 
   if (error) return { success: false, error: error.message }
   revalidatePath("/clients/" + clientId)
@@ -109,6 +110,7 @@ export async function deleteCase(
     .from("eval_cases")
     .delete()
     .eq("id", caseId)
+    .eq("client_id", clientId)
 
   if (error) return { success: false, error: error.message }
   revalidatePath("/clients/" + clientId)
@@ -128,6 +130,7 @@ export async function updateCaseServices(
     .from("eval_cases")
     .update({ services })
     .eq("id", caseId)
+    .eq("client_id", clientId)
 
   if (error) return { success: false, error: error.message }
   revalidatePath("/clients/" + clientId)
