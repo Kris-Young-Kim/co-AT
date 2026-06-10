@@ -752,7 +752,7 @@ export async function getClientActiveServices(clientId: string): Promise<{
         status_label: GRANT_STATUS[r.status] ?? r.status,
         started_at: r.created_at,
         detail_url: `/grant-eval/${r.id}`,
-        metadata: r.referral_org ? { 의뢰기관: r.referral_org } : undefined,
+        metadata: r.referral_org ? { referral_org: r.referral_org } : undefined,
       })
     })
 
@@ -800,7 +800,9 @@ export async function getClientActiveServices(clientId: string): Promise<{
       })
     })
 
-    services.sort((a, b) => new Date(b.started_at).getTime() - new Date(a.started_at).getTime())
+    services.sort((a, b) =>
+      (new Date(b.started_at).getTime() || 0) - (new Date(a.started_at).getTime() || 0)
+    )
     return { success: true, services }
   } catch (e) {
     console.error('getClientActiveServices:', e)

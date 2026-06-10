@@ -35,7 +35,7 @@ describe('getClientActiveServices', () => {
       { id: 'g1', status: 'submitted', created_at: '2026-05-01T00:00:00Z', referral_org: '강릉시청' },
     ])
     const rentalChain = makeTerminal([
-      { id: 'r1', status: 'rented', rental_start_date: '2026-04-01', inventory_id: 'i1' },
+      { id: 'r1', status: 'rented', rental_start_date: '2026-06-01', inventory_id: 'i1' },
     ])
     const customChain = makeTerminal([])
     const appChain = makeTerminal([])
@@ -52,9 +52,10 @@ describe('getClientActiveServices', () => {
     const result = await getClientActiveServices('client-1')
     expect(result.success).toBe(true)
     expect(result.services).toHaveLength(2)
-    expect(result.services![0].service_type).toBe('grant_eval')
-    expect(result.services![0].status_label).toBe('제출 완료')
-    expect(result.services![1].service_type).toBe('rental')
+    // rental (2026-06-01) is newer than grant (2026-05-01), so rental comes first after sort
+    expect(result.services![0].service_type).toBe('rental')
+    expect(result.services![1].service_type).toBe('grant_eval')
+    expect(result.services![1].status_label).toBe('제출 완료')
   })
 
   it('활성 서비스 없으면 빈 배열', async () => {
