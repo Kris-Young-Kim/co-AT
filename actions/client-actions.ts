@@ -750,6 +750,16 @@ export interface ActiveService {
   metadata?: Record<string, string>
 }
 
+const GRANT_STATUS: Record<string, string> = { draft: '작성 중', submitted: '제출 완료' }
+const RENTAL_STATUS: Record<string, string> = { rented: '대여 중', overdue: '연체' }
+const CUSTOM_STATUS: Record<string, string> = {
+  design: '설계', manufacturing: '제작', inspection: '검수', delivery: '납품',
+}
+const APP_CATEGORY: Record<string, string> = {
+  consult: '상담', experience: '체험', custom: '맞춤형',
+  aftercare: '사후관리', education: '교육/홍보',
+}
+
 export async function getClientActiveServices(clientId: string): Promise<{
   success: boolean
   services?: ActiveService[]
@@ -786,7 +796,6 @@ export async function getClientActiveServices(clientId: string): Promise<{
 
     const services: ActiveService[] = []
 
-    const GRANT_STATUS: Record<string, string> = { draft: '작성 중', submitted: '제출 완료' }
     ;(grantResult.data ?? []).forEach((r: any) => {
       services.push({
         id: r.id,
@@ -800,7 +809,6 @@ export async function getClientActiveServices(clientId: string): Promise<{
       })
     })
 
-    const RENTAL_STATUS: Record<string, string> = { rented: '대여 중', overdue: '연체' }
     ;(rentalResult.data ?? []).forEach((r: any) => {
       services.push({
         id: r.id,
@@ -813,9 +821,6 @@ export async function getClientActiveServices(clientId: string): Promise<{
       })
     })
 
-    const CUSTOM_STATUS: Record<string, string> = {
-      design: '설계', manufacturing: '제작', inspection: '검수', delivery: '납품',
-    }
     ;(customResult.data ?? []).forEach((r: any) => {
       services.push({
         id: r.id,
@@ -828,10 +833,6 @@ export async function getClientActiveServices(clientId: string): Promise<{
       })
     })
 
-    const APP_CATEGORY: Record<string, string> = {
-      consult: '상담', experience: '체험', custom: '맞춤형',
-      aftercare: '사후관리', education: '교육/홍보',
-    }
     ;(appResult.data ?? []).forEach((r: any) => {
       services.push({
         id: r.id,
@@ -896,7 +897,6 @@ export async function getActiveServiceBadgesByClientIds(
       data[clientId].push(service)
     }
 
-    const GRANT_STATUS: Record<string, string> = { draft: '작성 중', submitted: '제출 완료' }
     ;(grantResult.data ?? []).forEach((r: any) => {
       add(r.client_id, {
         id: r.id,
@@ -910,7 +910,6 @@ export async function getActiveServiceBadgesByClientIds(
       })
     })
 
-    const RENTAL_STATUS: Record<string, string> = { rented: '대여 중', overdue: '연체' }
     ;(rentalResult.data ?? []).forEach((r: any) => {
       add(r.client_id, {
         id: r.id,
@@ -923,9 +922,6 @@ export async function getActiveServiceBadgesByClientIds(
       })
     })
 
-    const CUSTOM_STATUS: Record<string, string> = {
-      design: '설계', manufacturing: '제작', inspection: '검수', delivery: '납품',
-    }
     ;(customResult.data ?? []).forEach((r: any) => {
       add(r.client_id, {
         id: r.id,
@@ -938,10 +934,6 @@ export async function getActiveServiceBadgesByClientIds(
       })
     })
 
-    const APP_CATEGORY: Record<string, string> = {
-      consult: '상담', experience: '체험', custom: '맞춤형',
-      aftercare: '사후관리', education: '교육/홍보',
-    }
     ;(appResult.data ?? []).forEach((r: any) => {
       add(r.client_id, {
         id: r.id,
@@ -954,6 +946,11 @@ export async function getActiveServiceBadgesByClientIds(
       })
     })
 
+    for (const clientId of Object.keys(data)) {
+      data[clientId].sort((a, b) =>
+        (new Date(b.started_at).getTime() || 0) - (new Date(a.started_at).getTime() || 0)
+      )
+    }
     return { success: true, data }
   } catch (e) {
     console.error('getActiveServiceBadgesByClientIds:', e)
