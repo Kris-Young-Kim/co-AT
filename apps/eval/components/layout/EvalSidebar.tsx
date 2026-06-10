@@ -2,21 +2,44 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Users, BarChart3, LogOut, Phone, RefreshCw, Clock, FileEdit, GraduationCap, Gift, FileText, BarChart2 } from 'lucide-react'
+import { Users, BarChart3, LogOut, Phone, RefreshCw, Clock, FileEdit, GraduationCap, Gift, FileText, BarChart2, ChevronDown } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 
-const NAV_ITEMS = [
-  { href: '/', label: '대시보드', icon: BarChart3 },
-  { href: '/clients', label: '클라이언트', icon: Users },
-  { href: '/clients/pending', label: '신규 접수 대기', icon: Clock },
-  { href: '/call-logs', label: '콜센터 상담', icon: Phone },
-  { href: '/service-records', label: '서비스 기록', icon: FileEdit },
-  { href: '/education', label: '교육 이력', icon: GraduationCap },
-  { href: '/grant-eval', label: '교부사업 평가', icon: Gift },
-  { href: '/grant-eval/referrals', label: '접수공문 관리', icon: FileText },
-  { href: '/grant-eval/statistics', label: '교부사업 통계', icon: BarChart2 },
-  { href: '/migration', label: 'Sheets 동기화', icon: RefreshCw },
-] as const
+type NavItem = {
+  type: 'item'
+  href: string
+  label: string
+  icon: React.ElementType
+}
+
+type NavGroup = {
+  type: 'group'
+  label: string
+  icon: React.ElementType
+  items: { href: string; label: string; icon: React.ElementType }[]
+}
+
+type NavEntry = NavItem | NavGroup
+
+const NAV_ENTRIES: NavEntry[] = [
+  { type: 'item', href: '/', label: '대시보드', icon: BarChart3 },
+  { type: 'item', href: '/clients', label: '클라이언트', icon: Users },
+  { type: 'item', href: '/clients/pending', label: '신규 접수 대기', icon: Clock },
+  { type: 'item', href: '/call-logs', label: '콜센터 상담', icon: Phone },
+  { type: 'item', href: '/service-records', label: '서비스 기록', icon: FileEdit },
+  { type: 'item', href: '/education', label: '교육 이력', icon: GraduationCap },
+  {
+    type: 'group',
+    label: '교부사업 적합성 평가',
+    icon: Gift,
+    items: [
+      { href: '/grant-eval', label: '교부사업 평가', icon: Gift },
+      { href: '/grant-eval/referrals', label: '접수공문 관리', icon: FileText },
+      { href: '/grant-eval/statistics', label: '교부사업 통계', icon: BarChart2 },
+    ],
+  },
+  { type: 'item', href: '/migration', label: 'Sheets 동기화', icon: RefreshCw },
+]
 
 function cn(...classes: (string | boolean | undefined)[]) {
   return classes.filter(Boolean).join(' ')
@@ -25,10 +48,13 @@ function cn(...classes: (string | boolean | undefined)[]) {
 function isActive(pathname: string, href: string): boolean {
   if (href === '/') return pathname === '/'
   if (href === '/clients') {
-    // /clients is active for client detail pages but NOT for /clients/pending
     return pathname === '/clients' || (pathname.startsWith('/clients/') && !pathname.startsWith('/clients/pending'))
   }
   return pathname === href || pathname.startsWith(href + '/')
+}
+
+function isGroupActive(pathname: string, items: { href: string }[]): boolean {
+  return items.some(item => isActive(pathname, item.href))
 }
 
 export function EvalSidebar() {
@@ -44,21 +70,58 @@ export function EvalSidebar() {
       </div>
 
       <nav className="flex-1 space-y-1">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className={cn(
-              'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-              isActive(pathname, href)
-                ? 'bg-blue-50 text-blue-700'
-                : 'text-gray-700 hover:bg-gray-100'
-            )}
-          >
-            <Icon className="h-4 w-4 shrink-0" />
-            {label}
-          </Link>
-        ))}
+        {NAV_ENTRIES.map((entry) => {
+          if (entry.type === 'item') {
+            const { href, label, icon: Icon } = entry
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                  isActive(pathname, href)
+                    ? 'bg-blue-50 text-blue-700'
+                    : 'text-gray-700 hover:bg-gray-100'
+                )}
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                {label}
+              </Link>
+            )
+          }
+
+          const { label, icon: GroupIcon, items } = entry
+          const groupActive = isGroupActive(pathname, items)
+          return (
+            <div key={label}>
+              <div className={cn(
+                'flex items-center gap-3 rounded-md px-3 py-2 text-xs font-semibold uppercase tracking-wide',
+                groupActive ? 'text-blue-700' : 'text-gray-400'
+              )}>
+                <GroupIcon className="h-4 w-4 shrink-0" />
+                <span className="flex-1">{label}</span>
+                <ChevronDown className="h-3 w-3 shrink-0" />
+              </div>
+              <div className="ml-3 mt-0.5 space-y-0.5 border-l border-gray-200 pl-3">
+                {items.map(({ href, label: itemLabel, icon: ItemIcon }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={cn(
+                      'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-colors',
+                      isActive(pathname, href)
+                        ? 'bg-blue-50 text-blue-700'
+                        : 'text-gray-600 hover:bg-gray-100'
+                    )}
+                  >
+                    <ItemIcon className="h-3.5 w-3.5 shrink-0" />
+                    {itemLabel}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )
+        })}
       </nav>
 
       <button
