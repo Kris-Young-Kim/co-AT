@@ -335,9 +335,9 @@
 
 | 기능 | 상태 |
 |------|------|
-| `getClientActiveServices` 서버 액션 (grant_eval·rental·custom_make·application 통합 조회) | ⬜ |
-| `ClientActiveServices` 컴포넌트 (활성 서비스 카드 그리드) | ⬜ |
-| 클라이언트 상세 페이지 개편 (진행 중 서비스 섹션 추가) | ⬜ |
+| `getClientActiveServices` 서버 액션 (grant_eval·rental·custom_make·application 통합 조회) | ✅ |
+| `ClientActiveServices` 컴포넌트 (활성 서비스 카드 그리드) | ✅ |
+| 클라이언트 상세 페이지 개편 (진행 중 서비스 섹션 추가) | ✅ |
 | 사업별 뷰에서 타 서비스 배지 표시 (교부사업 평가 목록 등) | ⬜ |
 
 ---
@@ -597,11 +597,14 @@
 | `056_add_is_web_visible_to_schedules.sql` | schedules 테이블 `is_web_visible` 컬럼 추가 | ✅ |
 | `057_create_schedule_categories.sql` | schedule_categories 테이블 생성 (색상·이름) | ✅ |
 
-### 완료된 마이그레이션 (058 ~ 066)
+### 완료된 마이그레이션 (058 ~ 082)
 
 | 파일명 | 내용 | 상태 |
 |--------|------|------|
 | `066_add_satisfaction_score.sql` | `eval_service_records`에 `satisfaction_score` (1-5), `satisfaction_comment` 추가 | ✅ |
+| `077_create_grant_eval_tables.sql` | `eval_grant_assessments`, `eval_grant_items`, `eval_grant_referral_docs`, `eval_item_checklist_templates` + 뷰 + 트리거 | ✅ |
+| `081_create_eval_cases.sql` | `eval_cases` 테이블 (AX-2 다중 서비스 케이스 구조) | ✅ |
+| `082_sync_grant_eval_to_service_records.sql` | `eval_grant_assessments` → `eval_service_records` 자동 동기화 트리거 (`is_grant=true`) | ✅ |
 
 ### 미실행 / 예정 마이그레이션
 
