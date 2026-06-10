@@ -1,7 +1,7 @@
 -- 대상자 다중 서비스 케이스 구조
 CREATE TABLE IF NOT EXISTS eval_cases (
   id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-  client_id   UUID        NOT NULL REFERENCES eval_clients(id) ON DELETE CASCADE,
+  client_id   UUID        NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
   title       TEXT        NOT NULL,
   case_type   TEXT        NOT NULL DEFAULT 'multi',
   status      TEXT        NOT NULL DEFAULT 'active',
