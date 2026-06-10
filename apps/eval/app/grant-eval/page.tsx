@@ -1,9 +1,11 @@
 import { listGrantAssessments } from '@/actions/grant-assessment-actions'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
+import GrantEvalKanban from '@/eval/components/grant-eval/GrantEvalKanban'
+import { cn } from '@/lib/utils'
 
 interface Props {
-  searchParams: Promise<{ year?: string; org?: string; status?: string }>
+  searchParams: Promise<{ year?: string; org?: string; status?: string; view?: string }>
 }
 
 const RESULT_COLOR: Record<string, string> = {
@@ -25,6 +27,7 @@ export default async function GrantEvalListPage({ searchParams }: Props) {
   const year = params.year ? parseInt(params.year) : new Date().getFullYear()
   const org = params.org
   const status = params.status
+  const view = params.view === 'board' ? 'board' : 'list'
 
   const result = await listGrantAssessments({ year, referralOrg: org, status })
   const assessments = result.success ? result.assessments ?? [] : []
@@ -79,7 +82,31 @@ export default async function GrantEvalListPage({ searchParams }: Props) {
         </button>
       </form>
 
-      {/* 목록 */}
+      {/* 뷰 토글 */}
+      <div className="flex gap-2 mb-4">
+        <Link
+          href={`/grant-eval?year=${year}${org ? `&org=${org}` : ''}${status ? `&status=${status}` : ''}&view=list`}
+          className={cn(
+            "px-3 py-1.5 text-xs rounded-md border font-medium transition-colors",
+            view === 'list' ? "bg-gray-900 text-white border-gray-900" : "text-gray-600 hover:bg-gray-50"
+          )}
+        >
+          목록
+        </Link>
+        <Link
+          href={`/grant-eval?year=${year}${org ? `&org=${org}` : ''}${status ? `&status=${status}` : ''}&view=board`}
+          className={cn(
+            "px-3 py-1.5 text-xs rounded-md border font-medium transition-colors",
+            view === 'board' ? "bg-gray-900 text-white border-gray-900" : "text-gray-600 hover:bg-gray-50"
+          )}
+        >
+          보드
+        </Link>
+      </div>
+
+      {view === 'board' ? (
+        <GrantEvalKanban assessments={assessments} />
+      ) : (
       <div className="border rounded-lg overflow-hidden bg-white">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
@@ -139,6 +166,7 @@ export default async function GrantEvalListPage({ searchParams }: Props) {
           </tbody>
         </table>
       </div>
+      )}
     </div>
   )
 }
