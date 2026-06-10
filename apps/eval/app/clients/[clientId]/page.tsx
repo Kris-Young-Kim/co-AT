@@ -1,7 +1,9 @@
 import { getClientById, getClientActiveServices, getClientHistory } from '@/actions/client-actions'
 import { getApplicationsByClientId } from '@/actions/application-actions'
+import { getClientCases } from '@/actions/case-actions'
 import { ApplicationListCard } from '@/eval/components/eval/ApplicationListCard'
 import { ClientActiveServices } from '@/eval/components/eval/ClientActiveServices'
+import { ClientCases } from '@/eval/components/eval/ClientCases'
 import { ClientTimeline } from '@/eval/components/eval/ClientTimeline'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -14,11 +16,12 @@ interface ClientDetailPageProps {
 export default async function ClientDetailPage({ params }: ClientDetailPageProps) {
   const { clientId } = await params
 
-  const [clientResult, appsResult, activeResult, historyResult] = await Promise.all([
+  const [clientResult, appsResult, activeResult, historyResult, casesResult] = await Promise.all([
     getClientById(clientId),
     getApplicationsByClientId(clientId),
     getClientActiveServices(clientId),
     getClientHistory(clientId),
+    getClientCases(clientId),
   ])
 
   if (!clientResult.success || !clientResult.client) notFound()
@@ -27,6 +30,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const applications = appsResult.success ? appsResult.applications ?? [] : []
   const activeServices = activeResult.success ? activeResult.services ?? [] : []
   const historyItems = historyResult.success ? historyResult.history ?? [] : []
+  const caseItems = casesResult.success ? casesResult.cases ?? [] : []
 
   return (
     <div className="p-8 max-w-4xl">
@@ -87,6 +91,11 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
           )}
         </div>
         <ClientActiveServices services={activeServices} />
+      </div>
+
+      {/* 케이스 관리 */}
+      <div className="mb-6">
+        <ClientCases initialCases={caseItems} clientId={clientId} />
       </div>
 
       {/* 신청 이력 */}
