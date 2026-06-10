@@ -338,7 +338,7 @@
 | `getClientActiveServices` 서버 액션 (grant_eval·rental·custom_make·application 통합 조회) | ✅ |
 | `ClientActiveServices` 컴포넌트 (활성 서비스 카드 그리드) | ✅ |
 | 클라이언트 상세 페이지 개편 (진행 중 서비스 섹션 추가) | ✅ |
-| 사업별 뷰에서 타 서비스 배지 표시 (교부사업 평가 목록 등) | ⬜ |
+| 사업별 뷰에서 타 서비스 배지 표시 (교부사업 평가 목록 등) | ✅ |
 
 ---
 
