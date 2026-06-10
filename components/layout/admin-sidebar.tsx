@@ -13,11 +13,13 @@ import {
   MessageSquare,
   Bot,
   ClipboardList,
+  Image,
 } from "lucide-react";
 
 const menuItems = [
   { href: "/", label: "앱 목록", icon: LayoutDashboard },
   { href: "/notices-management", label: "웹 관리", icon: Globe },
+  { href: "/banners", label: "배너 관리", icon: Image },
   { href: "/schedule", label: "일정 관리", icon: Calendar },
   { href: "/work-tasks", label: "업무 관리", icon: ClipboardList },
   { href: "/messenger", label: "업무 메신저", icon: MessageSquare },

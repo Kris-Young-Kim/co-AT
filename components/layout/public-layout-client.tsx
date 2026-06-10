@@ -1,6 +1,8 @@
 "use client"
 
 import dynamic from "next/dynamic"
+import type { Banner } from "@/actions/banner-actions"
+import { BannerPopup } from "@/components/features/banners/BannerPopup"
 
 const PublicHeader = dynamic(
   () => import("@/components/layout/public-header").then((m) => ({ default: m.PublicHeader })),
@@ -22,15 +24,17 @@ const QuickMenu = dynamic(
 
 interface PublicLayoutClientProps {
   children: React.ReactNode
+  banners: Banner[]
 }
 
-export function PublicLayoutClient({ children }: PublicLayoutClientProps) {
+export function PublicLayoutClient({ children, banners }: PublicLayoutClientProps) {
   return (
     <>
       <PublicHeader />
       <main className="flex-1">{children}</main>
       <QuickMenu />
       <SupportServiceChatbotFloating />
+      {banners.length > 0 && <BannerPopup banners={banners} />}
     </>
   )
 }
