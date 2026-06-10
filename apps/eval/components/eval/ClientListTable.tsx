@@ -1,9 +1,11 @@
 import Link from 'next/link'
-import type { ClientWithStats } from '@/actions/client-actions'
+import type { ClientWithStats, ActiveService } from '@/actions/client-actions'
+import { ClientServiceBadges } from './ClientServiceBadges'
 
 interface ClientListTableProps {
   clients: ClientWithStats[]
   total: number
+  badgeMap?: Record<string, ActiveService[]>
 }
 
 const DISABILITY_LABELS: Record<string, string> = {
@@ -32,7 +34,7 @@ function formatDate(iso: string): string {
   })
 }
 
-export function ClientListTable({ clients, total }: ClientListTableProps) {
+export function ClientListTable({ clients, total, badgeMap = {} }: ClientListTableProps) {
   if (clients.length === 0) {
     return (
       <div className="text-center py-16 text-gray-500">
@@ -53,6 +55,7 @@ export function ClientListTable({ clients, total }: ClientListTableProps) {
               <th className="text-left px-4 py-3 font-medium text-gray-700">생년월일</th>
               <th className="text-left px-4 py-3 font-medium text-gray-700">장애유형</th>
               <th className="text-left px-4 py-3 font-medium text-gray-700">신청건수</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-700">진행 중 서비스</th>
               <th className="text-left px-4 py-3 font-medium text-gray-700">등록일</th>
               <th className="px-4 py-3"></th>
             </tr>
@@ -66,6 +69,9 @@ export function ClientListTable({ clients, total }: ClientListTableProps) {
                   {DISABILITY_LABELS[client.disability_type ?? ''] ?? client.disability_type ?? '—'}
                 </td>
                 <td className="px-4 py-3 text-gray-600">{client.application_count ?? 0}건</td>
+                <td className="px-4 py-3">
+                  <ClientServiceBadges services={badgeMap[client.id] ?? []} />
+                </td>
                 <td className="px-4 py-3 text-gray-600">
                   {client.created_at ? formatDate(client.created_at) : '—'}
                 </td>

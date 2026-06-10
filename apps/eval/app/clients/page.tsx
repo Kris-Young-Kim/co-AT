@@ -1,4 +1,4 @@
-import { searchClients, getPendingCount } from '@/actions/client-actions'
+import { searchClients, getPendingCount, getActiveServiceBadgesByClientIds } from '@/actions/client-actions'
 import { ClientSearchBar } from '@/eval/components/eval/ClientSearchBar'
 import { ClientListTable } from '@/eval/components/eval/ClientListTable'
 import { Suspense } from 'react'
@@ -17,6 +17,9 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
   ])
   const clients = result.success ? result.clients ?? [] : []
   const total = result.success ? result.total ?? 0 : 0
+
+  const badgeResult = await getActiveServiceBadgesByClientIds(clients.map(c => c.id))
+  const badgeMap = badgeResult.success ? badgeResult.data ?? {} : {}
 
   return (
     <div className="p-8">
@@ -43,7 +46,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
         </Suspense>
       </div>
 
-      <ClientListTable clients={clients} total={total} />
+      <ClientListTable clients={clients} total={total} badgeMap={badgeMap} />
     </div>
   )
 }
