@@ -2,15 +2,11 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Sparkles } from 'lucide-react'
 import { createServiceRecord } from '@/actions/service-record-actions'
-import { generateServiceRecordDraft } from '@/actions/ai-actions'
-import type { ServiceRecordDraft } from '@/actions/ai-actions'
 import { ITEM_CATEGORIES } from '@/eval/lib/item-categories'
 
 const INPUT = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
 const SELECT = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white'
-const SKELETON = 'w-full rounded-md bg-gray-200 animate-pulse'
 const READONLY = 'w-full border rounded-md px-3 py-2 text-sm bg-gray-50 text-gray-600 cursor-not-allowed'
 
 const MAJOR_CATEGORIES = ['공적급여', '민간지원', '기타', '서비스지원']
@@ -96,9 +92,6 @@ export function ServiceRecordForm({
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [aiLoading, setAiLoading] = useState(false)
-  const [aiError, setAiError] = useState<string | null>(null)
-  const [memo, setMemo] = useState('')
   const [satisfactionScore, setSatisfactionScore] = useState<number | null>(null)
 
   // AI-filled fields
@@ -116,52 +109,10 @@ export function ServiceRecordForm({
     setChecks(prev => ({ ...prev, [key]: !prev[key] }))
   }
 
-  async function handleAiGenerate() {
-    const hasContent = serviceContent || majorCategory || productName
-    if (hasContent && !window.confirm('기존 내용이 덮어씌워집니다. 계속하시겠습니까?')) return
-
-    setAiLoading(true)
-    setAiError(null)
-    try {
-      const result = await generateServiceRecordDraft({ applicationId, clientId, memo: memo || undefined })
-      if (!result.success || !result.draft) {
-        setAiError(result.error ?? 'AI 초안 생성에 실패했습니다')
-        return
-      }
-      applyDraft(result.draft)
-    } catch {
-      setAiError('AI 초안 생성에 실패했습니다')
-    } finally {
-      setAiLoading(false)
-    }
-  }
-
   function handleItemCategoryChange(val: string) {
     setItemCategory(val)
     const match = ITEM_CATEGORIES.find(c => c.name === val)
     if (match) setServiceArea(match.area)
-  }
-
-  function applyDraft(draft: ServiceRecordDraft) {
-    setServiceContent(draft.service_content ?? '')
-    setMajorCategory(draft.service_major_category ?? '')
-    setSubCategory(draft.service_sub_category ?? '')
-    setServiceCategory(draft.service_category ?? '')
-    setServiceArea(draft.service_area ?? '')
-    setProductName(draft.product_name ?? '')
-    setReferralType(draft.referral_type ?? '')
-    setChecks(prev => ({
-      ...prev,
-      is_consult: draft.is_consult ?? false,
-      is_assessment: draft.is_assessment ?? false,
-      is_trial: draft.is_trial ?? false,
-      is_rental: draft.is_rental ?? false,
-      is_custom_make: draft.is_custom_make ?? false,
-      is_grant: draft.is_grant ?? false,
-      is_education: draft.is_education ?? false,
-      is_info_provision: draft.is_info_provision ?? false,
-      is_repair: draft.is_repair ?? false,
-    }))
   }
 
   function handleServiceCategoryChange(val: string) {
@@ -247,33 +198,6 @@ export function ServiceRecordForm({
     <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl">
       {error && <div className="rounded-md bg-red-50 border border-red-200 p-4 text-sm text-red-700">{error}</div>}
 
-      {/* AI 초안 */}
-      <section className="border rounded-lg p-6 bg-white space-y-3">
-        <h3 className="font-semibold text-gray-900">AI 초안 생성</h3>
-        <p className="text-xs text-gray-500">버튼을 누르면 클라이언트 정보·상담기록지·평가 결과를 자동으로 읽어 초안을 생성합니다. 메모를 추가하면 더 정확해집니다.</p>
-        <textarea
-          value={memo}
-          onChange={e => setMemo(e.target.value)}
-          rows={2}
-          placeholder="예) 전동휠체어 공적급여 상담, 건강보험 급여 신청 안내 완료"
-          disabled={aiLoading}
-          className={INPUT}
-        />
-        {aiError && <p className="text-sm text-red-600">{aiError}</p>}
-        <button
-          type="button"
-          onClick={handleAiGenerate}
-          disabled={aiLoading}
-          className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
-        >
-          {aiLoading ? (
-            <><span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />생성 중...</>
-          ) : (
-            <><Sparkles className="w-4 h-4" />AI 초안 생성</>
-          )}
-        </button>
-      </section>
-
       {/* ① 기본 정보 */}
       <section className="border rounded-lg p-6 bg-white space-y-4">
         <h3 className="font-semibold text-gray-900">① 기본 정보</h3>
@@ -351,30 +275,22 @@ export function ServiceRecordForm({
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">대분류</label>
-            {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
-              <select value={majorCategory} onChange={e => setMajorCategory(e.target.value)} className={SELECT}>
-                <option value="">선택</option>
-                {MAJOR_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-            )}
+            <select value={majorCategory} onChange={e => setMajorCategory(e.target.value)} className={SELECT}>
+              <option value="">선택</option>
+              {MAJOR_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">소분류</label>
-            {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
-              <input value={subCategory} onChange={e => setSubCategory(e.target.value)} type="text" className={INPUT} />
-            )}
+            <input value={subCategory} onChange={e => setSubCategory(e.target.value)} type="text" className={INPUT} />
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">서비스구분</label>
-            {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
-              <input value={serviceCategory} onChange={e => handleServiceCategoryChange(e.target.value)} type="text" className={INPUT} />
-            )}
+            <input value={serviceCategory} onChange={e => handleServiceCategoryChange(e.target.value)} type="text" className={INPUT} />
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">신청품목</label>
-            {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
-              <input value={productName} onChange={e => setProductName(e.target.value)} type="text" className={INPUT} />
-            )}
+            <input value={productName} onChange={e => setProductName(e.target.value)} type="text" className={INPUT} />
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">품목고시 명칭</label>
@@ -394,34 +310,28 @@ export function ServiceRecordForm({
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">서비스영역</label>
-            {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
-              <input
-                list="service-areas-list"
-                value={serviceArea}
-                onChange={e => setServiceArea(e.target.value)}
-                className={INPUT}
-                placeholder="품목고시 선택 시 자동 설정"
-              />
-            )}
+            <input
+              list="service-areas-list"
+              value={serviceArea}
+              onChange={e => setServiceArea(e.target.value)}
+              className={INPUT}
+              placeholder="품목고시 선택 시 자동 설정"
+            />
             <datalist id="service-areas-list">
               {SERVICE_AREAS.map(a => <option key={a} value={a} />)}
             </datalist>
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">의뢰구분</label>
-            {aiLoading ? <div className={`${SKELETON} h-9`} /> : (
-              <select value={referralType} onChange={e => setReferralType(e.target.value)} className={SELECT}>
-                <option value="">선택</option>
-                {REFERRAL_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
-              </select>
-            )}
+            <select value={referralType} onChange={e => setReferralType(e.target.value)} className={SELECT}>
+              <option value="">선택</option>
+              {REFERRAL_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
           </div>
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">서비스 내용</label>
-          {aiLoading ? <div className={`${SKELETON} h-24`} /> : (
-            <textarea value={serviceContent} onChange={e => setServiceContent(e.target.value)} rows={5} className={INPUT} placeholder="서비스 내용을 입력하세요" />
-          )}
+          <textarea value={serviceContent} onChange={e => setServiceContent(e.target.value)} rows={5} className={INPUT} placeholder="서비스 내용을 입력하세요" />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div><label className="block text-xs font-medium text-gray-600 mb-1">상담일</label><input name="consultation_date" type="date" className={INPUT} /></div>

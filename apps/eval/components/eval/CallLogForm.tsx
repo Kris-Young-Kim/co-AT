@@ -1,10 +1,8 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Mic, MicOff, Sparkles } from 'lucide-react'
 import type { CallLog, CreateCallLogInput } from '@/actions/call-log-actions'
-import { generateCallLogAnswer } from '@/actions/ai-actions'
 
 interface CallLogFormProps {
   defaultValues?: Partial<CallLog>
@@ -25,27 +23,6 @@ const Q_TYPES = [
   { key: 'q_other', label: '기타' },
 ] as const
 
-type VoiceField = 'question_content' | 'answer'
-
-interface SpeechRecognitionAPI {
-  lang: string
-  continuous: boolean
-  interimResults: boolean
-  onresult: ((event: SpeechRecognitionAPIEvent) => void) | null
-  onerror: (() => void) | null
-  onend: (() => void) | null
-  start(): void
-  stop(): void
-}
-interface SpeechRecognitionAPIEvent {
-  resultIndex: number
-  results: SpeechRecognitionAPIResultList
-}
-interface SpeechRecognitionAPIResultList {
-  length: number
-  [index: number]: { isFinal: boolean; [index: number]: { transcript: string } }
-}
-
 export function CallLogForm({ defaultValues, onSubmit, submitLabel = '저장' }: CallLogFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -57,87 +34,12 @@ export function CallLogForm({ defaultValues, onSubmit, submitLabel = '저장' }:
     q_case_management: defaultValues?.q_case_management ?? false,
     q_other: defaultValues?.q_other ?? false,
   })
-
   const [questionContent, setQuestionContent] = useState<string>(
     (defaultValues?.question_content as string) ?? ''
   )
   const [answerContent, setAnswerContent] = useState<string>(
     (defaultValues?.answer as string) ?? ''
   )
-  const [recording, setRecording] = useState<VoiceField | null>(null)
-  const recognitionRef = useRef<SpeechRecognitionAPI | null>(null)
-  const [aiLoading, setAiLoading] = useState(false)
-  const [aiError, setAiError] = useState<string | null>(null)
-
-  function toggleRecording(field: VoiceField) {
-    if (recording === field) {
-      recognitionRef.current?.stop()
-      recognitionRef.current = null
-      setRecording(null)
-      return
-    }
-
-    recognitionRef.current?.stop()
-    recognitionRef.current = null
-
-    type SpeechRecognitionCtor = new () => SpeechRecognitionAPI
-    const win = window as Window & { webkitSpeechRecognition?: SpeechRecognitionCtor; SpeechRecognition?: SpeechRecognitionCtor }
-    const SpeechRecognitionImpl = win.webkitSpeechRecognition ?? win.SpeechRecognition
-
-    if (!SpeechRecognitionImpl) {
-      alert('이 브라우저는 음성 인식을 지원하지 않습니다. Chrome을 사용해 주세요.')
-      return
-    }
-
-    const rec = new SpeechRecognitionImpl()
-    rec.lang = 'ko-KR'
-    rec.continuous = true
-    rec.interimResults = false
-
-    rec.onresult = (event: SpeechRecognitionAPIEvent) => {
-      const results = Array.from({ length: event.results.length }, (_, i) => event.results[i])
-      const transcript = results
-        .slice(event.resultIndex)
-        .filter(r => r.isFinal)
-        .map(r => r[0].transcript)
-        .join('')
-      if (!transcript) return
-      const setter = field === 'question_content' ? setQuestionContent : setAnswerContent
-      setter(prev => prev ? `${prev} ${transcript}` : transcript)
-    }
-
-    rec.onerror = () => {
-      recognitionRef.current = null
-      setRecording(null)
-    }
-
-    rec.onend = () => {
-      recognitionRef.current = null
-      setRecording(prev => prev === field ? null : prev)
-    }
-
-    recognitionRef.current = rec
-    rec.start()
-    setRecording(field)
-  }
-
-  async function handleAiAnswer() {
-    setAiLoading(true)
-    setAiError(null)
-    const activeQuestionTypes = Q_TYPES.filter(q => qTypes[q.key]).map(q => q.label)
-    const result = await generateCallLogAnswer({
-      questionContent: questionContent,
-      requesterType: null,
-      disabilityType: null,
-      activeQuestionTypes,
-    })
-    setAiLoading(false)
-    if (!result.success || !result.answer) {
-      setAiError(result.error ?? 'AI 답변 생성에 실패했습니다')
-      return
-    }
-    setAnswerContent(result.answer)
-  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -184,66 +86,18 @@ export function CallLogForm({ defaultValues, onSubmit, submitLabel = '저장' }:
     </div>
   )
 
-  const voiceTextarea = (field: VoiceField, label: string) => {
-    const isRecording = recording === field
+  const textareaField = (field: 'question_content' | 'answer', label: string) => {
     const value = field === 'question_content' ? questionContent : answerContent
     const setter = field === 'question_content' ? setQuestionContent : setAnswerContent
-
     return (
       <div key={field}>
-        <div className="flex items-center justify-between mb-1">
-          <label className="block text-sm font-medium text-gray-700">{label}</label>
-          <div className="flex items-center gap-2">
-            {field === 'answer' && (
-              <button
-                type="button"
-                onClick={handleAiAnswer}
-                disabled={aiLoading || !questionContent.trim()}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 disabled:opacity-50 transition-colors"
-              >
-                {aiLoading ? (
-                  <span className="inline-block w-3 h-3 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <Sparkles className="w-3.5 h-3.5" />
-                )}
-                AI 초안
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={() => toggleRecording(field)}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
-                isRecording
-                  ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {isRecording ? (
-                <>
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                  <MicOff className="w-3.5 h-3.5" />
-                  녹음 중지
-                </>
-              ) : (
-                <>
-                  <Mic className="w-3.5 h-3.5" />
-                  음성 입력
-                </>
-              )}
-            </button>
-          </div>
-        </div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
         <textarea
           name={field}
           rows={3}
           value={value}
           onChange={e => setter(e.target.value)}
-          className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 resize-none transition-colors ${
-            isRecording
-              ? 'border-red-300 focus:ring-red-400 bg-red-50'
-              : 'focus:ring-blue-500'
-          }`}
-          placeholder={isRecording ? '음성 인식 중...' : ''}
+          className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
         />
       </div>
     )
@@ -354,10 +208,8 @@ export function CallLogForm({ defaultValues, onSubmit, submitLabel = '저장' }:
         </div>
       </div>
 
-      {/* 질문내용 + 답변 (음성 입력 + AI 초안 지원) */}
-      {voiceTextarea('question_content', '질문 내용')}
-      {voiceTextarea('answer', '답변(조치사항)')}
-      {aiError && <p className="text-sm text-red-600 -mt-3">{aiError}</p>}
+      {textareaField('question_content', '질문 내용')}
+      {textareaField('answer', '답변(조치사항)')}
 
       {textField('staff_name', '상담자')}
 

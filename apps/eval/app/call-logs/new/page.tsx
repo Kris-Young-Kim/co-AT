@@ -1,4 +1,5 @@
-import { CallLogNewWithStt } from '@/eval/components/eval/CallLogNewWithStt'
+import { CallLogForm } from '@/eval/components/eval/CallLogForm'
+import { createCallLog } from '@/actions/call-log-actions'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
@@ -12,7 +13,11 @@ export default function CallLogNewPage() {
         </Link>
         <h1 className="text-2xl font-bold text-gray-900">콜센터 상담 등록</h1>
       </div>
-      <CallLogNewWithStt defaultDate={today} />
+      <CallLogForm
+        defaultValues={{ log_date: today }}
+        onSubmit={createCallLog}
+        submitLabel="등록"
+      />
     </div>
   )
 }
