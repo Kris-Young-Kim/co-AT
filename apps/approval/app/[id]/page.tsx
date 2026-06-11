@@ -3,7 +3,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect, notFound } from 'next/navigation'
 import { getCurrentRole, requireRole } from '@co-at/auth'
 import { ROLES } from '@co-at/types'
-import { getDocument, submitDocument } from '@/actions/approval-actions'
+import { getDocument, submitDocument, getActiveDelegatorsForUser } from '@/actions/approval-actions'
 import type {
   ApprovalDocumentWithSteps,
   ApprovalStep,
@@ -109,6 +109,11 @@ function StepRow({ step, label }: { step: ApprovalStep; label: string }) {
       <div className="w-20 shrink-0 text-sm font-medium text-gray-600">{label}</div>
       <div className="flex-1">
         <span className={`text-sm font-semibold ${className}`}>{statusLabel}</span>
+        {step.is_delegated && (
+          <span className="ml-2 text-xs border border-amber-300 text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
+            대리 결재
+          </span>
+        )}
         {step.acted_at && (
           <span className="text-xs text-gray-400 ml-2">{new Date(step.acted_at).toLocaleString('ko-KR')}</span>
         )}
@@ -157,9 +162,12 @@ export default async function DocumentDetailPage({
   const step1 = doc.approval_steps.find(s => s.step === 1)
   const step2 = doc.approval_steps.find(s => s.step === 2)
 
+  const delegatorIds = await getActiveDelegatorsForUser(userId)
+  const isDelegated = delegatorIds.length > 0
+
   // Determine which pending step the current user can act on
   let actionableStep: ApprovalStep | null = null
-  if (step1?.status === 'pending' && isManager) {
+  if (step1?.status === 'pending' && (isManager || isDelegated)) {
     actionableStep = step1
   } else if (step1?.status === 'approved' && step2?.status === 'pending' && isAdmin) {
     actionableStep = step2
@@ -227,7 +235,7 @@ export default async function DocumentDetailPage({
 
       {/* Approve/reject panel */}
       {actionableStep && doc.status === 'pending' && (
-        <ApprovePanel step={actionableStep} />
+        <ApprovePanel step={actionableStep} isDelegated={isDelegated && actionableStep.step === 1} />
       )}
 
       {/* Rejected info */}

@@ -8,9 +8,10 @@ import type { ApprovalStep } from '@co-at/types'
 
 interface Props {
   step: ApprovalStep
+  isDelegated: boolean
 }
 
-export function ApprovePanel({ step }: Props) {
+export function ApprovePanel({ step, isDelegated }: Props) {
   const { user } = useUser()
   const router = useRouter()
   const [signatureUrl, setSignatureUrl] = useState<string | null>(null)
@@ -30,7 +31,7 @@ export function ApprovePanel({ step }: Props) {
     if (!user?.id) return
     setSubmitting(true)
     setError(null)
-    const ok = await approveStep(step.id, user.id, signatureUrl)
+    const ok = await approveStep(step.id, user.id, signatureUrl, isDelegated)
     if (ok) {
       router.refresh()
     } else {
