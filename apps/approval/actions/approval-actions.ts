@@ -6,12 +6,15 @@ import { clerkClient } from '@clerk/nextjs/server'
 import { assertRole, requireRole } from '@co-at/auth'
 import { ROLES } from '@co-at/types'
 import { createSupabaseAdmin } from '@/lib/supabase-admin'
+import { isActiveDelegation } from '@/lib/delegation-utils'
 import type {
   ApprovalDocument,
   ApprovalDocumentWithSteps,
   ApprovalSignature,
   ApprovalStepRole,
   CreateDocumentInput,
+  ApprovalDelegation,
+  DelegationWithNames,
 } from '@co-at/types'
 
 // ── Helpers ───────────────────────────────────────────────
@@ -275,6 +278,119 @@ export async function rejectStep(
   )
 
   return true
+}
+
+// ── Delegation ────────────────────────────────────────────
+
+export async function getActiveDelegatorsForUser(
+  delegateeClerkId: string
+): Promise<string[]> {
+  const supabase = createSupabaseAdmin()
+  const today = new Date().toISOString().split('T')[0]
+  const { data, error } = await supabase
+    .from('approval_delegations')
+    .select('delegator_clerk_id, start_date, end_date, is_active')
+    .eq('delegatee_clerk_id', delegateeClerkId)
+    .eq('is_active', true)
+  if (error || !data) return []
+  return data
+    .filter(d => isActiveDelegation(d, today))
+    .map(d => d.delegator_clerk_id)
+}
+
+export async function createDelegation(input: {
+  delegatorClerkId: string
+  delegateeClerkId: string
+  startDate?: string | null
+  endDate?: string | null
+  note?: string | null
+}): Promise<{ success: boolean; error?: string }> {
+  if (input.delegatorClerkId === input.delegateeClerkId) {
+    return { success: false, error: '자기 자신에게 위임할 수 없습니다.' }
+  }
+  const supabase = createSupabaseAdmin()
+  const { error } = await supabase
+    .from('approval_delegations')
+    .insert({
+      delegator_clerk_id: input.delegatorClerkId,
+      delegatee_clerk_id: input.delegateeClerkId,
+      start_date:         input.startDate ?? null,
+      end_date:           input.endDate ?? null,
+      note:               input.note ?? null,
+    })
+  if (error) return { success: false, error: error.message }
+  return { success: true }
+}
+
+export async function deactivateDelegation(
+  id: string,
+  clerkUserId: string
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = createSupabaseAdmin()
+  const { data: existing } = await supabase
+    .from('approval_delegations')
+    .select('delegator_clerk_id')
+    .eq('id', id)
+    .single()
+  if (!existing || existing.delegator_clerk_id !== clerkUserId) {
+    return { success: false, error: '권한이 없습니다.' }
+  }
+  const { error } = await supabase
+    .from('approval_delegations')
+    .update({ is_active: false })
+    .eq('id', id)
+  if (error) return { success: false, error: error.message }
+  return { success: true }
+}
+
+export async function getMyDelegations(
+  clerkUserId: string
+): Promise<{ given: DelegationWithNames[]; received: DelegationWithNames[] }> {
+  const supabase = createSupabaseAdmin()
+  const clerk = await clerkClient()
+
+  const [givenRes, receivedRes] = await Promise.all([
+    supabase
+      .from('approval_delegations')
+      .select('*')
+      .eq('delegator_clerk_id', clerkUserId)
+      .order('created_at', { ascending: false }),
+    supabase
+      .from('approval_delegations')
+      .select('*')
+      .eq('delegatee_clerk_id', clerkUserId)
+      .order('created_at', { ascending: false }),
+  ])
+
+  const allRows = [
+    ...(givenRes.data ?? []),
+    ...(receivedRes.data ?? []),
+  ] as ApprovalDelegation[]
+
+  const uniqueIds = [...new Set(allRows.flatMap(r => [r.delegator_clerk_id, r.delegatee_clerk_id]))]
+  const nameMap: Record<string, string> = {}
+  await Promise.all(
+    uniqueIds.map(async id => {
+      try {
+        const u = await clerk.users.getUser(id)
+        nameMap[id] = [u.firstName, u.lastName].filter(Boolean).join(' ') || id
+      } catch {
+        nameMap[id] = id
+      }
+    })
+  )
+
+  const enrich = (rows: ApprovalDelegation[]): DelegationWithNames[] =>
+    rows.map(r => ({
+      ...r,
+      delegator_name: nameMap[r.delegator_clerk_id] ?? r.delegator_clerk_id,
+      delegatee_name: nameMap[r.delegatee_clerk_id] ?? r.delegatee_clerk_id,
+    }))
+
+  return {
+    given:    enrich((givenRes.data ?? []) as ApprovalDelegation[]),
+    received: enrich((receivedRes.data ?? []) as ApprovalDelegation[]),
+  }
 }
 
 // ── Queries ───────────────────────────────────────────────
