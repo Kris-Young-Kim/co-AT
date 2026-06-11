@@ -102,7 +102,7 @@ function Charts({ data }: { data: FinanceDashboardData }) {
                 startAngle={90} endAngle={-270}
               >
                 <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-                <RadialBar dataKey="value" cornerRadius={10} background={{ fill: '#f3f4f6' } as object} />
+                <RadialBar dataKey="value" cornerRadius={10} />
               </RadialBarChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -160,7 +160,7 @@ function Charts({ data }: { data: FinanceDashboardData }) {
                 label={{ value: '100%', position: 'right', fontSize: 11 }}
               />
               <Bar dataKey="rate" fill="#10b981" name="집행률">
-                <LabelList dataKey="rate" position="top" formatter={(v) => Number(v ?? 0) + '%'} />
+                <LabelList dataKey="rate" position="top" formatter={(v: string | number | boolean | null | undefined) => Number(v ?? 0) + '%'} />
               </Bar>
             </BarChart>
           </ResponsiveContainer>
