@@ -46,7 +46,7 @@ export default async function DashboardPage() {
 
   const stepRole: ApprovalStepRole | null =
     role === ROLES.ADMIN ? 'admin' : role === ROLES.MANAGER ? 'manager' : null
-  const pendingApprovals = stepRole ? await getPendingApprovals(stepRole) : []
+  const pendingApprovals = stepRole ? await getPendingApprovals(stepRole, userId) : []
 
   return (
     <div className="p-8 space-y-8 max-w-5xl">

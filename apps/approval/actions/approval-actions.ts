@@ -146,7 +146,8 @@ export async function submitDocument(id: string): Promise<boolean> {
 export async function approveStep(
   stepId: string,
   actorClerkUserId: string,
-  signatureUrl: string | null
+  signatureUrl: string | null,
+  isDelegated?: boolean
 ): Promise<boolean> {
   await assertRole(ROLES.MANAGER)
   const supabase = createSupabaseAdmin()
@@ -174,6 +175,7 @@ export async function approveStep(
       acted_by:      actorClerkUserId,
       signature_url: signatureUrl,
       acted_at:      new Date().toISOString(),
+      is_delegated:  isDelegated ?? false,
     })
     .eq('id', stepId)
   if (error) { console.error('[approveStep]', error); return false }
@@ -416,18 +418,42 @@ export async function getMyDocuments(userId: string): Promise<ApprovalDocumentWi
   return (data ?? []) as ApprovalDocumentWithSteps[]
 }
 
-export async function getPendingApprovals(role: ApprovalStepRole): Promise<ApprovalDocumentWithSteps[]> {
+export async function getPendingApprovals(
+  role: ApprovalStepRole,
+  clerkUserId: string
+): Promise<ApprovalDocumentWithSteps[]> {
   const supabase = createSupabaseAdmin()
   const stepNum = role === 'manager' ? 1 : 2
-  const { data, error } = await supabase
+
+  const [ownRes, delegatorIds] = await Promise.all([
+    supabase
+      .from('approval_documents')
+      .select('*, approval_steps!inner(*)')
+      .eq('status', 'pending')
+      .eq('approval_steps.step', stepNum)
+      .eq('approval_steps.status', 'pending')
+      .order('created_at', { ascending: false }),
+    getActiveDelegatorsForUser(clerkUserId),
+  ])
+
+  if (ownRes.error) { console.error('[getPendingApprovals]', ownRes.error); return [] }
+  const own = (ownRes.data ?? []) as ApprovalDocumentWithSteps[]
+
+  if (delegatorIds.length === 0) return own
+
+  const { data: delegatedData, error: delegatedError } = await supabase
     .from('approval_documents')
     .select('*, approval_steps!inner(*)')
     .eq('status', 'pending')
-    .eq('approval_steps.step', stepNum)
+    .eq('approval_steps.step', 1)
     .eq('approval_steps.status', 'pending')
     .order('created_at', { ascending: false })
-  if (error) { console.error('[getPendingApprovals]', error); return [] }
-  return (data ?? []) as ApprovalDocumentWithSteps[]
+  if (delegatedError) { console.error('[getPendingApprovals delegated]', delegatedError) }
+
+  const delegated = (delegatedData ?? []) as ApprovalDocumentWithSteps[]
+  const ownIds = new Set(own.map(d => d.id))
+  const merged = [...own, ...delegated.filter(d => !ownIds.has(d.id))]
+  return merged
 }
 
 export async function getDocument(id: string): Promise<ApprovalDocumentWithSteps | null> {
