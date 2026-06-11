@@ -43,4 +43,8 @@ describe('isActiveDelegation', () => {
   it('returns false when after date range', () => {
     expect(isActiveDelegation({ is_active: true, start_date: '2026-06-01', end_date: '2026-06-05' }, TODAY)).toBe(false)
   })
+
+  it('returns false when is_active is false even if within date range', () => {
+    expect(isActiveDelegation({ is_active: false, start_date: '2026-06-01', end_date: '2026-06-30' }, TODAY)).toBe(false)
+  })
 })

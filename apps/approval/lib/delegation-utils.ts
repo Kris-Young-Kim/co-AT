@@ -4,6 +4,9 @@ interface DelegationDateRange {
   end_date: string | null
 }
 
+/**
+ * @param today ISO date string in YYYY-MM-DD format
+ */
 export function isActiveDelegation(delegation: DelegationDateRange, today: string): boolean {
   if (!delegation.is_active) return false
   if (delegation.start_date !== null && delegation.start_date > today) return false
