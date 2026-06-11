@@ -505,7 +505,7 @@
 | 결재 승인/반려 워크플로우 (2단계: manager→admin) | ✅ |
 | 전자서명 (결재선 순차 처리) | ✅ |
 | PDF 출력 (`@react-pdf/renderer`) | ✅ |
-| 위임 결재 | ⬜ |
+| 위임 결재 | ✅ |
 | notifications 타입 버그 (`'approval'` CHECK 제약 미등록) | ✅ |
 
 ---
