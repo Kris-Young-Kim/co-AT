@@ -93,6 +93,7 @@ export interface ApprovalStep {
   signature_url: string | null
   comment: string | null
   acted_at: string | null
+  is_delegated: boolean
 }
 
 export interface ApprovalDocumentWithSteps extends ApprovalDocument {
@@ -105,4 +106,22 @@ export interface CreateDocumentInput {
   type: ApprovalDocumentType
   title: string
   content: ApprovalDocumentContent
+}
+
+// ── Delegation ────────────────────────────────────────────
+
+export interface ApprovalDelegation {
+  id: string
+  delegator_clerk_id: string
+  delegatee_clerk_id: string
+  start_date: string | null
+  end_date: string | null
+  is_active: boolean
+  note: string | null
+  created_at: string
+}
+
+export interface DelegationWithNames extends ApprovalDelegation {
+  delegator_name: string
+  delegatee_name: string
 }
