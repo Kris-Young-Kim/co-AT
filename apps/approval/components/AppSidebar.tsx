@@ -7,6 +7,7 @@ import {
   FilePlus,
   Archive,
   Stamp,
+  UserCheck,
 } from 'lucide-react'
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -16,10 +17,11 @@ function cn(...inputs: Parameters<typeof clsx>) {
 }
 
 const NAV_ITEMS = [
-  { href: '/',                    label: '결재함',    icon: LayoutDashboard },
-  { href: '/new',                 label: '기안하기',  icon: FilePlus        },
-  { href: '/archive',             label: '보관함',    icon: Archive         },
-  { href: '/settings/signature',  label: '서명 등록', icon: Stamp           },
+  { href: '/',                       label: '결재함',    icon: LayoutDashboard },
+  { href: '/new',                    label: '기안하기',  icon: FilePlus        },
+  { href: '/archive',                label: '보관함',    icon: Archive         },
+  { href: '/settings/signature',     label: '서명 등록', icon: Stamp           },
+  { href: '/settings/delegation',    label: '위임 결재', icon: UserCheck       },
 ]
 
 export function AppSidebar() {
