@@ -445,6 +445,7 @@ export async function getPendingApprovals(
     .from('approval_documents')
     .select('*, approval_steps!inner(*)')
     .eq('status', 'pending')
+    .in('created_by', delegatorIds)
     .eq('approval_steps.step', 1)
     .eq('approval_steps.status', 'pending')
     .order('created_at', { ascending: false })
