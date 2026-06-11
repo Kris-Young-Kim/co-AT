@@ -1,4 +1,4 @@
-import type { FinanceCategoryStats, FinanceMonthlySpend } from '@co-at/types'
+import type { FinanceCategoryStats, FinanceMonthlySpend, FinanceFundingBreakdown } from '@co-at/types'
 
 export function formatKRW(n: number): string {
   return n.toLocaleString('ko-KR') + '원'
@@ -16,10 +16,10 @@ export interface FundingSourceRow {
   집행액: number
 }
 
-export function buildFundingSourceData(totalBudget: number, totalSpent: number): FundingSourceRow[] {
+export function buildFundingSourceData(breakdown: FinanceFundingBreakdown): FundingSourceRow[] {
   return [
-    { name: '국비', 예산: Math.floor(totalBudget * 0.5), 집행액: Math.floor(totalSpent * 0.5) },
-    { name: '도비', 예산: Math.floor(totalBudget * 0.5), 집행액: Math.floor(totalSpent * 0.5) },
+    { name: '국비', 예산: breakdown.nationalBudget,   집행액: breakdown.nationalSpent },
+    { name: '도비', 예산: breakdown.provincialBudget, 집행액: breakdown.provincialSpent },
   ]
 }
 

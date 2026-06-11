@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getDashboardData } from '@/actions/finance-actions'
+import { MonthlyBarChart } from '@/components/MonthlyBarChart'
 import type { FinanceCategoryStats } from '@co-at/types'
 
 function fmt(n: number) {
@@ -38,17 +39,6 @@ function CategoryRow({ stat, depth = 0 }: { stat: FinanceCategoryStats; depth?: 
   )
 }
 
-function MonthlyBar({ month, amount, max }: { month: number; amount: number; max: number }) {
-  const h = max > 0 ? Math.round((amount / max) * 80) : 0
-  return (
-    <div className="flex flex-col items-center gap-1">
-      <div className="w-8 bg-gray-100 rounded-t flex flex-col justify-end" style={{ height: 84 }}>
-        <div className="bg-emerald-500 rounded-t w-full" style={{ height: h }} />
-      </div>
-      <span className="text-xs text-gray-500">{month}월</span>
-    </div>
-  )
-}
 
 export default async function DashboardPage({
   searchParams,
@@ -61,7 +51,6 @@ export default async function DashboardPage({
   const sp = await searchParams
   const year = sp.year ? parseInt(sp.year) : new Date().getFullYear()
   const data = await getDashboardData(year)
-  const maxMonthly = Math.max(...data.monthlySpend.map(m => m.amount), 1)
   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 2 + i)
 
   return (
@@ -122,12 +111,7 @@ export default async function DashboardPage({
       {/* Monthly chart */}
       <div className="bg-white border rounded-lg p-5">
         <h2 className="font-semibold text-sm mb-4">월별 지출 추이 ({year}년)</h2>
-        <div className="flex items-end gap-2">
-          {data.monthlySpend.map(m => (
-            <MonthlyBar key={m.month} month={m.month} amount={m.amount} max={maxMonthly} />
-          ))}
-        </div>
-        <div className="mt-3 text-xs text-gray-400 text-right">단위: 원</div>
+        <MonthlyBarChart data={data.monthlySpend} />
       </div>
     </div>
   )

@@ -81,7 +81,7 @@ export function ChartsTab({ initialYear }: Props) {
 
 function Charts({ data }: { data: FinanceDashboardData }) {
   const executionColor = getExecutionColor(data.executionRate)
-  const fundingData    = buildFundingSourceData(data.totalBudget, data.totalSpent)
+  const fundingData    = buildFundingSourceData(data.fundingBreakdown)
   const quarterlyData  = buildQuarterlyData(data.monthlySpend, data.totalBudget)
   const subsidyData    = buildSubsidyTypeData(data.categoryStats)
   const businessData   = data.categoryStats.map(s => ({ name: s.category.name, rate: s.rate }))

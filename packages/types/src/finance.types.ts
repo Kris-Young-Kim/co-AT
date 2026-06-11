@@ -6,6 +6,8 @@ export interface FinanceBudgetCategory {
   name: string
   code: string | null
   order_no: number
+  national_ratio: number    // 0-100, default 50
+  provincial_ratio: number  // 0-100, default 50
   created_at: string
 }
 
@@ -72,6 +74,13 @@ export interface FinanceMonthlySpend {
   amount: number
 }
 
+export interface FinanceFundingBreakdown {
+  nationalBudget: number
+  nationalSpent: number
+  provincialBudget: number
+  provincialSpent: number
+}
+
 export interface FinanceDashboardData {
   year: number
   totalBudget: number
@@ -80,6 +89,7 @@ export interface FinanceDashboardData {
   executionRate: number
   categoryStats: FinanceCategoryStats[]
   monthlySpend: FinanceMonthlySpend[]
+  fundingBreakdown: FinanceFundingBreakdown
 }
 
 // ── Input types ───────────────────────────────────────────

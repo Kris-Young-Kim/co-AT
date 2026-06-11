@@ -739,6 +739,188 @@ export async function getStaffMembers(): Promise<StaffMember[]> {
   }
 }
 
+export interface PortalUserInfo {
+  id: string
+  email: string | null
+  fullName: string | null
+}
+
+export async function getLinkedPortalUserInfo(portalUserId: string): Promise<{
+  success: boolean
+  user?: PortalUserInfo
+  error?: string
+}> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+    const clerk = await clerkClient()
+    const user = await clerk.users.getUser(portalUserId)
+    return {
+      success: true,
+      user: {
+        id: user.id,
+        email: user.emailAddresses[0]?.emailAddress ?? null,
+        fullName: user.fullName,
+      },
+    }
+  } catch (error) {
+    console.error('getLinkedPortalUserInfo:', error)
+    return { success: false, error: '포털 사용자 정보를 가져오지 못했습니다' }
+  }
+}
+
+function normalizeKoreanPhone(value: string): string {
+  // Strip spaces, dashes, dots
+  const digits = value.replace(/[\s\-\.]/g, '')
+  if (digits.startsWith('+82')) return digits
+  // 010... → +8210...
+  if (digits.startsWith('0')) return '+82' + digits.slice(1)
+  return '+82' + digits
+}
+
+export async function linkPortalUser(
+  clientId: string,
+  identifier: string,
+  mode: 'email' | 'phone' = 'email'
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+    const clerk = await clerkClient()
+
+    let clerkUser
+    if (mode === 'phone') {
+      const e164 = normalizeKoreanPhone(identifier)
+      const result = await clerk.users.getUserList({ phoneNumber: [e164], limit: 1 })
+      clerkUser = result.data[0]
+      if (!clerkUser) {
+        return { success: false, error: '해당 전화번호로 가입된 포털 계정을 찾을 수 없습니다' }
+      }
+    } else {
+      const result = await clerk.users.getUserList({ emailAddress: [identifier.trim()], limit: 1 })
+      clerkUser = result.data[0]
+      if (!clerkUser) {
+        return { success: false, error: '해당 이메일로 가입된 포털 계정을 찾을 수 없습니다' }
+      }
+    }
+
+    const supabase = createAdminClient()
+
+    // Check if this Clerk user is already linked to another client
+    const { data: existing } = await supabase
+      .from('clients')
+      .select('id, name')
+      .eq('portal_user_id', clerkUser.id)
+      .neq('id', clientId)
+      .single()
+
+    if (existing) {
+      const row = existing as { id: string; name: string }
+      return { success: false, error: `이미 다른 대상자(${row.name})에 연결된 계정입니다` }
+    }
+
+    const { error } = await supabase
+      .from('clients')
+      .update({ portal_user_id: clerkUser.id, updated_at: new Date().toISOString() })
+      .eq('id', clientId)
+
+    if (error) {
+      console.error('linkPortalUser update:', error)
+      return { success: false, error: '연결에 실패했습니다' }
+    }
+
+    revalidatePath(`/clients/${clientId}`)
+    return { success: true }
+  } catch (error) {
+    console.error('Unexpected error in linkPortalUser:', error)
+    return { success: false, error: '예상치 못한 오류가 발생했습니다' }
+  }
+}
+
+export async function linkPortalUserByName(
+  clientId: string,
+  name: string,
+  birthDate: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+    const clerk = await clerkClient()
+    const result = await clerk.users.getUserList({ query: name.trim(), limit: 50 })
+
+    const matched = result.data.filter((u) => {
+      const meta = u.publicMetadata as { birth_date?: string; name?: string }
+      return meta?.birth_date === birthDate
+    })
+
+    if (matched.length === 0) {
+      return { success: false, error: '이름과 생년월일이 일치하는 포털 계정을 찾을 수 없습니다' }
+    }
+    if (matched.length > 1) {
+      return { success: false, error: '일치하는 계정이 여러 명입니다. 이메일 또는 전화번호로 검색해 주세요' }
+    }
+
+    const clerkUser = matched[0]
+    const supabase = createAdminClient()
+
+    const { data: existing } = await supabase
+      .from('clients')
+      .select('id, name')
+      .eq('portal_user_id', clerkUser.id)
+      .neq('id', clientId)
+      .single()
+
+    if (existing) {
+      const row = existing as { id: string; name: string }
+      return { success: false, error: `이미 다른 대상자(${row.name})에 연결된 계정입니다` }
+    }
+
+    const { error } = await supabase
+      .from('clients')
+      .update({ portal_user_id: clerkUser.id, updated_at: new Date().toISOString() })
+      .eq('id', clientId)
+
+    if (error) {
+      console.error('linkPortalUserByName update:', error)
+      return { success: false, error: '연결에 실패했습니다' }
+    }
+
+    revalidatePath(`/clients/${clientId}`)
+    return { success: true }
+  } catch (error) {
+    console.error('Unexpected error in linkPortalUserByName:', error)
+    return { success: false, error: '예상치 못한 오류가 발생했습니다' }
+  }
+}
+
+export async function unlinkPortalUser(
+  clientId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+    const supabase = createAdminClient()
+    const { error } = await supabase
+      .from('clients')
+      .update({ portal_user_id: null, updated_at: new Date().toISOString() })
+      .eq('id', clientId)
+
+    if (error) {
+      console.error('unlinkPortalUser update:', error)
+      return { success: false, error: '연결 해제에 실패했습니다' }
+    }
+
+    revalidatePath(`/clients/${clientId}`)
+    return { success: true }
+  } catch (error) {
+    console.error('Unexpected error in unlinkPortalUser:', error)
+    return { success: false, error: '예상치 못한 오류가 발생했습니다' }
+  }
+}
+
 export interface ActiveService {
   id: string
   service_type: 'grant_eval' | 'rental' | 'custom_make' | 'application'
@@ -852,6 +1034,75 @@ export async function getClientActiveServices(clientId: string): Promise<{
   } catch (e) {
     console.error('getClientActiveServices:', e)
     return { success: false, error: '예상치 못한 오류가 발생했습니다' }
+  }
+}
+
+export interface SimilarClient {
+  id: string
+  name: string
+  birth_date: string | null
+  disability_type: string | null
+  disability_grade: string | null
+  service_record_count: number
+}
+
+export async function getSimilarClients(
+  clientId: string,
+  disabilityType: string | null,
+  limit = 5
+): Promise<{ success: boolean; clients?: SimilarClient[]; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+    if (!disabilityType) return { success: true, clients: [] }
+
+    const supabase = createAdminClient()
+
+    const { data, error } = await supabase
+      .from("clients")
+      .select("id, name, birth_date, disability_type, disability_grade")
+      .eq("disability_type", disabilityType)
+      .eq("status", "registered")
+      .neq("id", clientId)
+      .limit(limit)
+
+    if (error) {
+      console.error("getSimilarClients:", error)
+      return { success: false, error: "유사 대상자 조회에 실패했습니다" }
+    }
+
+    const rows = (data || []) as Array<{
+      id: string
+      name: string
+      birth_date: string | null
+      disability_type: string | null
+      disability_grade: string | null
+    }>
+
+    const clients: SimilarClient[] = await Promise.all(
+      rows.map(async (c) => {
+        const { count } = await (supabase as any)
+          .from("eval_service_records")
+          .select("*", { count: "exact", head: true })
+          .eq("client_id", c.id)
+
+        return {
+          id: c.id,
+          name: c.name,
+          birth_date: c.birth_date,
+          disability_type: c.disability_type,
+          disability_grade: c.disability_grade,
+          service_record_count: count ?? 0,
+        }
+      })
+    )
+
+    clients.sort((a, b) => b.service_record_count - a.service_record_count)
+
+    return { success: true, clients }
+  } catch (e) {
+    console.error("Unexpected error in getSimilarClients:", e)
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
   }
 }
 

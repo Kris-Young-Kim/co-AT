@@ -14,6 +14,7 @@ import type {
   FinanceBudgetAdjustment,
   FinanceDashboardData,
   FinanceCategoryStats,
+  FinanceFundingBreakdown,
   CreateExpenditureInput,
   UpsertBudgetInput,
 } from '@co-at/types'
@@ -283,6 +284,23 @@ export async function getDashboardData(year: number): Promise<FinanceDashboardDa
 
   const totalBudget = categoryStats.reduce((s, c) => s + c.budget, 0)
 
+  // Funding breakdown (국비/도비) using per-category ratios
+  let nationalBudget = 0, nationalSpent = 0
+  let provincialBudget = 0, provincialSpent = 0
+  for (const stat of categoryStats) {
+    const items = stat.children?.length ? stat.children : [stat]
+    for (const item of items) {
+      const nRatio = item.category.national_ratio / 100
+      nationalBudget   += Math.round(item.budget * nRatio)
+      nationalSpent    += Math.round(item.spent  * nRatio)
+      provincialBudget += item.budget - Math.round(item.budget * nRatio)
+      provincialSpent  += item.spent  - Math.round(item.spent  * nRatio)
+    }
+  }
+  const fundingBreakdown: FinanceFundingBreakdown = {
+    nationalBudget, nationalSpent, provincialBudget, provincialSpent,
+  }
+
   // Monthly spend
   const monthlyMap = new Map<number, number>()
   for (const s of spends) {
@@ -302,5 +320,6 @@ export async function getDashboardData(year: number): Promise<FinanceDashboardDa
     executionRate: totalBudget ? Math.round((totalSpent / totalBudget) * 100) : 0,
     categoryStats,
     monthlySpend,
+    fundingBreakdown,
   }
 }

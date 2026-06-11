@@ -134,6 +134,39 @@ export type Database = {
           },
         ]
       }
+      approval_delegations: {
+        Row: {
+          created_at: string
+          delegatee_clerk_id: string
+          delegator_clerk_id: string
+          end_date: string | null
+          id: string
+          is_active: boolean
+          note: string | null
+          start_date: string | null
+        }
+        Insert: {
+          created_at?: string
+          delegatee_clerk_id: string
+          delegator_clerk_id: string
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          note?: string | null
+          start_date?: string | null
+        }
+        Update: {
+          created_at?: string
+          delegatee_clerk_id?: string
+          delegator_clerk_id?: string
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          note?: string | null
+          start_date?: string | null
+        }
+        Relationships: []
+      }
       approval_documents: {
         Row: {
           content: Json
@@ -199,6 +232,7 @@ export type Database = {
           comment: string | null
           document_id: string
           id: string
+          is_delegated: boolean
           signature_url: string | null
           status: string
           step: number
@@ -210,6 +244,7 @@ export type Database = {
           comment?: string | null
           document_id: string
           id?: string
+          is_delegated?: boolean
           signature_url?: string | null
           status?: string
           step: number
@@ -221,6 +256,7 @@ export type Database = {
           comment?: string | null
           document_id?: string
           id?: string
+          is_delegated?: boolean
           signature_url?: string | null
           status?: string
           step?: number
@@ -307,6 +343,51 @@ export type Database = {
           total_sent?: number
           triggered_by?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      banners: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          created_by: string | null
+          end_at: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          link_label: string
+          link_url: string | null
+          start_at: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          end_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          link_label?: string
+          link_url?: string | null
+          start_at?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          end_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          link_label?: string
+          link_url?: string | null
+          start_at?: string | null
+          title?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -974,6 +1055,50 @@ export type Database = {
           },
         ]
       }
+      eval_cases: {
+        Row: {
+          case_type: string
+          client_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          services: Json
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          case_type?: string
+          client_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          services?: Json
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          case_type?: string
+          client_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          services?: Json
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       eval_grant_assessments: {
         Row: {
           application_id: string | null
@@ -1221,6 +1346,59 @@ export type Database = {
         }
         Relationships: []
       }
+      eval_ippa_assessments: {
+        Row: {
+          assessment_year: number
+          client_id: string
+          created_at: string
+          id: string
+          items: Json
+          notes: string | null
+          outcome_score: number | null
+          post_date: string | null
+          pre_date: string | null
+          staff_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          assessment_year?: number
+          client_id: string
+          created_at?: string
+          id?: string
+          items?: Json
+          notes?: string | null
+          outcome_score?: number | null
+          post_date?: string | null
+          pre_date?: string | null
+          staff_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          assessment_year?: number
+          client_id?: string
+          created_at?: string
+          id?: string
+          items?: Json
+          notes?: string | null
+          outcome_score?: number | null
+          post_date?: string | null
+          pre_date?: string | null
+          staff_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_ippa_assessments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       eval_item_checklist_templates: {
         Row: {
           created_at: string | null
@@ -1272,6 +1450,7 @@ export type Database = {
           economic_status: string | null
           funding_source_detail: string | null
           gender: string | null
+          grant_assessment_id: string | null
           id: string
           info_provision_area: string | null
           is_assessment: boolean | null
@@ -1335,6 +1514,7 @@ export type Database = {
           economic_status?: string | null
           funding_source_detail?: string | null
           gender?: string | null
+          grant_assessment_id?: string | null
           id?: string
           info_provision_area?: string | null
           is_assessment?: boolean | null
@@ -1398,6 +1578,7 @@ export type Database = {
           economic_status?: string | null
           funding_source_detail?: string | null
           gender?: string | null
+          grant_assessment_id?: string | null
           id?: string
           info_provision_area?: string | null
           is_assessment?: boolean | null
@@ -1457,6 +1638,20 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eval_service_records_grant_assessment_id_fkey"
+            columns: ["grant_assessment_id"]
+            isOneToOne: false
+            referencedRelation: "eval_grant_assessment_list"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eval_service_records_grant_assessment_id_fkey"
+            columns: ["grant_assessment_id"]
+            isOneToOne: false
+            referencedRelation: "eval_grant_assessments"
             referencedColumns: ["id"]
           },
         ]
@@ -1552,6 +1747,41 @@ export type Database = {
           synced_at?: string | null
         }
         Relationships: []
+      }
+      finance_budget_categories: {
+        Row: {
+          code: string | null
+          created_at: string
+          id: string
+          name: string
+          order_no: number | null
+          parent_id: string | null
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          order_no?: number | null
+          parent_id?: string | null
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          order_no?: number | null
+          parent_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "finance_budget_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "finance_budget_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hr_allowance_types: {
         Row: {
@@ -4367,6 +4597,10 @@ export type Database = {
       backfill_eval_service_records: { Args: never; Returns: number }
       sync_eval_service_record: {
         Args: { p_application_id: string }
+        Returns: undefined
+      }
+      sync_grant_eval_service_record: {
+        Args: { p_grant_id: string }
         Returns: undefined
       }
     }

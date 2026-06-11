@@ -606,6 +606,9 @@
 | `081_create_eval_cases.sql` | `eval_cases` 테이블 (AX-2 다중 서비스 케이스 구조) | ✅ |
 | `082_sync_grant_eval_to_service_records.sql` | `eval_grant_assessments` → `eval_service_records` 자동 동기화 트리거 (`is_grant=true`) | ✅ |
 | `083_create_eval_ippa_assessments.sql` | `eval_ippa_assessments` 테이블 (K-IPPA 기능 성과 측정) + RLS + updated_at 트리거 | ✅ |
+| `085_create_approval_delegations.sql` | `approval_delegations` 테이블 + `approval_steps.is_delegated` 컬럼 추가 | ✅ |
+| `086_finance_funding_ratios.sql` | `finance_budget_categories`에 `national_ratio`, `provincial_ratio` 컬럼 추가 (기본값 50) | ✅ |
+| `087_clients_portal_user_id.sql` | `clients.portal_user_id` 컬럼 추가 (포털 계정 연결) + 인덱스 | ✅ |
 
 ### 미실행 / 예정 마이그레이션
 
@@ -649,12 +652,12 @@
 | 팔로업 알림 Cron — 사전 측정일 +4주/+12주/+24주 자동 알림 (Vercel Cron 09:00 KST) | ✅ |
 | 기관 전체 K-IPPA 집계 → stats 앱 대시보드 연동 | ✅ |
 
-#### 보완 성과 도구 (선택 적용)
+#### 보완 성과 도구
+
+> K-IPPA 단독 사용으로 결정. GAS/COPM은 필요 시 추가 구현.
 
 | 도구 | 설명 | 상태 |
 |------|------|------|
-| GAS (Goal Attainment Scaling) | 개인 목표 설정 + 달성도 -2~+2 척도 | ⬜ |
-| COPM (캐나다 작업 수행 측정) | 수행도·만족도 10점 척도, 재활 분야 국제 표준 | ⬜ |
 | 기존 만족도(1~5점) → K-IPPA와 통합 집계 | 현행 satisfaction_score 유지·연계 | ⬜ |
 
 ---
@@ -666,8 +669,10 @@
 
 | 기능 | 상태 |
 |------|------|
-| 대상자 마이페이지 — 본인 서비스 이력 전체 조회 (web 앱 `/my-services`) | ⬜ |
-| 보조기기 대여 현황 + 반납일 안내 + 연장 신청 | ⬜ |
+| 대상자 마이페이지 — 본인 서비스 이력 전체 조회 (web 앱 `/my-services`) | ✅ |
+| 보조기기 대여 현황 + 반납일 안내 + 연장 신청 | ✅ |
+| 포털 계정 연결 — 담당자가 eval 대상자 상세에서 이메일/전화/이름+생년월일로 검색 → 연결/해제 | ✅ |
+| 포털 가입 후 이름+생년월일 입력 온보딩 (`/onboarding`) → Clerk publicMetadata 저장 | ✅ |
 | 서비스 진행 상황 실시간 상태 표시 (접수→검토→지원→완료) | ⬜ |
 | 상담 예약 셀프 신청 (일정 선택 → 직원 확정) | ⬜ |
 | K-IPPA 사후 측정 셀프 제출 (링크 발송 → 대상자 직접 응답) | ⬜ |
@@ -682,7 +687,7 @@
 
 | 기능 | 상태 |
 |------|------|
-| 유사 케이스 추천 — 장애유형 + 주요 활동 제한 기준 유사 대상자 이력 조회 | ⬜ |
+| 유사 케이스 추천 — 장애유형 기준 유사 대상자 이력 조회 (eval 대상자 상세 페이지) | ✅ |
 | 보조기기별 지원 결과 이력 — "이 제품, 이 장애유형에서 성과점수 평균" | ⬜ |
 | 담당자 변경 시 인수인계 자동화 — 이력·K-IPPA·메모 자동 승계 | ⬜ |
 | 케이스 노트 표준화 — SOAP/DAP 구조화 템플릿 (AI 초안 생성) | ⬜ |
@@ -835,7 +840,7 @@
 ## 고도화 백로그
 
 > **개발 집중 앱**: web · admin · eval · inventory · stats
-> **개발 보류 앱**: hr · approval · automation (1차 앱 안정화 이후)
+> **개발 보류 앱**: hr · approval · automation · finance (명시적 요청 시에만)
 
 ### 1차 집중 — 높은 우선순위
 
