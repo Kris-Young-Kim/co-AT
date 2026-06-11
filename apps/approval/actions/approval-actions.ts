@@ -6,7 +6,6 @@ import { clerkClient } from '@clerk/nextjs/server'
 import { assertRole, requireRole } from '@co-at/auth'
 import { ROLES } from '@co-at/types'
 import { createSupabaseAdmin } from '@/lib/supabase-admin'
-import { isActiveDelegation } from '@/lib/delegation-utils'
 import type {
   ApprovalDocument,
   ApprovalDocumentWithSteps,
@@ -289,13 +288,13 @@ export async function getActiveDelegatorsForUser(
   const today = new Date().toISOString().split('T')[0]
   const { data, error } = await supabase
     .from('approval_delegations')
-    .select('delegator_clerk_id, start_date, end_date, is_active')
+    .select('delegator_clerk_id')
     .eq('delegatee_clerk_id', delegateeClerkId)
     .eq('is_active', true)
+    .or(`start_date.is.null,start_date.lte.${today}`)
+    .or(`end_date.is.null,end_date.gte.${today}`)
   if (error || !data) return []
-  return data
-    .filter(d => isActiveDelegation(d, today))
-    .map(d => d.delegator_clerk_id)
+  return data.map(d => d.delegator_clerk_id)
 }
 
 export async function createDelegation(input: {
@@ -305,6 +304,11 @@ export async function createDelegation(input: {
   endDate?: string | null
   note?: string | null
 }): Promise<{ success: boolean; error?: string }> {
+  await assertRole(ROLES.MANAGER)
+  const { userId } = await auth()
+  if (!userId || userId !== input.delegatorClerkId) {
+    return { success: false, error: '권한이 없습니다.' }
+  }
   if (input.delegatorClerkId === input.delegateeClerkId) {
     return { success: false, error: '자기 자신에게 위임할 수 없습니다.' }
   }
@@ -326,13 +330,16 @@ export async function deactivateDelegation(
   id: string,
   clerkUserId: string
 ): Promise<{ success: boolean; error?: string }> {
+  await assertRole(ROLES.MANAGER)
+  const { userId } = await auth()
+  if (!userId) return { success: false, error: '권한이 없습니다.' }
   const supabase = createSupabaseAdmin()
   const { data: existing } = await supabase
     .from('approval_delegations')
     .select('delegator_clerk_id')
     .eq('id', id)
     .single()
-  if (!existing || existing.delegator_clerk_id !== clerkUserId) {
+  if (!existing || existing.delegator_clerk_id !== userId) {
     return { success: false, error: '권한이 없습니다.' }
   }
   const { error } = await supabase
@@ -361,6 +368,9 @@ export async function getMyDelegations(
       .eq('delegatee_clerk_id', clerkUserId)
       .order('created_at', { ascending: false }),
   ])
+
+  if (givenRes.error)    console.error('[getMyDelegations] given', givenRes.error)
+  if (receivedRes.error) console.error('[getMyDelegations] received', receivedRes.error)
 
   const allRows = [
     ...(givenRes.data ?? []),
