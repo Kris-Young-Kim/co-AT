@@ -22,7 +22,8 @@ async function createAction(formData: FormData) {
   const endDate          = (formData.get('endDate') as string) || null
   const note             = (formData.get('note') as string) || null
   if (!delegateeClerkId) return
-  await createDelegation({ delegatorClerkId: userId, delegateeClerkId, startDate, endDate, note })
+  const result = await createDelegation({ delegatorClerkId: userId, delegateeClerkId, startDate, endDate, note })
+  if (!result.success) throw new Error(result.error ?? '위임 생성 실패')
   revalidatePath('/settings/delegation')
 }
 
@@ -32,7 +33,8 @@ async function deactivateAction(formData: FormData) {
   if (!userId) return
   const id = formData.get('id') as string
   if (!id) return
-  await deactivateDelegation(id, userId)
+  const result = await deactivateDelegation(id, userId)
+  if (!result.success) throw new Error(result.error ?? '위임 해제 실패')
   revalidatePath('/settings/delegation')
 }
 
@@ -76,47 +78,53 @@ export default async function DelegationPage() {
       <section className="space-y-4">
         <h2 className="text-lg font-semibold">내가 위임한 결재</h2>
 
-        {isManager && adminUsers.length > 0 && (
+        {isManager && (
           <form action={createAction} className="bg-white border rounded-lg p-5 space-y-4">
             <h3 className="text-sm font-medium text-gray-700">새 위임 추가</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs text-gray-500 mb-1">수임자 *</label>
-                <select
-                  name="delegateeClerkId"
-                  required
-                  className="w-full border rounded-md px-3 py-2 text-sm"
-                >
-                  <option value="">선택하세요</option>
-                  {adminUsers.map(u => (
-                    <option key={u.id} value={u.id}>{u.name}</option>
-                  ))}
-                </select>
+            {adminUsers.length === 0 ? (
+              <p className="text-sm text-gray-400">위임 가능한 ADMIN 사용자가 없습니다.</p>
+            ) : (
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">수임자 *</label>
+                  <select
+                    name="delegateeClerkId"
+                    required
+                    className="w-full border rounded-md px-3 py-2 text-sm"
+                  >
+                    <option value="">선택하세요</option>
+                    {adminUsers.map(u => (
+                      <option key={u.id} value={u.id}>{u.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">사유</label>
+                  <input
+                    name="note"
+                    type="text"
+                    placeholder="예: 출장 6/15~20"
+                    className="w-full border rounded-md px-3 py-2 text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">시작일 (빈칸=즉시)</label>
+                  <input name="startDate" type="date" className="w-full border rounded-md px-3 py-2 text-sm" />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">종료일 (빈칸=상시)</label>
+                  <input name="endDate" type="date" className="w-full border rounded-md px-3 py-2 text-sm" />
+                </div>
               </div>
-              <div>
-                <label className="block text-xs text-gray-500 mb-1">사유</label>
-                <input
-                  name="note"
-                  type="text"
-                  placeholder="예: 출장 6/15~20"
-                  className="w-full border rounded-md px-3 py-2 text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-500 mb-1">시작일 (빈칸=즉시)</label>
-                <input name="startDate" type="date" className="w-full border rounded-md px-3 py-2 text-sm" />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-500 mb-1">종료일 (빈칸=상시)</label>
-                <input name="endDate" type="date" className="w-full border rounded-md px-3 py-2 text-sm" />
-              </div>
-            </div>
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700"
-            >
-              위임 추가
-            </button>
+            )}
+            {adminUsers.length > 0 && (
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700"
+              >
+                위임 추가
+              </button>
+            )}
           </form>
         )}
 
