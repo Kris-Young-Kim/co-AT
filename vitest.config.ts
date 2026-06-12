@@ -8,7 +8,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./tests/setup.ts'],
-    include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
+    include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx', 'components/**/*.test.ts', 'components/**/*.test.tsx'],
     exclude: ['.worktrees/**', 'apps/**', 'node_modules/**'],
   },
   resolve: {
@@ -19,6 +19,7 @@ export default defineConfig({
       '@/apps/hr': path.resolve(__dirname, './apps/hr'),
       '@/lib/supabase-admin': path.resolve(__dirname, './apps/hr/lib/supabase-admin'),
       '@': path.resolve(__dirname, './'),
+      'remotion': path.resolve(__dirname, './apps/web/node_modules/remotion'),
     },
   },
 })
