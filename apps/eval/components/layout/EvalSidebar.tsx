@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Users, BarChart3, LogOut, Phone, RefreshCw, Clock, FileEdit, GraduationCap, Gift, FileText, BarChart2, ChevronDown } from 'lucide-react'
+import { Users, BarChart3, LogOut, Phone, RefreshCw, Clock, FileEdit, GraduationCap, Gift, FileText, BarChart2, ChevronDown, BookOpen } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 
 type NavItem = {
@@ -38,6 +38,7 @@ const NAV_ENTRIES: NavEntry[] = [
       { href: '/grant-eval/statistics', label: '교부사업 통계', icon: BarChart2 },
     ],
   },
+  { type: 'item', href: '/knowledge', label: '보조기기 결과 이력', icon: BookOpen },
   { type: 'item', href: '/migration', label: 'Sheets 동기화', icon: RefreshCw },
 ]
 
