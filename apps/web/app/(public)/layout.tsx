@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { PublicFooter } from "@/components/layout/public-footer"
 import { PublicLayoutClient } from "@/components/layout/public-layout-client"
+import { ChatWidget } from "@/components/features/chatbot/ChatWidget"
 import { getActiveBanners } from "@/actions/banner-actions"
 
 export default async function PublicLayout({ children }: { children: ReactNode }) {
@@ -11,6 +12,7 @@ export default async function PublicLayout({ children }: { children: ReactNode }
     <div className="flex min-h-screen flex-col">
       <PublicLayoutClient banners={banners}>{children}</PublicLayoutClient>
       <PublicFooter />
+      <ChatWidget />
     </div>
   )
 }
