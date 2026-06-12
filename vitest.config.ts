@@ -20,6 +20,7 @@ export default defineConfig({
       '@/lib/supabase-admin': path.resolve(__dirname, './apps/hr/lib/supabase-admin'),
       '@': path.resolve(__dirname, './'),
       'remotion': path.resolve(__dirname, './apps/web/node_modules/remotion'),
+      '@remotion/player': path.resolve(__dirname, './apps/web/node_modules/@remotion/player'),
     },
   },
 })
