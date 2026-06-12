@@ -1,70 +1,62 @@
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
-import type { YouTubeVideo } from "@/actions/youtube-actions"
+'use client'
 
-interface HomeHeroSectionProps {
-  featuredVideo?: YouTubeVideo | null
-}
+import React from 'react'
+import dynamic from 'next/dynamic'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { ArrowRight } from 'lucide-react'
+import {
+  HERO_ANIMATION_FPS,
+  HERO_ANIMATION_DURATION_IN_FRAMES,
+} from '@/components/remotion/compositions/HeroAnimation'
 
-export function HomeHeroSection({ featuredVideo }: HomeHeroSectionProps) {
+const RemotionPlayerDynamic = dynamic(
+  () => import('@/components/remotion/RemotionPlayer').then((m) => ({ default: m.RemotionPlayer })),
+  { ssr: false }
+)
+
+const HeroAnimationDynamic = dynamic(
+  () => import('@/components/remotion/compositions/HeroAnimation').then((m) => ({ default: m.HeroAnimation })),
+  { ssr: false }
+)
+
+export function HomeHeroSection() {
   return (
-    <section id="hero" className="relative flex min-h-[70vh] sm:min-h-[80vh] items-center justify-center overflow-hidden">
-      {/* Background Video or Image */}
+    <section
+      id="hero"
+      className="relative flex min-h-[70vh] sm:min-h-[80vh] items-center justify-center overflow-hidden"
+    >
+      {/* Remotion animated background */}
       <div className="absolute inset-0 z-0">
-        {featuredVideo ? (
-          <>
-            {/* YouTube 비디오 배경 */}
-            <iframe
-              src={`https://www.youtube.com/embed/${featuredVideo.videoId}?autoplay=1&mute=1&loop=1&playlist=${featuredVideo.videoId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1`}
-              className="absolute inset-0 w-full h-full"
-              style={{ 
-                objectFit: "cover",
-                pointerEvents: "none",
-              }}
-              allow="autoplay; encrypted-media; accelerometer; gyroscope; picture-in-picture"
-              allowFullScreen
-              title={featuredVideo.title}
-            />
-            {/* Fallback 이미지 (비디오 로딩 중 또는 모바일에서 표시) */}
-            <Image
-              src={featuredVideo.thumbnail}
-              alt=""
-              role="presentation"
-              fill
-              className="object-cover md:hidden"
-              priority
-              quality={90}
-              aria-hidden="true"
-            />
-          </>
-        ) : (
-          // 기본 이미지 배경 (장식용)
-          <Image
-            src="https://images.unsplash.com/photo-1773227055624-07b515ba87c5?auto=format&fit=crop&w=1920&q=80"
-            alt=""
-            role="presentation"
-            fill
-            className="object-cover"
-            priority
-            quality={90}
-            aria-hidden="true"
-          />
-        )}
-        {/* Dark Overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" aria-hidden="true" />
+        <RemotionPlayerDynamic
+          component={HeroAnimationDynamic as React.ComponentType}
+          durationInFrames={HERO_ANIMATION_DURATION_IN_FRAMES}
+          fps={HERO_ANIMATION_FPS}
+          compositionWidth={1920}
+          compositionHeight={1080}
+          loop
+          style={{ width: '100%', height: '100%' }}
+        />
       </div>
 
-      {/* Hero Content */}
+      {/* Text overlay — CSS stagger animations */}
       <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-        <h1 className="text-responsive-xl font-bold text-white drop-shadow-lg mb-4 sm:mb-6">
+        <h1
+          className="text-responsive-xl font-bold text-foreground mb-4 sm:mb-6"
+          style={{ animation: 'fadeInUp 0.6s ease-out 0.5s both' }}
+        >
           Co-AT
         </h1>
-        <p className="text-responsive-lg text-white/90 drop-shadow-sm mb-6 sm:mb-8 max-w-2xl mx-auto">
+        <p
+          className="text-responsive-lg text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto"
+          style={{ animation: 'fadeInUp 0.6s ease-out 1.0s both' }}
+        >
           행정은 AI에게, 사람은 클라이언트에게
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          style={{ animation: 'fadeInScale 0.5s ease-out 1.6s both' }}
+        >
           <Button asChild size="lg" className="text-base sm:text-lg px-6 sm:px-8">
             <Link href="/mypage" aria-label="서비스 이용하기 페이지로 이동">
               서비스 이용하기
@@ -75,13 +67,14 @@ export function HomeHeroSection({ featuredVideo }: HomeHeroSectionProps) {
             asChild
             variant="outline"
             size="lg"
-            className="text-base sm:text-lg px-6 sm:px-8 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
+            className="text-base sm:text-lg px-6 sm:px-8 border-blue-200 text-blue-700 hover:bg-blue-50"
           >
-            <Link href="/notices" aria-label="공지사항 페이지로 이동">공지사항 보기</Link>
+            <Link href="/notices" aria-label="공지사항 페이지로 이동">
+              공지사항 보기
+            </Link>
           </Button>
         </div>
       </div>
     </section>
   )
 }
-

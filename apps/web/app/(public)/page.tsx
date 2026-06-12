@@ -58,7 +58,7 @@ export default async function Home() {
       />
 
       <div className="flex min-h-screen flex-col">
-      <HomeHeroSection featuredVideo={videos[0] || null} />
+      <HomeHeroSection />
       
       {/* 5대 핵심 사업 바로가기 */}
       <HomeQuickMenuGrid />

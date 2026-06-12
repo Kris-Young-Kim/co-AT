@@ -18,6 +18,7 @@ export default defineConfig({
       '@co-at/auth': path.resolve(__dirname, './packages/auth/src'),
       '@/apps/hr': path.resolve(__dirname, './apps/hr'),
       '@/lib/supabase-admin': path.resolve(__dirname, './apps/hr/lib/supabase-admin'),
+      '@/components/ui': path.resolve(__dirname, './packages/ui/ui'),
       '@': path.resolve(__dirname, './'),
       'remotion': path.resolve(__dirname, './apps/web/node_modules/remotion'),
       '@remotion/player': path.resolve(__dirname, './apps/web/node_modules/@remotion/player'),
