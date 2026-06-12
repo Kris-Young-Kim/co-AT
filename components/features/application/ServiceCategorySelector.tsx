@@ -1,156 +1,124 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useApplicationStore } from "@/lib/stores/application-store"
 import { cn } from "@/lib/utils"
 import {
   MessageSquare,
-  TestTube,
+  ArrowLeftRight,
   Wrench,
-  Heart,
+  Eye,
+  Hammer,
   GraduationCap,
-  Save,
 } from "lucide-react"
 
-const serviceCategories = [
+const CLIENT_SERVICE_TYPES = [
   {
-    id: "consult",
-    label: "상담 및 정보제공",
-    description: "전화, 방문, 센터 방문 상담",
+    id: "consultation",
+    label: "보조기기 상담",
+    description: "보조기기 선택·활용 방법 등 전문가와 상담",
     icon: MessageSquare,
-    subCategories: [
-      { id: "visit", label: "방문 상담" },
-      { id: "exhibition", label: "견학" },
-    ],
+    category: "consult",
+    subCategory: null,
   },
   {
-    id: "experience",
-    label: "체험",
-    description: "보조기기 체험 및 대여",
-    icon: TestTube,
-    subCategories: [{ id: "rental", label: "대여" }],
+    id: "rental",
+    label: "보조기기 대여",
+    description: "필요한 보조기기를 빌려서 사용",
+    icon: ArrowLeftRight,
+    category: "experience",
+    subCategory: "rental",
   },
   {
-    id: "custom",
-    label: "맞춤형 지원",
-    description: "맞춤 제작 및 대여",
+    id: "custom_make",
+    label: "맞춤 제작",
+    description: "나에게 꼭 맞는 보조기기 전문 제작",
     icon: Wrench,
-    subCategories: [
-      { id: "custom_make", label: "맞춤 제작" },
-      { id: "rental", label: "대여" },
-    ],
+    category: "custom",
+    subCategory: "custom_make",
   },
   {
-    id: "aftercare",
-    label: "사후관리",
-    description: "수리, 소독, 점검, 재사용",
-    icon: Heart,
-    subCategories: [
-      { id: "repair", label: "수리" },
-      { id: "cleaning", label: "소독/세척" },
-      { id: "reuse", label: "재사용" },
-    ],
+    id: "trial_visit",
+    label: "체험·견학",
+    description: "보조기기 직접 체험 또는 센터 방문·견학",
+    icon: Eye,
+    category: "consult",
+    subCategory: "exhibition",
+  },
+  {
+    id: "repair",
+    label: "수리·점검",
+    description: "사용 중인 보조기기 고장·점검 요청",
+    icon: Hammer,
+    category: "aftercare",
+    subCategory: "repair",
   },
   {
     id: "education",
-    label: "교육/홍보",
-    description: "보조기기 활용 교육 및 홍보",
+    label: "교육 신청",
+    description: "보조기기 활용 교육 참여 신청",
     icon: GraduationCap,
-    subCategories: [
-      { id: "education", label: "교육" },
-      { id: "promotion", label: "홍보" },
-    ],
+    category: "education",
+    subCategory: "education",
   },
-]
+] as const
 
 export function ServiceCategorySelector() {
-  const { selectedCategory, setSelectedCategory, setSelectedSubCategory, setCurrentStep, selectedSubCategory } =
+  const { selectedCategory, selectedSubCategory, setSelectedCategory, setSelectedSubCategory, setCurrentStep } =
     useApplicationStore()
-  const [isSaving, setIsSaving] = useState(false)
 
-  const selectedCategoryData = serviceCategories.find(
-    (cat) => cat.id === selectedCategory
+  const selectedType = CLIENT_SERVICE_TYPES.find(
+    (t) => t.category === selectedCategory && t.subCategory === selectedSubCategory
   )
 
-  const handleSaveDraft = () => {
-    if (!selectedCategory) {
-      alert("카테고리를 먼저 선택해주세요.")
-      return
-    }
-
-    setIsSaving(true)
-    try {
-      const draftData = {
-        selectedCategory,
-        selectedSubCategory,
-        savedAt: new Date().toISOString(),
-      }
-      localStorage.setItem("application_draft", JSON.stringify(draftData))
-      alert("임시 저장되었습니다.")
-    } catch (error) {
-      console.error("임시 저장 실패:", error)
-      alert("임시 저장에 실패했습니다.")
-    } finally {
-      setIsSaving(false)
-    }
+  const handleSelect = (type: typeof CLIENT_SERVICE_TYPES[number]) => {
+    setSelectedCategory(type.category)
+    setSelectedSubCategory(type.subCategory)
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold mb-2">서비스 카테고리 선택</h2>
-        <p className="text-sm text-muted-foreground">
-          원하시는 서비스 카테고리를 선택해주세요
-        </p>
+        <h2 className="text-lg font-semibold mb-1">어떤 서비스가 필요하신가요?</h2>
+        <p className="text-sm text-muted-foreground">원하시는 서비스를 선택해주세요</p>
       </div>
 
-      {/* 메인 카테고리 선택 */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {serviceCategories.map((category) => {
-          const Icon = category.icon
-          const isSelected = selectedCategory === category.id
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {CLIENT_SERVICE_TYPES.map((type) => {
+          const Icon = type.icon
+          const isSelected = selectedType?.id === type.id
 
           return (
             <Card
-              key={category.id}
+              key={type.id}
               className={cn(
-                "cursor-pointer transition-all hover:border-primary",
+                "cursor-pointer transition-all hover:border-primary hover:shadow-sm",
                 isSelected && "border-primary ring-2 ring-primary"
               )}
-              onClick={() => {
-                setSelectedCategory(category.id)
-                setSelectedSubCategory(null)
-              }}
+              onClick={() => handleSelect(type)}
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault()
-                  setSelectedCategory(category.id)
-                  setSelectedSubCategory(null)
+                  handleSelect(type)
                 }
               }}
-              aria-label={`${category.label} 선택`}
+              aria-label={`${type.label} 선택`}
+              aria-pressed={isSelected}
             >
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <div
-                    className={cn(
-                      "p-3 rounded-lg",
-                      isSelected
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
-                    )}
-                  >
-                    <Icon className="h-6 w-6" />
+              <CardContent className="p-5">
+                <div className="flex items-start gap-3">
+                  <div className={cn(
+                    "p-2.5 rounded-lg shrink-0",
+                    isSelected ? "bg-primary text-primary-foreground" : "bg-muted"
+                  )}>
+                    <Icon className="h-5 w-5" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold mb-1">{category.label}</h3>
-                    <p className="text-xs text-muted-foreground">
-                      {category.description}
-                    </p>
+                  <div>
+                    <p className="font-semibold text-sm">{type.label}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{type.description}</p>
                   </div>
                 </div>
               </CardContent>
@@ -159,65 +127,9 @@ export function ServiceCategorySelector() {
         })}
       </div>
 
-      {/* 세부 카테고리 선택 (메인 카테고리가 선택된 경우) */}
-      {selectedCategoryData &&
-        selectedCategoryData.subCategories.length > 0 && (
-          <div className="mt-6">
-            <h3 className="text-sm font-semibold mb-3">
-              세부 카테고리 선택 (선택사항)
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {selectedCategoryData.subCategories.map((subCategory) => {
-                const { selectedSubCategory, setSelectedSubCategory } =
-                  useApplicationStore.getState()
-                const isSelected = selectedSubCategory === subCategory.id
-
-                return (
-                  <button
-                    key={subCategory.id}
-                    type="button"
-                    onClick={() => setSelectedSubCategory(subCategory.id)}
-                    className={cn(
-                      "px-4 py-2 rounded-md border text-sm transition-colors",
-                      isSelected
-                        ? "bg-primary text-primary-foreground border-primary"
-                        : "bg-background hover:bg-accent"
-                    )}
-                    aria-label={`${subCategory.label} 선택`}
-                  >
-                    {subCategory.label}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-      {/* 버튼 영역 */}
-      {selectedCategory && (
-        <div className="flex justify-end gap-3 pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleSaveDraft}
-            disabled={isSaving}
-            className="min-w-[120px]"
-          >
-            <Save className="mr-2 h-4 w-4" />
-            {isSaving ? "저장 중..." : "임시 저장"}
-          </Button>
-          <Button
-            onClick={() => {
-              // 선택된 카테고리와 세부 카테고리를 formData에 저장
-              const { setFormData } = useApplicationStore.getState()
-              setFormData({
-                category: selectedCategory,
-                sub_category: selectedSubCategory || undefined,
-              } as any)
-              setCurrentStep(2)
-            }}
-            className="min-w-[120px]"
-          >
+      {selectedType && (
+        <div className="flex justify-end pt-2">
+          <Button onClick={() => setCurrentStep(2)} className="min-w-[120px]">
             다음
           </Button>
         </div>
@@ -225,4 +137,3 @@ export function ServiceCategorySelector() {
     </div>
   )
 }
-

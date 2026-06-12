@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 
-const stepLabels = ["카테고리 선택", "본인 정보", "신청서 작성", "확인 및 제출"]
+const stepLabels = ["서비스 선택", "본인 정보", "신청서 작성", "확인 및 제출"]
 
 export function ServiceApplicationWizard() {
   const router = useRouter()
@@ -37,12 +37,19 @@ export function ServiceApplicationWizard() {
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const [applicationId, setApplicationId] = useState<string>()
 
-  const CATEGORY_LABELS: Record<string, string> = {
-    consult: "상담 및 정보제공",
-    experience: "체험",
-    custom: "맞춤형 지원",
-    aftercare: "사후관리",
-    education: "교육/홍보",
+  const SERVICE_LABELS: Record<string, Record<string, string>> = {
+    consult: { default: "보조기기 상담", exhibition: "체험·견학" },
+    experience: { rental: "보조기기 대여", default: "보조기기 대여" },
+    custom: { custom_make: "맞춤 제작", default: "맞춤 제작" },
+    aftercare: { repair: "수리·점검", default: "수리·점검" },
+    education: { education: "교육 신청", default: "교육 신청" },
+  }
+
+  const getServiceLabel = (category: string | null, subCategory: string | null) => {
+    if (!category) return ""
+    const map = SERVICE_LABELS[category]
+    if (!map) return category
+    return (subCategory && map[subCategory]) || map.default || category
   }
 
   const renderStepContent = () => {
@@ -100,12 +107,9 @@ export function ServiceApplicationWizard() {
                   <div><span className="font-medium">장애유형:</span> {personalInfo.disability_type}</div>
                 )}
                 <div>
-                  <span className="font-medium">카테고리:</span>{" "}
-                  {CATEGORY_LABELS[selectedCategory ?? ""] ?? selectedCategory}
+                  <span className="font-medium">신청 서비스:</span>{" "}
+                  {getServiceLabel(selectedCategory ?? null, formData.sub_category ?? null)}
                 </div>
-                {formData.sub_category && (
-                  <div><span className="font-medium">세부 카테고리:</span> {formData.sub_category}</div>
-                )}
                 {formData.contact && !personalInfo?.contact && (
                   <div><span className="font-medium">연락처:</span> {formData.contact}</div>
                 )}
