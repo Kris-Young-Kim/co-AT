@@ -467,3 +467,139 @@ export async function generateCallLogDraftFromTranscript(
     }
   }
 }
+
+// ────────────────────────────────────────────
+// E-5: 대상자 종합 평가 보고서 초안
+// ────────────────────────────────────────────
+
+const EVALUATION_REPORT_PROMPT = `당신은 강원특별자치도 보조공학기기 지원센터의 전문 평가사입니다.
+아래 대상자 정보를 바탕으로 종합 평가 보고서 초안을 작성해 주세요.
+
+형식 (마크다운):
+## 종합 평가 보고서
+
+**대상자**: [이름] | **평가일**: [날짜]
+
+### 1. 대상자 개요
+[장애유형, 주요 생활 상황 2~3문장]
+
+### 2. 서비스 지원 이력
+[최근 주요 서비스 지원 요약]
+
+### 3. 기능 성과 측정 (K-IPPA)
+[K-IPPA 결과 해석 및 주요 개선 영역]
+
+### 4. 영역별 평가 결과
+[9개 영역 평가 의견 요약]
+
+### 5. 종합 의견 및 권고사항
+[종합 평가 의견 3~5문장, 향후 지원 방향 포함]
+
+마크다운 형식으로만 작성하세요. 정보가 없는 섹션은 "데이터 없음"으로 표기하세요.`
+
+export async function generateEvaluationReport(
+  clientId: string
+): Promise<{ success: boolean; report?: string; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  try {
+    const supabase = createAdminClient()
+
+    const [clientResult, ippaResult, serviceResult, assessmentResult] = await Promise.all([
+      supabase
+        .from('clients')
+        .select('name, birth_date, gender, disability_type, disability_grade, economic_status, address')
+        .eq('id', clientId)
+        .single(),
+      (supabase as any)
+        .from('eval_ippa_assessments')
+        .select('assessment_year, pre_date, post_date, items, outcome_score, status')
+        .eq('client_id', clientId)
+        .order('assessment_year', { ascending: false })
+        .limit(3),
+      (supabase as any)
+        .from('eval_service_records')
+        .select('received_at, service_major_category, service_category, product_name, satisfaction_score, record_status')
+        .eq('client_id', clientId)
+        .order('received_at', { ascending: false, nullsFirst: false })
+        .limit(5),
+      (supabase as any)
+        .from('domain_assessments')
+        .select('domain_type, evaluator_opinion, score')
+        .eq('client_id', clientId)
+        .not('evaluator_opinion', 'is', null)
+        .order('created_at', { ascending: false })
+        .limit(9),
+    ])
+
+    const client = clientResult.data
+    if (!client) return { success: false, error: '대상자를 찾을 수 없습니다' }
+
+    const today = new Date().toLocaleDateString('ko-KR')
+
+    const clientCtx = `이름: ${client.name}
+생년월일: ${client.birth_date ?? '미상'} | 성별: ${client.gender ?? '미상'}
+장애유형: ${client.disability_type ?? '미상'} | 장애정도: ${client.disability_grade ?? '미상'}
+경제상황: ${client.economic_status ?? '미상'}`
+
+    const ippaRows = (ippaResult.data ?? []) as Array<{
+      assessment_year: number; pre_date: string | null; post_date: string | null
+      items: Array<{ problem: string; pre_score: number; post_score: number | null }>
+      outcome_score: number | null; status: string
+    }>
+    const ippaCtx = ippaRows.length === 0
+      ? '측정 이력 없음'
+      : ippaRows.map(r => {
+          const outcome = r.outcome_score != null ? `성과점수: ${r.outcome_score > 0 ? '+' : ''}${r.outcome_score}` : '사후 미측정'
+          const items = r.items.map(it => `${it.problem}(전:${it.pre_score}→후:${it.post_score ?? '미측정'})`).join(', ')
+          return `${r.assessment_year}년 [${outcome}] ${items}`
+        }).join('\n')
+
+    const serviceRows = (serviceResult.data ?? []) as Array<{
+      received_at: string | null; service_major_category: string | null
+      service_category: string | null; product_name: string | null
+      satisfaction_score: number | null; record_status: string | null
+    }>
+    const serviceCtx = serviceRows.length === 0
+      ? '서비스 이력 없음'
+      : serviceRows.map(r =>
+          `[${r.received_at?.slice(0, 7) ?? '?'}] ${r.service_major_category ?? ''} > ${r.service_category ?? ''} ${r.product_name ? '(' + r.product_name + ')' : ''} 만족도:${r.satisfaction_score ?? '미기록'}`
+        ).join('\n')
+
+    const domainRows = (assessmentResult.data ?? []) as Array<{
+      domain_type: string; evaluator_opinion: string | null; score: number | null
+    }>
+    const domainCtx = domainRows.length === 0
+      ? '영역 평가 없음'
+      : domainRows.map(r => `[${r.domain_type}] ${r.score != null ? r.score + '점' : ''} ${r.evaluator_opinion ?? ''}`).join('\n')
+
+    const prompt = `${EVALUATION_REPORT_PROMPT}
+
+평가일: ${today}
+대상자 정보:
+${clientCtx}
+
+서비스 지원 이력 (최근 5건):
+${serviceCtx}
+
+K-IPPA 기능 성과 측정:
+${ippaCtx}
+
+영역별 평가:
+${domainCtx}`
+
+    const model = getGeminiModel('gemini-2.5-flash')
+    const result = await model.generateContent(prompt)
+    const report = result.response.text().trim()
+
+    if (!report) throw new Error('빈 응답')
+    return { success: true, report }
+  } catch (error) {
+    console.error('[AI Actions] 평가 보고서 생성 오류:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? `보고서 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+    }
+  }
+}

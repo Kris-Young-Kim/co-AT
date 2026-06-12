@@ -609,6 +609,7 @@
 | `085_create_approval_delegations.sql` | `approval_delegations` 테이블 + `approval_steps.is_delegated` 컬럼 추가 | ✅ |
 | `086_finance_funding_ratios.sql` | `finance_budget_categories`에 `national_ratio`, `provincial_ratio` 컬럼 추가 (기본값 50) | ✅ |
 | `087_clients_portal_user_id.sql` | `clients.portal_user_id` 컬럼 추가 (포털 계정 연결) + 인덱스 | ✅ |
+| `088_call_logs_channel_and_application.sql` | `call_logs.channel` (phone/web/chatbot) + `application_id` FK 추가 (E-4 채널 통계·자동 연동) | ✅ |
 
 ### 미실행 / 예정 마이그레이션
 
@@ -757,7 +758,7 @@
 
 | 기능 | 상태 |
 |------|------|
-| 콜로그 저장 → 서비스 기록 초안 자동 생성 (서비스 구분·제품명 연동) | ⬜ |
+| 콜로그 저장 → 서비스 기록 초안 자동 생성 (서비스 구분·제품명 연동) | ✅ |
 | 서비스 기록 확정 → 중앙보조기기센터 보고 양식 자동 집계 | ⬜ |
 | 상담 → 평가 → 지원 → 모니터링 단계별 데이터 자동 승계 | ⬜ |
 
@@ -767,7 +768,7 @@
 
 | 기능 | 상태 |
 |------|------|
-| 9개 영역 평가 점수 + K-IPPA → 평가 보고서 초안 (Gemini) | ⬜ |
+| 9개 영역 평가 점수 + K-IPPA → 평가 보고서 초안 (Gemini) | ✅ |
 | 상담 메모 + 서비스 구분 → 사례관리 일지 초안 | ⬜ |
 | 서비스 완료 상태 변경 → 서비스 완료 노트 자동 생성 | ⬜ |
 | 팔로업 방문 기록 → 모니터링 보고서 초안 | ⬜ |

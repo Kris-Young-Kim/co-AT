@@ -7,6 +7,7 @@ import { ClientActiveServices } from '@/eval/components/eval/ClientActiveService
 import { ClientCases } from '@/eval/components/eval/ClientCases'
 import { ClientIPPA } from '@/eval/components/eval/ClientIPPA'
 import { ClientTimeline } from '@/eval/components/eval/ClientTimeline'
+import { EvaluationReportPanel } from '@/eval/components/eval/EvaluationReportPanel'
 import { PortalUserLink } from '@/eval/components/eval/PortalUserLink'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -118,6 +119,11 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       {/* K-IPPA 기능적 성과 측정 */}
       <div className="mb-6">
         <ClientIPPA initialAssessments={ippaItems} clientId={clientId} />
+      </div>
+
+      {/* AI 종합 평가 보고서 */}
+      <div className="mb-6">
+        <EvaluationReportPanel clientId={clientId} clientName={client.name} />
       </div>
 
       {/* 신청 이력 */}

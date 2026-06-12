@@ -89,6 +89,47 @@ export async function createCallLog(
     .single()
 
   if (error) return { success: false, error: error.message }
+
+  const log = data as CallLog & { application_id?: string | null }
+
+  // Auto-generate service record draft when device-related + application linked
+  if (log.q_device && (log as any).application_id) {
+    try {
+      const appId = (log as any).application_id as string
+      const { data: appRow } = await (supabase as any)
+        .from('applications')
+        .select('client_id, category, sub_category')
+        .eq('id', appId)
+        .single()
+
+      if (appRow) {
+        const CATEGORY_MAP: Record<string, string> = {
+          consult: '상담', experience: '체험·시연', custom: '맞춤형 지원',
+          aftercare: '사후관리', education: '교육·홍보',
+        }
+        const catLabel = CATEGORY_MAP[appRow.category ?? ''] ?? appRow.category ?? '기타'
+        await (supabase as any)
+          .from('eval_service_records')
+          .insert({
+            client_id: appRow.client_id,
+            received_at: log.log_date,
+            service_major_category: '서비스지원',
+            service_category: catLabel,
+            is_consult: appRow.category === 'consult',
+            is_rental: appRow.sub_category === 'rental',
+            is_custom_make: appRow.sub_category === 'custom_make',
+            is_repair: appRow.sub_category === 'repair',
+            record_status: '미정',
+            referral_type: (log as any).channel === 'web' ? '인터넷신청' : (log as any).channel === 'chatbot' ? '인터넷신청' : '유선',
+            service_content: log.question_content ?? null,
+          })
+      }
+    } catch (err) {
+      console.error('[createCallLog] service record draft 자동생성 실패:', err)
+      // non-fatal
+    }
+  }
+
   revalidatePath('/call-logs')
   return { success: true, log: data as CallLog }
 }
