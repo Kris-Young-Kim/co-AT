@@ -39,6 +39,15 @@ export function EvaluationReportPanel({ clientId, clientName }: Props) {
     if (!report) return
     const win = window.open("", "_blank")
     if (!win) return
+    const today = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })
+    const htmlBody = report
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\n/g, "<br>")
+      .replace(/##\s(.+)/g, "<h2>$1</h2>")
+      .replace(/###\s(.+)/g, "<h3>$1</h3>")
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     win.document.write(`<!DOCTYPE html><html lang="ko"><head>
       <meta charset="UTF-8">
       <title>종합 평가 보고서 — ${clientName}</title>
@@ -47,17 +56,34 @@ export function EvaluationReportPanel({ clientId, clientName }: Props) {
         h2 { border-bottom: 2px solid #333; padding-bottom: 8px; }
         h3 { margin-top: 24px; color: #1e3a5f; }
         strong { color: #333; }
+        .signature-section { margin-top: 60px; border-top: 2px solid #333; padding-top: 24px; }
+        .signature-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 16px; }
+        .signature-box { border: 1px solid #999; padding: 16px; min-height: 80px; }
+        .signature-box .label { font-size: 12px; color: #666; margin-bottom: 8px; }
+        .signature-box .name-line { border-bottom: 1px solid #333; margin-top: 32px; height: 1px; }
+        @media print { .signature-section { page-break-inside: avoid; } }
       </style>
     </head><body>
-      <div id="content">${report
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/\n/g, "<br>")
-        .replace(/##\s(.+)/g, "<h2>$1</h2>")
-        .replace(/###\s(.+)/g, "<h3>$1</h3>")
-        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-      }</div>
+      <div id="content">${htmlBody}</div>
+      <div class="signature-section">
+        <p style="font-size:13px; color:#444; margin-bottom:8px;">강원특별자치도 보조공학기기 지원센터</p>
+        <div class="signature-grid">
+          <div class="signature-box">
+            <div class="label">작성자</div>
+            <div class="name-line"></div>
+            <div style="font-size:11px;color:#888;margin-top:4px;">(서명/인)</div>
+          </div>
+          <div class="signature-box">
+            <div class="label">검토자</div>
+            <div class="name-line"></div>
+            <div style="font-size:11px;color:#888;margin-top:4px;">(서명/인)</div>
+          </div>
+          <div class="signature-box">
+            <div class="label">확인일</div>
+            <div style="margin-top:24px;font-size:13px;">${today}</div>
+          </div>
+        </div>
+      </div>
     </body></html>`)
     win.document.close()
     win.print()

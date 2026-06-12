@@ -3,13 +3,19 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createServiceRecord } from '@/actions/service-record-actions'
+import { generateServiceRecordDraft } from '@/actions/ai-actions'
 import { ITEM_CATEGORIES } from '@/eval/lib/item-categories'
+import { Sparkles, Loader2 } from 'lucide-react'
 
 const INPUT = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
 const SELECT = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white'
 const READONLY = 'w-full border rounded-md px-3 py-2 text-sm bg-gray-50 text-gray-600 cursor-not-allowed'
 
 const MAJOR_CATEGORIES = ['공적급여', '민간지원', '기타', '서비스지원']
+const SERVICE_CATEGORIES = [
+  '상담', '대여', '맞춤제작', '정보제공', '재사용', '수리',
+  '교부사업(맞춤형평가)', '체험/시연', '교육', '모니터링', '기타',
+]
 const SERVICE_AREAS = ['WC', 'ADL', 'S', 'SP', 'EC', 'CA', 'L', 'AAC', 'AM']
 const REFERRAL_TYPES = ['내방', '유선', '인터넷신청', '기관연계', '기타']
 const RECORD_STATUSES = ['접수', '진행중', '완료', '보류']
@@ -51,6 +57,10 @@ const INITIAL_CHECKS: Record<CheckKey, boolean> = {
 type SmartDefaultFields = Partial<Record<CheckKey, boolean> & { service_content: string }>
 
 const SMART_DEFAULTS: Record<string, SmartDefaultFields> = {
+  '상담': {
+    is_consult: true,
+    service_content: '보조기기 관련 상담을 진행하였습니다.',
+  },
   '교부사업(맞춤형평가)': {
     is_assessment: true,
     is_consult: true,
@@ -81,6 +91,19 @@ const SMART_DEFAULTS: Record<string, SmartDefaultFields> = {
     is_repair: true,
     service_content: '보조기기 수리 서비스 접수 및 상태 확인을 진행하였습니다.',
   },
+  '체험/시연': {
+    is_trial: true,
+    is_consult: true,
+    service_content: '보조기기 체험 및 시연 서비스를 진행하였습니다.',
+  },
+  '교육': {
+    is_education: true,
+    service_content: '보조기기 활용 관련 교육을 진행하였습니다.',
+  },
+  '모니터링': {
+    is_monitoring: true,
+    service_content: '보조기기 사용 현황 모니터링을 진행하였습니다.',
+  },
 }
 
 export function ServiceRecordForm({
@@ -91,6 +114,7 @@ export function ServiceRecordForm({
 }: ServiceRecordFormProps) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
+  const [aiLoading, setAiLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [satisfactionScore, setSatisfactionScore] = useState<number | null>(null)
 
@@ -124,6 +148,37 @@ export function ServiceRecordForm({
     if (Object.keys(checkDefaults).length > 0) {
       setChecks(prev => ({ ...prev, ...(checkDefaults as Partial<Record<CheckKey, boolean>>) }))
     }
+  }
+
+  async function handleAiDraft() {
+    setAiLoading(true)
+    setError(null)
+    const result = await generateServiceRecordDraft({ applicationId, clientId })
+    setAiLoading(false)
+    if (!result.success || !result.draft) {
+      setError(result.error ?? 'AI 초안 생성 실패')
+      return
+    }
+    const d = result.draft
+    if (d.service_content) setServiceContent(d.service_content)
+    if (d.service_major_category) setMajorCategory(d.service_major_category)
+    if (d.service_sub_category) setSubCategory(d.service_sub_category)
+    if (d.service_category) setServiceCategory(d.service_category)
+    if (d.service_area) setServiceArea(d.service_area)
+    if (d.product_name) setProductName(d.product_name)
+    if (d.referral_type) setReferralType(d.referral_type)
+    setChecks(prev => ({
+      ...prev,
+      is_consult: d.is_consult ?? prev.is_consult,
+      is_assessment: d.is_assessment ?? prev.is_assessment,
+      is_trial: d.is_trial ?? prev.is_trial,
+      is_rental: d.is_rental ?? prev.is_rental,
+      is_custom_make: d.is_custom_make ?? prev.is_custom_make,
+      is_grant: d.is_grant ?? prev.is_grant,
+      is_education: d.is_education ?? prev.is_education,
+      is_info_provision: d.is_info_provision ?? prev.is_info_provision,
+      is_repair: d.is_repair ?? prev.is_repair,
+    }))
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -271,7 +326,18 @@ export function ServiceRecordForm({
 
       {/* ② 서비스 내용 */}
       <section className="border rounded-lg p-6 bg-white space-y-4">
-        <h3 className="font-semibold text-gray-900">② 서비스 내용</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold text-gray-900">② 서비스 내용</h3>
+          <button
+            type="button"
+            onClick={handleAiDraft}
+            disabled={aiLoading}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+          >
+            {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+            {aiLoading ? 'AI 분석 중...' : 'AI 자동 입력'}
+          </button>
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">대분류</label>
@@ -286,7 +352,10 @@ export function ServiceRecordForm({
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">서비스구분</label>
-            <input value={serviceCategory} onChange={e => handleServiceCategoryChange(e.target.value)} type="text" className={INPUT} />
+            <select value={serviceCategory} onChange={e => handleServiceCategoryChange(e.target.value)} className={SELECT}>
+              <option value="">선택</option>
+              {SERVICE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">신청품목</label>

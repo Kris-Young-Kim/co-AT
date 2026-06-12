@@ -603,3 +603,102 @@ ${domainCtx}`
     }
   }
 }
+
+// ────────────────────────────────────────────
+// E-5: 보조기기 추천
+// ────────────────────────────────────────────
+
+const DEVICE_RECOMMENDATION_PROMPT = `당신은 보조공학 전문가입니다.
+아래 대상자 정보와 기관 지원 실적 데이터를 바탕으로 최적 보조기기 3~5종을 마크다운으로 추천해 주세요.
+
+형식:
+## 보조기기 추천
+
+### 1. [기기명]
+**추천 이유**: (장애유형·활동 문제와의 연관성 2~3문장)
+**기관 실적**: (지원 건수·평균 만족도 — 데이터가 없으면 "실적 없음")
+**주의사항**: (적용 시 고려할 점 1~2문장)
+
+위 형식으로 3~5개 기기를 작성하세요. 정보가 부족하면 전문가 판단 근거를 명시하세요.`
+
+export async function generateDeviceRecommendations(
+  clientId: string
+): Promise<{ success: boolean; recommendations?: string; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  try {
+    const supabase = createAdminClient()
+
+    const [clientResult, ippaResult, recordResult] = await Promise.all([
+      supabase
+        .from('clients')
+        .select('name, disability_type, disability_grade, birth_date')
+        .eq('id', clientId)
+        .single(),
+      (supabase as any)
+        .from('eval_ippa_assessments')
+        .select('items, outcome_score, status')
+        .eq('client_id', clientId)
+        .order('assessment_year', { ascending: false })
+        .limit(1),
+      (supabase as any)
+        .from('eval_service_records')
+        .select('product_name, disability_type, satisfaction_score')
+        .not('product_name', 'is', null)
+        .not('product_name', 'eq', '')
+        .limit(200),
+    ])
+
+    const client = clientResult.data
+    if (!client) return { success: false, error: '대상자를 찾을 수 없습니다' }
+
+    const clientCtx = `장애유형: ${client.disability_type ?? '미상'} | 장애정도: ${client.disability_grade ?? '미상'}`
+
+    const ippaRows = (ippaResult.data ?? []) as Array<{
+      items: Array<{ problem: string; pre_score: number; post_score: number | null }>
+    }>
+    const problemAreas = ippaRows.length > 0 && Array.isArray(ippaRows[0]?.items) && ippaRows[0].items.length > 0
+      ? ippaRows[0].items.map(it => `${it.problem} (어려움 ${it.pre_score}점)`).join(', ')
+      : '측정 이력 없음'
+
+    const allRecords = (recordResult.data ?? []) as Array<{
+      product_name: string; disability_type: string | null; satisfaction_score: number | null
+    }>
+    const matching = client.disability_type
+      ? allRecords.filter(r => (r.disability_type ?? '').includes(client.disability_type ?? ''))
+      : allRecords
+
+    const grouped: Record<string, { count: number; satisfactions: number[] }> = {}
+    matching.forEach(r => {
+      if (!grouped[r.product_name]) grouped[r.product_name] = { count: 0, satisfactions: [] }
+      grouped[r.product_name].count++
+      if (r.satisfaction_score != null) grouped[r.product_name].satisfactions.push(r.satisfaction_score)
+    })
+
+    const knowledgeCtx = Object.entries(grouped)
+      .sort((a, b) => b[1].count - a[1].count)
+      .slice(0, 10)
+      .map(([name, { count, satisfactions }]) => {
+        const avg = satisfactions.length > 0
+          ? (satisfactions.reduce((a, b) => a + b, 0) / satisfactions.length).toFixed(1)
+          : null
+        return `${name}: ${count}건${avg ? `, 만족도 ${avg}점` : ''}`
+      })
+      .join('\n')
+
+    const model = getGeminiModel('gemini-2.5-flash')
+    const prompt = `${DEVICE_RECOMMENDATION_PROMPT}\n\n대상자 정보:\n${clientCtx}\n\nK-IPPA 활동 문제 영역:\n${problemAreas}\n\n기관 실적 (동일 장애유형 상위 10개):\n${knowledgeCtx || '데이터 없음'}`
+
+    const result = await model.generateContent(prompt)
+    const recommendations = result.response.text().trim()
+    if (!recommendations) throw new Error('빈 응답')
+    return { success: true, recommendations }
+  } catch (error) {
+    console.error('[AI Actions] 보조기기 추천 생성 오류:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? `추천 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+    }
+  }
+}
