@@ -30,6 +30,7 @@ export function TranscriptPanel({
   const [transcript, setTranscript] = useState('')
   const [durationSec, setDurationSec] = useState(0)
   const [keyPoints, setKeyPoints] = useState<TranscriptKeyPoints | null>(null)
+  const [aiSummary, setAiSummary] = useState<string | undefined>(undefined)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -51,6 +52,7 @@ export function TranscriptPanel({
       const result = await summarizeTranscript(transcript)
       if (result.success && result.keyPoints) {
         setKeyPoints(result.keyPoints)
+        setAiSummary(result.summary)
       } else {
         setError(result.error ?? 'AI 요약 실패')
       }
@@ -64,16 +66,27 @@ export function TranscriptPanel({
     setLoading(true)
     setError(null)
     try {
+      let resolvedKeyPoints = keyPoints
+      let resolvedSummary = aiSummary
+
+      if (!resolvedKeyPoints) {
+        const summarizeResult = await summarizeTranscript(transcript)
+        if (summarizeResult.success && summarizeResult.keyPoints) {
+          resolvedKeyPoints = summarizeResult.keyPoints
+          resolvedSummary = summarizeResult.summary
+          setKeyPoints(resolvedKeyPoints)
+          setAiSummary(resolvedSummary)
+        }
+      }
+
       const input: TranscriptInput = {
         client_id: clientId ?? null,
         session_type: 'call',
         session_date: sessionDate,
         duration_sec: durationSec || null,
         transcript,
-        ai_summary: keyPoints
-          ? `주요 호소: ${keyPoints.chief_complaint ?? ''} / 요청 기기: ${keyPoints.requested_device ?? ''}`
-          : null,
-        key_points: keyPoints,
+        ai_summary: resolvedSummary ?? null,
+        key_points: resolvedKeyPoints,
         consent_given: consentGiven,
       }
 

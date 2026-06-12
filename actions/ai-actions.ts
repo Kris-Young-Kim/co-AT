@@ -357,6 +357,7 @@ const TRANSCRIPT_SUMMARY_PROMPT = `당신은 보조공학센터 전문 기록사
 아래 상담 대화 내용에서 핵심 정보를 JSON으로 추출해주세요.
 다른 설명 없이 JSON만 반환하세요:
 {
+  "summary": "전체 상담 요약 (1~2문장, 핵심만 간결하게)",
   "chief_complaint": "주요 호소 내용 (1~2문장)",
   "requested_device": "요청 보조기기명 (없으면 빈 문자열)",
   "agreed_action": "합의된 조치 사항",
@@ -365,7 +366,7 @@ const TRANSCRIPT_SUMMARY_PROMPT = `당신은 보조공학센터 전문 기록사
 
 export async function summarizeTranscript(
   transcript: string
-): Promise<{ success: boolean; keyPoints?: TranscriptKeyPoints; error?: string }> {
+): Promise<{ success: boolean; summary?: string; keyPoints?: TranscriptKeyPoints; error?: string }> {
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
@@ -383,8 +384,9 @@ export async function summarizeTranscript(
       .replace(/```json\s*/g, '')
       .replace(/```\s*/g, '')
       .trim()
-    const keyPoints = JSON.parse(raw) as TranscriptKeyPoints
-    return { success: true, keyPoints }
+    const parsed = JSON.parse(raw) as TranscriptKeyPoints & { summary?: string }
+    const { summary, ...keyPoints } = parsed
+    return { success: true, summary: summary ?? undefined, keyPoints }
   } catch (error) {
     console.error('[AI Actions] 대화록 요약 오류:', error)
     return {
