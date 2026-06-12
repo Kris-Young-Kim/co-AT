@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Users, BarChart3, LogOut, Phone, RefreshCw, Clock, FileEdit, GraduationCap, Gift, FileText, BarChart2, ChevronDown, BookOpen } from 'lucide-react'
+import { Users, BarChart3, LogOut, Phone, RefreshCw, Clock, FileEdit, GraduationCap, Gift, FileText, BarChart2, ChevronDown, BookOpen, Kanban } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 
 type NavItem = {
@@ -23,6 +23,7 @@ type NavEntry = NavItem | NavGroup
 
 const NAV_ENTRIES: NavEntry[] = [
   { type: 'item', href: '/', label: '대시보드', icon: BarChart3 },
+  { type: 'item', href: '/pipeline', label: '서비스 진행 현황', icon: Kanban },
   { type: 'item', href: '/clients', label: '클라이언트', icon: Users },
   { type: 'item', href: '/clients/pending', label: '신규 접수 대기', icon: Clock },
   { type: 'item', href: '/call-logs', label: '콜센터 상담', icon: Phone },
