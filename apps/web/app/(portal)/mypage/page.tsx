@@ -1,7 +1,15 @@
 import { ClientRentStatus } from "@/components/features/portal/ClientRentStatus"
 import { EvalServiceRecordList } from "@/components/features/portal/EvalServiceRecordList"
 import { ClientTimelineList } from "@/components/features/portal/ClientTimelineList"
-import { getMyRentals, getMyEvalServiceRecords, getMyServiceHistory } from "@/actions/portal-actions"
+import { ServiceStatusTracker } from "@/components/features/portal/ServiceStatusTracker"
+import { PortalIPPAList } from "@/components/features/portal/PortalIPPAList"
+import {
+  getMyRentals,
+  getMyEvalServiceRecords,
+  getMyServiceHistory,
+  getMyActiveApplications,
+  getMyIPPAAssessments,
+} from "@/actions/portal-actions"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,15 +24,19 @@ export default async function MyPage() {
     redirect("/sign-in")
   }
 
-  const [rentalsResult, evalRecordsResult, historyResult] = await Promise.all([
+  const [rentalsResult, evalRecordsResult, historyResult, activeAppsResult, ippaResult] = await Promise.all([
     getMyRentals(),
     getMyEvalServiceRecords(),
     getMyServiceHistory(),
+    getMyActiveApplications(),
+    getMyIPPAAssessments(),
   ])
 
   const rentals = rentalsResult.success ? rentalsResult.rentals ?? [] : []
   const evalRecords = evalRecordsResult.success ? evalRecordsResult.records ?? [] : []
   const history = historyResult.success ? historyResult.history ?? [] : []
+  const activeApplications = activeAppsResult.success ? activeAppsResult.applications ?? [] : []
+  const ippaAssessments = ippaResult.success ? ippaResult.assessments ?? [] : []
   const clientLinked = rentalsResult.clientLinked ?? evalRecordsResult.clientLinked ?? false
 
   return (
@@ -45,14 +57,22 @@ export default async function MyPage() {
         </div>
       )}
 
+      {/* 진행 중인 서비스 신청 — 전체 너비 */}
+      {clientLinked && (
+        <div className="mb-6">
+          <ServiceStatusTracker applications={activeApplications} />
+        </div>
+      )}
+
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* 좌측: 대여 중인 기기 */}
+        {/* 좌측: 대여 중인 기기 + 서비스 기록 */}
         <div className="lg:col-span-1 space-y-6">
           <ClientRentStatus rentals={rentals} />
           <EvalServiceRecordList records={evalRecords} />
+          {clientLinked && <PortalIPPAList assessments={ippaAssessments} />}
         </div>
 
-        {/* 우측: 신청 이력 */}
+        {/* 우측: 전체 신청 이력 */}
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>

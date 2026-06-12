@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin"
 import { auth } from "@clerk/nextjs/server"
 import { clerkClient } from "@clerk/nextjs/server"
+import { revalidatePath } from "next/cache"
 
 export interface ServiceHistory {
   id: string
@@ -369,6 +370,132 @@ export async function getMyEvalServiceRecords(): Promise<{
     return { success: true, records, clientLinked: true }
   } catch (error) {
     console.error("Unexpected error in getMyEvalServiceRecords:", error)
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
+
+export interface ActiveApplication {
+  id: string
+  category: string | null
+  sub_category: string | null
+  status: string | null
+  created_at: string | null
+  desired_date: string | null
+}
+
+export async function getMyActiveApplications(): Promise<{
+  success: boolean
+  applications?: ActiveApplication[]
+  error?: string
+}> {
+  try {
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: "로그인이 필요합니다" }
+
+    const clientId = await resolveClientId(userId)
+    if (!clientId) return { success: true, applications: [] }
+
+    const supabase = createAdminClient()
+    const { data, error } = await supabase
+      .from("applications")
+      .select("id, category, sub_category, status, created_at, desired_date")
+      .eq("client_id", clientId)
+      .not("status", "in", '("완료","취소")')
+      .order("created_at", { ascending: false })
+
+    if (error) {
+      console.error("getMyActiveApplications:", error)
+      return { success: false, error: "진행 중 신청 조회에 실패했습니다" }
+    }
+
+    return {
+      success: true,
+      applications: (data || []) as ActiveApplication[],
+    }
+  } catch (error) {
+    console.error("Unexpected error in getMyActiveApplications:", error)
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
+
+export interface PortalIPPAAssessment {
+  id: string
+  assessment_year: number
+  pre_date: string | null
+  post_date: string | null
+  items: Array<{ problem: string; pre_score: number; post_score: number | null }>
+  outcome_score: number | null
+  status: "pre_only" | "completed"
+  notes: string | null
+}
+
+function calcPortalOutcome(
+  items: Array<{ pre_score: number; post_score: number }>
+): number | null {
+  if (items.length === 0) return null
+  const sum = items.reduce((acc, it) => acc + (it.pre_score - it.post_score), 0)
+  return Math.round((sum / items.length) * 100) / 100
+}
+
+export async function getMyIPPAAssessments(): Promise<{
+  success: boolean
+  assessments?: PortalIPPAAssessment[]
+  error?: string
+}> {
+  try {
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: "로그인이 필요합니다" }
+
+    const clientId = await resolveClientId(userId)
+    if (!clientId) return { success: true, assessments: [] }
+
+    const supabase = createAdminClient()
+    const { data, error } = await (supabase as any)
+      .from("eval_ippa_assessments")
+      .select("id, assessment_year, pre_date, post_date, items, outcome_score, status, notes")
+      .eq("client_id", clientId)
+      .order("assessment_year", { ascending: false })
+      .order("created_at", { ascending: false })
+
+    if (error) return { success: false, error: error.message }
+    return { success: true, assessments: (data ?? []) as PortalIPPAAssessment[] }
+  } catch {
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
+
+export async function submitMyIPPAPostMeasurement(
+  assessmentId: string,
+  input: {
+    post_date: string
+    items: Array<{ problem: string; pre_score: number; post_score: number }>
+  }
+): Promise<{ success: boolean; outcomeScore?: number | null; error?: string }> {
+  try {
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: "로그인이 필요합니다" }
+
+    const clientId = await resolveClientId(userId)
+    if (!clientId) return { success: false, error: "연결된 대상자 계정이 없습니다" }
+
+    const outcomeScore = calcPortalOutcome(input.items)
+
+    const supabase = createAdminClient()
+    const { error } = await (supabase as any)
+      .from("eval_ippa_assessments")
+      .update({
+        post_date: input.post_date,
+        items: input.items,
+        outcome_score: outcomeScore,
+        status: "completed",
+      })
+      .eq("id", assessmentId)
+      .eq("client_id", clientId)
+
+    if (error) return { success: false, error: error.message }
+    revalidatePath("/mypage")
+    return { success: true, outcomeScore }
+  } catch {
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }
   }
 }
