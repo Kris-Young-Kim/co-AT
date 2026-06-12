@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import { createCase, deleteCase, EvalCase } from '@/actions/case-actions'
+import { generateCaseNote } from '@/actions/ai-actions'
+import { Sparkles, Loader2 } from 'lucide-react'
 
 interface Props {
   initialCases: EvalCase[]
@@ -76,8 +78,21 @@ export function ClientCases({ initialCases, clientId }: Props) {
   const [newTitle, setNewTitle] = useState('')
   const [newType, setNewType] = useState('multi')
   const [newNotes, setNewNotes] = useState('')
+  const [aiNoteLoading, setAiNoteLoading] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+
+  async function handleGenerateCaseNote() {
+    if (!newNotes.trim()) return
+    setAiNoteLoading(true)
+    const result = await generateCaseNote({ clientId, caseType: newType, memo: newNotes })
+    setAiNoteLoading(false)
+    if (result.success && result.note) {
+      setNewNotes(result.note)
+    } else {
+      setError(result.error ?? 'AI 일지 초안 생성 실패')
+    }
+  }
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
@@ -166,12 +181,26 @@ export function ClientCases({ initialCases, clientId }: Props) {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">비고</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-xs font-medium text-gray-700">메모 / 사례관리 일지</label>
+              <button
+                type="button"
+                onClick={handleGenerateCaseNote}
+                disabled={aiNoteLoading || !newNotes.trim()}
+                className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-indigo-50 text-indigo-700 hover:bg-indigo-100 disabled:opacity-40 transition-colors"
+              >
+                {aiNoteLoading
+                  ? <><Loader2 className="h-3 w-3 animate-spin" />생성 중</>
+                  : <><Sparkles className="h-3 w-3" />AI 일지 초안</>
+                }
+              </button>
+            </div>
             <textarea
-              rows={2}
+              rows={3}
               value={newNotes}
               onChange={(e) => setNewNotes(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none"
+              placeholder="간단한 메모를 입력하면 AI가 사례관리 일지 초안을 생성합니다"
+              className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
           {error && <p className="text-xs text-red-600">{error}</p>}

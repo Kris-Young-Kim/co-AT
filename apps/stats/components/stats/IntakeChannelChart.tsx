@@ -34,7 +34,7 @@ export function IntakeChannelChart({ rows }: Props) {
           <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
           <Tooltip
             contentStyle={{ fontSize: 12 }}
-            formatter={(value: number, name: string) => [`${value}건`, name]}
+            formatter={(value: number | undefined, name: string | undefined) => [`${value ?? 0}건`, name ?? '']}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} />
           <Bar dataKey="유선" fill="#3b82f6" radius={[2, 2, 0, 0]} />

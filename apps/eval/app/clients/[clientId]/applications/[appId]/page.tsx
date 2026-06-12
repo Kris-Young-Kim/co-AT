@@ -5,6 +5,7 @@ import { getClientById } from '@/actions/client-actions'
 import { getServiceRecordsByApplication } from '@/actions/service-record-actions'
 import { AssessmentGrid } from '@/eval/components/eval/AssessmentGrid'
 import { ApplicationDetailForm } from '@/eval/components/eval/ApplicationDetailForm'
+import { PipelineProgress } from '@/eval/components/eval/PipelineProgress'
 import Link from 'next/link'
 import { ArrowLeft, FileText, ClipboardCheck, Plus, Printer, ClipboardList, ClipboardEdit } from 'lucide-react'
 import { notFound } from 'next/navigation'
@@ -45,7 +46,17 @@ export default async function ApplicationDetailPage({ params }: Props) {
         클라이언트로
       </Link>
 
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">신청서 상세</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-4">신청서 상세</h1>
+
+      {/* ── 진행 단계 ── */}
+      <div className="mb-8">
+        <PipelineProgress
+          intakeCount={intakeRecords.length}
+          assessmentCount={assessments.length}
+          serviceRecordCount={serviceRecords.length}
+          applicationStatus={application.status}
+        />
+      </div>
 
       {/* ── 접수 및 상담 ── */}
       <section className="mb-8">

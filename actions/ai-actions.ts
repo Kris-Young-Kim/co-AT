@@ -605,6 +605,61 @@ ${domainCtx}`
 }
 
 // ────────────────────────────────────────────
+// E-5: 사례관리 일지 초안
+// ────────────────────────────────────────────
+
+const CASE_NOTE_PROMPT = `당신은 보조공학센터 사례관리 전문가입니다.
+아래 메모를 바탕으로 공식 사례관리 일지 초안을 작성해주세요.
+
+형식 (섹션별 2~3문장, 전체 200자 내외):
+[현황] 대상자의 현재 상황 및 주요 문제
+[조치] 이번 상담에서 취한 조치 및 연계 서비스
+[계획] 향후 지원 계획 및 다음 단계
+
+텍스트만 반환하세요 (JSON·마크다운·제목 없음).`
+
+export async function generateCaseNote(input: {
+  clientId: string
+  caseType: string
+  memo: string
+}): Promise<{ success: boolean; note?: string; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  if (!input.memo.trim()) return { success: false, error: '메모를 입력해주세요' }
+
+  try {
+    const supabase = createAdminClient()
+    const { data: client } = await supabase
+      .from('clients')
+      .select('name, disability_type')
+      .eq('id', input.clientId)
+      .single()
+
+    const CASE_TYPE_MAP: Record<string, string> = {
+      multi: '다중 서비스', grant_eval: '교부사업', rental: '대여',
+      custom_make: '맞춤제작', other: '기타',
+    }
+    const ctx = [
+      client && `대상자: ${client.name}, 장애유형: ${client.disability_type ?? '미상'}`,
+      `케이스 유형: ${CASE_TYPE_MAP[input.caseType] ?? input.caseType}`,
+      `메모: ${input.memo.trim()}`,
+    ].filter(Boolean).join('\n')
+
+    const model = getGeminiModel('gemini-2.5-flash')
+    const result = await model.generateContent(`${CASE_NOTE_PROMPT}\n\n${ctx}`)
+    const note = result.response.text().trim()
+    if (!note) throw new Error('빈 응답')
+    return { success: true, note }
+  } catch (error) {
+    console.error('[AI Actions] 사례관리 일지 생성 오류:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? `일지 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+    }
+  }
+}
+
+// ────────────────────────────────────────────
 // E-5: 서비스 완료 노트 자동 생성
 // ────────────────────────────────────────────
 

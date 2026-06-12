@@ -2,11 +2,13 @@ import { getClientById, getClientActiveServices, getClientHistory, getSimilarCli
 import { getApplicationsByClientId } from '@/actions/application-actions'
 import { getClientCases } from '@/actions/case-actions'
 import { getClientIPPAAssessments } from '@/actions/ippa-actions'
+import { getTranscriptsByClient } from '@/actions/transcript-actions'
 import { ApplicationListCard } from '@/eval/components/eval/ApplicationListCard'
 import { ClientActiveServices } from '@/eval/components/eval/ClientActiveServices'
 import { ClientCases } from '@/eval/components/eval/ClientCases'
 import { ClientIPPA } from '@/eval/components/eval/ClientIPPA'
 import { ClientTimeline } from '@/eval/components/eval/ClientTimeline'
+import { ClientTranscripts } from '@/eval/components/eval/ClientTranscripts'
 import { DeviceRecommendationPanel } from '@/eval/components/eval/DeviceRecommendationPanel'
 import { EvaluationReportPanel } from '@/eval/components/eval/EvaluationReportPanel'
 import { PortalUserLink } from '@/eval/components/eval/PortalUserLink'
@@ -25,7 +27,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const clientResult = await getClientById(clientId)
   if (!clientResult.success || !clientResult.client) notFound()
 
-  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult] = await Promise.all([
+  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, transcriptsResult] = await Promise.all([
     getApplicationsByClientId(clientId),
     getClientActiveServices(clientId),
     getClientHistory(clientId),
@@ -35,6 +37,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     (clientResult.client as any).portal_user_id
       ? getLinkedPortalUserInfo((clientResult.client as any).portal_user_id as string)
       : Promise.resolve({ success: true as const, user: undefined }),
+    getTranscriptsByClient(clientId),
   ])
 
   const client = clientResult.client
@@ -45,6 +48,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const ippaItems = ippaResult.success ? ippaResult.assessments ?? [] : []
   const similarClients = similarResult.success ? similarResult.clients ?? [] : []
   const linkedPortalUser = portalUserResult.success ? portalUserResult.user ?? null : null
+  const transcripts = transcriptsResult.success ? transcriptsResult.transcripts ?? [] : []
 
   return (
     <div className="p-8 max-w-4xl">
@@ -115,6 +119,17 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       {/* 케이스 관리 */}
       <div className="mb-6">
         <ClientCases initialCases={caseItems} clientId={clientId} />
+      </div>
+
+      {/* STT 대화록 이력 */}
+      <div className="mb-6">
+        <h2 className="text-base font-semibold text-gray-900 mb-3">
+          STT 대화록 이력
+          {transcripts.length > 0 && (
+            <span className="ml-2 text-sm font-normal text-gray-400">({transcripts.length}건)</span>
+          )}
+        </h2>
+        <ClientTranscripts transcripts={transcripts} />
       </div>
 
       {/* K-IPPA 기능적 성과 측정 */}
