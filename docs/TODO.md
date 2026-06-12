@@ -10,7 +10,8 @@
 **완료**: Phase D-2 (HR 급여관리 고도화)  
 **완료**: Phase D-3 (HR 근태관리 고도화 — 시간외근무·QR출퇴근·연차잔여)  
 **완료**: Phase D-4 (HR 근무현황·휴가캘린더·출장관리·퇴직금정산·월말집계Cron)  
-**완료**: Phase D-5 (HR 인사평가·교육훈련·근로계약서·HR통계보고서)
+**완료**: Phase D-5 (HR 인사평가·교육훈련·근로계약서·HR통계보고서)  
+**완료**: Phase E-5 일부 (STT 대화록 이력·단계별 승계·사례관리 일지 초안 — 배포 완료 2026-06-12)
 
 ---
 
@@ -255,6 +256,8 @@
 | 중앙보조기기센터 보고 양식 엑셀 출력 (ExcelJS) | ✅ |
 | AI 상담기록 생성 (Gemini) | ✅ |
 | 음성 녹음 → STT 연동 | ✅ |
+| STT 대화록 이력 (`ClientTranscripts`) — 대상자 상세 페이지 조회 | ✅ |
+| 서비스 신청 진행 단계 시각화 (`PipelineProgress`) — 신청 상세 페이지 | ✅ |
 
 ### Phase F — 교부사업 적합성 평가 (`/grant-eval`)
 
@@ -597,7 +600,7 @@
 | `056_add_is_web_visible_to_schedules.sql` | schedules 테이블 `is_web_visible` 컬럼 추가 | ✅ |
 | `057_create_schedule_categories.sql` | schedule_categories 테이블 생성 (색상·이름) | ✅ |
 
-### 완료된 마이그레이션 (058 ~ 082)
+### 완료된 마이그레이션 (058 ~ 089)
 
 | 파일명 | 내용 | 상태 |
 |--------|------|------|
@@ -610,6 +613,7 @@
 | `086_finance_funding_ratios.sql` | `finance_budget_categories`에 `national_ratio`, `provincial_ratio` 컬럼 추가 (기본값 50) | ✅ |
 | `087_clients_portal_user_id.sql` | `clients.portal_user_id` 컬럼 추가 (포털 계정 연결) + 인덱스 | ✅ |
 | `088_call_logs_channel_and_application.sql` | `call_logs.channel` (phone/web/chatbot) + `application_id` FK 추가 (E-4 채널 통계·자동 연동) | ✅ |
+| `089_create_eval_session_transcripts.sql` | `eval_session_transcripts` 테이블 (STT 대화록 — transcript, summary, key_points JSON) + RLS + 트리거 | ✅ |
 
 ### 미실행 / 예정 마이그레이션
 
