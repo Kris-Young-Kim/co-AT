@@ -29,9 +29,11 @@ const NAV_ENTRIES: NavEntry[] = [
   { type: 'item', href: '/rentals', label: '대여 관리', icon: ArrowLeftRight },
   { type: 'item', href: '/reuse', label: '재사용', icon: RefreshCw },
 
-  { type: 'section', label: '제작·수리' },
+  { type: 'section', label: '제작' },
   { type: 'item', href: '/custom-orders', label: '맞춤제작', icon: Wrench },
   { type: 'item', href: '/fab-equipment', label: '제작 장비', icon: Cpu },
+
+  { type: 'section', label: '사후관리' },
   { type: 'item', href: '/maintenance', label: '점검/수리', icon: Settings },
   { type: 'item', href: '/cleaning', label: '소독·세척', icon: Droplets },
 
