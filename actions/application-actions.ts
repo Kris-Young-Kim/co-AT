@@ -1,6 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { type ApplicationForm } from "@/lib/validators"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
@@ -195,7 +196,11 @@ export async function createApplication(
 export interface CreateApplicationWithPendingClientInput {
   name: string
   birth_date?: string | null
+  gender?: string | null
   contact?: string | null
+  disability_type?: string | null
+  disability_grade?: string | null
+  economic_status?: string | null
   category: string
   sub_category?: string | null
   desired_date?: string | null
@@ -205,30 +210,46 @@ export async function createApplicationWithPendingClient(
   input: CreateApplicationWithPendingClientInput
 ): Promise<{ success: boolean; applicationId?: string; error?: string }> {
   try {
-    const supabase = await createClient()
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: "로그인이 필요합니다" }
 
-    // 1. Create pending client (source = portal)
-    const { data: clientData, error: clientError } = await supabase
+    const supabase = createAdminClient()
+
+    // 1. Find or create client linked to this portal user
+    const { data: existingClient } = await (supabase as any)
       .from("clients")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
-      .insert({
-        name: input.name,
-        birth_date: input.birth_date ?? null,
-        contact: input.contact ?? null,
-        status: "pending",
-        source: "portal",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
       .select("id")
-      .single()
+      .eq("portal_user_id", userId)
+      .maybeSingle()
 
-    if (clientError || !clientData) {
-      console.error("createApplicationWithPendingClient (client):", clientError)
-      return { success: false, error: "클라이언트 생성에 실패했습니다" }
+    let clientId: string
+
+    if (existingClient) {
+      clientId = (existingClient as { id: string }).id
+    } else {
+      const { data: clientData, error: clientError } = await (supabase as any)
+        .from("clients")
+        .insert({
+          name: input.name,
+          birth_date: input.birth_date ?? null,
+          gender: input.gender ?? null,
+          contact: input.contact ?? null,
+          disability_type: input.disability_type ?? null,
+          disability_grade: input.disability_grade ?? null,
+          economic_status: input.economic_status ?? null,
+          status: "pending",
+          source: "portal",
+          portal_user_id: userId,
+        })
+        .select("id")
+        .single()
+
+      if (clientError || !clientData) {
+        console.error("createApplicationWithPendingClient (client):", clientError)
+        return { success: false, error: "클라이언트 생성에 실패했습니다" }
+      }
+      clientId = (clientData as { id: string }).id
     }
-
-    const clientId = (clientData as { id: string }).id
 
     // 2. Create application linked to the pending client
     const applicationData = {
@@ -242,9 +263,8 @@ export async function createApplicationWithPendingClient(
       updated_at: new Date().toISOString(),
     }
 
-    const { data: appData, error: appError } = await supabase
+    const { data: appData, error: appError } = await (supabase as any)
       .from("applications")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
       .insert(applicationData)
       .select("id")
       .single()
