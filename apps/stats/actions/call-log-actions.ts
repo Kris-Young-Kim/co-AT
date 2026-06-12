@@ -2,6 +2,59 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 
+export interface ChannelStatRow {
+  month: number
+  phone: number
+  web: number
+  chatbot: number
+  total: number
+}
+
+export async function getCallLogChannelStats(year: number): Promise<
+  | { success: true; rows: ChannelStatRow[]; totals: { phone: number; web: number; chatbot: number; total: number } }
+  | { success: false; error: string }
+> {
+  try {
+    const supabase = createAdminClient()
+    const { data, error } = await (supabase as any)
+      .from('call_logs')
+      .select('log_date, channel')
+      .gte('log_date', `${year}-01-01`)
+      .lte('log_date', `${year}-12-31`)
+
+    if (error) return { success: false, error: error.message }
+
+    const byMonth: Record<number, { phone: number; web: number; chatbot: number }> = {}
+    for (let m = 1; m <= 12; m++) byMonth[m] = { phone: 0, web: 0, chatbot: 0 }
+
+    for (const row of (data ?? []) as { log_date: string; channel: string | null }[]) {
+      const m = new Date(row.log_date).getMonth() + 1
+      const ch = (row.channel ?? 'phone') as 'phone' | 'web' | 'chatbot'
+      if (ch in byMonth[m]) byMonth[m][ch]++
+    }
+
+    const rows: ChannelStatRow[] = Object.entries(byMonth).map(([m, c]) => ({
+      month: Number(m),
+      ...c,
+      total: c.phone + c.web + c.chatbot,
+    }))
+
+    const totals = rows.reduce(
+      (acc, r) => ({
+        phone: acc.phone + r.phone,
+        web: acc.web + r.web,
+        chatbot: acc.chatbot + r.chatbot,
+        total: acc.total + r.total,
+      }),
+      { phone: 0, web: 0, chatbot: 0, total: 0 }
+    )
+
+    return { success: true, rows, totals }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
+}
+
 export async function getCallLogMonthlyCount(year: number): Promise<
   | { success: true; total: number; monthly: { month: number; count: number }[] }
   | { success: false; error: string }

@@ -315,6 +315,33 @@ export async function createApplicationWithPendingClient(
       }
     }
 
+    // 5. Auto-create call_log with channel='web'
+    try {
+      const CATEGORY_LABEL: Record<string, string> = {
+        consult: "상담",
+        experience: "체험·시연",
+        custom: "맞춤형 지원",
+        aftercare: "사후관리",
+        education: "교육·홍보",
+      }
+      const catLabel = CATEGORY_LABEL[input.category] ?? input.category
+      const subLabel = input.sub_category ? ` — ${input.sub_category}` : ""
+      await supabase.from("call_logs").insert({
+        log_date: new Date().toISOString().slice(0, 10),
+        channel: "web",
+        application_id: applicationId,
+        target_name: input.name,
+        target_disability_type: input.disability_type ?? null,
+        target_economic_status: input.economic_status ?? null,
+        q_device: true,
+        question_content: `온라인 신청: ${catLabel}${subLabel}`,
+        staff_name: "온라인 신청",
+      })
+    } catch (err) {
+      console.error("[포털 신청] call_log 자동 생성 실패:", err)
+      // non-fatal
+    }
+
     revalidatePath("/apply")
     revalidatePath("/mypage")
     revalidatePath("/")

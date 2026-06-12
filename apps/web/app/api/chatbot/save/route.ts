@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
 
     await supabase.from("call_logs").insert({
       log_date: today,
+      channel: "chatbot",
       staff_name: "AI챗봇",
       q_other: true,
       question_content: question.slice(0, 2000),
