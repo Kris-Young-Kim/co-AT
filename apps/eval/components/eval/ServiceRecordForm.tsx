@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createServiceRecord } from '@/actions/service-record-actions'
-import { generateServiceRecordDraft } from '@/actions/ai-actions'
+import { generateServiceRecordDraft, generateCompletionNote } from '@/actions/ai-actions'
 import { ITEM_CATEGORIES } from '@/eval/lib/item-categories'
-import { Sparkles, Loader2 } from 'lucide-react'
+import { Sparkles, Loader2, CheckCircle2 } from 'lucide-react'
 
 const INPUT = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
 const SELECT = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white'
@@ -115,8 +115,10 @@ export function ServiceRecordForm({
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [aiLoading, setAiLoading] = useState(false)
+  const [completionNoteLoading, setCompletionNoteLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [satisfactionScore, setSatisfactionScore] = useState<number | null>(null)
+  const [recordStatus, setRecordStatus] = useState('')
 
   // AI-filled fields
   const [serviceContent, setServiceContent] = useState('')
@@ -181,6 +183,44 @@ export function ServiceRecordForm({
     }))
   }
 
+  async function handleGenerateCompletionNote() {
+    setCompletionNoteLoading(true)
+    setError(null)
+    const serviceTypes: string[] = []
+    if (checks.is_consult) serviceTypes.push('상담')
+    if (checks.is_rental) serviceTypes.push('대여')
+    if (checks.is_custom_make) serviceTypes.push('맞춤제작')
+    if (checks.is_repair) serviceTypes.push('수리')
+    if (checks.is_assessment) serviceTypes.push('평가')
+    if (checks.is_monitoring) serviceTypes.push('모니터링')
+    if (checks.is_grant) serviceTypes.push('교부')
+    if (checks.is_education) serviceTypes.push('교육')
+    if (checks.is_info_provision) serviceTypes.push('정보제공')
+    if (checks.is_reuse) serviceTypes.push('재사용')
+    if (checks.is_trial) serviceTypes.push('체험')
+
+    const result = await generateCompletionNote({
+      clientId,
+      serviceCategory: serviceCategory || null,
+      productName: productName || null,
+      serviceTypes,
+      existingContent: serviceContent || null,
+      satisfactionScore,
+    })
+    setCompletionNoteLoading(false)
+
+    if (!result.success || !result.note) {
+      setError(result.error ?? 'AI 완료 노트 생성 실패')
+      return
+    }
+    // 기존 내용이 있으면 구분선 후 추가, 없으면 대체
+    if (serviceContent.trim()) {
+      setServiceContent(prev => `${prev}\n\n── 완료 노트 ──\n${result.note}`)
+    } else {
+      setServiceContent(result.note!)
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSaving(true)
@@ -198,7 +238,7 @@ export function ServiceRecordForm({
       application_month: num('application_month'),
       application_no: num('application_no'),
       is_re_application: bool('is_re_application'),
-      record_status: str('record_status'),
+      record_status: recordStatus || null,
       name: clientData?.name ?? str('name'),
       birth_date: clientData?.birth_date ?? str('birth_date'),
       gender: clientData?.gender ?? str('gender'),
@@ -263,7 +303,11 @@ export function ServiceRecordForm({
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">기록상태</label>
-            <select name="record_status" defaultValue="" className={SELECT}>
+            <select
+              value={recordStatus}
+              onChange={e => setRecordStatus(e.target.value)}
+              className={SELECT}
+            >
               <option value="">선택</option>
               {RECORD_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
@@ -402,6 +446,27 @@ export function ServiceRecordForm({
           <label className="block text-xs font-medium text-gray-600 mb-1">서비스 내용</label>
           <textarea value={serviceContent} onChange={e => setServiceContent(e.target.value)} rows={5} className={INPUT} placeholder="서비스 내용을 입력하세요" />
         </div>
+
+        {recordStatus === '완료' && (
+          <div className="flex items-center gap-3 rounded-lg bg-green-50 border border-green-200 px-4 py-3">
+            <CheckCircle2 className="h-4 w-4 text-green-600 shrink-0" />
+            <p className="text-xs text-green-800 flex-1">
+              상태가 <strong>완료</strong>로 설정되었습니다. AI가 서비스 결과 요약·모니터링 계획을 포함한 완료 노트를 자동 생성합니다.
+            </p>
+            <button
+              type="button"
+              onClick={handleGenerateCompletionNote}
+              disabled={completionNoteLoading}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-600 text-white text-xs font-medium hover:bg-green-700 disabled:opacity-50 transition-colors whitespace-nowrap"
+            >
+              {completionNoteLoading
+                ? <><Loader2 className="h-3.5 w-3.5 animate-spin" />생성 중...</>
+                : <><Sparkles className="h-3.5 w-3.5" />완료 노트 생성</>
+              }
+            </button>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-4">
           <div><label className="block text-xs font-medium text-gray-600 mb-1">상담일</label><input name="consultation_date" type="date" className={INPUT} /></div>
           <div><label className="block text-xs font-medium text-gray-600 mb-1">실적일</label><input name="performance_date" type="date" className={INPUT} /></div>

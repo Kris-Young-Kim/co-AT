@@ -605,6 +605,71 @@ ${domainCtx}`
 }
 
 // ────────────────────────────────────────────
+// E-5: 서비스 완료 노트 자동 생성
+// ────────────────────────────────────────────
+
+export interface CompletionNoteInput {
+  clientId: string
+  serviceCategory: string | null
+  productName: string | null
+  serviceTypes: string[]
+  existingContent: string | null
+  satisfactionScore: number | null
+}
+
+const COMPLETION_NOTE_PROMPT = `당신은 보조공학센터 전문 기록사입니다.
+아래 서비스 기록이 완료 처리됩니다. 2~4문장의 완료 노트를 작성해주세요.
+
+작성 기준:
+- 제공된 서비스 내용을 간략히 요약
+- 서비스 결과 및 대상자 상태 언급
+- 후속 조치 또는 모니터링 계획 포함
+- 전문적이고 간결한 어투 사용
+- 텍스트만 반환 (JSON·마크다운·따옴표 없음)`
+
+export async function generateCompletionNote(
+  input: CompletionNoteInput
+): Promise<{ success: boolean; note?: string; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  try {
+    const supabase = createAdminClient()
+    const { data: client } = await supabase
+      .from('clients')
+      .select('name, disability_type')
+      .eq('id', input.clientId)
+      .single()
+
+    const clientCtx = client
+      ? `대상자: ${client.name}, 장애유형: ${client.disability_type ?? '미상'}`
+      : ''
+
+    const serviceCtx = [
+      input.serviceCategory && `서비스구분: ${input.serviceCategory}`,
+      input.productName && `기기/품목: ${input.productName}`,
+      input.serviceTypes.length > 0 && `서비스유형: ${input.serviceTypes.join(', ')}`,
+      input.existingContent && `기존 내용: ${input.existingContent}`,
+      input.satisfactionScore != null && `만족도: ${input.satisfactionScore}점`,
+    ].filter(Boolean).join('\n')
+
+    const model = getGeminiModel('gemini-2.5-flash')
+    const result = await model.generateContent(
+      `${COMPLETION_NOTE_PROMPT}\n\n${clientCtx}\n${serviceCtx}`
+    )
+    const note = result.response.text().trim()
+    if (!note) throw new Error('빈 응답')
+    return { success: true, note }
+  } catch (error) {
+    console.error('[AI Actions] 완료 노트 생성 오류:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? `완료 노트 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+    }
+  }
+}
+
+// ────────────────────────────────────────────
 // E-5: 보조기기 추천
 // ────────────────────────────────────────────
 
