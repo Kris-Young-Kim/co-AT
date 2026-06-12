@@ -7,11 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus } from "lucide-react"
 import { NoticeList } from "./NoticeList"
 import { NoticeCreateDialog } from "./NoticeCreateDialog"
+import { BannerManager } from "@/components/features/admin/banners/BannerManager"
 import type { Notice } from "@/actions/notice-actions"
+import type { Banner } from "@/actions/banner-actions"
 
 type Category = "notice" | "activity" | "support" | "case"
 
-const TABS: { value: string; label: string; category: Category | null }[] = [
+const NOTICE_TABS: { value: string; label: string; category: Category | null }[] = [
   { value: "all", label: "전체", category: null },
   { value: "notice", label: "공지사항", category: "notice" },
   { value: "activity", label: "활동 소식", category: "activity" },
@@ -21,18 +23,20 @@ const TABS: { value: string; label: string; category: Category | null }[] = [
 
 interface NoticesManagementTabsProps {
   notices: Notice[]
+  banners: Banner[]
 }
 
-export function NoticesManagementTabs({ notices }: NoticesManagementTabsProps) {
+export function NoticesManagementTabs({ notices, banners }: NoticesManagementTabsProps) {
   const [activeTab, setActiveTab] = useState("all")
 
-  const activeCategory = TABS.find((t) => t.value === activeTab)?.category ?? null
+  const activeCategory = NOTICE_TABS.find((t) => t.value === activeTab)?.category ?? null
+  const isBannerTab = activeTab === "banners"
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <TabsList className="flex-wrap h-auto">
-          {TABS.map((tab) => {
+          {NOTICE_TABS.map((tab) => {
             const count =
               tab.category === null
                 ? notices.length
@@ -44,16 +48,22 @@ export function NoticesManagementTabs({ notices }: NoticesManagementTabsProps) {
               </TabsTrigger>
             )
           })}
+          <TabsTrigger value="banners" className="gap-1.5">
+            배너 관리
+            <span className="text-[10px] text-muted-foreground tabular-nums">({banners.length})</span>
+          </TabsTrigger>
         </TabsList>
-        <NoticeCreateDialog defaultCategory={activeCategory}>
-          <Button size="sm">
-            <Plus className="mr-1.5 h-4 w-4" />
-            게시글 생성
-          </Button>
-        </NoticeCreateDialog>
+        {!isBannerTab && (
+          <NoticeCreateDialog defaultCategory={activeCategory}>
+            <Button size="sm">
+              <Plus className="mr-1.5 h-4 w-4" />
+              게시글 생성
+            </Button>
+          </NoticeCreateDialog>
+        )}
       </div>
 
-      {TABS.map((tab) => {
+      {NOTICE_TABS.map((tab) => {
         const filtered =
           tab.category === null
             ? notices
@@ -77,6 +87,10 @@ export function NoticesManagementTabs({ notices }: NoticesManagementTabsProps) {
           </TabsContent>
         )
       })}
+
+      <TabsContent value="banners">
+        <BannerManager initialBanners={banners} />
+      </TabsContent>
     </Tabs>
   )
 }

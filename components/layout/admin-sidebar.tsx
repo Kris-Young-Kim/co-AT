@@ -13,30 +13,51 @@ import {
   MessageSquare,
   Bot,
   ClipboardList,
-  Image,
 } from "lucide-react";
 
-const menuItems = [
-  { href: "/", label: "앱 목록", icon: LayoutDashboard },
-  { href: "/notices-management", label: "웹 관리", icon: Globe },
-  { href: "/banners", label: "배너 관리", icon: Image },
-  { href: "/schedule", label: "일정 관리", icon: Calendar },
-  { href: "/work-tasks", label: "업무 관리", icon: ClipboardList },
-  { href: "/messenger", label: "업무 메신저", icon: MessageSquare },
-  { href: "/agent-chat", label: "AI 업무 도우미", icon: Bot },
-  { href: "/users", label: "사용자 관리", icon: Users, managerOnly: true },
-  { href: "/settings", label: "설정", icon: Settings },
+type NavItem = {
+  type: "item";
+  href: string;
+  label: string;
+  icon: React.ElementType;
+  managerOnly?: boolean;
+};
+
+type NavSection = {
+  type: "section";
+  label: string;
+};
+
+type NavEntry = NavItem | NavSection;
+
+const NAV_ENTRIES: NavEntry[] = [
+  { type: "item", href: "/", label: "앱 목록", icon: LayoutDashboard },
+
+  { type: "section", label: "콘텐츠" },
+  { type: "item", href: "/notices-management", label: "웹 관리", icon: Globe },
+  { type: "item", href: "/schedule", label: "일정 관리", icon: Calendar },
+
+  { type: "section", label: "업무" },
+  { type: "item", href: "/work-tasks", label: "업무 관리", icon: ClipboardList },
+  { type: "item", href: "/messenger", label: "업무 메신저", icon: MessageSquare },
+  { type: "item", href: "/agent-chat", label: "AI 업무 도우미", icon: Bot },
+
+  { type: "section", label: "시스템" },
+  { type: "item", href: "/users", label: "사용자 관리", icon: Users, managerOnly: true },
+  { type: "item", href: "/settings", label: "설정", icon: Settings },
 ];
 
 interface AdminSidebarProps {
-  showUsersManagement?: boolean
+  showUsersManagement?: boolean;
 }
 
 export function AdminSidebar({ showUsersManagement = false }: AdminSidebarProps) {
   const pathname = usePathname();
-  const filteredItems = menuItems.filter(
-    (item) => !("managerOnly" in item && item.managerOnly) || showUsersManagement
-  );
+
+  const entries = NAV_ENTRIES.filter((entry) => {
+    if (entry.type === "item" && entry.managerOnly) return showUsersManagement;
+    return true;
+  });
 
   return (
     <aside className="hidden w-64 border-r bg-gradient-to-b from-background to-muted/20 md:block">
@@ -51,16 +72,28 @@ export function AdminSidebar({ showUsersManagement = false }: AdminSidebarProps)
           </div>
         </div>
       </div>
-      <nav className="flex flex-col gap-1 p-3 sm:p-4">
-        {filteredItems.map((item) => {
-          const Icon = item.icon;
+
+      <nav className="flex flex-col gap-0.5 p-3 sm:p-4">
+        {entries.map((entry, idx) => {
+          if (entry.type === "section") {
+            return (
+              <p
+                key={`section-${idx}`}
+                className="px-3 pt-4 pb-1 text-xs font-semibold text-muted-foreground/60 uppercase tracking-wider"
+              >
+                {entry.label}
+              </p>
+            );
+          }
+
+          const { href, label, icon: Icon } = entry;
           const isActive =
-            pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href + "/"));
+            pathname === href || (href !== "/" && pathname?.startsWith(href + "/"));
 
           return (
             <Link
-              key={item.href}
-              href={item.href}
+              key={href}
+              href={href}
               className={cn(
                 "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
@@ -72,7 +105,7 @@ export function AdminSidebar({ showUsersManagement = false }: AdminSidebarProps)
                 "h-4 w-4 transition-transform duration-200",
                 isActive ? "scale-110" : "group-hover:scale-110"
               )} />
-              <span className="truncate">{item.label}</span>
+              <span className="truncate">{label}</span>
               {isActive && (
                 <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary-foreground/50" />
               )}
