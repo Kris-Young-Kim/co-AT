@@ -72,6 +72,7 @@ const nextConfig = {
       exclude: ['error', 'warn'],
     } : false,
   },
+  turbopack: {},
   // 실험적 기능
   experimental: {
     // 모노레포: 앱 디렉토리 외부(루트 components, lib, actions) 파일 컴파일 허용
