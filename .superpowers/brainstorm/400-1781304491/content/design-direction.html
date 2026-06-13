@@ -1,0 +1,107 @@
+<h2>홈페이지 Remotion 애니메이션 — 디자인 방향</h2>
+<p class="subtitle">gwatc.cloud 를 어떤 느낌으로 살려드릴까요? 하나를 골라주세요.</p>
+
+<div class="cards">
+
+  <!-- Option A -->
+  <div class="card" data-choice="cinematic" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #3b82f6 100%); height: 180px; position: relative; overflow: hidden; border-radius: 8px 8px 0 0;">
+      <!-- Particle dots -->
+      <div style="position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.6);top:30px;left:20%;animation:none;"></div>
+      <div style="position:absolute;width:4px;height:4px;border-radius:50%;background:rgba(147,197,253,0.8);top:60px;left:50%;"></div>
+      <div style="position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.4);top:100px;left:75%;"></div>
+      <div style="position:absolute;width:3px;height:3px;border-radius:50%;background:rgba(196,181,253,0.9);top:140px;left:35%;"></div>
+      <!-- Lines -->
+      <div style="position:absolute;top:50%;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);"></div>
+      <div style="position:absolute;top:35%;left:15%;right:25%;height:1px;background:linear-gradient(90deg,transparent,rgba(147,197,253,0.3),transparent);"></div>
+      <!-- Text -->
+      <div style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);text-align:center;">
+        <div style="color:#fff;font-size:20px;font-weight:800;letter-spacing:-0.02em;white-space:nowrap;">보조공학, 강원의 미래</div>
+        <div style="color:rgba(147,197,253,0.9);font-size:11px;margin-top:4px;letter-spacing:0.15em;text-transform:uppercase;">Fade-in · Particle Float · Text Reveal</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. 시네마틱 / 프리미엄</h3>
+      <p>어두운 배경에 파티클이 떠다니고, 텍스트가 영화처럼 순서대로 등장합니다. 고급스럽고 임팩트 있는 첫인상.</p>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="background:#1e3a8a;color:#bfdbfe;border-radius:4px;padding:2px 8px;font-size:11px;">파티클 플로팅</span>
+        <span style="background:#1e3a8a;color:#bfdbfe;border-radius:4px;padding:2px 8px;font-size:11px;">시네마틱 텍스트</span>
+        <span style="background:#1e3a8a;color:#bfdbfe;border-radius:4px;padding:2px 8px;font-size:11px;">스프링 애니메이션</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B -->
+  <div class="card" data-choice="warm" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 40%, #a7f3d0 100%); height: 180px; position: relative; overflow: hidden; border-radius: 8px 8px 0 0;">
+      <!-- Soft shapes -->
+      <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;border-radius:50%;background:rgba(16,185,129,0.15);"></div>
+      <div style="position:absolute;bottom:-30px;left:-10px;width:100px;height:100px;border-radius:50%;background:rgba(5,150,105,0.1);"></div>
+      <!-- Icon row -->
+      <div style="position:absolute;top:32px;left:50%;transform:translateX(-50%);display:flex;gap:20px;">
+        <div style="width:48px;height:48px;border-radius:50%;background:#10b981;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;box-shadow:0 4px 12px rgba(16,185,129,0.4);">♿</div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;box-shadow:0 4px 12px rgba(5,150,105,0.4);">🤝</div>
+        <div style="width:48px;height:48px;border-radius:50%;background:#34d399;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;box-shadow:0 4px 12px rgba(52,211,153,0.4);">❤️</div>
+      </div>
+      <!-- Counting numbers -->
+      <div style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:30px;white-space:nowrap;">
+        <div style="text-align:center;">
+          <div style="font-size:22px;font-weight:800;color:#059669;">1,240</div>
+          <div style="font-size:9px;color:#6b7280;">등록 대상자</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:22px;font-weight:800;color:#059669;">380</div>
+          <div style="font-size:9px;color:#6b7280;">보조기기</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:22px;font-weight:800;color:#059669;">47</div>
+          <div style="font-size:9px;color:#6b7280;">이달 상담</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 따뜻함 · 사람 중심</h3>
+      <p>밝고 부드러운 컬러에 숫자가 올라가는 카운터 애니메이션. 복지·공공기관에 어울리는 친근한 분위기.</p>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="background:#d1fae5;color:#065f46;border-radius:4px;padding:2px 8px;font-size:11px;">숫자 카운터</span>
+        <span style="background:#d1fae5;color:#065f46;border-radius:4px;padding:2px 8px;font-size:11px;">아이콘 팝업</span>
+        <span style="background:#d1fae5;color:#065f46;border-radius:4px;padding:2px 8px;font-size:11px;">부드러운 전환</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option C -->
+  <div class="card" data-choice="dynamic" onclick="toggleSelect(this)">
+    <div class="card-image" style="background: linear-gradient(135deg, #18181b 0%, #27272a 50%, #3f3f46 100%); height: 180px; position: relative; overflow: hidden; border-radius: 8px 8px 0 0;">
+      <!-- Gradient orb -->
+      <div style="position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,0.5) 0%,rgba(59,130,246,0.3) 40%,transparent 70%);"></div>
+      <!-- Grid lines -->
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:30px 30px;"></div>
+      <!-- Service badges sliding in -->
+      <div style="position:absolute;top:28px;left:16px;right:16px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+        <div style="background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.4);color:#c4b5fd;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;">상담</div>
+        <div style="background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.4);color:#93c5fd;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;">체험</div>
+        <div style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.4);color:#6ee7b7;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;">맞춤형</div>
+        <div style="background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.4);color:#fcd34d;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;">사후관리</div>
+        <div style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);color:#fca5a5;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;">교육홍보</div>
+      </div>
+      <!-- Bottom text -->
+      <div style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap;">
+        <div style="color:#e4e4e7;font-size:18px;font-weight:800;letter-spacing:-0.02em;">행정은 AI에게,</div>
+        <div style="background:linear-gradient(90deg,#8b5cf6,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:18px;font-weight:800;">사람은 클라이언트에게</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. 다이나믹 · 테크 포워드</h3>
+      <p>어두운 배경에 글로우 그라데이션, 서비스 뱃지가 하나씩 슬라이드인. 현대적이고 에너지 넘치는 AI 스타트업 느낌.</p>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="background:#3f3f46;color:#a1a1aa;border-radius:4px;padding:2px 8px;font-size:11px;">글로우 오브</span>
+        <span style="background:#3f3f46;color:#a1a1aa;border-radius:4px;padding:2px 8px;font-size:11px;">뱃지 슬라이드인</span>
+        <span style="background:#3f3f46;color:#a1a1aa;border-radius:4px;padding:2px 8px;font-size:11px;">그라데이션 텍스트</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:24px;">클릭해서 선택하거나, 터미널에서 의견을 말해주세요. 조합도 가능합니다.</p>

@@ -1,0 +1,146 @@
+<h2>Hero 애니메이션 시퀀스 선택</h2>
+<p class="subtitle">3초짜리 인트로 애니메이션 — 어떤 순서로 요소가 등장할까요?</p>
+
+<div class="options">
+
+  <!-- Option A: Classic stagger -->
+  <div class="option" data-choice="classic" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>클래식 스태거 (추천)</h3>
+      <p>파티클 등장 → 제목 페이드인 → 부제목 → CTA 버튼 스프링. 가장 안정적이고 읽기 쉬운 흐름.</p>
+
+      <!-- Storyboard -->
+      <div style="margin-top:12px;display:flex;gap:6px;">
+        <!-- Frame 1 -->
+        <div style="flex:1;background:linear-gradient(160deg,#fff,#eff6ff);border:1px solid #bfdbfe;border-radius:6px;padding:6px;text-align:center;min-height:64px;position:relative;overflow:hidden;">
+          <div style="font-size:8px;color:#93c5fd;margin-bottom:4px;">0–0.5s</div>
+          <div style="display:flex;justify-content:center;gap:4px;margin-top:4px;">
+            <div style="width:4px;height:4px;border-radius:50%;background:rgba(59,130,246,0.5);"></div>
+            <div style="width:3px;height:3px;border-radius:50%;background:rgba(99,102,241,0.4);margin-top:6px;"></div>
+            <div style="width:5px;height:5px;border-radius:50%;background:rgba(147,197,253,0.6);margin-top:2px;"></div>
+          </div>
+          <div style="font-size:8px;color:#93c5fd;margin-top:4px;">파티클</div>
+        </div>
+        <div style="display:flex;align-items:center;color:#cbd5e1;font-size:14px;">→</div>
+        <!-- Frame 2 -->
+        <div style="flex:1;background:linear-gradient(160deg,#fff,#eff6ff);border:1px solid #bfdbfe;border-radius:6px;padding:6px;text-align:center;min-height:64px;">
+          <div style="font-size:8px;color:#93c5fd;margin-bottom:4px;">0.5–1s</div>
+          <div style="font-size:9px;font-weight:800;color:#1e40af;margin-top:8px;">Co-AT</div>
+          <div style="font-size:8px;color:#93c5fd;margin-top:4px;">제목 등장</div>
+        </div>
+        <div style="display:flex;align-items:center;color:#cbd5e1;font-size:14px;">→</div>
+        <!-- Frame 3 -->
+        <div style="flex:1;background:linear-gradient(160deg,#fff,#eff6ff);border:1px solid #bfdbfe;border-radius:6px;padding:6px;text-align:center;min-height:64px;">
+          <div style="font-size:8px;color:#93c5fd;margin-bottom:2px;">1–2s</div>
+          <div style="font-size:9px;font-weight:800;color:#1e40af;margin-top:2px;">Co-AT</div>
+          <div style="font-size:7px;color:#3b82f6;">행정은 AI에게</div>
+          <div style="font-size:8px;color:#93c5fd;margin-top:2px;">부제목 등장</div>
+        </div>
+        <div style="display:flex;align-items:center;color:#cbd5e1;font-size:14px;">→</div>
+        <!-- Frame 4 -->
+        <div style="flex:1;background:linear-gradient(160deg,#fff,#eff6ff);border:1px solid #bfdbfe;border-radius:6px;padding:6px;text-align:center;min-height:64px;">
+          <div style="font-size:8px;color:#93c5fd;margin-bottom:2px;">2–3s</div>
+          <div style="font-size:9px;font-weight:800;color:#1e40af;">Co-AT</div>
+          <div style="font-size:7px;color:#3b82f6;">행정은 AI에게</div>
+          <div style="margin-top:3px;display:inline-block;background:#2563eb;color:#fff;border-radius:3px;padding:1px 5px;font-size:7px;">시작하기 →</div>
+          <div style="font-size:8px;color:#93c5fd;margin-top:1px;">버튼 스프링</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:6px;">
+        <span style="background:#dbeafe;color:#1e40af;border-radius:4px;padding:2px 8px;font-size:11px;">✓ 가독성 최고</span>
+        <span style="background:#dbeafe;color:#1e40af;border-radius:4px;padding:2px 8px;font-size:11px;">✓ 구현 안정적</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B: Typewriter -->
+  <div class="option" data-choice="typewriter" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>타이프라이터 + 파티클</h3>
+      <p>배경 파티클 흐르는 중에 제목 텍스트가 한 글자씩 타이핑됨. 커서 깜빡임 포함. AI·테크 느낌 강조.</p>
+
+      <!-- Storyboard -->
+      <div style="margin-top:12px;display:flex;gap:6px;">
+        <div style="flex:1;background:linear-gradient(160deg,#fff,#eff6ff);border:1px solid #bfdbfe;border-radius:6px;padding:6px;text-align:center;">
+          <div style="font-size:8px;color:#93c5fd;margin-bottom:4px;">0–0.3s</div>
+          <div style="display:flex;justify-content:center;gap:3px;margin-top:4px;">
+            <div style="width:4px;height:4px;border-radius:50%;background:rgba(59,130,246,0.5);"></div>
+            <div style="width:3px;height:3px;border-radius:50%;background:rgba(99,102,241,0.4);margin-top:5px;"></div>
+          </div>
+          <div style="font-size:8px;color:#93c5fd;margin-top:4px;">파티클</div>
+        </div>
+        <div style="display:flex;align-items:center;color:#cbd5e1;font-size:14px;">→</div>
+        <div style="flex:1;background:linear-gradient(160deg,#fff,#eff6ff);border:1px solid #bfdbfe;border-radius:6px;padding:6px;text-align:center;">
+          <div style="font-size:8px;color:#93c5fd;margin-bottom:4px;">0.3–1.5s</div>
+          <div style="font-size:9px;font-weight:800;color:#1e40af;margin-top:6px;">Co-<span style="border-right:1.5px solid #2563eb;"> </span></div>
+          <div style="font-size:8px;color:#93c5fd;margin-top:4px;">타이핑 중</div>
+        </div>
+        <div style="display:flex;align-items:center;color:#cbd5e1;font-size:14px;">→</div>
+        <div style="flex:1;background:linear-gradient(160deg,#fff,#eff6ff);border:1px solid #bfdbfe;border-radius:6px;padding:6px;text-align:center;">
+          <div style="font-size:8px;color:#93c5fd;margin-bottom:4px;">1.5–2.5s</div>
+          <div style="font-size:9px;font-weight:800;color:#1e40af;margin-top:2px;">Co-AT</div>
+          <div style="font-size:7px;color:#3b82f6;margin-top:1px;">행정은 AI에게_</div>
+          <div style="font-size:8px;color:#93c5fd;margin-top:2px;">부제목 타이핑</div>
+        </div>
+        <div style="display:flex;align-items:center;color:#cbd5e1;font-size:14px;">→</div>
+        <div style="flex:1;background:linear-gradient(160deg,#fff,#eff6ff);border:1px solid #bfdbfe;border-radius:6px;padding:6px;text-align:center;">
+          <div style="font-size:8px;color:#93c5fd;margin-bottom:2px;">2.5–3s</div>
+          <div style="font-size:9px;font-weight:800;color:#1e40af;">Co-AT</div>
+          <div style="font-size:7px;color:#3b82f6;">행정은 AI에게</div>
+          <div style="margin-top:2px;display:inline-block;background:#2563eb;color:#fff;border-radius:3px;padding:1px 5px;font-size:7px;">시작하기</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:6px;">
+        <span style="background:#dbeafe;color:#1e40af;border-radius:4px;padding:2px 8px;font-size:11px;">✓ AI 느낌</span>
+        <span style="background:#dbeafe;color:#1e40af;border-radius:4px;padding:2px 8px;font-size:11px;">✓ 개성 있음</span>
+        <span style="background:#fee2e2;color:#b91c1c;border-radius:4px;padding:2px 8px;font-size:11px;">✗ 한글 타이핑 구현 까다로움</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option C: Morph from stats -->
+  <div class="option" data-choice="morph" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>숫자 → 텍스트 모핑</h3>
+      <p>처음에 핵심 숫자(1,240명·380개·47건)가 떠오른 뒤 중앙으로 모여 로고/슬로건으로 변환. 임팩트 있지만 복잡.</p>
+
+      <!-- Storyboard -->
+      <div style="margin-top:12px;display:flex;gap:6px;">
+        <div style="flex:1;background:linear-gradient(160deg,#fff,#eff6ff);border:1px solid #bfdbfe;border-radius:6px;padding:6px;text-align:center;">
+          <div style="font-size:8px;color:#93c5fd;margin-bottom:2px;">0–1s</div>
+          <div style="font-size:9px;font-weight:800;color:#2563eb;margin-top:2px;">1,240</div>
+          <div style="font-size:7px;color:#3b82f6;margin-top:1px;">380 · 47</div>
+          <div style="font-size:8px;color:#93c5fd;margin-top:2px;">숫자 등장</div>
+        </div>
+        <div style="display:flex;align-items:center;color:#cbd5e1;font-size:14px;">→</div>
+        <div style="flex:1;background:linear-gradient(160deg,#fff,#eff6ff);border:1px solid #bfdbfe;border-radius:6px;padding:6px;text-align:center;">
+          <div style="font-size:8px;color:#93c5fd;margin-bottom:2px;">1–2s</div>
+          <div style="font-size:11px;font-weight:800;color:#1e40af;margin-top:6px;opacity:0.5;">Co-AT</div>
+          <div style="font-size:8px;color:#93c5fd;margin-top:2px;">모핑 중</div>
+        </div>
+        <div style="display:flex;align-items:center;color:#cbd5e1;font-size:14px;">→</div>
+        <div style="flex:1;background:linear-gradient(160deg,#fff,#eff6ff);border:1px solid #bfdbfe;border-radius:6px;padding:6px;text-align:center;">
+          <div style="font-size:8px;color:#93c5fd;margin-bottom:2px;">2–3s</div>
+          <div style="font-size:11px;font-weight:800;color:#1e40af;margin-top:2px;">Co-AT</div>
+          <div style="font-size:7px;color:#3b82f6;">행정은 AI에게</div>
+          <div style="margin-top:2px;display:inline-block;background:#2563eb;color:#fff;border-radius:3px;padding:1px 5px;font-size:7px;">시작하기</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:6px;">
+        <span style="background:#dbeafe;color:#1e40af;border-radius:4px;padding:2px 8px;font-size:11px;">✓ 최고 임팩트</span>
+        <span style="background:#fee2e2;color:#b91c1c;border-radius:4px;padding:2px 8px;font-size:11px;">✗ 구현 복잡</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:16px;padding:12px 16px;background:#eff6ff;border-radius:8px;border:1px solid #bfdbfe;">
+  <div style="font-size:11px;font-weight:700;color:#1e40af;margin-bottom:4px;">💡 추천</div>
+  <div style="font-size:12px;color:#1e40af;"><strong>A — 클래식 스태거</strong>. 파티클 → 제목 → 부제목 → 버튼 순으로 깔끔하게 등장. Remotion의 spring/interpolate를 가장 잘 활용하며, 구현 안정성과 시각적 완성도 모두 높습니다.</div>
+</div>
+
+<p class="subtitle" style="margin-top:16px;">선택하거나 터미널에서 말씀해주세요.</p>

@@ -1,0 +1,125 @@
+<h2>어느 섹션에 Remotion 애니메이션을 넣을까요?</h2>
+<p class="subtitle">현재 홈페이지 구조입니다. 애니메이션을 적용할 구역을 선택해주세요 (복수 선택 가능).</p>
+
+<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
+
+  <!-- Page wireframe -->
+  <div style="flex:1;min-width:260px;max-width:360px;">
+    <div style="font-size:11px;color:#6b7280;text-align:center;margin-bottom:8px;letter-spacing:0.05em;text-transform:uppercase;">현재 페이지 구조</div>
+
+    <!-- Hero -->
+    <div id="wire-hero" style="border:2px solid #93c5fd;border-radius:8px;padding:20px 16px;background:linear-gradient(160deg,#eff6ff,#dbeafe);margin-bottom:8px;text-align:center;cursor:pointer;transition:all 0.2s;" onclick="highlightSection('hero')">
+      <div style="font-size:13px;font-weight:700;color:#1e40af;">① Hero 섹션</div>
+      <div style="font-size:11px;color:#3b82f6;margin-top:2px;">유튜브 배경 + 헤드라인 + CTA 버튼</div>
+      <div style="margin-top:8px;height:40px;background:rgba(59,130,246,0.1);border-radius:4px;display:flex;align-items:center;justify-content:center;">
+        <span style="font-size:10px;color:#93c5fd;">[ 배경 영상 / 이미지 ]</span>
+      </div>
+    </div>
+
+    <!-- Quick Menu -->
+    <div id="wire-menu" style="border:2px solid #e2e8f0;border-radius:8px;padding:14px 16px;background:#f8fafc;margin-bottom:8px;text-align:center;cursor:pointer;transition:all 0.2s;" onclick="highlightSection('menu')">
+      <div style="font-size:13px;font-weight:700;color:#374151;">② 5대 핵심사업 카드</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:2px;">상담·체험·맞춤형·사후관리·교육홍보</div>
+      <div style="margin-top:8px;display:flex;gap:4px;justify-content:center;">
+        <div style="width:36px;height:28px;background:#e5e7eb;border-radius:4px;"></div>
+        <div style="width:36px;height:28px;background:#e5e7eb;border-radius:4px;"></div>
+        <div style="width:36px;height:28px;background:#e5e7eb;border-radius:4px;"></div>
+        <div style="width:36px;height:28px;background:#e5e7eb;border-radius:4px;"></div>
+        <div style="width:36px;height:28px;background:#e5e7eb;border-radius:4px;"></div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div id="wire-stats" style="border:2px solid #e2e8f0;border-radius:8px;padding:14px 16px;background:#f8fafc;margin-bottom:8px;text-align:center;cursor:pointer;transition:all 0.2s;" onclick="highlightSection('stats')">
+      <div style="font-size:13px;font-weight:700;color:#374151;">③ 통계 카운터</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:2px;">등록 대상자 · 보조기기 · 상담 건수</div>
+      <div style="margin-top:8px;display:flex;gap:12px;justify-content:center;">
+        <div style="text-align:center;">
+          <div style="font-size:16px;font-weight:800;color:#cbd5e1;">1,240</div>
+          <div style="font-size:8px;color:#9ca3af;">등록</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:16px;font-weight:800;color:#cbd5e1;">380</div>
+          <div style="font-size:8px;color:#9ca3af;">기기</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:16px;font-weight:800;color:#cbd5e1;">47</div>
+          <div style="font-size:8px;color:#9ca3af;">상담</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notice + Calendar -->
+    <div id="wire-notice" style="border:2px solid #e2e8f0;border-radius:8px;padding:14px 16px;background:#f8fafc;margin-bottom:8px;text-align:center;cursor:pointer;transition:all 0.2s;" onclick="highlightSection('notice')">
+      <div style="font-size:13px;font-weight:700;color:#374151;">④ 공지사항 / 캘린더</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:2px;">공지탭 + 일정 달력</div>
+    </div>
+
+    <!-- Partner Marquee -->
+    <div id="wire-partner" style="border:2px solid #e2e8f0;border-radius:8px;padding:14px 16px;background:#f8fafc;text-align:center;cursor:pointer;transition:all 0.2s;" onclick="highlightSection('partner')">
+      <div style="font-size:13px;font-weight:700;color:#374151;">⑤ 협력기관 마퀴</div>
+      <div style="font-size:11px;color:#6b7280;margin-top:2px;">로고 스크롤</div>
+    </div>
+  </div>
+
+  <!-- Options -->
+  <div style="flex:2;min-width:260px;">
+    <div style="font-size:11px;color:#6b7280;margin-bottom:8px;letter-spacing:0.05em;text-transform:uppercase;">애니메이션 적용 범위 선택</div>
+
+    <div class="options" data-multiselect>
+
+      <div class="option" data-choice="hero-only" onclick="toggleSelect(this)">
+        <div class="letter">①</div>
+        <div class="content">
+          <h3>Hero만 — 핵심 집중</h3>
+          <p>Hero 섹션에만 Remotion Player 삽입. 파티클 플로팅 + 텍스트 시네마틱 등장. 가장 임팩트 있고 구현 범위 작음.</p>
+        </div>
+      </div>
+
+      <div class="option" data-choice="hero-stats" onclick="toggleSelect(this)">
+        <div class="letter">①③</div>
+        <div class="content">
+          <h3>Hero + 통계 카운터</h3>
+          <p>Hero 파티클 애니메이션 + 스크롤하면 숫자가 카운트업되는 Stats 섹션 추가. 데이터로 신뢰감 강화.</p>
+        </div>
+      </div>
+
+      <div class="option" data-choice="hero-menu-stats" onclick="toggleSelect(this)">
+        <div class="letter">①②③</div>
+        <div class="content">
+          <h3>Hero + 서비스 카드 + 통계</h3>
+          <p>Hero 애니메이션 + 5대 사업 카드 스태거 팝인 + 숫자 카운터. 스크롤할수록 생동감이 이어짐.</p>
+        </div>
+      </div>
+
+      <div class="option" data-choice="all" onclick="toggleSelect(this)">
+        <div class="letter">全</div>
+        <div class="content">
+          <h3>전체 페이지 풀 리뉴얼</h3>
+          <p>모든 섹션에 등장 애니메이션 적용 (Hero·카드·통계·공지·파트너). 가장 생동감 있지만 구현 범위 큼.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:16px;padding:12px 16px;background:#eff6ff;border-radius:8px;border:1px solid #bfdbfe;">
+      <div style="font-size:11px;font-weight:700;color:#1e40af;margin-bottom:4px;">💡 추천</div>
+      <div style="font-size:12px;color:#1e40af;">Hero + 통계 카운터(①③) 조합이 가장 효과적입니다. Hero에서 첫인상을 잡고, 스크롤 시 숫자로 신뢰감을 주는 구조.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function highlightSection(id) {
+  const ids = ['hero','menu','stats','notice','partner'];
+  ids.forEach(i => {
+    const el = document.getElementById('wire-'+i);
+    if(el) {
+      el.style.borderColor = i===id ? '#3b82f6' : '#e2e8f0';
+      el.style.background = i===id ? 'linear-gradient(160deg,#eff6ff,#dbeafe)' : '#f8fafc';
+    }
+  });
+}
+</script>
+
+<p class="subtitle" style="margin-top:20px;">왼쪽 와이어프레임을 클릭하면 해당 섹션이 하이라이트됩니다. 오른쪽에서 범위를 선택해주세요.</p>
