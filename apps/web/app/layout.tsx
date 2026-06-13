@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ClerkProvider } from "@/components/providers/clerk-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ClientOnlyProviders } from "@/components/layout/client-only-providers";
+import { PwaInstallBanner } from "@co-at/ui/pwa-install-banner";
 import "./globals.css";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app";
@@ -113,11 +114,12 @@ export default function RootLayout({
       <QueryProvider>
         <html lang="ko" suppressHydrationWarning>
           <head>
-            <link rel="apple-touch-icon" href="/icons/apple-touch-icon.svg" />
+            <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
           </head>
           <body suppressHydrationWarning>
             {children}
             <ClientOnlyProviders />
+            <PwaInstallBanner />
           </body>
         </html>
       </QueryProvider>

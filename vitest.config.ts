@@ -8,8 +8,8 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./tests/setup.ts'],
-    include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
-    exclude: ['.worktrees/**', 'apps/**', 'node_modules/**'],
+    include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx', 'components/**/*.test.ts', 'components/**/*.test.tsx', 'apps/web/components/**/*.test.ts', 'apps/web/components/**/*.test.tsx'],
+    exclude: ['.worktrees/**', 'node_modules/**'],
   },
   resolve: {
     alias: {
@@ -18,7 +18,10 @@ export default defineConfig({
       '@co-at/auth': path.resolve(__dirname, './packages/auth/src'),
       '@/apps/hr': path.resolve(__dirname, './apps/hr'),
       '@/lib/supabase-admin': path.resolve(__dirname, './apps/hr/lib/supabase-admin'),
+      '@/components/ui': path.resolve(__dirname, './packages/ui/ui'),
       '@': path.resolve(__dirname, './'),
+      'remotion': path.resolve(__dirname, './apps/web/node_modules/remotion'),
+      '@remotion/player': path.resolve(__dirname, './apps/web/node_modules/@remotion/player'),
     },
   },
 })

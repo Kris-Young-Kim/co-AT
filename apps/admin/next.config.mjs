@@ -1,4 +1,11 @@
 import { withSentryConfig } from "@sentry/nextjs"
+import withPWAInit from "@ducanh2912/next-pwa"
+
+const withPWA = withPWAInit({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  workboxOptions: { disableDevLogs: true },
+})
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -59,7 +66,7 @@ const nextConfig = {
   },
 };
 
-export default withSentryConfig(nextConfig, {
+export default withSentryConfig(withPWA(nextConfig), {
   org: process.env.SENTRY_ORG || "",
   project: process.env.SENTRY_PROJECT || "",
   authToken: process.env.SENTRY_AUTH_TOKEN,

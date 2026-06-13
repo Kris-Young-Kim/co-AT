@@ -1,6 +1,14 @@
 import { Composition } from 'remotion'
-import { HeroAnimation, HERO_ANIMATION_FPS, HERO_ANIMATION_DURATION_IN_FRAMES } from './compositions/HeroAnimation'
-import { StatsReveal, STATS_REVEAL_FPS, STATS_REVEAL_DURATION_IN_FRAMES } from './compositions/StatsReveal'
+import {
+  HeroAnimation,
+  HERO_ANIMATION_FPS,
+  HERO_ANIMATION_DURATION_IN_FRAMES,
+} from '../../components/remotion/compositions/HeroAnimation'
+import {
+  StatsReveal,
+  STATS_REVEAL_FPS,
+  STATS_REVEAL_DURATION_IN_FRAMES,
+} from '../../components/remotion/compositions/StatsReveal'
 
 export const Root: React.FC = () => {
   return (
@@ -19,7 +27,7 @@ export const Root: React.FC = () => {
         durationInFrames={STATS_REVEAL_DURATION_IN_FRAMES}
         fps={STATS_REVEAL_FPS}
         width={1920}
-        height={400}
+        height={300}
       />
     </>
   )

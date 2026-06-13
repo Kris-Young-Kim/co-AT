@@ -3,6 +3,7 @@ import { HomeHeroSection } from "@/components/features/landing/HomeHeroSection"
 import { HomeQuickMenuGrid } from "@/components/features/landing/HomeQuickMenuGrid"
 import { HomePageClientSections } from "@/components/features/landing/HomePageClientSections"
 import { HomePartnerMarquee } from "@/components/features/landing/HomePartnerMarquee"
+import { HomeStatsSection } from "@/components/features/landing/HomeStatsSection"
 import { getRecentNotices, getNoticesByCategory } from "@/actions/notice-actions"
 import { getPublicSchedules } from "@/actions/schedule-actions"
 import { getPublicYouTubeVideos } from "@/actions/youtube-actions"
@@ -58,10 +59,13 @@ export default async function Home() {
       />
 
       <div className="flex min-h-screen flex-col">
-      <HomeHeroSection featuredVideo={videos[0] || null} />
+      <HomeHeroSection />
       
       {/* 5대 핵심 사업 바로가기 */}
       <HomeQuickMenuGrid />
+
+      {/* 센터 현황 카운터 */}
+      <HomeStatsSection />
 
       {/* 공지사항, 캘린더, 갤러리 (Client Component에서 ssr: false) */}
       <HomePageClientSections

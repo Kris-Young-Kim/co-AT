@@ -1,7 +1,8 @@
+import React from 'react'
 import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion'
 
 export const STATS_REVEAL_FPS = 60
-export const STATS_REVEAL_DURATION_IN_FRAMES = 120 // 2 seconds
+export const STATS_REVEAL_DURATION_IN_FRAMES = 120 // 2s
 
 interface StatItem {
   label: string
@@ -11,9 +12,9 @@ interface StatItem {
 
 const STATS: StatItem[] = [
   { label: '등록 대상자', value: 1240, suffix: '명' },
-  { label: '보조기기 보유', value: 380, suffix: '개' },
-  { label: '이번 달 상담', value: 47, suffix: '건' },
-  { label: '교부사업 진행', value: 12, suffix: '건' },
+  { label: '보조기기 보유', value: 380,  suffix: '개' },
+  { label: '이달 상담',    value: 47,   suffix: '건' },
+  { label: '교부사업 진행', value: 12,   suffix: '건' },
 ]
 
 export const StatsReveal: React.FC = () => {
@@ -22,7 +23,7 @@ export const StatsReveal: React.FC = () => {
   return (
     <AbsoluteFill
       style={{
-        background: '#f8fafc',
+        background: '#ffffff',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -49,11 +50,7 @@ export const StatsReveal: React.FC = () => {
         return (
           <div
             key={stat.label}
-            style={{
-              opacity,
-              transform: `translateY(${translateY}px)`,
-              textAlign: 'center',
-            }}
+            style={{ opacity, transform: `translateY(${translateY}px)`, textAlign: 'center' }}
           >
             <div
               style={{
@@ -67,13 +64,7 @@ export const StatsReveal: React.FC = () => {
               {displayValue.toLocaleString()}
               <span style={{ fontSize: 32 }}>{stat.suffix}</span>
             </div>
-            <div
-              style={{
-                fontSize: 20,
-                color: '#64748b',
-                fontWeight: 500,
-              }}
-            >
+            <div style={{ fontSize: 20, color: '#64748b', fontWeight: 500 }}>
               {stat.label}
             </div>
           </div>

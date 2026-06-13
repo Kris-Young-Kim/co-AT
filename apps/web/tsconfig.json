@@ -23,6 +23,7 @@
       }
     ],
     "paths": {
+      "@co-at/ui/*": ["../../packages/ui/ui/*"],
       "@/components/ui/*": ["../../packages/ui/ui/*"],
       "@/lib/supabase/*": ["../../packages/lib/supabase/*"],
       "@/lib/validators": ["../../packages/lib/validators.ts"],
