@@ -48,8 +48,11 @@ export function PwaInstallBanner() {
   const install = async () => {
     if (!deferredPrompt) return
     await deferredPrompt.prompt()
-    await deferredPrompt.userChoice
-    localStorage.setItem(STORAGE_KEY, 'true')
+    const result = await deferredPrompt.userChoice
+    setDeferredPrompt(null)
+    if (result.outcome === 'accepted') {
+      localStorage.setItem(STORAGE_KEY, 'true')
+    }
     setShow(false)
   }
 
@@ -79,7 +82,7 @@ export function PwaInstallBanner() {
         {!isIos && (
           <button
             onClick={install}
-            className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"
+            className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-offset-2"
           >
             설치
           </button>
@@ -87,7 +90,7 @@ export function PwaInstallBanner() {
         <button
           onClick={dismiss}
           aria-label="닫기"
-          className="text-gray-400 hover:text-gray-600"
+          className="text-gray-400 hover:text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 rounded"
         >
           <X className="h-4 w-4" />
         </button>

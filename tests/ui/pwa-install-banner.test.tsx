@@ -70,9 +70,8 @@ describe('PwaInstallBanner', () => {
   })
 
   it('Android — beforeinstallprompt 이벤트로 배너 표시', async () => {
-    let { container } = render(<PwaInstallBanner />)
+    const { container, getByText } = render(<PwaInstallBanner />)
     expect(container.firstChild).toBeNull()
-
     await act(async () => {
       const event = new Event('beforeinstallprompt')
       Object.assign(event, {
@@ -82,9 +81,6 @@ describe('PwaInstallBanner', () => {
       })
       window.dispatchEvent(event)
     })
-
-    const { getByText } = render(<PwaInstallBanner />)
-    // 이벤트가 없는 새 인스턴스는 여전히 숨김 — 이벤트 캡처는 mount 시점 기준
-    expect(container).toBeDefined()
+    expect(getByText(/앱으로 설치/)).toBeTruthy()
   })
 })
