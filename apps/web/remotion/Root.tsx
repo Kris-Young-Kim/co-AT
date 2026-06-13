@@ -3,12 +3,12 @@ import {
   HeroAnimation,
   HERO_ANIMATION_FPS,
   HERO_ANIMATION_DURATION_IN_FRAMES,
-} from '../../components/remotion/compositions/HeroAnimation'
+} from '@/components/remotion/compositions/HeroAnimation'
 import {
   StatsReveal,
   STATS_REVEAL_FPS,
   STATS_REVEAL_DURATION_IN_FRAMES,
-} from '../../components/remotion/compositions/StatsReveal'
+} from '@/components/remotion/compositions/StatsReveal'
 
 export const Root: React.FC = () => {
   return (

@@ -28,7 +28,11 @@
       "@/lib/supabase/*": ["../../packages/lib/supabase/*"],
       "@/lib/validators": ["../../packages/lib/validators.ts"],
       "@/types/*": ["../../packages/lib/types/*"],
-      "@/*": ["../../*"]
+      "@/*": ["../../*"],
+      "remotion": ["./node_modules/remotion"],
+      "remotion/*": ["./node_modules/remotion/*"],
+      "@remotion/player": ["./node_modules/@remotion/player"],
+      "@remotion/player/*": ["./node_modules/@remotion/player/*"]
     }
   },
   "include": [

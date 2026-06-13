@@ -1,6 +1,13 @@
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 
+// IntersectionObserver stub for jsdom
+global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}))
+
 // server-only 모듈 모킹 (Clerk auth에서 사용)
 vi.mock('server-only', () => ({
   default: {},

@@ -1,22 +1,35 @@
 'use client'
 
-import React from 'react'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
-import {
-  HERO_ANIMATION_FPS,
-  HERO_ANIMATION_DURATION_IN_FRAMES,
-} from '@/components/remotion/compositions/HeroAnimation'
 
-const RemotionPlayerDynamic = dynamic(
-  () => import('@/components/remotion/RemotionPlayer').then((m) => ({ default: m.RemotionPlayer })),
-  { ssr: false }
-)
-
-const HeroAnimationDynamic = dynamic(
-  () => import('@/components/remotion/compositions/HeroAnimation').then((m) => ({ default: m.HeroAnimation })),
+// Load RemotionPlayer + HeroAnimation together so Remotion receives a static component ref
+const HeroAnimationPlayer = dynamic(
+  async () => {
+    const [{ RemotionPlayer }, { HeroAnimation, HERO_ANIMATION_FPS, HERO_ANIMATION_DURATION_IN_FRAMES }] =
+      await Promise.all([
+        import('@/components/remotion/RemotionPlayer'),
+        import('@/components/remotion/compositions/HeroAnimation'),
+      ])
+    function HeroAnimationPlayerInner() {
+      return (
+        <RemotionPlayer
+          component={HeroAnimation}
+          durationInFrames={HERO_ANIMATION_DURATION_IN_FRAMES}
+          fps={HERO_ANIMATION_FPS}
+          compositionWidth={1920}
+          compositionHeight={1080}
+          initiallyMuted
+          numberOfSharedAudioTags={0}
+          loop
+          style={{ width: '100%', height: '100%' }}
+        />
+      )
+    }
+    return { default: HeroAnimationPlayerInner }
+  },
   { ssr: false }
 )
 
@@ -24,19 +37,14 @@ export function HomeHeroSection() {
   return (
     <section
       id="hero"
-      className="relative flex min-h-[70vh] sm:min-h-[80vh] items-center justify-center overflow-hidden"
+      className="relative flex min-h-[70vh] sm:min-h-[80vh] items-center justify-center overflow-hidden bg-gradient-to-br from-white via-blue-50 to-blue-100"
     >
-      {/* Remotion animated background */}
-      <div className="absolute inset-0 z-0">
-        <RemotionPlayerDynamic
-          component={HeroAnimationDynamic as React.ComponentType}
-          durationInFrames={HERO_ANIMATION_DURATION_IN_FRAMES}
-          fps={HERO_ANIMATION_FPS}
-          compositionWidth={1920}
-          compositionHeight={1080}
-          loop
-          style={{ width: '100%', height: '100%' }}
-        />
+      {/* Remotion animated background — CSS gradient shows until Remotion loads */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{ background: 'linear-gradient(160deg, #ffffff 0%, #eff6ff 60%, #dbeafe 100%)' }}
+      >
+        <HeroAnimationPlayer />
       </div>
 
       {/* Text overlay — CSS stagger animations */}
