@@ -607,6 +607,103 @@ ${domainCtx}`
 }
 
 // ────────────────────────────────────────────
+// E-3: 상담기록지 초안 (센터 양식)
+// ────────────────────────────────────────────
+
+export interface ConsultationDraftInput {
+  clientId: string
+  memo?: string
+  applicationId?: string | null
+}
+
+export interface ConsultationDraft {
+  purpose: string
+  current_situation: string
+  content: string
+  result: string
+  next_plan: string
+}
+
+const CONSULTATION_DRAFT_PROMPT = `당신은 보조공학센터 사례관리 전문가입니다.
+아래 대상자 정보와 메모를 바탕으로 상담기록지 초안을 JSON으로 작성해주세요.
+다른 설명 없이 JSON만 반환하세요:
+{
+  "purpose": "방문·상담 목적 또는 주호소 (대상자·보호자가 요청한 내용, 1~2문장)",
+  "current_situation": "현재 대상자 상황 (장애 상태, 기기 사용 현황, 생활 환경 등 2~3문장)",
+  "content": "상담 내용 요약 (논의된 주요 내용, 2~4문장)",
+  "result": "결과 및 조치사항 (제공한 정보, 취한 조치, 의뢰 내용 등 1~3문장)",
+  "next_plan": "향후 계획 (다음 방문 일정, 추가 의뢰, 서비스 신청 계획 등 1~2문장)"
+}`
+
+export async function generateConsultationDraft(
+  input: ConsultationDraftInput
+): Promise<{ success: boolean; draft?: ConsultationDraft; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  const { userId } = await auth()
+  if (!userId) return { success: false, error: '로그인이 필요합니다' }
+
+  try {
+    const supabase = createAdminClient()
+
+    const [clientResult, recordsResult] = await Promise.all([
+      supabase
+        .from('clients')
+        .select('name, birth_date, disability_type, disability_grade, economic_status')
+        .eq('id', input.clientId)
+        .single(),
+      (supabase as any)
+        .from('eval_service_records')
+        .select('service_category, product_name, service_content, received_at')
+        .eq('client_id', input.clientId)
+        .order('received_at', { ascending: false, nullsFirst: false })
+        .limit(3),
+    ])
+
+    const client = clientResult.data
+    const records = (recordsResult.data ?? []) as Array<{
+      service_category: string | null
+      product_name: string | null
+      service_content: string | null
+      received_at: string | null
+    }>
+
+    const clientCtx = client
+      ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}, 장애등급: ${client.disability_grade ?? '미상'}, 경제상황: ${client.economic_status ?? '미상'}`
+      : '대상자 정보 없음'
+
+    const serviceCtx = records.length > 0
+      ? records
+          .map(r => `[${r.received_at?.slice(0, 7) ?? '?'}] ${r.service_category ?? ''} ${r.product_name ? '(' + r.product_name + ')' : ''}: ${r.service_content?.slice(0, 80) ?? ''}`)
+          .join('\n')
+      : '최근 서비스 이력 없음'
+
+    const memoCtx = input.memo?.trim() ? `\n직원 메모:\n${input.memo.trim()}` : ''
+
+    const model = getGeminiModel('gemini-2.5-flash')
+    const prompt = `${CONSULTATION_DRAFT_PROMPT}\n\n대상자 정보:\n${clientCtx}\n\n최근 서비스 이력:\n${serviceCtx}${memoCtx}`
+
+    const result = await model.generateContent(prompt)
+    const raw = result.response.text()
+      .replace(/```json\s*/g, '')
+      .replace(/```\s*/g, '')
+      .trim()
+
+    const draft = JSON.parse(raw) as ConsultationDraft
+    if (!draft.purpose && !draft.content) throw new Error('purpose 또는 content 필드 누락')
+
+    return { success: true, draft }
+  } catch (error) {
+    console.error('[AI Actions] 상담기록지 초안 생성 오류:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? `상담기록지 초안 생성 오류: ${error.message}` : 'AI 상담기록지 초안 생성 중 오류가 발생했습니다',
+    }
+  }
+}
+
+// ────────────────────────────────────────────
 // E-5: 사례관리 일지 초안
 // ────────────────────────────────────────────
 
