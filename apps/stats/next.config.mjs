@@ -1,4 +1,3 @@
-// v0.1.5
 import withPWAInit from "@ducanh2912/next-pwa"
 
 const withPWA = withPWAInit({
