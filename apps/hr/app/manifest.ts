@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'GWATC 인사',
     short_name: '인사',
-    description: '직원 인사 관리 시스템',
+    description: '직원 인사 관리',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

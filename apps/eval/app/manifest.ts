@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'GWATC 상담/평가',
     short_name: '상담/평가',
-    description: '보조공학 전문가 상담 및 평가 툴',
+    description: '보조공학 상담 및 평가',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',
