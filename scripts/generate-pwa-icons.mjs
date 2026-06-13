@@ -40,8 +40,13 @@ for (const app of APPS) {
   const dir = path.join(root, 'apps', app.name, 'public', 'icons')
   fs.mkdirSync(dir, { recursive: true })
   for (const { size, filename } of SIZES) {
-    await sharp(makeSvg(size, app.color, app.initial)).png().toFile(path.join(dir, filename))
-    console.log(`✓ apps/${app.name}/public/icons/${filename}`)
+    try {
+      await sharp(makeSvg(size, app.color, app.initial)).png().toFile(path.join(dir, filename))
+      console.log(`✓ apps/${app.name}/public/icons/${filename}`)
+    } catch (err) {
+      console.error(`✗ apps/${app.name}/public/icons/${filename}: ${err.message}`)
+      process.exitCode = 1
+    }
   }
 }
 console.log('\nDone. 27 icons generated.')
