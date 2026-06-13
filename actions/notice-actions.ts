@@ -98,7 +98,7 @@ export async function getNoticesByCategory(
     .limit(limit)
 
   if (error) {
-    console.error("카테고리별 공지사항 조회 실패:", error)
+    console.error("카테고리별 공지사항 조회 실패:", error.message, { code: error.code, details: error.details, hint: error.hint })
     return []
   }
 
