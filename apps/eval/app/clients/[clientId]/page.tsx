@@ -1,9 +1,11 @@
 import { getClientById, getClientActiveServices, getClientHistory, getSimilarClients, getLinkedPortalUserInfo } from '@/actions/client-actions'
 import { getApplicationsByClientId } from '@/actions/application-actions'
 import { getClientCases } from '@/actions/case-actions'
+import { getConsultationRecordsByClient, getAssessmentNotesByClient } from '@/actions/case-record-actions'
 import { getClientIPPAAssessments } from '@/actions/ippa-actions'
 import { getTranscriptsByClient } from '@/actions/transcript-actions'
 import { ApplicationListCard } from '@/eval/components/eval/ApplicationListCard'
+import { CaseRecordPanel } from '@/eval/components/eval/CaseRecordPanel'
 import { ClientActiveServices } from '@/eval/components/eval/ClientActiveServices'
 import { ClientCases } from '@/eval/components/eval/ClientCases'
 import { ClientIPPA } from '@/eval/components/eval/ClientIPPA'
@@ -27,7 +29,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const clientResult = await getClientById(clientId)
   if (!clientResult.success || !clientResult.client) notFound()
 
-  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, transcriptsResult] = await Promise.all([
+  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, transcriptsResult, consultationResult, assessmentResult] = await Promise.all([
     getApplicationsByClientId(clientId),
     getClientActiveServices(clientId),
     getClientHistory(clientId),
@@ -38,6 +40,8 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       ? getLinkedPortalUserInfo((clientResult.client as any).portal_user_id as string)
       : Promise.resolve({ success: true as const, user: undefined }),
     getTranscriptsByClient(clientId),
+    getConsultationRecordsByClient(clientId),
+    getAssessmentNotesByClient(clientId),
   ])
 
   const client = clientResult.client
@@ -49,6 +53,8 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const similarClients = similarResult.success ? similarResult.clients ?? [] : []
   const linkedPortalUser = portalUserResult.success ? portalUserResult.user ?? null : null
   const transcripts = transcriptsResult.success ? transcriptsResult.transcripts ?? [] : []
+  const consultationRecords = consultationResult.success ? consultationResult.records ?? [] : []
+  const assessmentNotes = assessmentResult.success ? assessmentResult.notes ?? [] : []
 
   return (
     <div className="p-8 max-w-4xl">
@@ -119,6 +125,23 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       {/* 케이스 관리 */}
       <div className="mb-6">
         <ClientCases initialCases={caseItems} clientId={clientId} />
+      </div>
+
+      {/* 상담기록지 · 평가지 */}
+      <div className="mb-6">
+        <h2 className="text-base font-semibold text-gray-900 mb-3">
+          상담기록지 · 평가지
+          {(consultationRecords.length > 0 || assessmentNotes.length > 0) && (
+            <span className="ml-2 text-sm font-normal text-gray-400">
+              (상담 {consultationRecords.length}건 · 평가 {assessmentNotes.length}건)
+            </span>
+          )}
+        </h2>
+        <CaseRecordPanel
+          clientId={clientId}
+          initialConsultationRecords={consultationRecords}
+          initialAssessmentNotes={assessmentNotes}
+        />
       </div>
 
       {/* STT 대화록 이력 */}
