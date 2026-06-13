@@ -1,4 +1,12 @@
 // v0.1.5
+import withPWAInit from "@ducanh2912/next-pwa"
+
+const withPWA = withPWAInit({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  workboxOptions: { disableDevLogs: true },
+})
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: { externalDir: true },
@@ -11,4 +19,4 @@ const nextConfig = {
   },
 }
 
-export default nextConfig
+export default withPWA(nextConfig)
