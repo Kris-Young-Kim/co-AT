@@ -14,6 +14,7 @@ import { type Schedule, getSchedules } from "@/actions/schedule-actions"
 import { SCHEDULE_TYPE_LABELS, SCHEDULE_TYPE_COLORS, SCHEDULE_TYPE_HEX_COLORS, getScheduleColorClass } from "@/lib/schedule-constants"
 import { ScheduleBadge } from "./ScheduleBadge"
 import type { ScheduleCategory } from "@/actions/schedule-category-actions"
+import { getHolidayName, isRedDay } from "./korean-holidays"
 
 interface CalendarViewProps {
   initialSchedules?: Schedule[]
@@ -103,14 +104,23 @@ export function CalendarView({ initialSchedules = [], categories = [], onSchedul
     return map
   }, [schedules, categories])
 
-  // Custom DayContent that renders category color dots below the date number
+  // Custom DayContent with holiday names and red coloring for weekends/holidays
   const DayContentWithDots = useMemo(() => {
     return function DayContent({ date }: { date: Date; displayMonth?: Date; activeModifiers?: Record<string, boolean> }) {
       const dateStr = format(date, "yyyy-MM-dd")
       const colors = dayColorMap.get(dateStr) || []
+      const holidayName = getHolidayName(date)
+      const red = isRedDay(date)
       return (
-        <div className="flex flex-col items-center gap-px py-0.5">
-          <span className="leading-none">{date.getDate()}</span>
+        <div className="flex flex-col items-center w-full py-0.5 gap-px">
+          <span className={cn("leading-none text-sm font-medium", red && "text-red-500")}>
+            {date.getDate()}
+          </span>
+          {holidayName && (
+            <span className="text-[8px] leading-tight text-red-400 truncate w-full text-center px-0.5">
+              {holidayName}
+            </span>
+          )}
           {colors.length > 0 && (
             <div className="flex items-center gap-0.5">
               {colors.slice(0, 3).map((color, i) => (
@@ -234,10 +244,10 @@ export function CalendarView({ initialSchedules = [], categories = [], onSchedul
                   month: "space-y-4 w-full",
                   table: "w-full border-collapse space-y-1",
                   head_row: "flex w-full",
-                  head_cell: "text-muted-foreground rounded-md flex-1 font-normal text-sm text-center",
+                  head_cell: "rounded-md flex-1 font-normal text-sm text-center text-muted-foreground [&:first-child]:text-red-500 [&:last-child]:text-red-500",
                   row: "flex w-full mt-2",
-                  cell: "flex-1 h-14 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                  day: "h-full w-full p-0 font-normal aria-selected:opacity-100 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors",
+                  cell: "flex-1 h-16 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                  day: "h-full w-full p-0 font-normal aria-selected:opacity-100 inline-flex items-start justify-center pt-1 rounded-md hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors",
                 }}
                 locale={ko}
               />
@@ -466,11 +476,12 @@ export function CalendarView({ initialSchedules = [], categories = [], onSchedul
                     month: "space-y-4 w-full",
                     table: "w-full border-collapse space-y-1",
                     head_row: "flex w-full",
-                    head_cell: "text-muted-foreground rounded-md flex-1 font-normal text-sm text-center",
+                    head_cell: "rounded-md flex-1 font-normal text-sm text-center text-muted-foreground [&:first-child]:text-red-500 [&:last-child]:text-red-500",
                     row: "flex w-full mt-2",
-                    cell: "flex-1 h-14 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                    day: "h-full w-full p-0 font-normal aria-selected:opacity-100 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors",
+                    cell: "flex-1 h-16 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                    day: "h-full w-full p-0 font-normal aria-selected:opacity-100 inline-flex items-start justify-center pt-1 rounded-md hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors",
                   }}
+                  components={{ DayContent: DayContentWithDots }}
                   locale={ko}
                 />
               </div>
