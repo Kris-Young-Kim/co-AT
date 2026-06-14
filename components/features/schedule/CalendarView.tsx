@@ -228,7 +228,17 @@ export function CalendarView({ initialSchedules = [], categories = [], onSchedul
                 modifiers={{ hasSchedule: scheduleDates }}
                 modifiersClassNames={{ hasSchedule: "font-semibold" }}
                 components={{ DayContent: DayContentWithDots }}
-                className="rounded-md border"
+                className="rounded-md border w-full"
+                classNames={{
+                  months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full",
+                  month: "space-y-4 w-full",
+                  table: "w-full border-collapse space-y-1",
+                  head_row: "flex w-full",
+                  head_cell: "text-muted-foreground rounded-md flex-1 font-normal text-sm text-center",
+                  row: "flex w-full mt-2",
+                  cell: "flex-1 h-14 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                  day: "h-full w-full p-0 font-normal aria-selected:opacity-100 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors",
+                }}
                 locale={ko}
               />
 
@@ -451,6 +461,16 @@ export function CalendarView({ initialSchedules = [], categories = [], onSchedul
                   selected={selectedDate}
                   onSelect={handleDateSelect}
                   className="rounded-md border"
+                  classNames={{
+                    months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full",
+                    month: "space-y-4 w-full",
+                    table: "w-full border-collapse space-y-1",
+                    head_row: "flex w-full",
+                    head_cell: "text-muted-foreground rounded-md flex-1 font-normal text-sm text-center",
+                    row: "flex w-full mt-2",
+                    cell: "flex-1 h-14 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                    day: "h-full w-full p-0 font-normal aria-selected:opacity-100 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors",
+                  }}
                   locale={ko}
                 />
               </div>
