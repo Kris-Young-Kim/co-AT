@@ -6,12 +6,13 @@ import { cn } from "@/lib/utils"
 
 interface ScheduleBadgeProps {
   type: string
+  customLabel?: string
   className?: string
   variant?: "default" | "secondary" | "destructive" | "outline"
 }
 
-export function ScheduleBadge({ type, className, variant }: ScheduleBadgeProps) {
-  const label = getScheduleLabel(type)
+export function ScheduleBadge({ type, customLabel, className, variant }: ScheduleBadgeProps) {
+  const label = (type === "other" && customLabel) ? customLabel : getScheduleLabel(type)
   const colorClass = getScheduleColorClass(type)
 
   return (

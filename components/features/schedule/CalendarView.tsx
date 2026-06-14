@@ -298,7 +298,9 @@ export function CalendarView({ initialSchedules = [], categories = [], onSchedul
                                 ) : null
                               })()}
                               <Badge variant="secondary" className="text-xs">
-                                {SCHEDULE_TYPE_LABELS[schedule.schedule_type] || schedule.schedule_type}
+                                {schedule.schedule_type === "other" && schedule.custom_type_label
+                                  ? schedule.custom_type_label
+                                  : (SCHEDULE_TYPE_LABELS[schedule.schedule_type as keyof typeof SCHEDULE_TYPE_LABELS] || schedule.schedule_type)}
                               </Badge>
                             </div>
                             <Badge
@@ -433,7 +435,7 @@ export function CalendarView({ initialSchedules = [], categories = [], onSchedul
                               }}
                             >
                               <div className="flex items-center justify-between">
-                                <ScheduleBadge type={schedule.schedule_type} className="px-1 py-0 h-4" />
+                                <ScheduleBadge type={schedule.schedule_type} customLabel={schedule.custom_type_label ?? undefined} className="px-1 py-0 h-4" />
                                 {schedule.scheduled_time && (
                                   <span className="text-muted-foreground">
                                     {schedule.scheduled_time.substring(0, 5)}
@@ -501,7 +503,7 @@ export function CalendarView({ initialSchedules = [], categories = [], onSchedul
                       onClick={() => onScheduleClick?.(schedule)}
                     >
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <ScheduleBadge type={schedule.schedule_type} />
+                        <ScheduleBadge type={schedule.schedule_type} customLabel={schedule.custom_type_label ?? undefined} />
                         <Badge
                           variant={
                             schedule.status === "completed"

@@ -13,6 +13,7 @@ export const SCHEDULE_TYPES = {
   CUSTOM_MAKE: "custom_make",
   MEETING: "meeting",
   EXTERNAL_EVENT: "external_event",
+  OTHER: "other",
 } as const
 
 export type ScheduleType = typeof SCHEDULE_TYPES[keyof typeof SCHEDULE_TYPES]
@@ -28,6 +29,7 @@ export const SCHEDULE_TYPE_LABELS: Record<ScheduleType, string> = {
   custom_make: "맞춤제작",
   meeting: "회의",
   external_event: "외부행사",
+  other: "기타",
 }
 
 export const SCHEDULE_TYPE_COLORS: Record<ScheduleType, string> = {
@@ -41,6 +43,7 @@ export const SCHEDULE_TYPE_COLORS: Record<ScheduleType, string> = {
   custom_make: "bg-teal-100 text-teal-800 border-teal-200",
   meeting: "bg-slate-100 text-slate-800 border-slate-200",
   external_event: "bg-cyan-100 text-cyan-800 border-cyan-200",
+  other: "bg-gray-100 text-gray-800 border-gray-200",
 }
 
 // Hex colors for calendar dot rendering (one per schedule type)
@@ -55,6 +58,7 @@ export const SCHEDULE_TYPE_HEX_COLORS: Record<ScheduleType, string> = {
   custom_make: '#14b8a6',
   meeting: '#64748b',
   external_event: '#06b6d4',
+  other: '#9ca3af',
 }
 
 // 공개 달력에 표시될 유형들

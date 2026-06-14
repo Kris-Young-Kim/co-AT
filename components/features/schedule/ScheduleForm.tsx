@@ -71,6 +71,7 @@ export function ScheduleForm({
 }: ScheduleFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [customTypeLabel, setCustomTypeLabel] = useState("")
 
   // 폼 데이터 초기화 (하이드레이션 방지를 위해 초기값 비움)
   const [formData, setFormData] = useState<CreateScheduleInput>({
@@ -117,6 +118,7 @@ export function ScheduleForm({
         is_web_visible: schedule.is_web_visible,
         category_id: schedule.category_id || null,
       })
+      setCustomTypeLabel((schedule as Schedule & { custom_type_label?: string | null }).custom_type_label || "")
       setSelectedDate(new Date(schedule.scheduled_date))
       // 견학일 경우 항상 내방
       if (schedule.schedule_type === "exhibition") {
@@ -143,6 +145,7 @@ export function ScheduleForm({
         is_web_visible: false,
         category_id: null,
       })
+      setCustomTypeLabel("")
       setSelectedDate(new Date())
       // 견학일 경우 자동으로 내방으로 설정
       if (formData.schedule_type === "exhibition") {
@@ -180,6 +183,7 @@ export function ScheduleForm({
         const result = await updateSchedule({
           id: schedule.id,
           ...formData,
+          custom_type_label: formData.schedule_type === "other" ? customTypeLabel || null : null,
         })
 
         if (!result.success) {
@@ -191,7 +195,10 @@ export function ScheduleForm({
         console.log("[일정 폼] 수정 성공:", result.data?.id)
       } else {
         // 생성
-        const result = await createSchedule(formData)
+        const result = await createSchedule({
+          ...formData,
+          custom_type_label: formData.schedule_type === "other" ? customTypeLabel || null : null,
+        })
 
         if (!result.success) {
           setError(result.error || "일정 생성에 실패했습니다")
@@ -269,6 +276,14 @@ export function ScheduleForm({
                 ))}
               </SelectContent>
             </Select>
+            {formData.schedule_type === "other" && (
+              <Input
+                placeholder="일정 유형 직접 입력"
+                value={customTypeLabel}
+                onChange={(e) => setCustomTypeLabel(e.target.value)}
+                maxLength={50}
+              />
+            )}
           </div>
 
           {/* 카테고리 */}
@@ -370,30 +385,33 @@ export function ScheduleForm({
             </div>
           </div>
 
-          {/* 내방 여부 */}
+          {/* 내방/방문 여부 */}
           <div className="space-y-2">
-            <h3 className="text-sm font-semibold text-foreground">내방 여부</h3>
+            <h3 className="text-sm font-semibold text-foreground">내방/방문 여부 <span className="text-xs font-normal text-muted-foreground">(선택)</span></h3>
             <Select
-              value={visitType || ""}
+              value={visitType || "none"}
               onValueChange={(value) => {
-                setVisitType(value as "center" | "visit" | null)
-                if (value === "center") {
-                  setFormData((prev) => ({
-                    ...prev,
-                    address: null,
-                  }))
+                if (value === "none") {
+                  setVisitType(null)
+                  setFormData((prev) => ({ ...prev, address: null }))
                   setVisitRegion("")
-                } else if (value === "visit") {
-                  // 방문 선택 시 지역은 선택하도록 유도
-                  setVisitRegion("")
+                } else {
+                  setVisitType(value as "center" | "visit")
+                  if (value === "center") {
+                    setFormData((prev) => ({ ...prev, address: null }))
+                    setVisitRegion("")
+                  } else {
+                    setVisitRegion("")
+                  }
                 }
               }}
               disabled={formData.schedule_type === "exhibition"}
             >
               <SelectTrigger>
-                <SelectValue placeholder="선택" />
+                <SelectValue placeholder="선택 안함" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="none">선택 안함</SelectItem>
                 <SelectItem value="center">내방</SelectItem>
                 {formData.schedule_type !== "exhibition" && (
                   <SelectItem value="visit">방문</SelectItem>

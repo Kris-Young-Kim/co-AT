@@ -84,7 +84,7 @@ export interface Schedule {
   application_id: string | null
   staff_id: string
   client_id: string | null
-  schedule_type: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make" | "meeting" | "external_event"
+  schedule_type: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make" | "meeting" | "external_event" | "other"
   scheduled_date: string
   scheduled_time: string | null
   address: string | null
@@ -92,6 +92,7 @@ export interface Schedule {
   status: "scheduled" | "confirmed" | "completed" | "cancelled"
   is_web_visible: boolean
   category_id: string | null
+  custom_type_label: string | null
   created_at: string | null
   updated_at: string | null
 }
@@ -99,7 +100,7 @@ export interface Schedule {
 export interface CreateScheduleInput {
   application_id?: string | null
   client_id?: string | null
-  schedule_type: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make" | "meeting" | "external_event"
+  schedule_type: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make" | "meeting" | "external_event" | "other"
   scheduled_date: string
   scheduled_time?: string | null
   address?: string | null
@@ -107,6 +108,7 @@ export interface CreateScheduleInput {
   status?: "scheduled" | "confirmed" | "completed" | "cancelled"
   is_web_visible?: boolean
   category_id?: string | null
+  custom_type_label?: string | null
 }
 
 export interface UpdateScheduleInput {
@@ -121,6 +123,7 @@ export interface UpdateScheduleInput {
   status?: "scheduled" | "confirmed" | "completed" | "cancelled"
   is_web_visible?: boolean
   category_id?: string | null
+  custom_type_label?: string | null
 }
 
 /**
@@ -296,6 +299,7 @@ export async function createSchedule(
         status: input.status || "scheduled",
         is_web_visible: input.is_web_visible ?? false,
         category_id: input.category_id ?? null,
+        custom_type_label: input.schedule_type === "other" ? (input.custom_type_label ?? null) : null,
       })
       .select()
       .single()
@@ -352,6 +356,7 @@ export async function updateSchedule(
     if (input.status) updateData.status = input.status
     if (input.is_web_visible !== undefined) updateData.is_web_visible = input.is_web_visible
     if (input.category_id !== undefined) updateData.category_id = input.category_id
+    if (input.custom_type_label !== undefined) updateData.custom_type_label = input.schedule_type === "other" ? input.custom_type_label : null
 
     const { data, error } = await supabase
       .from("schedules")
