@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   Users, BarChart3, LogOut, Phone, RefreshCw, Clock,
   FileEdit, GraduationCap, Gift, FileText, BarChart2,
-  BookOpen, Kanban,
+  BookOpen, Kanban, QrCode,
 } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 
@@ -30,6 +30,7 @@ const NAV_ENTRIES: NavEntry[] = [
   { type: 'section', label: '대상자' },
   { type: 'item', href: '/clients', label: '대상자 목록', icon: Users },
   { type: 'item', href: '/clients/pending', label: '신규 접수 대기', icon: Clock },
+  { type: 'item', href: '/print/client-labels', label: 'QR 라벨 인쇄', icon: QrCode },
 
   { type: 'section', label: '상담·서비스' },
   { type: 'item', href: '/call-logs', label: '콜센터 상담', icon: Phone },

@@ -14,6 +14,7 @@ import { ClientTranscripts } from '@/eval/components/eval/ClientTranscripts'
 import { DeviceRecommendationPanel } from '@/eval/components/eval/DeviceRecommendationPanel'
 import { EvaluationReportPanel } from '@/eval/components/eval/EvaluationReportPanel'
 import { PortalUserLink } from '@/eval/components/eval/PortalUserLink'
+import { ClientQrLabel } from '@/eval/components/clients/ClientQrLabel'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, AlertCircle } from 'lucide-react'
@@ -108,6 +109,18 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       <div className="mb-6">
         <PortalUserLink clientId={clientId} linkedUser={linkedPortalUser} />
       </div>
+
+      {/* 대상자 QR 코드 */}
+      {(client as any).qr_token && (
+        <div className="mb-6">
+          <ClientQrLabel
+            clientId={clientId}
+            qrToken={(client as any).qr_token as string}
+            name={client.name}
+            birthDate={client.birth_date}
+          />
+        </div>
+      )}
 
       {/* 진행 중 서비스 */}
       <div className="mb-6">

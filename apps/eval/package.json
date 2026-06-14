@@ -24,10 +24,12 @@
     "react-dom": "^19.0.0",
     "tailwind-merge": "^2.2.1",
     "jszip": "^3.10.1",
+    "qrcode": "^1.5.4",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/qrcode": "^1.5.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.0.1",

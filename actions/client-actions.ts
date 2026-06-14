@@ -838,6 +838,48 @@ export async function linkPortalUser(
   }
 }
 
+export async function getClientByQrToken(qrToken: string): Promise<{
+  success: boolean
+  client?: Client
+  error?: string
+}> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+    const supabase = createAdminClient()
+    const { data, error } = await supabase
+      .from('clients')
+      .select('*')
+      .eq('qr_token' as any, qrToken)
+      .single()
+    if (error || !data) return { success: false, error: '대상자 QR을 찾을 수 없습니다' }
+    return { success: true, client: data as Client }
+  } catch {
+    return { success: false, error: '오류가 발생했습니다' }
+  }
+}
+
+export async function getAllClientsForLabels(): Promise<{
+  success: boolean
+  clients?: Array<{ id: string; name: string; birth_date: string | null; registration_number: string | null; qr_token: string }>
+  error?: string
+}> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+    const supabase = createAdminClient()
+    const { data, error } = await supabase
+      .from('clients')
+      .select('id, name, birth_date, registration_number, qr_token')
+      .eq('status', 'registered')
+      .order('name', { ascending: true })
+    if (error) return { success: false, error: '조회에 실패했습니다' }
+    return { success: true, clients: (data ?? []) as any }
+  } catch {
+    return { success: false, error: '오류가 발생했습니다' }
+  }
+}
+
 export async function linkPortalUserByName(
   clientId: string,
   name: string,
