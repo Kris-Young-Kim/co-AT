@@ -4,7 +4,12 @@ import withPWAInit from "@ducanh2912/next-pwa"
 const withPWA = withPWAInit({
   dest: "public",
   disable: process.env.NODE_ENV === "development",
-  workboxOptions: { disableDevLogs: true },
+  workboxOptions: {
+    disableDevLogs: true,
+    // Disable page navigation caching — all routes require Clerk auth,
+    // so NetworkFirst on navigation causes "no-response" errors on redirects.
+    runtimeCaching: [],
+  },
 })
 
 /** @type {import('next').NextConfig} */
