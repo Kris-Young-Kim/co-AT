@@ -394,6 +394,8 @@ export type Database = {
       call_logs: {
         Row: {
           answer: string | null
+          application_id: string | null
+          channel: string | null
           created_at: string | null
           id: string
           log_date: string
@@ -417,6 +419,8 @@ export type Database = {
         }
         Insert: {
           answer?: string | null
+          application_id?: string | null
+          channel?: string | null
           created_at?: string | null
           id?: string
           log_date: string
@@ -440,6 +444,8 @@ export type Database = {
         }
         Update: {
           answer?: string | null
+          application_id?: string | null
+          channel?: string | null
           created_at?: string | null
           id?: string
           log_date?: string
@@ -461,7 +467,15 @@ export type Database = {
           target_name?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "call_logs_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       chat_message_reads: {
         Row: {
@@ -691,7 +705,9 @@ export type Database = {
           id: string
           name: string
           obstacles: string | null
+          portal_user_id: string | null
           progression_cause: string | null
+          qr_token: string
           registration_number: string | null
           secondary_disability_type: string | null
           source: string
@@ -724,7 +740,9 @@ export type Database = {
           id?: string
           name: string
           obstacles?: string | null
+          portal_user_id?: string | null
           progression_cause?: string | null
+          qr_token?: string
           registration_number?: string | null
           secondary_disability_type?: string | null
           source?: string
@@ -757,7 +775,9 @@ export type Database = {
           id?: string
           name?: string
           obstacles?: string | null
+          portal_user_id?: string | null
           progression_cause?: string | null
+          qr_token?: string
           registration_number?: string | null
           secondary_disability_type?: string | null
           source?: string
@@ -1055,6 +1075,75 @@ export type Database = {
           },
         ]
       }
+      eval_assessment_notes: {
+        Row: {
+          ai_generated: boolean
+          application_id: string | null
+          assessment_date: string
+          assessor: string | null
+          client_id: string
+          cognitive_function: string | null
+          created_at: string
+          created_by: string | null
+          device_needs: string | null
+          environment: string | null
+          id: string
+          notes: string | null
+          physical_function: string | null
+          recommendations: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_generated?: boolean
+          application_id?: string | null
+          assessment_date?: string
+          assessor?: string | null
+          client_id: string
+          cognitive_function?: string | null
+          created_at?: string
+          created_by?: string | null
+          device_needs?: string | null
+          environment?: string | null
+          id?: string
+          notes?: string | null
+          physical_function?: string | null
+          recommendations?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_generated?: boolean
+          application_id?: string | null
+          assessment_date?: string
+          assessor?: string | null
+          client_id?: string
+          cognitive_function?: string | null
+          created_at?: string
+          created_by?: string | null
+          device_needs?: string | null
+          environment?: string | null
+          id?: string
+          notes?: string | null
+          physical_function?: string | null
+          recommendations?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_assessment_notes_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eval_assessment_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       eval_cases: {
         Row: {
           case_type: string
@@ -1092,6 +1181,75 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "eval_cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eval_consultation_records: {
+        Row: {
+          ai_generated: boolean
+          application_id: string | null
+          client_id: string
+          consultant: string | null
+          consultation_date: string
+          consultation_type: string
+          content: string | null
+          created_at: string
+          created_by: string | null
+          current_situation: string | null
+          id: string
+          next_plan: string | null
+          purpose: string | null
+          result: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_generated?: boolean
+          application_id?: string | null
+          client_id: string
+          consultant?: string | null
+          consultation_date?: string
+          consultation_type?: string
+          content?: string | null
+          created_at?: string
+          created_by?: string | null
+          current_situation?: string | null
+          id?: string
+          next_plan?: string | null
+          purpose?: string | null
+          result?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_generated?: boolean
+          application_id?: string | null
+          client_id?: string
+          consultant?: string | null
+          consultation_date?: string
+          consultation_type?: string
+          content?: string | null
+          created_at?: string
+          created_by?: string | null
+          current_situation?: string | null
+          id?: string
+          next_plan?: string | null
+          purpose?: string | null
+          result?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_consultation_records_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eval_consultation_records_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
@@ -1718,6 +1876,66 @@ export type Database = {
           },
         ]
       }
+      eval_soap_notes: {
+        Row: {
+          ai_generated: boolean
+          application_id: string | null
+          assessment: string | null
+          client_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          note_date: string
+          objective: string | null
+          plan: string | null
+          subjective: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_generated?: boolean
+          application_id?: string | null
+          assessment?: string | null
+          client_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note_date?: string
+          objective?: string | null
+          plan?: string | null
+          subjective?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_generated?: boolean
+          application_id?: string | null
+          assessment?: string | null
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note_date?: string
+          objective?: string | null
+          plan?: string | null
+          subjective?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_soap_notes_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eval_soap_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       eval_sync_logs: {
         Row: {
           error_msg: string | null
@@ -1754,24 +1972,30 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          national_ratio: number
           order_no: number | null
           parent_id: string | null
+          provincial_ratio: number
         }
         Insert: {
           code?: string | null
           created_at?: string
           id?: string
           name: string
+          national_ratio?: number
           order_no?: number | null
           parent_id?: string | null
+          provincial_ratio?: number
         }
         Update: {
           code?: string | null
           created_at?: string
           id?: string
           name?: string
+          national_ratio?: number
           order_no?: number | null
           parent_id?: string | null
+          provincial_ratio?: number
         }
         Relationships: [
           {
@@ -3332,6 +3556,7 @@ export type Database = {
       }
       notices: {
         Row: {
+          attachments: Json | null
           category: string | null
           content: string
           created_at: string | null
@@ -3342,6 +3567,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          attachments?: Json | null
           category?: string | null
           content: string
           created_at?: string | null
@@ -3352,6 +3578,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          attachments?: Json | null
           category?: string | null
           content?: string
           created_at?: string | null
@@ -3658,6 +3885,62 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      rental_contracts: {
+        Row: {
+          created_at: string
+          id: string
+          rental_id: string
+          sent_at: string | null
+          sent_to: string | null
+          sent_via: string | null
+          signature_data: string | null
+          signed_at: string | null
+          signer_name: string | null
+          signer_type: string | null
+          signing_token: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rental_id: string
+          sent_at?: string | null
+          sent_to?: string | null
+          sent_via?: string | null
+          signature_data?: string | null
+          signed_at?: string | null
+          signer_name?: string | null
+          signer_type?: string | null
+          signing_token?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rental_id?: string
+          sent_at?: string | null
+          sent_to?: string | null
+          sent_via?: string | null
+          signature_data?: string | null
+          signed_at?: string | null
+          signer_name?: string | null
+          signer_type?: string | null
+          signing_token?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rental_contracts_rental_id_fkey"
+            columns: ["rental_id"]
+            isOneToOne: false
+            referencedRelation: "rentals"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       rentals: {
         Row: {
