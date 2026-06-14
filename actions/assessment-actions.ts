@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -240,4 +241,55 @@ export async function updateDomainAssessment(
     console.error("Unexpected error in updateDomainAssessment:", error);
     return { success: false, error: "예상치 못한 오류가 발생했습니다" };
   }
+}
+
+export interface AssessmentListItem {
+  id: string
+  domain_type: string
+  evaluation_date: string
+  application_id: string
+  client_id: string
+  client_name: string
+  birth_date: string | null
+  disability_type: string | null
+}
+
+export async function getAllDomainAssessments(): Promise<{
+  success: boolean
+  assessments?: AssessmentListItem[]
+  error?: string
+}> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+
+  const supabase = createAdminClient()
+  const { data, error } = await (supabase as any)
+    .from("domain_assessments")
+    .select(`
+      id, domain_type, evaluation_date, application_id,
+      applications!inner(
+        id, client_id,
+        clients!inner(id, name, birth_date, disability_type)
+      )
+    `)
+    .order("evaluation_date", { ascending: false })
+    .limit(500)
+
+  if (error) {
+    console.error("getAllDomainAssessments:", error)
+    return { success: false, error: "평가 목록 조회에 실패했습니다" }
+  }
+
+  const assessments: AssessmentListItem[] = (data ?? []).map((row: any) => ({
+    id: row.id,
+    domain_type: row.domain_type,
+    evaluation_date: row.evaluation_date,
+    application_id: row.application_id,
+    client_id: row.applications?.clients?.id ?? row.applications?.client_id ?? "",
+    client_name: row.applications?.clients?.name ?? "—",
+    birth_date: row.applications?.clients?.birth_date ?? null,
+    disability_type: row.applications?.clients?.disability_type ?? null,
+  }))
+
+  return { success: true, assessments }
 }
