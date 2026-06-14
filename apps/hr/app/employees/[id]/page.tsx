@@ -6,15 +6,16 @@ import { getApprovedLeaveDaysInYear } from '@/actions/leave-actions'
 import { calcLeaveBalance } from '@/lib/leave-calculator'
 import { Pencil } from 'lucide-react'
 
-export default async function EmployeeDetailPage({ params }: { params: { id: string } }) {
+export default async function EmployeeDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const [employee, careers] = await Promise.all([
-    getEmployee(params.id),
-    getCareersByEmployee(params.id),
+    getEmployee(id),
+    getCareersByEmployee(id),
   ])
   if (!employee) notFound()
 
   const currentYear = new Date().getFullYear()
-  const usedDays = await getApprovedLeaveDaysInYear(params.id, currentYear)
+  const usedDays = await getApprovedLeaveDaysInYear(id, currentYear)
   const leaveBalance = calcLeaveBalance({
     hireDate: employee.hire_date,
     year: currentYear,

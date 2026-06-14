@@ -4,18 +4,20 @@ import { getAttendanceByEmployee } from '@/actions/attendance-actions'
 import { AttendanceForm } from '@/components/attendance/AttendanceForm'
 
 interface Props {
-  params: { employeeId: string }
-  searchParams: { month?: string }
+  params: Promise<{ employeeId: string }>
+  searchParams: Promise<{ month?: string }>
 }
 
 export default async function EmployeeAttendancePage({ params, searchParams }: Props) {
+  const { employeeId } = await params
+  const sp = await searchParams
   const today = new Date()
-  const yearMonth = searchParams.month ??
+  const yearMonth = sp.month ??
     `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`
 
   const [employee, records] = await Promise.all([
-    getEmployee(params.employeeId),
-    getAttendanceByEmployee(params.employeeId, yearMonth),
+    getEmployee(employeeId),
+    getAttendanceByEmployee(employeeId, yearMonth),
   ])
   if (!employee) notFound()
 
@@ -38,7 +40,7 @@ export default async function EmployeeAttendancePage({ params, searchParams }: P
             <div key={date} className="bg-white border rounded-lg p-4">
               <p className="text-sm font-medium text-gray-700 mb-2">{date} ({dow})</p>
               <AttendanceForm
-                employeeId={params.employeeId}
+                employeeId={employeeId}
                 date={date}
                 initial={rec}
               />

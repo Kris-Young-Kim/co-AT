@@ -3,12 +3,13 @@ import { getEmployees } from '@/actions/employee-actions'
 import { getAllAttendance } from '@/actions/attendance-actions'
 
 interface Props {
-  searchParams: { month?: string }
+  searchParams: Promise<{ month?: string }>
 }
 
 export default async function AttendancePage({ searchParams }: Props) {
+  const sp = await searchParams
   const today = new Date()
-  const yearMonth = searchParams.month ??
+  const yearMonth = sp.month ??
     `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`
 
   const [employees, records] = await Promise.all([

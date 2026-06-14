@@ -2,8 +2,9 @@ import { notFound } from 'next/navigation'
 import { getEmployee } from '@/actions/employee-actions'
 import { EmployeeForm } from '@/components/employees/EmployeeForm'
 
-export default async function EditEmployeePage({ params }: { params: { id: string } }) {
-  const employee = await getEmployee(params.id)
+export default async function EditEmployeePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const employee = await getEmployee(id)
   if (!employee) notFound()
 
   return (
