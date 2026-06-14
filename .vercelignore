@@ -10,8 +10,8 @@
 # Tests
 /tests/
 
-# Screenshot artifacts committed at root
-*.png
+# Screenshot artifacts committed at root (root-level only)
+/*.png
 
 # Browser automation logs
 .playwright-mcp/
