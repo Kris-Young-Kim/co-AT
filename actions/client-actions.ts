@@ -182,7 +182,7 @@ export async function getClientById(clientId: string): Promise<{
  * 대상자 등록
  */
 export async function createClientRecord(
-  clientData: Omit<Client, "id" | "created_at" | "updated_at">
+  clientData: Omit<Client, "id" | "created_at" | "updated_at" | "qr_token" | "portal_user_id">
 ): Promise<{
   success: boolean
   client?: Client

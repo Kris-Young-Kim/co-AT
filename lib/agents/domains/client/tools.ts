@@ -259,7 +259,7 @@ export const createClientTool: AgentToolImplementation = async (args) => {
   }
 
   try {
-    const clientData: Omit<Client, "id" | "created_at" | "updated_at"> = {
+    const clientData: Omit<Client, "id" | "created_at" | "updated_at" | "qr_token" | "portal_user_id"> = {
       name,
       birth_date: args.birth_date ? String(args.birth_date) : null,
       disability_type: args.disability_type ? String(args.disability_type) : null,
