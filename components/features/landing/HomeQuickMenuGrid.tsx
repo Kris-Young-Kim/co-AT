@@ -2,7 +2,6 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   MessageSquare,
-  Eye,
   Wrench,
   Package,
   GraduationCap,
@@ -12,24 +11,16 @@ import { cn } from "@/lib/utils"
 const serviceCategories = [
   {
     id: "consult",
-    label: "상담",
-    description: "보조기기 상담 및 평가",
+    label: "상담 및 정보제공",
+    description: "보조기기 상담 및 정보 안내",
     icon: MessageSquare,
     href: "/apply?category=consult",
     color: "bg-blue-500",
   },
   {
-    id: "experience",
-    label: "체험",
-    description: "보조기기 체험 및 견학",
-    icon: Eye,
-    href: "/apply?category=experience",
-    color: "bg-purple-500",
-  },
-  {
     id: "custom",
-    label: "맞춤형",
-    description: "맞춤 제작 및 대여",
+    label: "맞춤형 지원",
+    description: "맞춤 제작 및 대여, 교부사업 적합성 평가",
     icon: Wrench,
     href: "/apply?category=custom",
     color: "bg-green-500",
@@ -44,7 +35,7 @@ const serviceCategories = [
   },
   {
     id: "education",
-    label: "교육홍보",
+    label: "교육 및 홍보",
     description: "교육 프로그램 신청",
     icon: GraduationCap,
     href: "/apply?category=education",
@@ -57,9 +48,9 @@ export function HomeQuickMenuGrid() {
     <section id="services" className="py-12 sm:py-16 md:py-24 bg-background scroll-mt-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-responsive-xl font-bold text-center text-foreground mb-8 sm:mb-12">
-          5대 핵심 사업
+          4대 주요 사업
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {serviceCategories.map((service) => {
             const Icon = service.icon
             return (

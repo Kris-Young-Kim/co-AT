@@ -9,13 +9,12 @@ const withPWA = withPWAInit({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ['@co-at/ui', '@co-at/lib', '@co-at/auth', '@co-at/types'],
-  serverActions: {
-    bodySizeLimit: '10mb',
-  },
   experimental: {
     externalDir: true,
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
   },
-  turbopack: {},
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**.supabase.co' },
