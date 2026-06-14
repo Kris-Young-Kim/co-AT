@@ -3,11 +3,12 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Home, FileText, User } from "lucide-react"
+import { Home, FileText, UserCircle, User } from "lucide-react"
 
 const navItems = [
   { href: "/mypage", label: "홈", icon: Home },
   { href: "/apply", label: "신청", icon: FileText },
+  { href: "/portal/profile", label: "내 정보", icon: UserCircle },
   { href: "/mypage", label: "마이페이지", icon: User },
 ].map((item, index) => ({ ...item, key: `${item.href}-${index}` }))
 

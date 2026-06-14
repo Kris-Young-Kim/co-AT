@@ -4,7 +4,7 @@ import { Logo } from "@/components/common/logo"
 import { UserButton } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Bell, Settings } from "lucide-react"
+import { Bell, Settings, UserCircle } from "lucide-react"
 
 export function PortalHeader() {
   return (
@@ -18,6 +18,12 @@ export function PortalHeader() {
             <Link href="/notices">
               <Bell className="h-4 w-4 mr-2" />
               공지사항
+            </Link>
+          </Button>
+          <Button asChild variant="ghost" size="sm" className="text-xs sm:text-sm">
+            <Link href="/portal/profile">
+              <UserCircle className="h-4 w-4 mr-2" />
+              내 정보
             </Link>
           </Button>
           <Button asChild variant="ghost" size="sm" className="text-xs sm:text-sm">

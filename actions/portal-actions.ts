@@ -518,3 +518,89 @@ export async function completePortalProfile(
     return { success: false, error: "프로필 저장에 실패했습니다" }
   }
 }
+
+export interface MyProfile {
+  id: string
+  name: string
+  birth_date: string | null
+  contact: string | null
+  email: string | null
+  address: string | null
+  disability_type: string | null
+  disability_grade: string | null
+  registration_number: string | null
+  guardian_name: string | null
+  guardian_contact: string | null
+  guardian_relationship: string | null
+  housing_type: string | null
+  floor_number: string | null
+  has_elevator: boolean | null
+}
+
+export async function getMyProfile(): Promise<{
+  success: boolean
+  profile?: MyProfile | null
+  error?: string
+}> {
+  try {
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: "로그인이 필요합니다" }
+
+    const supabase = createAdminClient()
+    const { data, error } = await supabase
+      .from("clients")
+      .select("id, name, birth_date, contact, email, address, disability_type, disability_grade, registration_number, guardian_name, guardian_contact, guardian_relationship, housing_type, floor_number, has_elevator")
+      .eq("portal_user_id" as any, userId)
+      .maybeSingle()
+
+    if (error) return { success: false, error: error.message }
+    return { success: true, profile: data as MyProfile | null }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
+}
+
+export interface UpdateMyProfileInput {
+  contact?: string | null
+  email?: string | null
+  address?: string | null
+  guardian_name?: string | null
+  guardian_contact?: string | null
+  guardian_relationship?: string | null
+  housing_type?: string | null
+  floor_number?: string | null
+  has_elevator?: boolean | null
+}
+
+export async function updateMyProfile(input: UpdateMyProfileInput): Promise<{
+  success: boolean
+  error?: string
+}> {
+  try {
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: "로그인이 필요합니다" }
+
+    const supabase = createAdminClient()
+
+    // Find linked client
+    const { data: client } = await supabase
+      .from("clients")
+      .select("id")
+      .eq("portal_user_id" as any, userId)
+      .single()
+
+    if (!client) return { success: false, error: "연결된 대상자 정보가 없습니다" }
+
+    const { error } = await supabase
+      .from("clients")
+      .update(input as any)
+      .eq("id", (client as any).id)
+
+    if (error) return { success: false, error: error.message }
+
+    revalidatePath("/portal/profile")
+    return { success: true }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
+}
