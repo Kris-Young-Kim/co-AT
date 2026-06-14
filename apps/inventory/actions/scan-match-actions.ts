@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin'
 import { hasAdminOrStaffPermission } from '@/lib/utils/permissions'
+import { createRentalContract } from '@/actions/rental-contract-actions'
 import { addMonths, format } from 'date-fns'
 
 export interface ScanMatchClient {
@@ -123,7 +124,12 @@ export async function createRentalFromScan(
       .update({ status: '대여중' })
       .eq('id', inventoryId)
 
-    return { success: true, rentalId: (data as { id: string }).id }
+    const rentalId = (data as { id: string }).id
+
+    // Auto-create contract for e-signature
+    await createRentalContract(rentalId)
+
+    return { success: true, rentalId }
   } catch {
     return { success: false, error: '오류가 발생했습니다' }
   }

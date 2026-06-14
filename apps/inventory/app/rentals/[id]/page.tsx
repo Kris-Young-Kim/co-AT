@@ -1,9 +1,11 @@
 export const dynamic = 'force-dynamic'
 
 import { getRentalById } from '@/actions/rental-actions'
+import { getContractByRentalId } from '@/actions/rental-contract-actions'
 import { RentalStatusBadge } from '@/inventory/components/rental/RentalStatusBadge'
 import { ReturnButton } from '@/inventory/components/rental/ReturnButton'
 import { ExtendButton } from '@/inventory/components/rental/ExtendButton'
+import { RentalContractPanel } from '@/inventory/components/contracts/RentalContractPanel'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
@@ -14,7 +16,10 @@ interface RentalDetailPageProps {
 
 export default async function RentalDetailPage({ params }: RentalDetailPageProps) {
   const { id } = await params
-  const result = await getRentalById(id)
+  const [result, contractResult] = await Promise.all([
+    getRentalById(id),
+    getContractByRentalId(id),
+  ])
   if (!result.success || !result.rental) notFound()
 
   const r = result.rental
@@ -52,11 +57,16 @@ export default async function RentalDetailPage({ params }: RentalDetailPageProps
       </div>
 
       {isActive && (
-        <div className="flex gap-3">
+        <div className="flex gap-3 mb-6">
           <ReturnButton rentalId={id} />
           <ExtendButton rentalId={id} currentEndDate={r.rental_end_date} />
         </div>
       )}
+
+      <RentalContractPanel
+        rentalId={id}
+        initialContract={contractResult.success ? (contractResult.contract ?? null) : null}
+      />
     </div>
   )
 }
