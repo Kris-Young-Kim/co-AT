@@ -10,7 +10,8 @@ import {
   type AssessmentNote,
 } from '@/actions/case-record-actions'
 import { generateConsultationDraft } from '@/actions/ai-actions'
-import { Sparkles, Plus, Trash2, Loader2, ChevronDown, ChevronUp, ClipboardList, Stethoscope } from 'lucide-react'
+import Link from 'next/link'
+import { Sparkles, Plus, Trash2, Loader2, ChevronDown, ChevronUp, ClipboardList, Stethoscope, Printer, Download } from 'lucide-react'
 
 // ──────────────────────────────────────────────────────────────
 // Types
@@ -388,16 +389,38 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
             )}
           </button>
         </div>
-        {!showForm && (
-          <button
-            type="button"
-            onClick={() => setShowForm(true)}
-            className="flex items-center gap-1 px-3 py-1.5 text-sm border rounded-md hover:bg-gray-50 text-gray-700"
-          >
-            <Plus className="h-4 w-4" />
-            새 {activeTab === 'consultation' ? '상담기록지' : '평가지'}
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {activeTab === 'consultation' && consultationRecords.length > 0 && (
+            <Link
+              href={`/print/consultation/client/${clientId}`}
+              target="_blank"
+              className="flex items-center gap-1 px-2.5 py-1.5 text-xs border rounded-md hover:bg-gray-50 text-gray-600"
+            >
+              <Download className="h-3.5 w-3.5" />
+              전체 출력
+            </Link>
+          )}
+          {activeTab === 'assessment' && assessmentNotes.length > 0 && (
+            <Link
+              href={`/print/case-assessment/client/${clientId}`}
+              target="_blank"
+              className="flex items-center gap-1 px-2.5 py-1.5 text-xs border rounded-md hover:bg-gray-50 text-gray-600"
+            >
+              <Download className="h-3.5 w-3.5" />
+              전체 출력
+            </Link>
+          )}
+          {!showForm && (
+            <button
+              type="button"
+              onClick={() => setShowForm(true)}
+              className="flex items-center gap-1 px-3 py-1.5 text-sm border rounded-md hover:bg-gray-50 text-gray-700"
+            >
+              <Plus className="h-4 w-4" />
+              새 {activeTab === 'consultation' ? '상담기록지' : '평가지'}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Form */}
@@ -465,7 +488,16 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
                         {record.purpose?.slice(0, 40) ?? record.content?.slice(0, 40) ?? '—'}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                      <Link
+                        href={`/print/consultation/${record.id}`}
+                        target="_blank"
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-1 text-gray-300 hover:text-blue-500 transition-colors"
+                        title="출력 / HWP 다운로드"
+                      >
+                        <Printer className="h-3.5 w-3.5" />
+                      </Link>
                       <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); handleDeleteConsultation(record.id) }}
@@ -524,7 +556,16 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
                         {note.recommendations?.slice(0, 40) ?? note.device_needs?.slice(0, 40) ?? '—'}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                      <Link
+                        href={`/print/case-assessment/${note.id}`}
+                        target="_blank"
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-1 text-gray-300 hover:text-blue-500 transition-colors"
+                        title="출력 / HWP 다운로드"
+                      >
+                        <Printer className="h-3.5 w-3.5" />
+                      </Link>
                       <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); handleDeleteAssessment(note.id) }}

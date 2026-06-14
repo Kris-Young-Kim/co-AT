@@ -3,6 +3,7 @@ import { createAppMiddleware } from '@co-at/auth'
 export default createAppMiddleware('eval')
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|webmanifest|zip)).*)',
+    '/(api|trpc)(.*)',
   ],
 }

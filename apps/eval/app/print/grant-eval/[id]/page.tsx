@@ -1,6 +1,9 @@
 import { getGrantAssessmentById } from '@/actions/grant-assessment-actions'
 import { getClientById } from '@/actions/client-actions'
 import { getChecklistTemplates, type ChecklistTemplate } from '@/actions/checklist-template-actions'
+import { PrintButton } from '@/eval/components/print/PrintButton'
+import { HwpDownloadButton } from '@/eval/components/print/HwpDownloadButton'
+import { generateGrantAssessmentHwpx } from '@/eval/actions/grant-assessment-hwp-actions'
 import { notFound } from 'next/navigation'
 
 interface Props {
@@ -28,7 +31,12 @@ export default async function PrintGrantEvalPage({ params }: Props) {
   )
 
   return (
-    <div className="max-w-3xl mx-auto p-10 text-sm print:p-4">
+    <>
+      <div className="fixed top-4 right-4 flex gap-2 no-print z-10">
+        <HwpDownloadButton action={generateGrantAssessmentHwpx.bind(null, id)} />
+        <PrintButton />
+      </div>
+      <div className="max-w-3xl mx-auto p-10 text-sm print:p-4">
       <h1 className="text-xl font-bold text-center mb-2">보조기기 교부사업 적합성 평가 기록지</h1>
       <p className="text-center text-gray-500 mb-8">{assessment.assessment_year}년</p>
 
@@ -123,6 +131,7 @@ export default async function PrintGrantEvalPage({ params }: Props) {
       <div className="mt-10 text-center text-xs text-gray-400 print:mt-6">
         인쇄일: {new Date().toLocaleDateString('ko-KR')}
       </div>
-    </div>
+      </div>
+    </>
   )
 }

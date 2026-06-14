@@ -84,6 +84,46 @@ export interface CreateConsultationRecordInput {
   ai_generated?: boolean
 }
 
+export async function getConsultationRecordById(
+  recordId: string
+): Promise<{ success: boolean; record?: ConsultationRecord; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+
+  const supabase = createAdminClient()
+  const { data, error } = await (supabase as any)
+    .from("eval_consultation_records")
+    .select("*")
+    .eq("id", recordId)
+    .single()
+
+  if (error) {
+    console.error("[case-record-actions] getConsultationRecordById:", error)
+    return { success: false, error: "상담기록지를 찾을 수 없습니다" }
+  }
+  return { success: true, record: data }
+}
+
+export async function getAssessmentNoteById(
+  noteId: string
+): Promise<{ success: boolean; note?: AssessmentNote; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+
+  const supabase = createAdminClient()
+  const { data, error } = await (supabase as any)
+    .from("eval_assessment_notes")
+    .select("*")
+    .eq("id", noteId)
+    .single()
+
+  if (error) {
+    console.error("[case-record-actions] getAssessmentNoteById:", error)
+    return { success: false, error: "평가지를 찾을 수 없습니다" }
+  }
+  return { success: true, note: data }
+}
+
 export async function createConsultationRecord(
   input: CreateConsultationRecordInput
 ): Promise<{ success: boolean; record?: ConsultationRecord; error?: string }> {
