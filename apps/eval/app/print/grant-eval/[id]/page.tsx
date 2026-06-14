@@ -3,7 +3,9 @@ import { getClientById } from '@/actions/client-actions'
 import { getChecklistTemplates, type ChecklistTemplate } from '@/actions/checklist-template-actions'
 import { PrintButton } from '@/eval/components/print/PrintButton'
 import { HwpDownloadButton } from '@/eval/components/print/HwpDownloadButton'
+import { PdfDownloadButton } from '@/eval/components/print/PdfDownloadButton'
 import { generateGrantAssessmentHwpx } from '@/eval/actions/grant-assessment-hwp-actions'
+import { generateGrantAssessmentPdf } from '@/eval/actions/pdf-actions'
 import { notFound } from 'next/navigation'
 
 interface Props {
@@ -34,6 +36,7 @@ export default async function PrintGrantEvalPage({ params }: Props) {
     <>
       <div className="fixed top-4 right-4 flex gap-2 no-print z-10">
         <HwpDownloadButton action={generateGrantAssessmentHwpx.bind(null, id)} />
+        <PdfDownloadButton action={generateGrantAssessmentPdf.bind(null, id)} />
         <PrintButton />
       </div>
       <div className="max-w-3xl mx-auto p-10 text-sm print:p-4">

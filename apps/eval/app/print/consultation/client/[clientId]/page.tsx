@@ -3,6 +3,8 @@ import { getClientById } from '@/actions/client-actions'
 import { ConsultationPrintView } from '@/eval/components/print/ConsultationPrintView'
 import { PrintButton } from '@/eval/components/print/PrintButton'
 import { ConsultationHwpDownloadButton } from '@/eval/components/print/ConsultationHwpDownloadButton'
+import { PdfDownloadButton } from '@/eval/components/print/PdfDownloadButton'
+import { generateClientConsultationsPdf } from '@/eval/actions/pdf-actions'
 import { notFound } from 'next/navigation'
 
 interface Props {
@@ -28,6 +30,7 @@ export default async function ConsultationClientPrintPage({ params }: Props) {
     <>
       <div className="fixed top-4 right-4 flex gap-2 no-print z-10">
         <ConsultationHwpDownloadButton clientId={clientId} label="전체 HWP 다운로드" />
+        <PdfDownloadButton action={generateClientConsultationsPdf.bind(null, clientId)} label="전체 PDF 다운로드" />
         <PrintButton />
       </div>
       <ConsultationPrintView records={records} client={clientResult.client} />

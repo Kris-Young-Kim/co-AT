@@ -3,7 +3,9 @@ import { getClientById } from '@/actions/client-actions'
 import { AssessmentNotePrintView } from '@/eval/components/print/AssessmentNotePrintView'
 import { PrintButton } from '@/eval/components/print/PrintButton'
 import { HwpDownloadButton } from '@/eval/components/print/HwpDownloadButton'
+import { PdfDownloadButton } from '@/eval/components/print/PdfDownloadButton'
 import { generateAssessmentNoteHwpx } from '@/eval/actions/assessment-note-hwp-actions'
+import { generateAssessmentNotePdf } from '@/eval/actions/pdf-actions'
 import { notFound } from 'next/navigation'
 
 interface Props {
@@ -24,6 +26,7 @@ export default async function AssessmentNotePrintPage({ params }: Props) {
     <>
       <div className="fixed top-4 right-4 flex gap-2 no-print z-10">
         <HwpDownloadButton action={generateAssessmentNoteHwpx.bind(null, noteId)} />
+        <PdfDownloadButton action={generateAssessmentNotePdf.bind(null, noteId)} />
         <PrintButton />
       </div>
       <AssessmentNotePrintView notes={[note]} client={clientResult.client} />

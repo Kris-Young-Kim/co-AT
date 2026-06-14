@@ -3,7 +3,9 @@ import { getClientById } from '@/actions/client-actions'
 import { AssessmentPrintView } from '@/eval/components/print/AssessmentPrintView'
 import { PrintButton } from '@/eval/components/print/PrintButton'
 import { HwpDownloadButton } from '@/eval/components/print/HwpDownloadButton'
+import { PdfDownloadButton } from '@/eval/components/print/PdfDownloadButton'
 import { generateDomainAssessmentHwpx } from '@/eval/actions/domain-assessment-hwp-actions'
+import { generateAssessmentPdf } from '@/eval/actions/pdf-actions'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
@@ -33,6 +35,7 @@ export default async function AssessmentPrintPage({ params }: AssessmentPrintPag
     <>
       <div className="fixed top-4 right-4 flex gap-2 no-print z-10">
         <HwpDownloadButton action={generateDomainAssessmentHwpx.bind(null, assessmentId)} />
+        <PdfDownloadButton action={generateAssessmentPdf.bind(null, assessmentId)} />
         <PrintButton />
       </div>
       <AssessmentPrintView assessment={assessment} client={clientResult.client} />
