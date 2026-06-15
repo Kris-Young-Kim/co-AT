@@ -235,6 +235,7 @@ export async function getSchedules(
               status: scheduleStatus,
               is_web_visible: false,
               category_id: null,
+              custom_type_label: null,
               created_at: null,
               updated_at: null,
             })
