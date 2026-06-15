@@ -41,6 +41,9 @@ jobs:
           filters: |
             shared:
               - 'packages/**'
+              - 'actions/**'
+              - 'lib/**'
+              - 'components/**'
               - 'pnpm-lock.yaml'
               - 'turbo.json'
             web:       ['apps/web/**']
