@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Package, ArrowLeftRight, Wrench,
-  RefreshCw, Cpu, Settings, FileBarChart, Map, Droplets, ScanLine,
+  RefreshCw, Cpu, Settings, FileBarChart, Map, Droplets, ScanLine, PackageCheck,
 } from 'lucide-react'
 
 type NavItem = {
@@ -28,6 +28,7 @@ const NAV_ENTRIES: NavEntry[] = [
   { type: 'item', href: '/devices', label: '기기 목록', icon: Package },
   { type: 'item', href: '/rentals', label: '대여 관리', icon: ArrowLeftRight },
   { type: 'item', href: '/scan/match', label: '스캔 대여', icon: ScanLine },
+  { type: 'item', href: '/scan/return', label: '스캔 반납', icon: PackageCheck },
   { type: 'item', href: '/reuse', label: '재사용', icon: RefreshCw },
 
   { type: 'section', label: '제작' },

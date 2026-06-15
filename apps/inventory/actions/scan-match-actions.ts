@@ -5,6 +5,14 @@ import { hasAdminOrStaffPermission } from '@/lib/utils/permissions'
 import { createRentalContract } from '@/actions/rental-contract-actions'
 import { addMonths, format } from 'date-fns'
 
+export interface ActiveRentalInfo {
+  rentalId: string
+  clientName: string
+  rentalStartDate: string
+  deviceName: string
+  deviceModel: string | null
+}
+
 export interface ScanMatchClient {
   id: string
   name: string
@@ -85,6 +93,76 @@ export async function getInventoryByQrOrBarcode(value: string): Promise<{
     }
 
     return { success: true, device }
+  } catch {
+    return { success: false, error: '오류가 발생했습니다' }
+  }
+}
+
+export async function getActiveRentalByDeviceQr(value: string): Promise<{
+  success: boolean
+  info?: ActiveRentalInfo
+  error?: string
+}> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+    const supabase = createAdminClient()
+    const token = extractQrToken(value)
+
+    // Find device by QR token or barcode
+    const { data: byQr } = await supabase
+      .from('inventory')
+      .select('id, name, model, status')
+      .eq('qr_token', token)
+      .single()
+
+    const { data: byBarcode } = byQr
+      ? { data: null }
+      : await supabase
+          .from('inventory')
+          .select('id, name, model, status')
+          .eq('barcode', value.trim())
+          .single()
+
+    const device = (byQr ?? byBarcode) as { id: string; name: string; model: string | null; status: string } | null
+    if (!device) return { success: false, error: '기기 QR/바코드를 찾을 수 없습니다' }
+
+    // Find active rental for this device
+    const { data: rental, error: rentalError } = await supabase
+      .from('rentals')
+      .select('id, rental_start_date, client_id')
+      .eq('inventory_id', device.id)
+      .in('status', ['rented', 'overdue'])
+      .order('rental_start_date', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (rentalError || !rental) {
+      return { success: false, error: `현재 대여 중인 기기가 아닙니다 (상태: ${device.status})` }
+    }
+
+    const rentalTyped = rental as { id: string; rental_start_date: string; client_id: string }
+
+    // Get client name
+    const { data: client } = await supabase
+      .from('clients')
+      .select('name')
+      .eq('id', rentalTyped.client_id)
+      .single()
+
+    const clientName = (client as { name: string } | null)?.name ?? '알 수 없음'
+
+    return {
+      success: true,
+      info: {
+        rentalId: rentalTyped.id,
+        clientName,
+        rentalStartDate: rentalTyped.rental_start_date,
+        deviceName: device.name,
+        deviceModel: device.model,
+      },
+    }
   } catch {
     return { success: false, error: '오류가 발생했습니다' }
   }
