@@ -1,16 +1,4 @@
 import { withSentryConfig } from "@sentry/nextjs"
-import withPWAInit from "@ducanh2912/next-pwa"
-
-const withPWA = withPWAInit({
-  dest: "public",
-  disable: process.env.NODE_ENV === "development",
-  workboxOptions: {
-    disableDevLogs: true,
-    // Disable page navigation caching — all routes require Clerk auth,
-    // so NetworkFirst on navigation causes "no-response" errors on redirects.
-    runtimeCaching: [],
-  },
-})
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -71,7 +59,7 @@ const nextConfig = {
   },
 };
 
-export default withSentryConfig(withPWA(nextConfig), {
+export default withSentryConfig(nextConfig, {
   org: process.env.SENTRY_ORG || "",
   project: process.env.SENTRY_PROJECT || "",
   authToken: process.env.SENTRY_AUTH_TOKEN,
@@ -79,4 +67,3 @@ export default withSentryConfig(withPWA(nextConfig), {
   // Preview 배포에서 소스맵 업로드 생략 → 빌드 시간 단축
   disableSourceMapUpload: process.env.VERCEL_ENV !== "production",
 });
-
