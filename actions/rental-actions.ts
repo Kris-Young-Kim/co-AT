@@ -35,6 +35,9 @@ export interface RentalWithDetails extends RentalItem {
   inventory_name?: string | null
   inventory_model?: string | null
   client_name?: string | null
+  client_birth_date?: string | null
+  client_contact?: string | null
+  client_disability_type?: string | null
   days_remaining?: number
   is_overdue?: boolean
   is_due_today?: boolean
@@ -434,7 +437,7 @@ export async function getRentalById(rentalId: string): Promise<{
         `
         *,
         inventory:inventory_id (name, model),
-        clients:client_id (name)
+        clients:client_id (id, name, birth_date, contact, disability_type)
       `
       )
       .eq("id", rentalId)
@@ -457,6 +460,9 @@ export async function getRentalById(rentalId: string): Promise<{
       inventory_name: (data as any).inventory?.name || null,
       inventory_model: (data as any).inventory?.model || null,
       client_name: (data as any).clients?.name || null,
+      client_birth_date: (data as any).clients?.birth_date || null,
+      client_contact: (data as any).clients?.contact || null,
+      client_disability_type: (data as any).clients?.disability_type || null,
       days_remaining: daysRemaining,
       is_overdue: isOverdue,
       is_due_today: isDueToday,
