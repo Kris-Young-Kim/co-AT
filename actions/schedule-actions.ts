@@ -319,7 +319,7 @@ export async function createSchedule(
       }
     }
 
-    const scheduleData = data as Schedule | null;
+    const scheduleData = data as unknown as Schedule | null;
     console.log("[일정 생성] 성공:", scheduleData?.id)
     revalidatePath("/schedule")
     revalidatePath("/") // 메인페이지 캘린더도 갱신
@@ -357,7 +357,7 @@ export async function updateSchedule(
     if (input.status) updateData.status = input.status
     if (input.is_web_visible !== undefined) updateData.is_web_visible = input.is_web_visible
     if (input.category_id !== undefined) updateData.category_id = input.category_id
-    if (input.custom_type_label !== undefined) updateData.custom_type_label = input.schedule_type === "other" ? input.custom_type_label : null
+    if (input.custom_type_label !== undefined) updateData.custom_type_label = (input.schedule_type as string) === "other" ? input.custom_type_label : null
 
     const { data, error } = await supabase
       .from("schedules")
@@ -381,7 +381,7 @@ export async function updateSchedule(
       }
     }
 
-    const updatedScheduleData = data as Schedule | null;
+    const updatedScheduleData = data as unknown as Schedule | null;
     console.log("[일정 수정] 성공:", updatedScheduleData?.id)
     revalidatePath("/schedule")
     revalidatePath("/") // 메인페이지 캘린더도 갱신

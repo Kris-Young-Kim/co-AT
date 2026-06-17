@@ -4,6 +4,9 @@ import { NextResponse, type NextRequest } from 'next/server'
 const isProtectedRoute = createRouteMatcher([
   '/portal(.*)',
   '/admin(.*)',
+  '/apps(.*)',
+  '/mypage(.*)',
+  '/settings(.*)',
 ])
 
 type RateEntry = { count: number; resetAt: number }
