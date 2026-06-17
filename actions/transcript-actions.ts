@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { maskPii } from "@/lib/utils/pii-mask"
 import { revalidatePath } from "next/cache"
+import { summarizeTranscript } from "./ai-actions"
 
 export interface TranscriptInput {
   client_id?: string | null
@@ -98,6 +99,32 @@ export async function getTranscriptsByClient(
 
   if (error) return { success: false, error: error.message }
   return { success: true, transcripts: (data ?? []) as SessionTranscript[] }
+}
+
+export async function generateAndSaveTranscriptSummary(
+  transcriptId: string,
+  transcript: string
+): Promise<{ success: boolean; summary?: string; keyPoints?: Record<string, string>; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  if (!transcript.trim()) return { success: false, error: '대화 내용이 없습니다' }
+
+  const summarizeResult = await summarizeTranscript(transcript)
+  if (!summarizeResult.success) return { success: false, error: summarizeResult.error }
+
+  const updateResult = await updateTranscript(transcriptId, {
+    ai_summary: summarizeResult.summary ?? null,
+    key_points: summarizeResult.keyPoints ?? null,
+  })
+  if (!updateResult.success) return { success: false, error: updateResult.error }
+
+  revalidatePath('/clients')
+  return {
+    success: true,
+    summary: summarizeResult.summary,
+    keyPoints: summarizeResult.keyPoints as Record<string, string> | undefined,
+  }
 }
 
 export async function getRecentTranscripts(

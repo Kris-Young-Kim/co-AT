@@ -15,6 +15,7 @@ export function CallLogNewWithStt({ defaultDate }: CallLogNewWithSttProps) {
   const [draftValues, setDraftValues] = useState<Partial<CallLog>>({})
   const [showTranscript, setShowTranscript] = useState(false)
   const [hasDraft, setHasDraft] = useState(false)
+  const [transcriptId, setTranscriptId] = useState<string | null>(null)
 
   const handleCallLogDraft = (draft: CallLogDraftFromTranscript) => {
     setDraftValues({
@@ -30,6 +31,9 @@ export function CallLogNewWithStt({ defaultDate }: CallLogNewWithSttProps) {
     setHasDraft(true)
     setShowTranscript(false)
   }
+
+  const handleSubmit = (input: Parameters<typeof createCallLog>[0]) =>
+    createCallLog(input, transcriptId)
 
   return (
     <div className="space-y-6">
@@ -52,13 +56,14 @@ export function CallLogNewWithStt({ defaultDate }: CallLogNewWithSttProps) {
         <TranscriptPanel
           sessionDate={defaultDate}
           onCallLogDraft={handleCallLogDraft}
+          onTranscriptSaved={setTranscriptId}
         />
       )}
 
       <CallLogForm
         key={hasDraft ? 'with-draft' : 'empty'}
         defaultValues={draftValues}
-        onSubmit={createCallLog}
+        onSubmit={handleSubmit}
         submitLabel="등록"
       />
     </div>

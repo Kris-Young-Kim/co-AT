@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { revalidatePath } from "next/cache"
+import { updateTranscript } from "./transcript-actions"
 
 export interface CallLog {
   id: string
@@ -76,7 +77,8 @@ export async function getCallLogById(id: string): Promise<{ success: boolean; lo
 }
 
 export async function createCallLog(
-  input: CreateCallLogInput
+  input: CreateCallLogInput,
+  transcriptId?: string | null
 ): Promise<{ success: boolean; log?: CallLog; error?: string }> {
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
@@ -93,6 +95,7 @@ export async function createCallLog(
   const log = data as CallLog & { application_id?: string | null }
 
   // Auto-generate service record draft when device-related + application linked
+  let serviceRecordId: string | null = null
   if (log.q_device && (log as any).application_id) {
     try {
       const appId = (log as any).application_id as string
@@ -108,7 +111,7 @@ export async function createCallLog(
           aftercare: '사후관리', education: '교육·홍보',
         }
         const catLabel = CATEGORY_MAP[appRow.category ?? ''] ?? appRow.category ?? '기타'
-        await (supabase as any)
+        const { data: srData } = await (supabase as any)
           .from('eval_service_records')
           .insert({
             client_id: appRow.client_id,
@@ -123,9 +126,25 @@ export async function createCallLog(
             referral_type: (log as any).channel === 'web' ? '인터넷신청' : (log as any).channel === 'chatbot' ? '인터넷신청' : '유선',
             service_content: log.question_content ?? null,
           })
+          .select('id')
+          .single()
+        serviceRecordId = srData?.id ?? null
       }
     } catch (err) {
       console.error('[createCallLog] service record draft 자동생성 실패:', err)
+      // non-fatal
+    }
+  }
+
+  // Link transcript to this call log (and service record if created)
+  if (transcriptId) {
+    try {
+      await updateTranscript(transcriptId, {
+        linked_call_log_id: log.id,
+        ...(serviceRecordId ? { linked_service_record_id: serviceRecordId } : {}),
+      })
+    } catch (err) {
+      console.error('[createCallLog] transcript 링크 업데이트 실패:', err)
       // non-fatal
     }
   }
