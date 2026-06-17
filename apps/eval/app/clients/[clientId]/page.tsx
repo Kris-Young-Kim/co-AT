@@ -1,4 +1,4 @@
-import { getClientById, getClientActiveServices, getClientHistory, getSimilarClients, getLinkedPortalUserInfo } from '@/actions/client-actions'
+import { getClientById, getClientActiveServices, getClientHistory, getSimilarClients, getLinkedPortalUserInfo, getClientTags } from '@/actions/client-actions'
 import { getApplicationsByClientId } from '@/actions/application-actions'
 import { getClientCases } from '@/actions/case-actions'
 import { getConsultationRecordsByClient, getAssessmentNotesByClient } from '@/actions/case-record-actions'
@@ -15,6 +15,7 @@ import { DeviceRecommendationPanel } from '@/eval/components/eval/DeviceRecommen
 import { EvaluationReportPanel } from '@/eval/components/eval/EvaluationReportPanel'
 import { PortalUserLink } from '@/eval/components/eval/PortalUserLink'
 import { ClientQrLabel } from '@/eval/components/clients/ClientQrLabel'
+import { ClientCrmPanel } from '@/eval/components/eval/ClientCrmPanel'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, AlertCircle } from 'lucide-react'
@@ -30,7 +31,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const clientResult = await getClientById(clientId)
   if (!clientResult.success || !clientResult.client) notFound()
 
-  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, transcriptsResult, consultationResult, assessmentResult] = await Promise.all([
+  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, transcriptsResult, consultationResult, assessmentResult, tagsResult] = await Promise.all([
     getApplicationsByClientId(clientId),
     getClientActiveServices(clientId),
     getClientHistory(clientId),
@@ -43,6 +44,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     getTranscriptsByClient(clientId),
     getConsultationRecordsByClient(clientId),
     getAssessmentNotesByClient(clientId),
+    getClientTags(clientId),
   ])
 
   const client = clientResult.client
@@ -56,6 +58,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const transcripts = transcriptsResult.success ? transcriptsResult.transcripts ?? [] : []
   const consultationRecords = consultationResult.success ? consultationResult.records ?? [] : []
   const assessmentNotes = assessmentResult.success ? assessmentResult.notes ?? [] : []
+  const clientTags = tagsResult.success ? tagsResult.tags ?? [] : []
 
   return (
     <div className="p-8 max-w-4xl">
@@ -103,6 +106,15 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
             </dd>
           </div>
         </dl>
+      </div>
+
+      {/* 생애주기 + 태그 관리 */}
+      <div className="mb-6">
+        <ClientCrmPanel
+          clientId={clientId}
+          initialLifecycle={(client as any).lifecycle_status ?? 'active'}
+          initialTags={clientTags}
+        />
       </div>
 
       {/* 포털 계정 연결 */}

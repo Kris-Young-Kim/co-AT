@@ -7,22 +7,29 @@ import { redirect } from 'next/navigation'
 import { AlertCircle, XCircle } from 'lucide-react'
 
 interface ClientsPageProps {
-  searchParams: Promise<{ q?: string; qr?: string }>
+  searchParams: Promise<{ q?: string; qr?: string; lifecycle?: string }>
 }
 
+const LIFECYCLE_TABS = [
+  { value: '', label: '전체' },
+  { value: 'active', label: '활성' },
+  { value: 'inactive', label: '장기미접촉' },
+  { value: 'closed', label: '종결' },
+  { value: 'readmit', label: '재접수' },
+]
+
 export default async function ClientsPage({ searchParams }: ClientsPageProps) {
-  const { q, qr } = await searchParams
+  const { q, qr, lifecycle } = await searchParams
 
   if (qr) {
     const result = await getClientByQrToken(qr)
     if (result.success && result.client) {
       redirect(`/clients/${result.client.id}`)
     }
-    // QR not found — fall through to show error + normal list
   }
 
   const [result, pendingCount] = await Promise.all([
-    searchClients({ query: q, limit: 30 }),
+    searchClients({ query: q, lifecycle_status: lifecycle || undefined, limit: 30 }),
     getPendingCount(),
   ])
   const clients = result.success ? result.clients ?? [] : []
@@ -63,6 +70,30 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
         <Suspense>
           <ClientSearchBar />
         </Suspense>
+      </div>
+
+      {/* Lifecycle filter tabs */}
+      <div className="flex gap-1 mb-4 border-b">
+        {LIFECYCLE_TABS.map(tab => {
+          const isActive = (lifecycle ?? '') === tab.value
+          const params = new URLSearchParams()
+          if (q) params.set('q', q)
+          if (tab.value) params.set('lifecycle', tab.value)
+          const href = `/clients${params.toString() ? `?${params}` : ''}`
+          return (
+            <Link
+              key={tab.value}
+              href={href}
+              className={`px-4 py-2 text-sm font-medium rounded-t border-b-2 transition-colors ${
+                isActive
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              {tab.label}
+            </Link>
+          )
+        })}
       </div>
 
       <ClientListTable clients={clients} total={total} badgeMap={badgeMap} />

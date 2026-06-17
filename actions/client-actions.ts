@@ -8,14 +8,24 @@ import { clerkClient } from '@clerk/nextjs/server'
 
 export type Client = Database["public"]["Tables"]["clients"]["Row"]
 
+export interface ClientTag {
+  id: string
+  client_id: string
+  tag: string
+  created_by: string
+  created_at: string
+}
+
 export interface ClientWithStats extends Client {
   application_count?: number
   last_service_date?: string | null
+  tags?: string[]
 }
 
 export interface ClientSearchParams {
-  query?: string // 이름 또는 생년월일 검색
-  disability_type?: string // 장애유형 필터
+  query?: string
+  disability_type?: string
+  lifecycle_status?: string
   limit?: number
   offset?: number
 }
@@ -79,36 +89,35 @@ export async function searchClients(params: ClientSearchParams = {}): Promise<{
     }
 
     const supabase = createAdminClient()
-    const { query, disability_type, limit = 50, offset = 0 } = params
+    const { query, disability_type, lifecycle_status, limit = 50, offset = 0 } = params
 
     // Only return registered clients; pending clients are managed via getPendingClients
-    let queryBuilder = supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let queryBuilder = (supabase as any)
       .from("clients")
       .select("*", { count: "exact" })
       .eq("status", "registered")
 
-    // 이름 또는 생년월일 검색
     if (query) {
-      // 생년월일 형식인지 확인 (YYYY-MM-DD)
       if (query.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        // 생년월일로 검색
         queryBuilder = queryBuilder.eq("birth_date", query)
       } else {
-        // 이름으로 검색 (ilike는 대소문자 구분 없음)
         queryBuilder = queryBuilder.ilike("name", `%${query}%`)
       }
     }
 
-    // 장애유형 필터
     if (disability_type) {
       queryBuilder = queryBuilder.eq("disability_type", disability_type)
     }
 
-    // 정렬: 최근 업데이트 순
-    queryBuilder = queryBuilder.order("updated_at", { ascending: false, nullsFirst: false })
+    if (lifecycle_status) {
+      queryBuilder = queryBuilder.eq("lifecycle_status", lifecycle_status)
+    }
+
+    queryBuilder = queryBuilder
+      .order("updated_at", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false })
 
-    // 페이지네이션
     queryBuilder = queryBuilder.range(offset, offset + limit - 1)
 
     const { data, error, count } = await queryBuilder
@@ -118,20 +127,40 @@ export async function searchClients(params: ClientSearchParams = {}): Promise<{
       return { success: false, error: "대상자 검색에 실패했습니다" }
     }
 
-    // 각 클라이언트의 신청서 개수 조회
-    const clients: ClientWithStats[] = await Promise.all(
-      (data || []).map(async (client: Client) => {
-        const { count } = await supabase
-          .from("applications")
-          .select("*", { count: "exact", head: true })
-          .eq("client_id", client.id)
+    const clientList = (data || []) as Client[]
+    const clientIds = clientList.map((c) => c.id)
 
-        return {
-          ...client,
-          application_count: count || 0,
-        }
-      })
-    )
+    // Batch fetch application counts and tags in parallel
+    const [appCounts, tagsResult] = await Promise.all([
+      Promise.all(
+        clientIds.map(async (id) => {
+          const { count: c } = await supabase
+            .from("applications")
+            .select("*", { count: "exact", head: true })
+            .eq("client_id", id)
+          return { id, count: c || 0 }
+        })
+      ),
+      (supabase as any)
+        .from("client_tags")
+        .select("client_id, tag")
+        .in("client_id", clientIds.length > 0 ? clientIds : ['00000000-0000-0000-0000-000000000000']),
+    ])
+
+    const appCountMap: Record<string, number> = {}
+    for (const { id, count: c } of appCounts) appCountMap[id] = c
+
+    const tagMap: Record<string, string[]> = {}
+    for (const row of (tagsResult.data ?? []) as { client_id: string; tag: string }[]) {
+      if (!tagMap[row.client_id]) tagMap[row.client_id] = []
+      tagMap[row.client_id].push(row.tag)
+    }
+
+    const clients: ClientWithStats[] = clientList.map((client) => ({
+      ...client,
+      application_count: appCountMap[client.id] ?? 0,
+      tags: tagMap[client.id] ?? [],
+    }))
 
     return {
       success: true,
@@ -1249,5 +1278,101 @@ export async function getActiveServiceBadgesByClientIds(
     console.error('getActiveServiceBadgesByClientIds:', e)
     return { success: false, error: '예상치 못한 오류가 발생했습니다' }
   }
+}
+
+// ─────────────────────────────────────────────────────
+// E-6: 대상자 생애주기 관리
+// ─────────────────────────────────────────────────────
+
+export type LifecycleStatus = 'active' | 'inactive' | 'closed' | 'readmit'
+
+export async function updateClientLifecycle(
+  clientId: string,
+  lifecycleStatus: LifecycleStatus
+): Promise<{ success: boolean; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAdminClient() as any
+  const { error } = await supabase
+    .from('clients')
+    .update({ lifecycle_status: lifecycleStatus, updated_at: new Date().toISOString() })
+    .eq('id', clientId)
+
+  if (error) return { success: false, error: error.message }
+  revalidatePath('/clients')
+  revalidatePath(`/clients/${clientId}`)
+  return { success: true }
+}
+
+// ─────────────────────────────────────────────────────
+// E-6: 대상자 태그 관리
+// ─────────────────────────────────────────────────────
+
+export async function getClientTags(
+  clientId: string
+): Promise<{ success: boolean; tags?: ClientTag[]; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAdminClient() as any
+  const { data, error } = await supabase
+    .from('client_tags')
+    .select('*')
+    .eq('client_id', clientId)
+    .order('created_at', { ascending: true })
+
+  if (error) return { success: false, error: error.message }
+  return { success: true, tags: (data ?? []) as ClientTag[] }
+}
+
+export async function addClientTag(
+  clientId: string,
+  tag: string
+): Promise<{ success: boolean; tag?: ClientTag; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  const { userId } = await (await import('@clerk/nextjs/server')).auth()
+  if (!userId) return { success: false, error: '로그인이 필요합니다' }
+
+  const trimmed = tag.trim().slice(0, 20)
+  if (!trimmed) return { success: false, error: '태그를 입력해주세요' }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAdminClient() as any
+  const { data, error } = await supabase
+    .from('client_tags')
+    .insert({ client_id: clientId, tag: trimmed, created_by: userId })
+    .select()
+    .single()
+
+  if (error) {
+    if (error.code === '23505') return { success: false, error: '이미 존재하는 태그입니다' }
+    return { success: false, error: error.message }
+  }
+  revalidatePath(`/clients/${clientId}`)
+  return { success: true, tag: data as ClientTag }
+}
+
+export async function removeClientTag(
+  tagId: string,
+  clientId: string
+): Promise<{ success: boolean; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAdminClient() as any
+  const { error } = await supabase
+    .from('client_tags')
+    .delete()
+    .eq('id', tagId)
+
+  if (error) return { success: false, error: error.message }
+  revalidatePath(`/clients/${clientId}`)
+  return { success: true }
 }
 

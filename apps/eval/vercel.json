@@ -5,6 +5,10 @@
     {
       "path": "/api/cron/ippa-followup",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/inactive-clients",
+      "schedule": "0 1 * * *"
     }
   ]
 }

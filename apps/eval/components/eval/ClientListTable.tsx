@@ -8,6 +8,13 @@ interface ClientListTableProps {
   badgeMap?: Record<string, ActiveService[]>
 }
 
+const LIFECYCLE_BADGE: Record<string, { label: string; className: string }> = {
+  active:   { label: '활성',       className: 'bg-green-100 text-green-700' },
+  inactive: { label: '장기미접촉', className: 'bg-amber-100 text-amber-700' },
+  closed:   { label: '종결',       className: 'bg-gray-100 text-gray-500' },
+  readmit:  { label: '재접수',     className: 'bg-blue-100 text-blue-700' },
+}
+
 const DISABILITY_LABELS: Record<string, string> = {
   physical: '지체',
   brain_lesion: '뇌병변',
@@ -52,6 +59,7 @@ export function ClientListTable({ clients, total, badgeMap = {} }: ClientListTab
           <thead className="bg-gray-50 border-b">
             <tr>
               <th className="text-left px-4 py-3 font-medium text-gray-700">이름</th>
+              <th className="text-left px-4 py-3 font-medium text-gray-700">상태</th>
               <th className="text-left px-4 py-3 font-medium text-gray-700">생년월일</th>
               <th className="text-left px-4 py-3 font-medium text-gray-700">장애유형</th>
               <th className="text-left px-4 py-3 font-medium text-gray-700">신청건수</th>
@@ -61,9 +69,28 @@ export function ClientListTable({ clients, total, badgeMap = {} }: ClientListTab
             </tr>
           </thead>
           <tbody className="divide-y">
-            {clients.map(client => (
+            {clients.map(client => {
+              const lifecycle = (client as any).lifecycle_status ?? 'active'
+              const badge = LIFECYCLE_BADGE[lifecycle] ?? LIFECYCLE_BADGE.active
+              return (
               <tr key={client.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium">{client.name}</td>
+                <td className="px-4 py-3">
+                  <p className="font-medium text-gray-900">{client.name}</p>
+                  {client.tags && client.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {client.tags.map(t => (
+                        <span key={t} className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded text-xs">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </td>
+                <td className="px-4 py-3">
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${badge.className}`}>
+                    {badge.label}
+                  </span>
+                </td>
                 <td className="px-4 py-3 text-gray-600">{client.birth_date ?? '—'}</td>
                 <td className="px-4 py-3 text-gray-600">
                   {DISABILITY_LABELS[client.disability_type ?? ''] ?? client.disability_type ?? '—'}
@@ -84,7 +111,8 @@ export function ClientListTable({ clients, total, badgeMap = {} }: ClientListTab
                   </Link>
                 </td>
               </tr>
-            ))}
+              )
+            })}
           </tbody>
         </table>
       </div>
