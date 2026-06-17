@@ -115,7 +115,7 @@ export interface UpdateScheduleInput {
   id: string
   application_id?: string | null
   client_id?: string | null
-  schedule_type?: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make" | "meeting" | "external_event"
+  schedule_type?: "visit" | "consult" | "assessment" | "delivery" | "pickup" | "exhibition" | "education" | "custom_make" | "meeting" | "external_event" | "other"
   scheduled_date?: string
   scheduled_time?: string | null
   address?: string | null
