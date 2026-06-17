@@ -704,6 +704,119 @@ export async function generateConsultationDraft(
 }
 
 // ────────────────────────────────────────────
+// E-3: 평가지 초안 (AI)
+// ────────────────────────────────────────────
+
+export interface AssessmentNoteDraftInput {
+  clientId: string
+  memo?: string
+}
+
+export interface AssessmentNoteDraft {
+  physical_function: string
+  cognitive_function: string
+  environment: string
+  device_needs: string
+  recommendations: string
+  notes: string
+}
+
+const ASSESSMENT_DRAFT_PROMPT = `당신은 보조공학센터 재활공학사 및 사례관리 전문가입니다.
+아래 대상자 정보와 서비스 이력을 바탕으로 평가지 초안을 JSON으로 작성해주세요.
+다른 설명 없이 JSON만 반환하세요:
+{
+  "physical_function": "신체기능 평가 (운동 능력, 근력, 관절 가동 범위, 손 기능 등, 2~3문장)",
+  "cognitive_function": "인지기능 평가 (이해력, 기억력, 의사소통 능력 등, 1~2문장)",
+  "environment": "환경 요인 (주거 환경, 활동 공간, 보호자 지원 여부 등, 1~2문장)",
+  "device_needs": "보조기기 필요도 (현재 사용 기기, 필요한 기기 및 이유, 2~3문장)",
+  "recommendations": "추천 사항 (추천 품목, 서비스, 의뢰 기관 등, 1~3문장)",
+  "notes": "기타 특이사항 (선택, 없으면 빈 문자열)"
+}`
+
+export async function generateAssessmentNoteDraft(
+  input: AssessmentNoteDraftInput
+): Promise<{ success: boolean; draft?: AssessmentNoteDraft; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+  const { userId } = await auth()
+  if (!userId) return { success: false, error: '로그인이 필요합니다' }
+
+  try {
+    const supabase = createAdminClient()
+
+    const [clientResult, recordsResult, consultResult] = await Promise.all([
+      supabase
+        .from('clients')
+        .select('name, birth_date, disability_type, disability_grade, disability_description, care_level')
+        .eq('id', input.clientId)
+        .single(),
+      (supabase as any)
+        .from('eval_service_records')
+        .select('service_category, product_name, service_content, received_at')
+        .eq('client_id', input.clientId)
+        .order('received_at', { ascending: false, nullsFirst: false })
+        .limit(3),
+      (supabase as any)
+        .from('eval_consultation_records')
+        .select('purpose, current_situation, content')
+        .eq('client_id', input.clientId)
+        .order('consultation_date', { ascending: false })
+        .limit(1),
+    ])
+
+    const client = clientResult.data
+    const records = (recordsResult.data ?? []) as Array<{
+      service_category: string | null
+      product_name: string | null
+      service_content: string | null
+      received_at: string | null
+    }>
+    const latestConsult = (consultResult.data ?? [])[0] as {
+      purpose: string | null
+      current_situation: string | null
+      content: string | null
+    } | undefined
+
+    const clientCtx = client
+      ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}, 장애등급: ${client.disability_grade ?? '미상'}${client.care_level ? ', 장기요양등급: ' + client.care_level : ''}${client.disability_description ? ', 장애 설명: ' + client.disability_description : ''}`
+      : '대상자 정보 없음'
+
+    const serviceCtx = records.length > 0
+      ? records
+          .map(r => `[${r.received_at?.slice(0, 7) ?? '?'}] ${r.service_category ?? ''} ${r.product_name ? '(' + r.product_name + ')' : ''}: ${r.service_content?.slice(0, 80) ?? ''}`)
+          .join('\n')
+      : '최근 서비스 이력 없음'
+
+    const consultCtx = latestConsult
+      ? `최근 상담 주호소: ${latestConsult.purpose ?? ''}\n현재 상황: ${latestConsult.current_situation ?? ''}\n상담 내용: ${latestConsult.content ?? ''}`
+      : ''
+
+    const memoCtx = input.memo?.trim() ? `\n직원 메모:\n${input.memo.trim()}` : ''
+
+    const model = getGeminiModel('gemini-2.5-flash')
+    const prompt = `${ASSESSMENT_DRAFT_PROMPT}\n\n대상자 정보:\n${clientCtx}\n\n최근 서비스 이력:\n${serviceCtx}${consultCtx ? '\n\n' + consultCtx : ''}${memoCtx}`
+
+    const result = await model.generateContent(prompt)
+    const raw = result.response.text()
+      .replace(/```json\s*/g, '')
+      .replace(/```\s*/g, '')
+      .trim()
+
+    const draft = JSON.parse(raw) as AssessmentNoteDraft
+    if (!draft.physical_function && !draft.device_needs) throw new Error('필수 필드 누락')
+
+    return { success: true, draft }
+  } catch (error) {
+    console.error('[AI Actions] 평가지 초안 생성 오류:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? `평가지 초안 생성 오류: ${error.message}` : 'AI 평가지 초안 생성 중 오류가 발생했습니다',
+    }
+  }
+}
+
+// ────────────────────────────────────────────
 // E-5: 사례관리 일지 초안
 // ────────────────────────────────────────────
 

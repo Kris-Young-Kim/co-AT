@@ -1,17 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import {
   createConsultationRecord,
+  updateConsultationRecord,
   deleteConsultationRecord,
   type ConsultationRecord,
   createAssessmentNote,
+  updateAssessmentNote,
   deleteAssessmentNote,
   type AssessmentNote,
 } from '@/actions/case-record-actions'
-import { generateConsultationDraft } from '@/actions/ai-actions'
+import { generateConsultationDraft, generateAssessmentNoteDraft } from '@/actions/ai-actions'
 import Link from 'next/link'
-import { Sparkles, Plus, Trash2, Loader2, ChevronDown, ChevronUp, ClipboardList, Stethoscope, Printer, Download } from 'lucide-react'
+import { Sparkles, Plus, Trash2, Loader2, ChevronDown, ChevronUp, ClipboardList, Stethoscope, Printer, Download, Pencil, X } from 'lucide-react'
 
 // ──────────────────────────────────────────────────────────────
 // Types
@@ -62,7 +64,7 @@ const EMPTY_ASSESSMENT: AssessmentDraft = {
 }
 
 // ──────────────────────────────────────────────────────────────
-// Consultation Record Form
+// Field config
 // ──────────────────────────────────────────────────────────────
 
 const CONSULTATION_FIELDS: { key: keyof ConsultationDraft; label: string; placeholder: string }[] = [
@@ -72,6 +74,47 @@ const CONSULTATION_FIELDS: { key: keyof ConsultationDraft; label: string; placeh
   { key: 'result', label: '결과 및 조치사항', placeholder: '상담 결과, 제공한 정보, 취한 조치 등' },
   { key: 'next_plan', label: '향후 계획', placeholder: '다음 방문 일정, 추가 의뢰, 서비스 신청 계획 등' },
 ]
+
+const ASSESSMENT_FIELDS: { key: keyof AssessmentDraft; label: string; placeholder: string }[] = [
+  { key: 'physical_function', label: '신체기능 평가', placeholder: '운동 능력, 근력, 관절 가동 범위, 손 기능 등' },
+  { key: 'cognitive_function', label: '인지기능 평가', placeholder: '이해력, 기억력, 의사소통 능력 등' },
+  { key: 'environment', label: '환경 요인', placeholder: '주거 환경, 활동 공간, 보호자 지원 여부 등' },
+  { key: 'device_needs', label: '보조기기 필요도', placeholder: '현재 사용 기기, 필요한 기기, 필요 이유 등' },
+  { key: 'recommendations', label: '추천 사항', placeholder: '추천 품목, 서비스, 의뢰 기관 등' },
+  { key: 'notes', label: '비고', placeholder: '기타 특이사항' },
+]
+
+// ──────────────────────────────────────────────────────────────
+// Shared textarea field renderer
+// ──────────────────────────────────────────────────────────────
+
+function FieldTextarea({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string
+  value: string
+  onChange: (v: string) => void
+  placeholder: string
+}) {
+  return (
+    <div>
+      <label className="text-xs font-semibold text-gray-600">{label}</label>
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full mt-1 text-sm border rounded-md px-3 py-2 min-h-[64px] resize-y focus:outline-none focus:ring-1 focus:ring-blue-500"
+      />
+    </div>
+  )
+}
+
+// ──────────────────────────────────────────────────────────────
+// Consultation Record Form (create)
+// ──────────────────────────────────────────────────────────────
 
 function ConsultationForm({ clientId, onSaved }: { clientId: string; onSaved: (r: ConsultationRecord) => void }) {
   const [draft, setDraft] = useState<ConsultationDraft>(EMPTY_CONSULTATION)
@@ -194,15 +237,13 @@ function ConsultationForm({ clientId, onSaved }: { clientId: string; onSaved: (r
 
       <div className="space-y-3">
         {CONSULTATION_FIELDS.map(({ key, label, placeholder }) => (
-          <div key={key}>
-            <label className="text-xs font-semibold text-gray-600">{label}</label>
-            <textarea
-              value={draft[key]}
-              onChange={(e) => setDraft((prev) => ({ ...prev, [key]: e.target.value }))}
-              placeholder={placeholder}
-              className="w-full mt-1 text-sm border rounded-md px-3 py-2 min-h-[64px] resize-y focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
+          <FieldTextarea
+            key={key}
+            label={label}
+            value={draft[key]}
+            onChange={(v) => setDraft((prev) => ({ ...prev, [key]: v }))}
+            placeholder={placeholder}
+          />
         ))}
       </div>
 
@@ -223,24 +264,38 @@ function ConsultationForm({ clientId, onSaved }: { clientId: string; onSaved: (r
 }
 
 // ──────────────────────────────────────────────────────────────
-// Assessment Note Form
+// Assessment Note Form (create)
 // ──────────────────────────────────────────────────────────────
-
-const ASSESSMENT_FIELDS: { key: keyof AssessmentDraft; label: string; placeholder: string }[] = [
-  { key: 'physical_function', label: '신체기능 평가', placeholder: '운동 능력, 근력, 관절 가동 범위, 손 기능 등' },
-  { key: 'cognitive_function', label: '인지기능 평가', placeholder: '이해력, 기억력, 의사소통 능력 등' },
-  { key: 'environment', label: '환경 요인', placeholder: '주거 환경, 활동 공간, 보호자 지원 여부 등' },
-  { key: 'device_needs', label: '보조기기 필요도', placeholder: '현재 사용 기기, 필요한 기기, 필요 이유 등' },
-  { key: 'recommendations', label: '추천 사항', placeholder: '추천 품목, 서비스, 의뢰 기관 등' },
-  { key: 'notes', label: '비고', placeholder: '기타 특이사항' },
-]
 
 function AssessmentForm({ clientId, onSaved }: { clientId: string; onSaved: (n: AssessmentNote) => void }) {
   const [draft, setDraft] = useState<AssessmentDraft>(EMPTY_ASSESSMENT)
   const [assessmentDate, setAssessmentDate] = useState(() => new Date().toISOString().split('T')[0])
   const [assessor, setAssessor] = useState('')
+  const [memo, setMemo] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const handleGenerateDraft = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const result = await generateAssessmentNoteDraft({ clientId, memo: memo || undefined })
+      if (result.success && result.draft) {
+        setDraft({
+          physical_function: result.draft.physical_function ?? '',
+          cognitive_function: result.draft.cognitive_function ?? '',
+          environment: result.draft.environment ?? '',
+          device_needs: result.draft.device_needs ?? '',
+          recommendations: result.draft.recommendations ?? '',
+          notes: result.draft.notes ?? '',
+        })
+      } else {
+        setError(result.error ?? 'AI 초안 생성 실패')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleSave = async () => {
     if (!draft.physical_function && !draft.device_needs && !draft.recommendations) {
@@ -260,10 +315,12 @@ function AssessmentForm({ clientId, onSaved }: { clientId: string; onSaved: (n: 
         device_needs: draft.device_needs || null,
         recommendations: draft.recommendations || null,
         notes: draft.notes || null,
+        ai_generated: !!(draft.physical_function || draft.device_needs),
       })
       if (result.success && result.note) {
         onSaved(result.note)
         setDraft(EMPTY_ASSESSMENT)
+        setMemo('')
         setAssessor('')
         setAssessmentDate(new Date().toISOString().split('T')[0])
       } else {
@@ -298,17 +355,35 @@ function AssessmentForm({ clientId, onSaved }: { clientId: string; onSaved: (n: 
         </div>
       </div>
 
+      <div>
+        <label className="text-xs text-gray-500">직원 메모 (AI 초안 생성에 활용)</label>
+        <textarea
+          value={memo}
+          onChange={(e) => setMemo(e.target.value)}
+          placeholder="평가 시 관찰 내용, 특이사항 등 자유롭게 메모"
+          className="w-full mt-1 text-sm border rounded-md px-3 py-2 min-h-[52px] resize-y focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+      </div>
+
+      <button
+        type="button"
+        onClick={handleGenerateDraft}
+        disabled={loading}
+        className="flex items-center gap-1.5 px-3 py-1.5 border text-sm rounded-md hover:bg-gray-50 disabled:opacity-50"
+      >
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-amber-500" />}
+        AI 초안 생성
+      </button>
+
       <div className="space-y-3">
         {ASSESSMENT_FIELDS.map(({ key, label, placeholder }) => (
-          <div key={key}>
-            <label className="text-xs font-semibold text-gray-600">{label}</label>
-            <textarea
-              value={draft[key]}
-              onChange={(e) => setDraft((prev) => ({ ...prev, [key]: e.target.value }))}
-              placeholder={placeholder}
-              className="w-full mt-1 text-sm border rounded-md px-3 py-2 min-h-[64px] resize-y focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
+          <FieldTextarea
+            key={key}
+            label={label}
+            value={draft[key]}
+            onChange={(v) => setDraft((prev) => ({ ...prev, [key]: v }))}
+            placeholder={placeholder}
+          />
         ))}
       </div>
 
@@ -327,6 +402,307 @@ function AssessmentForm({ clientId, onSaved }: { clientId: string; onSaved: (n: 
 }
 
 // ──────────────────────────────────────────────────────────────
+// Inline edit forms
+// ──────────────────────────────────────────────────────────────
+
+function ConsultationEditForm({
+  record,
+  clientId,
+  onSaved,
+  onCancel,
+}: {
+  record: ConsultationRecord
+  clientId: string
+  onSaved: (r: ConsultationRecord) => void
+  onCancel: () => void
+}) {
+  const [draft, setDraft] = useState<ConsultationDraft>({
+    purpose: record.purpose ?? '',
+    current_situation: record.current_situation ?? '',
+    content: record.content ?? '',
+    result: record.result ?? '',
+    next_plan: record.next_plan ?? '',
+  })
+  const [consultationDate, setConsultationDate] = useState(record.consultation_date)
+  const [consultationType, setConsultationType] = useState(record.consultation_type)
+  const [consultant, setConsultant] = useState(record.consultant ?? '')
+  const [memo, setMemo] = useState('')
+  const [isPending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
+
+  const handleGenerateDraft = () => {
+    startTransition(async () => {
+      setError(null)
+      const result = await generateConsultationDraft({ clientId, memo: memo || undefined })
+      if (result.success && result.draft) {
+        setDraft({
+          purpose: result.draft.purpose ?? '',
+          current_situation: result.draft.current_situation ?? '',
+          content: result.draft.content ?? '',
+          result: result.draft.result ?? '',
+          next_plan: result.draft.next_plan ?? '',
+        })
+      } else {
+        setError(result.error ?? 'AI 초안 생성 실패')
+      }
+    })
+  }
+
+  const handleSave = () => {
+    startTransition(async () => {
+      setError(null)
+      const result = await updateConsultationRecord(record.id, clientId, {
+        consultation_date: consultationDate,
+        consultation_type: consultationType,
+        consultant: consultant || null,
+        purpose: draft.purpose || null,
+        current_situation: draft.current_situation || null,
+        content: draft.content || null,
+        result: draft.result || null,
+        next_plan: draft.next_plan || null,
+      })
+      if (result.success && result.record) {
+        onSaved(result.record)
+      } else {
+        setError(result.error ?? '수정 실패')
+      }
+    })
+  }
+
+  return (
+    <div className="border-t px-4 py-3 space-y-4 bg-amber-50/30">
+      <div className="flex flex-wrap items-end gap-3">
+        <div>
+          <label className="text-xs text-gray-500">상담일</label>
+          <input
+            type="date"
+            value={consultationDate}
+            onChange={(e) => setConsultationDate(e.target.value)}
+            className="block text-sm border rounded px-2 py-1 mt-0.5"
+          />
+        </div>
+        <div>
+          <label className="text-xs text-gray-500">유형</label>
+          <select
+            value={consultationType}
+            onChange={(e) => setConsultationType(e.target.value)}
+            className="block text-sm border rounded px-2 py-1 mt-0.5"
+          >
+            {CONSULTATION_TYPES.map((t) => <option key={t}>{t}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="text-xs text-gray-500">담당자</label>
+          <input
+            type="text"
+            value={consultant}
+            onChange={(e) => setConsultant(e.target.value)}
+            placeholder="이름"
+            className="block text-sm border rounded px-2 py-1 mt-0.5 w-24"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="text-xs text-gray-500">AI 재생성 메모 (선택)</label>
+        <textarea
+          value={memo}
+          onChange={(e) => setMemo(e.target.value)}
+          placeholder="수정 사항 메모 후 AI 초안 재생성 가능"
+          className="w-full mt-1 text-sm border rounded-md px-3 py-2 min-h-[44px] resize-y focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+      </div>
+
+      <button
+        type="button"
+        onClick={handleGenerateDraft}
+        disabled={isPending}
+        className="flex items-center gap-1.5 px-3 py-1.5 border text-sm rounded-md hover:bg-gray-50 disabled:opacity-50"
+      >
+        {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-amber-500" />}
+        AI 초안 재생성
+      </button>
+
+      <div className="space-y-3">
+        {CONSULTATION_FIELDS.map(({ key, label, placeholder }) => (
+          <FieldTextarea
+            key={key}
+            label={label}
+            value={draft[key]}
+            onChange={(v) => setDraft((prev) => ({ ...prev, [key]: v }))}
+            placeholder={placeholder}
+          />
+        ))}
+      </div>
+
+      {error && <p className="text-sm text-red-600">{error}</p>}
+
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={isPending}
+          className="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+        >
+          {isPending ? <Loader2 className="h-4 w-4 animate-spin inline" /> : '저장'}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-1.5 text-sm border rounded-md hover:bg-gray-50 text-gray-600"
+        >
+          취소
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function AssessmentEditForm({
+  note,
+  clientId,
+  onSaved,
+  onCancel,
+}: {
+  note: AssessmentNote
+  clientId: string
+  onSaved: (n: AssessmentNote) => void
+  onCancel: () => void
+}) {
+  const [draft, setDraft] = useState<AssessmentDraft>({
+    physical_function: note.physical_function ?? '',
+    cognitive_function: note.cognitive_function ?? '',
+    environment: note.environment ?? '',
+    device_needs: note.device_needs ?? '',
+    recommendations: note.recommendations ?? '',
+    notes: note.notes ?? '',
+  })
+  const [assessmentDate, setAssessmentDate] = useState(note.assessment_date)
+  const [assessor, setAssessor] = useState(note.assessor ?? '')
+  const [memo, setMemo] = useState('')
+  const [isPending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
+
+  const handleGenerateDraft = () => {
+    startTransition(async () => {
+      setError(null)
+      const result = await generateAssessmentNoteDraft({ clientId, memo: memo || undefined })
+      if (result.success && result.draft) {
+        setDraft({
+          physical_function: result.draft.physical_function ?? '',
+          cognitive_function: result.draft.cognitive_function ?? '',
+          environment: result.draft.environment ?? '',
+          device_needs: result.draft.device_needs ?? '',
+          recommendations: result.draft.recommendations ?? '',
+          notes: result.draft.notes ?? '',
+        })
+      } else {
+        setError(result.error ?? 'AI 초안 생성 실패')
+      }
+    })
+  }
+
+  const handleSave = () => {
+    startTransition(async () => {
+      setError(null)
+      const result = await updateAssessmentNote(note.id, clientId, {
+        assessment_date: assessmentDate,
+        assessor: assessor || null,
+        physical_function: draft.physical_function || null,
+        cognitive_function: draft.cognitive_function || null,
+        environment: draft.environment || null,
+        device_needs: draft.device_needs || null,
+        recommendations: draft.recommendations || null,
+        notes: draft.notes || null,
+      })
+      if (result.success && result.note) {
+        onSaved(result.note)
+      } else {
+        setError(result.error ?? '수정 실패')
+      }
+    })
+  }
+
+  return (
+    <div className="border-t px-4 py-3 space-y-4 bg-amber-50/30">
+      <div className="flex flex-wrap items-end gap-3">
+        <div>
+          <label className="text-xs text-gray-500">평가일</label>
+          <input
+            type="date"
+            value={assessmentDate}
+            onChange={(e) => setAssessmentDate(e.target.value)}
+            className="block text-sm border rounded px-2 py-1 mt-0.5"
+          />
+        </div>
+        <div>
+          <label className="text-xs text-gray-500">평가자</label>
+          <input
+            type="text"
+            value={assessor}
+            onChange={(e) => setAssessor(e.target.value)}
+            placeholder="이름"
+            className="block text-sm border rounded px-2 py-1 mt-0.5 w-24"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="text-xs text-gray-500">AI 재생성 메모 (선택)</label>
+        <textarea
+          value={memo}
+          onChange={(e) => setMemo(e.target.value)}
+          placeholder="수정 사항 메모 후 AI 초안 재생성 가능"
+          className="w-full mt-1 text-sm border rounded-md px-3 py-2 min-h-[44px] resize-y focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+      </div>
+
+      <button
+        type="button"
+        onClick={handleGenerateDraft}
+        disabled={isPending}
+        className="flex items-center gap-1.5 px-3 py-1.5 border text-sm rounded-md hover:bg-gray-50 disabled:opacity-50"
+      >
+        {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-amber-500" />}
+        AI 초안 재생성
+      </button>
+
+      <div className="space-y-3">
+        {ASSESSMENT_FIELDS.map(({ key, label, placeholder }) => (
+          <FieldTextarea
+            key={key}
+            label={label}
+            value={draft[key]}
+            onChange={(v) => setDraft((prev) => ({ ...prev, [key]: v }))}
+            placeholder={placeholder}
+          />
+        ))}
+      </div>
+
+      {error && <p className="text-sm text-red-600">{error}</p>}
+
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={isPending}
+          className="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+        >
+          {isPending ? <Loader2 className="h-4 w-4 animate-spin inline" /> : '저장'}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-1.5 text-sm border rounded-md hover:bg-gray-50 text-gray-600"
+        >
+          취소
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ──────────────────────────────────────────────────────────────
 // Main Panel
 // ──────────────────────────────────────────────────────────────
 
@@ -336,12 +712,14 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
   const [assessmentNotes, setAssessmentNotes] = useState<AssessmentNote[]>(initialAssessmentNotes)
   const [showForm, setShowForm] = useState(false)
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
 
   const handleDeleteConsultation = async (recordId: string) => {
     if (!confirm('이 상담기록지를 삭제하시겠습니까?')) return
     const result = await deleteConsultationRecord(recordId, clientId)
     if (result.success) {
       setConsultationRecords((prev) => prev.filter((r) => r.id !== recordId))
+      if (editingId === recordId) setEditingId(null)
     }
   }
 
@@ -350,6 +728,7 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
     const result = await deleteAssessmentNote(noteId, clientId)
     if (result.success) {
       setAssessmentNotes((prev) => prev.filter((n) => n.id !== noteId))
+      if (editingId === noteId) setEditingId(null)
     }
   }
 
@@ -360,7 +739,7 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
         <div className="flex gap-1">
           <button
             type="button"
-            onClick={() => { setActiveTab('consultation'); setShowForm(false) }}
+            onClick={() => { setActiveTab('consultation'); setShowForm(false); setEditingId(null) }}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md font-medium transition-colors ${
               activeTab === 'consultation' ? 'bg-gray-800 text-white' : 'border hover:bg-gray-50 text-gray-600'
             }`}
@@ -375,7 +754,7 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
           </button>
           <button
             type="button"
-            onClick={() => { setActiveTab('assessment'); setShowForm(false) }}
+            onClick={() => { setActiveTab('assessment'); setShowForm(false); setEditingId(null) }}
             className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md font-medium transition-colors ${
               activeTab === 'assessment' ? 'bg-gray-800 text-white' : 'border hover:bg-gray-50 text-gray-600'
             }`}
@@ -423,7 +802,7 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
         </div>
       </div>
 
-      {/* Form */}
+      {/* New record form */}
       {showForm && activeTab === 'consultation' && (
         <ConsultationForm
           clientId={clientId}
@@ -464,11 +843,14 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
           <div className="space-y-2">
             {consultationRecords.map((record) => {
               const isExpanded = expandedId === record.id
+              const isEditing = editingId === record.id
               return (
                 <div key={record.id} className="border rounded-lg bg-white overflow-hidden">
                   <button
                     type="button"
-                    onClick={() => setExpandedId(isExpanded ? null : record.id)}
+                    onClick={() => {
+                      if (!isEditing) setExpandedId(isExpanded ? null : record.id)
+                    }}
                     className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors text-left"
                   >
                     <div className="flex items-center gap-3">
@@ -489,6 +871,22 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (isEditing) {
+                            setEditingId(null)
+                          } else {
+                            setEditingId(record.id)
+                            setExpandedId(record.id)
+                          }
+                        }}
+                        className="p-1 text-gray-300 hover:text-blue-500 transition-colors"
+                        title={isEditing ? '수정 취소' : '수정'}
+                      >
+                        {isEditing ? <X className="h-3.5 w-3.5" /> : <Pencil className="h-3.5 w-3.5" />}
+                      </button>
                       <Link
                         href={`/print/consultation/${record.id}`}
                         target="_blank"
@@ -509,7 +907,19 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
                     </div>
                   </button>
 
-                  {isExpanded && (
+                  {isEditing && (
+                    <ConsultationEditForm
+                      record={record}
+                      clientId={clientId}
+                      onSaved={(updated) => {
+                        setConsultationRecords((prev) => prev.map((r) => r.id === updated.id ? updated : r))
+                        setEditingId(null)
+                      }}
+                      onCancel={() => setEditingId(null)}
+                    />
+                  )}
+
+                  {isExpanded && !isEditing && (
                     <div className="border-t px-4 py-3 space-y-3 text-sm">
                       {CONSULTATION_FIELDS.map(({ key, label }) =>
                         record[key as keyof ConsultationRecord] ? (
@@ -540,11 +950,14 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
           <div className="space-y-2">
             {assessmentNotes.map((note) => {
               const isExpanded = expandedId === note.id
+              const isEditing = editingId === note.id
               return (
                 <div key={note.id} className="border rounded-lg bg-white overflow-hidden">
                   <button
                     type="button"
-                    onClick={() => setExpandedId(isExpanded ? null : note.id)}
+                    onClick={() => {
+                      if (!isEditing) setExpandedId(isExpanded ? null : note.id)
+                    }}
                     className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors text-left"
                   >
                     <div className="flex items-center gap-3">
@@ -552,11 +965,32 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
                       {note.assessor && (
                         <span className="text-xs text-gray-500">{note.assessor}</span>
                       )}
+                      {note.ai_generated && (
+                        <span className="inline-flex items-center gap-0.5 text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
+                          <Sparkles className="h-3 w-3" /> AI
+                        </span>
+                      )}
                       <span className="text-xs text-gray-400 truncate max-w-[200px]">
                         {note.recommendations?.slice(0, 40) ?? note.device_needs?.slice(0, 40) ?? '—'}
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (isEditing) {
+                            setEditingId(null)
+                          } else {
+                            setEditingId(note.id)
+                            setExpandedId(note.id)
+                          }
+                        }}
+                        className="p-1 text-gray-300 hover:text-blue-500 transition-colors"
+                        title={isEditing ? '수정 취소' : '수정'}
+                      >
+                        {isEditing ? <X className="h-3.5 w-3.5" /> : <Pencil className="h-3.5 w-3.5" />}
+                      </button>
                       <Link
                         href={`/print/case-assessment/${note.id}`}
                         target="_blank"
@@ -577,7 +1011,19 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
                     </div>
                   </button>
 
-                  {isExpanded && (
+                  {isEditing && (
+                    <AssessmentEditForm
+                      note={note}
+                      clientId={clientId}
+                      onSaved={(updated) => {
+                        setAssessmentNotes((prev) => prev.map((n) => n.id === updated.id ? updated : n))
+                        setEditingId(null)
+                      }}
+                      onCancel={() => setEditingId(null)}
+                    />
+                  )}
+
+                  {isExpanded && !isEditing && (
                     <div className="border-t px-4 py-3 space-y-3 text-sm">
                       {ASSESSMENT_FIELDS.map(({ key, label }) =>
                         note[key as keyof AssessmentNote] ? (

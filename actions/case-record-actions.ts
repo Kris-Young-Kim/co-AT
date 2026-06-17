@@ -162,6 +162,43 @@ export async function createConsultationRecord(
   return { success: true, record: data }
 }
 
+export interface UpdateConsultationRecordInput {
+  consultation_date?: string
+  consultation_type?: string
+  consultant?: string | null
+  purpose?: string | null
+  current_situation?: string | null
+  content?: string | null
+  result?: string | null
+  next_plan?: string | null
+  ai_generated?: boolean
+}
+
+export async function updateConsultationRecord(
+  recordId: string,
+  clientId: string,
+  input: UpdateConsultationRecordInput
+): Promise<{ success: boolean; record?: ConsultationRecord; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+
+  const supabase = createAdminClient()
+  const { data, error } = await (supabase as any)
+    .from("eval_consultation_records")
+    .update({ ...input, updated_at: new Date().toISOString() })
+    .eq("id", recordId)
+    .select()
+    .single()
+
+  if (error) {
+    console.error("[case-record-actions] updateConsultationRecord:", error)
+    return { success: false, error: "상담기록지 수정에 실패했습니다" }
+  }
+
+  revalidatePath(`/clients/${clientId}`)
+  return { success: true, record: data }
+}
+
 export async function deleteConsultationRecord(
   recordId: string,
   clientId: string
@@ -258,6 +295,43 @@ export async function createAssessmentNote(
   }
 
   revalidatePath(`/clients/${input.client_id}`)
+  return { success: true, note: data }
+}
+
+export interface UpdateAssessmentNoteInput {
+  assessment_date?: string
+  assessor?: string | null
+  physical_function?: string | null
+  cognitive_function?: string | null
+  environment?: string | null
+  device_needs?: string | null
+  recommendations?: string | null
+  notes?: string | null
+  ai_generated?: boolean
+}
+
+export async function updateAssessmentNote(
+  noteId: string,
+  clientId: string,
+  input: UpdateAssessmentNoteInput
+): Promise<{ success: boolean; note?: AssessmentNote; error?: string }> {
+  const hasPermission = await hasAdminOrStaffPermission()
+  if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+
+  const supabase = createAdminClient()
+  const { data, error } = await (supabase as any)
+    .from("eval_assessment_notes")
+    .update({ ...input, updated_at: new Date().toISOString() })
+    .eq("id", noteId)
+    .select()
+    .single()
+
+  if (error) {
+    console.error("[case-record-actions] updateAssessmentNote:", error)
+    return { success: false, error: "평가지 수정에 실패했습니다" }
+  }
+
+  revalidatePath(`/clients/${clientId}`)
   return { success: true, note: data }
 }
 
