@@ -3,7 +3,7 @@
 > **프로젝트**: GWATC 통합 관리 플랫폼 (Co-AT)
 > **비전**: "행정은 AI에게, 사람은 클라이언트에게"
 > **아키텍처**: Turborepo 모노레포 — 앱별 독립 배포
-> **마지막 업데이트**: 2026-06-12  
+> **마지막 업데이트**: 2026-06-17  
 **완료**: Phase B (eval 만족도·교육이력, inventory 소독세척, stats 서비스효과성 연동) — 배포 완료 2026-06-03  
 **완료**: Phase C (1차 앱 마무리 + 안정화) — 배포 완료 2026-06-03  
 **완료**: Phase D-1 (HR 인사관리 기초)  
@@ -188,6 +188,21 @@
 | 대시보드 (KPI, 오늘 일정) | ✅ |
 | 신청 이력 타임라인 | ✅ |
 | Vercel Analytics + Speed Insights | ✅ |
+| **역할 기반 앱 포털** — 직원 로그인 후 Clerk `publicMetadata.apps[]`로 접근 가능한 앱만 표시, 역할별 분기 (eval/inventory 등 직접 링크) | ⬜ |
+
+#### 역할 기반 앱 포털 상세 (⬜ 미구현)
+
+> **배경**: admin 앱은 ADMIN 전용 — STAFF가 admin URL을 쓰면 민감한 관리 기능에 노출될 위험.  
+> eval/inventory 앱이 이미 업무별 최적화 UX를 제공하므로 web 포털에서 역할에 맞게 안내하는 것이 최선.
+
+| 항목 | 내용 |
+|------|------|
+| 진입점 | `gwatc.cloud` 로그인 후 직원 포털 페이지 (예: `/portal` 또는 `/dashboard/apps`) |
+| 앱 카드 | 접근 가능한 앱(eval·inventory·stats 등)을 카드 형태로 표시, 권한 없는 앱은 비표시 |
+| 권한 기준 | `publicMetadata.apps[]` 배열 — admin 앱에서 이미 부여 가능 (기존 온보딩 UI 활용) |
+| 역할 분기 | ADMIN → 모든 앱 표시 / MANAGER → 지정 앱 / STAFF → `apps[]` 목록만 |
+| 모바일 UX | 현장 직원이 스마트폰에서 gwatc.cloud 북마크 → 앱 선택 → eval.gwatc.cloud 이동 |
+| 구현 위치 | `apps/web/app/(portal)/dashboard/` 또는 신규 `apps/web/app/(portal)/apps/page.tsx` |
 
 ---
 
