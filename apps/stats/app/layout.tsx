@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { StatsSidebar } from '@/stats/components/layout/StatsSidebar'
-import { PwaInstallBanner } from '@co-at/ui/pwa-install-banner'
 import './globals.css'
 
 export const viewport: Viewport = {
@@ -14,9 +13,6 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'GWATC — 성과 대시보드',
   description: '보조공학센터 사업 실적 및 성과 관리',
-  manifest: '/manifest.webmanifest',
-  appleWebApp: { capable: true, statusBarStyle: 'default', title: '통계' },
-  other: { 'mobile-web-app-capable': 'yes' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -26,13 +22,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       signUpUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL ?? 'https://gwatc.cloud/sign-up'}
     >
       <html lang="ko">
-        <head><link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" /></head>
         <body className="bg-gray-50">
           <div className="flex min-h-screen">
             <StatsSidebar />
             <main className="flex-1 overflow-auto">{children}</main>
           </div>
-          <PwaInstallBanner />
         </body>
       </html>
     </ClerkProvider>

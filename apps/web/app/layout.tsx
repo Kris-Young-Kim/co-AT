@@ -1,9 +1,8 @@
-﻿import type { Metadata, Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { ClerkProvider } from "@/components/providers/clerk-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ClientOnlyProviders } from "@/components/layout/client-only-providers";
-import { PwaInstallBanner } from "@co-at/ui/pwa-install-banner";
 import "./globals.css";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://co-at-gw.vercel.app";
@@ -23,17 +22,6 @@ export const metadata: Metadata = {
   title: {
     default: "GWATC AX PLATFORM | 강원특별자치도 통합 관리 플랫폼",
     template: "%s | GWATC AX PLATFORM",
-  },
-  manifest: "/manifest.webmanifest",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "GWATC",
-  },
-  other: {
-    "mobile-web-app-capable": "yes",
-    "msapplication-TileColor": "#4338ca",
-    "msapplication-tap-highlight": "no",
   },
   description: "강원특별자치도 보조기기센터에서 제공하는 상담, 체험, 맞춤형 지원, 사후관리, 교육홍보 등 5대 핵심 서비스를 신청하고 관리할 수 있는 통합 플랫폼입니다.",
   keywords: [
@@ -113,17 +101,12 @@ export default function RootLayout({
     <ClerkProvider>
       <QueryProvider>
         <html lang="ko" suppressHydrationWarning>
-          <head>
-            <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-          </head>
           <body suppressHydrationWarning>
             {children}
             <ClientOnlyProviders />
-            <PwaInstallBanner />
           </body>
         </html>
       </QueryProvider>
     </ClerkProvider>
   );
 }
-
