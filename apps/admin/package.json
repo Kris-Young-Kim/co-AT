@@ -14,7 +14,6 @@
     "@co-at/lib": "workspace:*",
     "@co-at/types": "workspace:*",
     "@co-at/ui": "workspace:*",
-    "@ducanh2912/next-pwa": "^10.2.9",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",

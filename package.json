@@ -25,8 +25,7 @@
     "test:watch": "vitest --watch",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "gen:types": "dotenv -e .env.local -- supabase gen types typescript --project-id uyjbndiwyddjyjkdfuyi --schema public > types/database.types.ts && cp types/database.types.ts packages/lib/types/database.types.ts && cp types/database.types.ts packages/types/database.types.ts",
-    "gen:pwa-icons": "node scripts/generate-pwa-icons.mjs"
+    "gen:types": "dotenv -e .env.local -- supabase gen types typescript --project-id uyjbndiwyddjyjkdfuyi --schema public > types/database.types.ts && cp types/database.types.ts packages/lib/types/database.types.ts && cp types/database.types.ts packages/types/database.types.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.3",
