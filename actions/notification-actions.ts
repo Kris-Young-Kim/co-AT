@@ -1,6 +1,5 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -102,6 +101,7 @@ export async function createNotification(
 
 /**
  * 알림 목록 조회
+ * clerk_user_id 기반으로 사용자별 + 브로드캐스트(user_id IS NULL) 알림 조회
  */
 export async function getNotifications(params?: {
   limit?: number;
@@ -116,39 +116,23 @@ export async function getNotifications(params?: {
   error?: string;
 }> {
   try {
-    console.log("[Notification Actions] 알림 목록 조회 시작:", params);
-
     const { userId } = await auth();
     if (!userId) {
       return { success: false, error: "로그인이 필요합니다" };
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
-    // 사용자 프로필 조회
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("clerk_user_id", userId)
-      .single();
-
-    if (!profile) {
-      return { success: false, error: "프로필을 찾을 수 없습니다" };
-    }
-
-    // 알림 조회 (사용자별 + 브로드캐스트)
-    // 조건: (user_id = profile.id OR user_id IS NULL) AND (expires_at IS NULL OR expires_at > now())
-    let query = supabase
-      .from("notifications" as any)
+    let query = (supabase as any)
+      .from("notifications")
       .select("*", { count: "exact" })
-      .or(`user_id.eq.${(profile as { id: string }).id},user_id.is.null`) // 사용자 알림 또는 브로드캐스트
-      .or("expires_at.is.null,expires_at.gt.now()") // 만료되지 않은 알림만
+      .or(`clerk_user_id.eq.${userId},user_id.is.null`)
+      .or("expires_at.is.null,expires_at.gt.now()")
       .order("created_at", { ascending: false });
 
     if (params?.status) {
       query = query.eq("status", params.status);
     }
-
     if (params?.type) {
       query = query.eq("type", params.type);
     }
@@ -164,20 +148,12 @@ export async function getNotifications(params?: {
       return { success: false, error: "알림 목록 조회에 실패했습니다" };
     }
 
-    // 미읽음 알림 수 조회
-    // 조건: (user_id = profile.id OR user_id IS NULL) AND status = 'unread' AND (expires_at IS NULL OR expires_at > now())
-    const { count: unreadCount } = await supabase
-      .from("notifications" as any)
+    const { count: unreadCount } = await (supabase as any)
+      .from("notifications")
       .select("*", { count: "exact", head: true })
-      .or(`user_id.eq.${(profile as { id: string }).id},user_id.is.null`)
+      .or(`clerk_user_id.eq.${userId},user_id.is.null`)
       .eq("status", "unread")
       .or("expires_at.is.null,expires_at.gt.now()");
-
-    console.log("[Notification Actions] 알림 목록 조회 성공:", {
-      count: notifications?.length,
-      total: count,
-      unreadCount,
-    });
 
     return {
       success: true,
