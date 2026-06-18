@@ -3,7 +3,7 @@
 > **프로젝트**: GWATC 통합 관리 플랫폼 (Co-AT)
 > **비전**: "행정은 AI에게, 사람은 클라이언트에게"
 > **아키텍처**: Turborepo 모노레포 — 앱별 독립 배포
-> **마지막 업데이트**: 2026-06-17  
+> **마지막 업데이트**: 2026-06-18  
 **완료**: Phase B (eval 만족도·교육이력, inventory 소독세척, stats 서비스효과성 연동) — 배포 완료 2026-06-03  
 **완료**: Phase C (1차 앱 마무리 + 안정화) — 배포 완료 2026-06-03  
 **완료**: Phase D-1 (HR 인사관리 기초)  
@@ -11,7 +11,8 @@
 **완료**: Phase D-3 (HR 근태관리 고도화 — 시간외근무·QR출퇴근·연차잔여)  
 **완료**: Phase D-4 (HR 근무현황·휴가캘린더·출장관리·퇴직금정산·월말집계Cron)  
 **완료**: Phase D-5 (HR 인사평가·교육훈련·근로계약서·HR통계보고서)  
-**완료**: Phase E-5 일부 (STT 대화록 이력·단계별 승계·사례관리 일지 초안 — 배포 완료 2026-06-12)
+**완료**: Phase E-5 일부 (STT 대화록 이력·단계별 승계·사례관리 일지 초안 — 배포 완료 2026-06-12)  
+**완료**: E-3 케이스 노트 인라인 편집 + AI 초안 생성 / E-5 STT AI 요약 자동생성 + 콜로그 자동 연결 / E-6 대상자 생애주기·태그·장기미접촉 Cron / PWA 전체 제거 + inventory 모바일 반응형 — 2026-06-18
 
 ---
 
@@ -663,6 +664,7 @@
 | `087_clients_portal_user_id.sql` | `clients.portal_user_id` 컬럼 추가 (포털 계정 연결) + 인덱스 | ✅ |
 | `088_call_logs_channel_and_application.sql` | `call_logs.channel` (phone/web/chatbot) + `application_id` FK 추가 (E-4 채널 통계·자동 연동) | ✅ |
 | `089_create_eval_session_transcripts.sql` | `eval_session_transcripts` 테이블 (STT 대화록 — transcript, summary, key_points JSON) + RLS + 트리거 | ✅ |
+| `097_client_lifecycle_and_tags.sql` | `clients.lifecycle_status` 컬럼 + `client_tags` 테이블 (E-6 CRM 생애주기·태그) | ✅ |
 
 ### 미실행 / 예정 마이그레이션
 
@@ -744,7 +746,7 @@
 | 유사 케이스 추천 — 장애유형 기준 유사 대상자 이력 조회 (eval 대상자 상세 페이지) | ✅ |
 | 보조기기별 지원 결과 이력 — "이 제품, 이 장애유형에서 성과점수 평균" | ✅ |
 | 담당자 변경 시 인수인계 자동화 — 이력·K-IPPA·메모 자동 승계 | ⬜ |
-| 케이스 노트 표준화 — SOAP/DAP 구조화 템플릿 (AI 초안 생성) | ⬜ |
+| 케이스 노트 표준화 — SOAP/DAP 구조화 템플릿 (AI 초안 생성) | ✅ |
 | 품목별 지식베이스 — 적용 사례·주의사항·제조사 연락처 DB | ⬜ |
 
 ---
@@ -941,7 +943,7 @@
 
 ### 1차 집중 — 낮은 우선순위
 
-- [ ] **web** — PWA 오프라인 지원
+- [x] **전체** — PWA 제거 (9개 앱 서비스 워커·manifest·배너 완전 삭제) + inventory 모바일 반응형 사이드바
 - [ ] 외부 시스템 연동 (전자정부, 의료기관)
 - [ ] Redis 캐싱 전략
 - [ ] SLO/SLI 모니터링 (가용성 99.5% 목표)
@@ -967,6 +969,10 @@
 - [x] **admin** — `is_web_visible` 토글 (일정 공개 가시성)
 - [x] **admin** — AI 업무 도우미 (agent-chat, Gemini 연동)
 - [x] **auth** — `isSatellite` 완전 제거 (모든 앱 ClerkProvider + 공유 미들웨어)
+- [x] **eval** — E-3 케이스 노트 인라인 편집 모드 + AI 초안 생성 (Gemini, 평가 6개 영역 자동 작성)
+- [x] **eval** — E-5 STT 대화록 AI 요약 자동 생성 버튼 + 콜로그·서비스 기록 자동 연결
+- [x] **eval** — E-6 CRM 대상자 생애주기 관리 + 태그 시스템 + 장기미접촉 자동 감지 Cron (180일)
+- [x] **전체** — PWA 완전 제거 (9개 앱) + inventory 모바일 햄버거 Sheet 드로어
 
 ---
 
