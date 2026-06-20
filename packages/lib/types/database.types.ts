@@ -634,6 +634,85 @@ export type Database = {
         }
         Relationships: []
       }
+      client_guardians: {
+        Row: {
+          client_id: string
+          created_at: string
+          email: string | null
+          id: string
+          is_primary: boolean
+          name: string
+          notes: string | null
+          phone: string | null
+          relationship: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_primary?: boolean
+          name: string
+          notes?: string | null
+          phone?: string | null
+          relationship: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_primary?: boolean
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          relationship?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_guardians_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_tags: {
+        Row: {
+          client_id: string
+          created_at: string
+          created_by: string
+          id: string
+          tag: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          created_by: string
+          id?: string
+          tag: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          tag?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_tags_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_voc: {
         Row: {
           client_id: string
@@ -703,6 +782,7 @@ export type Database = {
           has_elevator: boolean | null
           housing_type: string | null
           id: string
+          lifecycle_status: string
           name: string
           obstacles: string | null
           portal_user_id: string | null
@@ -738,6 +818,7 @@ export type Database = {
           has_elevator?: boolean | null
           housing_type?: string | null
           id?: string
+          lifecycle_status?: string
           name: string
           obstacles?: string | null
           portal_user_id?: string | null
@@ -773,6 +854,7 @@ export type Database = {
           has_elevator?: boolean | null
           housing_type?: string | null
           id?: string
+          lifecycle_status?: string
           name?: string
           obstacles?: string | null
           portal_user_id?: string | null
@@ -1188,6 +1270,36 @@ export type Database = {
           },
         ]
       }
+      eval_client_segments: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          filters: Json
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          filters?: Json
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          filters?: Json
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       eval_consultation_records: {
         Row: {
           ai_generated: boolean
@@ -1274,6 +1386,7 @@ export type Database = {
           prior_grant_records: Json | null
           referral_doc_id: string | null
           referral_org: string | null
+          referrer_id: string | null
           status: string
           updated_at: string | null
         }
@@ -1293,6 +1406,7 @@ export type Database = {
           prior_grant_records?: Json | null
           referral_doc_id?: string | null
           referral_org?: string | null
+          referrer_id?: string | null
           status?: string
           updated_at?: string | null
         }
@@ -1312,6 +1426,7 @@ export type Database = {
           prior_grant_records?: Json | null
           referral_doc_id?: string | null
           referral_org?: string | null
+          referrer_id?: string | null
           status?: string
           updated_at?: string | null
         }
@@ -1335,6 +1450,13 @@ export type Database = {
             columns: ["referral_doc_id"]
             isOneToOne: false
             referencedRelation: "eval_grant_referral_docs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eval_grant_assessments_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "eval_referrers"
             referencedColumns: ["id"]
           },
         ]
@@ -1590,6 +1712,139 @@ export type Database = {
         }
         Relationships: []
       }
+      eval_referrer_activities: {
+        Row: {
+          activity_date: string
+          activity_type: string
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          referrer_id: string
+          title: string
+        }
+        Insert: {
+          activity_date: string
+          activity_type: string
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          referrer_id: string
+          title: string
+        }
+        Update: {
+          activity_date?: string
+          activity_type?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          referrer_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_referrer_activities_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "eval_referrers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eval_referrer_contacts: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_active: boolean
+          name: string
+          notes: string | null
+          phone: string | null
+          position: string | null
+          referrer_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          notes?: string | null
+          phone?: string | null
+          position?: string | null
+          referrer_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          position?: string | null
+          referrer_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eval_referrer_contacts_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "eval_referrers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eval_referrers: {
+        Row: {
+          address: string | null
+          created_at: string
+          created_by: string
+          email: string | null
+          id: string
+          is_active: boolean
+          name: string
+          notes: string | null
+          phone: string | null
+          type: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          created_by: string
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          notes?: string | null
+          phone?: string | null
+          type: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          created_by?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          type?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       eval_service_records: {
         Row: {
           address: string | null
@@ -1642,6 +1897,7 @@ export type Database = {
           received_at: string | null
           record_status: string | null
           referral_type: string | null
+          referrer_id: string | null
           region: string | null
           satisfaction_comment: string | null
           satisfaction_score: number | null
@@ -1706,6 +1962,7 @@ export type Database = {
           received_at?: string | null
           record_status?: string | null
           referral_type?: string | null
+          referrer_id?: string | null
           region?: string | null
           satisfaction_comment?: string | null
           satisfaction_score?: number | null
@@ -1770,6 +2027,7 @@ export type Database = {
           received_at?: string | null
           record_status?: string | null
           referral_type?: string | null
+          referrer_id?: string | null
           region?: string | null
           satisfaction_comment?: string | null
           satisfaction_score?: number | null
@@ -1810,6 +2068,13 @@ export type Database = {
             columns: ["grant_assessment_id"]
             isOneToOne: false
             referencedRelation: "eval_grant_assessments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eval_service_records_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "eval_referrers"
             referencedColumns: ["id"]
           },
         ]
@@ -4112,6 +4377,7 @@ export type Database = {
           category_id: string | null
           client_id: string | null
           created_at: string | null
+          custom_type_label: string | null
           education_audience_label: string | null
           education_audience_type: string | null
           education_hours: number | null
@@ -4137,6 +4403,7 @@ export type Database = {
           category_id?: string | null
           client_id?: string | null
           created_at?: string | null
+          custom_type_label?: string | null
           education_audience_label?: string | null
           education_audience_type?: string | null
           education_hours?: number | null
@@ -4162,6 +4429,7 @@ export type Database = {
           category_id?: string | null
           client_id?: string | null
           created_at?: string | null
+          custom_type_label?: string | null
           education_audience_label?: string | null
           education_audience_type?: string | null
           education_hours?: number | null
