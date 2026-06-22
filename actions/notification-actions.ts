@@ -187,7 +187,7 @@ export async function markNotificationAsRead(
       return { success: false, error: "로그인이 필요합니다" };
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // 사용자 프로필 조회
     const { data: profile } = await supabase
@@ -247,7 +247,7 @@ export async function markAllNotificationsAsRead(): Promise<{
       return { success: false, error: "로그인이 필요합니다" };
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // 사용자 프로필 조회
     const { data: profile } = await supabase
@@ -306,7 +306,7 @@ export async function archiveNotification(
       return { success: false, error: "로그인이 필요합니다" };
     }
 
-    const supabase = await createClient();
+    const supabase = createAdminClient();
 
     // 사용자 프로필 조회
     const { data: profile } = await supabase
