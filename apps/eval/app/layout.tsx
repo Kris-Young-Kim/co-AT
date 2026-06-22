@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { EvalSidebar } from '@/eval/components/layout/EvalSidebar'
+import { SwUnregister } from '@/eval/components/layout/SwUnregister'
 import './globals.css'
 
 export const dynamic = 'force-dynamic'
@@ -25,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
+        <SwUnregister />
         <ClerkProvider
           signInUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? 'https://gwatc.cloud/sign-in'}
           signUpUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL ?? 'https://gwatc.cloud/sign-up'}

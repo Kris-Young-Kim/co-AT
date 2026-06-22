@@ -153,8 +153,8 @@ export function PendingClientForm() {
             <label className="block text-xs font-medium text-gray-600 mb-1">성별</label>
             <select name="gender" value={form.gender} onChange={handleChange} className={SELECT}>
               <option value="">선택</option>
-              <option value="male">남</option>
-              <option value="female">여</option>
+              <option value="남">남</option>
+              <option value="여">여</option>
             </select>
           </div>
         </div>
