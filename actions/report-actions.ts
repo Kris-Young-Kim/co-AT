@@ -9,6 +9,15 @@ function getTemplatePath(filename: string): string {
   return path.join(process.cwd(), 'public', 'templates', filename)
 }
 
+// Maps operational record_status → central-report status
+// 접수/진행중 → 미결, 보류 → 잠정종결, 완료 → 종결
+function toReportStatus(status: string | null): string {
+  if (status === '접수' || status === '진행중') return '미결'
+  if (status === '보류') return '잠정종결'
+  if (status === '완료') return '종결'
+  return status ?? ''
+}
+
 async function loadTemplateWorkbook(filePath: string): Promise<ExcelJS.Workbook> {
   const workbook = new ExcelJS.Workbook()
   await workbook.xlsx.readFile(filePath)
@@ -158,7 +167,7 @@ export async function generateServiceRecordReport(params: {
     r.getCell(4).value = record.application_month as number
     r.getCell(5).value = record.application_no as number
     r.getCell(6).value = record.is_re_application ? '재신청' : ''
-    r.getCell(7).value = record.record_status as string
+    r.getCell(7).value = toReportStatus(record.record_status)
     r.getCell(10).value = record.gender as string
     r.getCell(11).value = record.economic_status as string
     r.getCell(42).value = record.service_major_category as string
@@ -312,6 +321,10 @@ export async function generateBusinessReport(params: {
     // disability severity
     sevSevere:     records.filter(r => r.disability_severity === '중증').length,
     sevMild:       records.filter(r => r.disability_severity === '경증').length,
+    // central-report status counts
+    statusPending:           records.filter(r => r.record_status === '접수' || r.record_status === '진행중').length,
+    statusProvisionalClosed: records.filter(r => r.record_status === '보류').length,
+    statusClosed:            records.filter(r => r.record_status === '완료').length,
     byMonth,
   }
 
@@ -319,15 +332,21 @@ export async function generateBusinessReport(params: {
   const workbook = await loadTemplateWorkbook(templatePath)
 
   // Sheet 1: 전체 사업 실적 — update actual column E with stats values
+  // Cell positions match business_report_template.xlsx layout.
+  // Verify against template if rows are added/removed by the central org.
   const sheet1 = workbook.getWorksheet(1)
   if (!sheet1) return { success: false, error: '사업 실적 템플릿에서 시트 1을 찾을 수 없습니다' }
   sheet1.getCell('E5').value = stats.callTotal
+  sheet1.getCell('E6').value = stats.consult        // 상담·정보제공
+  sheet1.getCell('E7').value = stats.trial          // 체험
   sheet1.getCell('E8').value = stats.rental
   sheet1.getCell('E9').value = stats.customMake
   sheet1.getCell('E10').value = stats.grant
   sheet1.getCell('E11').value = stats.cleaning
   sheet1.getCell('E12').value = stats.repair
   sheet1.getCell('E13').value = stats.reuse
+  sheet1.getCell('E14').value = stats.education     // 교육
+  sheet1.getCell('E15').value = stats.infoProvision // 정보제공(별도)
   // major category counts
   sheet1.getCell('E16').value = stats.catPublic
   sheet1.getCell('E17').value = stats.catPrivate
@@ -340,7 +359,7 @@ export async function generateBusinessReport(params: {
   // disability severity counts
   sheet1.getCell('E27').value = stats.sevSevere
   sheet1.getCell('E28').value = stats.sevMild
-  // monthly breakdown (rows 31–42 assumed, one per month)
+  // monthly breakdown (rows 31–42, one per month)
   for (let m = 1; m <= 12; m++) {
     sheet1.getCell(`E${30 + m}`).value = stats.byMonth[m] ?? 0
   }
