@@ -21,16 +21,20 @@ export function createAppMiddleware(appKey?: AppKey) {
     }
 
     if (appKey) {
-      let role = (sessionClaims?.metadata as { role?: string } | undefined)?.role
+      const meta = sessionClaims?.metadata as { role?: string; apps?: string[] } | undefined
+      let role = meta?.role
+      let apps = meta?.apps
 
-      if (!role) {
-        // Session JWT may be stale — fetch latest publicMetadata from Clerk
+      // Fetch fresh metadata if role is missing, or if role is non-admin and apps[] is absent (stale JWT)
+      if (!role || (role !== 'admin' && apps === undefined)) {
         try {
           const client = await clerkClient()
           const user = await client.users.getUser(userId)
-          role = (user.publicMetadata as { role?: string })?.role
+          const freshMeta = user.publicMetadata as { role?: string; apps?: string[] }
+          if (!role) role = freshMeta.role
+          if (apps === undefined) apps = freshMeta.apps
         } catch {
-          // non-critical: fall through to role check
+          // non-critical: fall through to checks
         }
       }
 
@@ -42,7 +46,19 @@ export function createAppMiddleware(appKey?: AppKey) {
           return NextResponse.redirect('https://admin.gwatc.cloud/unauthorized')
         }
       }
-      // Any valid role (staff / manager / admin) may access all apps
+
+      // admin bypasses per-app access control
+      if (role === 'admin') return
+
+      // staff/manager: must have the appKey in their apps[] list
+      if (!(apps ?? []).includes(appKey)) {
+        const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL ?? 'https://admin.gwatc.cloud'
+        try {
+          return NextResponse.redirect(new URL('/unauthorized', adminUrl))
+        } catch {
+          return NextResponse.redirect('https://admin.gwatc.cloud/unauthorized')
+        }
+      }
     }
   })
 }
