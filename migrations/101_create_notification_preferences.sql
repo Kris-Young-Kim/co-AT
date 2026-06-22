@@ -1,7 +1,7 @@
 -- Migration 101: notification_preferences
 -- Per-client opt-out settings for notification channels
 
-create table notification_preferences (
+create table if not exists notification_preferences (
   id            uuid default gen_random_uuid() not null,
   client_id     uuid not null,
   email_opt_out boolean not null default false,
@@ -14,11 +14,19 @@ create table notification_preferences (
 
 alter table notification_preferences enable row level security;
 
-create policy "staff_manage_notification_preferences"
-  on notification_preferences
-  for all
-  using (true)
-  with check (true);
+do $$ begin
+  if not exists (
+    select 1 from pg_policies
+    where tablename = 'notification_preferences'
+      and policyname = 'staff_manage_notification_preferences'
+  ) then
+    create policy "staff_manage_notification_preferences"
+      on notification_preferences
+      for all
+      using (true)
+      with check (true);
+  end if;
+end $$;
 
-create index notification_preferences_client_id_idx
+create index if not exists notification_preferences_client_id_idx
   on notification_preferences (client_id);
