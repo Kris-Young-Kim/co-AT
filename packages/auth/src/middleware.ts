@@ -50,8 +50,9 @@ export function createAppMiddleware(appKey?: AppKey) {
       // admin bypasses per-app access control
       if (role === 'admin') return
 
-      // staff/manager: must have the appKey in their apps[] list
-      if (!(apps ?? []).includes(appKey)) {
+      // staff/manager: if apps[] is undefined (never configured), allow all for backward compat
+      // if apps[] is an explicit array (even empty), enforce it
+      if (apps !== undefined && !apps.includes(appKey)) {
         const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL ?? 'https://admin.gwatc.cloud'
         try {
           return NextResponse.redirect(new URL('/unauthorized', adminUrl))
