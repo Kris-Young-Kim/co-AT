@@ -6,6 +6,7 @@ import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { revalidatePath } from "next/cache"
 import { updateInventoryStatus } from "./inventory-actions"
 import { differenceInDays, isPast, isToday, addDays, format } from "date-fns"
+import { notifyRentalCreated, notifyRentalReturned, notifyRentalExtended } from "@/lib/utils/crm-notify"
 
 export interface RentalItem {
   id: string
@@ -129,6 +130,20 @@ export async function createRental(
     revalidatePath("/inventory")
     revalidatePath("/mypage")
 
+    // C-1: 신규 대여 확정 알림 (fire-and-forget)
+    const clientData = await createAdminClient()
+      .from('clients')
+      .select('email')
+      .eq('id', input.client_id)
+      .single()
+    notifyRentalCreated({
+      clientId: input.client_id,
+      clientEmail: (clientData.data as any)?.email ?? null,
+      deviceName: (inventory as any)?.name ?? '보조기기',
+      rentalStartDate: input.rental_start_date,
+      rentalEndDate: input.rental_end_date,
+    }).catch(() => {})
+
     return { success: true, rental }
   } catch (error) {
     console.error("[Rental Actions] 대여 생성 중 오류:", error)
@@ -221,6 +236,26 @@ export async function returnRental(
     revalidatePath("/inventory")
     revalidatePath("/mypage")
 
+    // C-2: 대여 반납 완료 알림 (fire-and-forget)
+    if (rentalClientId) {
+      const clientData = await createAdminClient()
+        .from('clients')
+        .select('email')
+        .eq('id', rentalClientId)
+        .single()
+      const inventoryData = await createAdminClient()
+        .from('inventory')
+        .select('name')
+        .eq('id', (rentalWithIds as any)?.inventory_id ?? '')
+        .single()
+      notifyRentalReturned({
+        clientId: rentalClientId,
+        clientEmail: (clientData.data as any)?.email ?? null,
+        deviceName: (inventoryData.data as any)?.name ?? '보조기기',
+        returnDate: actualReturnDate,
+      }).catch(() => {})
+    }
+
     return { success: true, rental: updatedRental }
   } catch (error) {
     console.error("[Rental Actions] 대여 반납 중 오류:", error)
@@ -305,6 +340,26 @@ export async function extendRental(
     revalidatePath("/clients")
     revalidatePath(`/clients/${rentalClientIdForExtension}`)
     revalidatePath("/mypage")
+
+    // C-3: 대여 기간 연장 알림 (fire-and-forget)
+    if (rentalClientIdForExtension) {
+      const clientData = await createAdminClient()
+        .from('clients')
+        .select('email')
+        .eq('id', rentalClientIdForExtension)
+        .single()
+      const inventoryData = await createAdminClient()
+        .from('inventory')
+        .select('name')
+        .eq('id', (rentalForExtension as any)?.inventory_id ?? '')
+        .single()
+      notifyRentalExtended({
+        clientId: rentalClientIdForExtension,
+        clientEmail: (clientData.data as any)?.email ?? null,
+        deviceName: (inventoryData.data as any)?.name ?? '보조기기',
+        newEndDate: newEndDate,
+      }).catch(() => {})
+    }
 
     return { success: true, rental: updatedRental }
   } catch (error) {

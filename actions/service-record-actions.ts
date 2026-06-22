@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { revalidatePath } from "next/cache"
+import { notifyServiceStatusChanged } from "@/lib/utils/crm-notify"
 
 export interface ServiceRecordInput {
   application_id?: string | null
@@ -103,14 +104,33 @@ export async function updateServiceRecord(
 
   const supabase = createAdminClient()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { error } = await (supabase as any)
+  const { data: updatedRecord, error } = await (supabase as any)
     .from('eval_service_records')
     .update(input)
     .eq('id', id)
+    .select('client_id, service_type, record_status')
+    .single()
 
   if (error) return { success: false, error: error.message }
 
   revalidatePath('/service-records')
+
+  // C-7: 서비스 기록 상태 변경 알림 (status가 변경된 경우에만)
+  if (input.record_status && updatedRecord?.client_id) {
+    const clientRow = await (createAdminClient() as any)
+      .from('clients')
+      .select('name, assigned_staff_id')
+      .eq('id', updatedRecord.client_id)
+      .single()
+    notifyServiceStatusChanged({
+      clientId: updatedRecord.client_id,
+      clientName: clientRow.data?.name ?? '대상자',
+      serviceType: updatedRecord.service_type ?? '서비스',
+      newStatus: input.record_status,
+      assignedStaffId: clientRow.data?.assigned_staff_id ?? null,
+    }).catch(() => {})
+  }
+
   return { success: true }
 }
 

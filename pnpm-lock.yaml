@@ -65,6 +65,12 @@ importers:
       '@radix-ui/react-tabs':
         specifier: ^1.1.13
         version: 1.1.13(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@react-email/components':
+        specifier: ^1.0.12
+        version: 1.0.12(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      '@react-email/render':
+        specifier: ^2.0.8
+        version: 2.0.8(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       '@remotion/player':
         specifier: ^4.0.474
         version: 4.0.474(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -134,6 +140,9 @@ importers:
       remotion:
         specifier: ^4.0.474
         version: 4.0.474(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+      resend:
+        specifier: ^6.12.2
+        version: 6.12.2(@react-email/render@2.0.8(react-dom@19.2.1(react@19.2.1))(react@19.2.1))
       svix:
         specifier: ^1.84.1
         version: 1.84.1

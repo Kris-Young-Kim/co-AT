@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { Database } from "@/types/database.types"
 import { clerkClient } from '@clerk/nextjs/server'
+import { notifyClientRegistered, notifyLifecycleChanged } from "@/lib/utils/crm-notify"
 
 export type Client = Database["public"]["Tables"]["clients"]["Row"]
 
@@ -744,6 +745,17 @@ export async function registerClient(
     revalidatePath('/clients')
     revalidatePath('/clients/pending')
     revalidatePath(`/clients/${clientId}`)
+
+    // C-4: 대상자 등록 완료 알림 (fire-and-forget)
+    const clientRow = data as Client
+    notifyClientRegistered({
+      clientId,
+      clientEmail: (clientRow as any).email ?? null,
+      clientName: clientRow.name,
+      registrationNumber,
+      assignedStaffId: assignedStaffId,
+    }).catch(() => {})
+
     return { success: true, client: data as Client, registrationNumber }
   } catch (error) {
     console.error("Unexpected error in registerClient:", error)
@@ -1295,14 +1307,25 @@ export async function updateClientLifecycle(
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createAdminClient() as any
-  const { error } = await supabase
+  const { data: clientRow, error } = await supabase
     .from('clients')
     .update({ lifecycle_status: lifecycleStatus, updated_at: new Date().toISOString() })
     .eq('id', clientId)
+    .select('name, assigned_staff_id')
+    .single()
 
   if (error) return { success: false, error: error.message }
   revalidatePath('/clients')
   revalidatePath(`/clients/${clientId}`)
+
+  // C-5: 생애주기 변경 알림 (fire-and-forget)
+  notifyLifecycleChanged({
+    clientId,
+    clientName: clientRow?.name ?? '대상자',
+    newStatus: lifecycleStatus,
+    assignedStaffId: clientRow?.assigned_staff_id ?? null,
+  }).catch(() => {})
+
   return { success: true }
 }
 

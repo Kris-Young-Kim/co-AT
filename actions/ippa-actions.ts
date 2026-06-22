@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
+import { notifyIppaCompleted } from "@/lib/utils/crm-notify"
 
 export interface IPPAItem {
   problem: string
@@ -139,6 +140,20 @@ export async function saveIPPAPostMeasurement(
 
   if (error) return { success: false, error: error.message }
   revalidatePath(`/clients/${clientId}`)
+
+  // C-6: K-IPPA 사후측정 완료 알림 (fire-and-forget)
+  const clientRow = await (createAdminClient() as any)
+    .from('clients')
+    .select('name, assigned_staff_id')
+    .eq('id', clientId)
+    .single()
+  notifyIppaCompleted({
+    clientId,
+    clientName: clientRow.data?.name ?? '대상자',
+    outcomeScore,
+    assignedStaffId: clientRow.data?.assigned_staff_id ?? null,
+  }).catch(() => {})
+
   return { success: true, outcomeScore }
 }
 

@@ -14,6 +14,7 @@
 **완료**: Phase E-5 일부 (STT 대화록 이력·단계별 승계·사례관리 일지 초안 — 배포 완료 2026-06-12)  
 **완료**: E-3 케이스 노트 인라인 편집 + AI 초안 생성 / E-5 STT AI 요약 자동생성 + 콜로그 자동 연결 / E-6 대상자 생애주기·태그·장기미접촉 Cron / PWA 전체 제거 + inventory 모바일 반응형 — 2026-06-18  
 **완료**: Phase G — 의뢰처 CRM (eval /referrers, 4탭) + 대상자 세그먼트 (eval /segments) + 보호자 다중 연락처 (ClientGuardiansPanel) — 2026-06-20
+**완료**: Phase H-1 — E-6 이메일 자동 발송 CRM (이벤트 기반 8 트리거 + Resend 이메일 + 수신 거부 옵트아웃 + 장기 미활동 Cron) — 2026-06-20
 
 ---
 
@@ -939,6 +940,33 @@
 #### 마이그레이션 역추출 완료 (078)
 - `intake_records`, `domain_assessments`, `process_logs` — applications 기반 평가 워크플로우 (0행)
 - `supplies`, `supply_transactions` — 소모품 재고 관리 (0행)
+
+---
+
+### 다음 예정 작업 (2026-06-20 기준 우선순위)
+
+#### ✅ Phase H-1 — E-6 이메일 자동 발송 CRM (완료 2026-06-20)
+> 이벤트 기반 8 트리거 자동 이메일 알림 + Resend + 수신 거부 옵트아웃
+- [x] Migration 101: `notification_preferences` (이메일 옵트아웃 per-client)
+- [x] 루트 이메일 유틸 (`lib/email/resend.ts`, `lib/email/templates/` 7종)
+- [x] C-1 신규 대여 확정 / C-2 반납 완료 / C-3 기간 연장 → 대상자+보호자 이메일
+- [x] C-4 대상자 등록 완료 / C-5 생애주기 변경 → 담당 직원 이메일
+- [x] C-6 K-IPPA 사후측정 완료 → 담당 직원 이메일
+- [x] C-7 서비스 기록 상태 변경 → 담당 직원 이메일
+- [x] C-8 6개월 장기 미활동 Cron (`/api/cron/long-inactive-clients`, 매월 1일)
+- [x] `actions/notification-preference-actions.ts` 옵트아웃 CRUD
+- [x] `ClientNotificationPrefsPanel` — 대상자 상세 페이지 알림 설정 토글 UI
+
+#### Phase H-2 — E-5 중앙보조기기센터 보고 양식 자동 집계 (2순위 예정)
+> 서비스 기록 확정 → 월별 보고 양식 자동 집계, 중복 수작업 제거
+- [ ] **eval** — 서비스 기록 확정 시 보고 양식 항목 자동 집계 (월별)
+- [ ] **eval/stats** — 보고서 화면 연동 (현황 요약 + 엑셀 내보내기)
+
+#### Phase H-3 — E-2 상담 예약 셀프 신청 (3순위 예정)
+> 클라이언트 포털에서 상담 일정 슬롯 선택 → 직원 확정·배정
+- [ ] **web** — `/appointments` 예약 신청 UI (가능 슬롯 선택)
+- [ ] **admin** — 직원 확정·배정 + 예약 상태 관리
+- [ ] **web** — 포털 마이페이지 예약 현황 표시
 
 ---
 

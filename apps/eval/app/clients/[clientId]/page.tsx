@@ -5,6 +5,7 @@ import { getConsultationRecordsByClient, getAssessmentNotesByClient } from '@/ac
 import { getClientIPPAAssessments } from '@/actions/ippa-actions'
 import { getTranscriptsByClient } from '@/actions/transcript-actions'
 import { getGuardiansByClient } from '@/actions/guardian-actions'
+import { getNotificationPreference } from '@/actions/notification-preference-actions'
 import { ApplicationListCard } from '@/eval/components/eval/ApplicationListCard'
 import { CaseRecordPanel } from '@/eval/components/eval/CaseRecordPanel'
 import { ClientActiveServices } from '@/eval/components/eval/ClientActiveServices'
@@ -18,6 +19,7 @@ import { PortalUserLink } from '@/eval/components/eval/PortalUserLink'
 import { ClientQrLabel } from '@/eval/components/clients/ClientQrLabel'
 import { ClientCrmPanel } from '@/eval/components/eval/ClientCrmPanel'
 import { ClientGuardiansPanel } from '@/eval/components/clients/ClientGuardiansPanel'
+import { ClientNotificationPrefsPanel } from '@/eval/components/clients/ClientNotificationPrefsPanel'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, AlertCircle } from 'lucide-react'
@@ -33,7 +35,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const clientResult = await getClientById(clientId)
   if (!clientResult.success || !clientResult.client) notFound()
 
-  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, transcriptsResult, consultationResult, assessmentResult, tagsResult, guardiansResult] = await Promise.all([
+  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, transcriptsResult, consultationResult, assessmentResult, tagsResult, guardiansResult, notifPrefResult] = await Promise.all([
     getApplicationsByClientId(clientId),
     getClientActiveServices(clientId),
     getClientHistory(clientId),
@@ -48,6 +50,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     getAssessmentNotesByClient(clientId),
     getClientTags(clientId),
     getGuardiansByClient(clientId),
+    getNotificationPreference(clientId),
   ])
 
   const client = clientResult.client
@@ -63,6 +66,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const assessmentNotes = assessmentResult.success ? assessmentResult.notes ?? [] : []
   const clientTags = tagsResult.success ? tagsResult.tags ?? [] : []
   const guardians = guardiansResult.success ? guardiansResult.guardians ?? [] : []
+  const notifPref = notifPrefResult.success ? notifPrefResult.pref : undefined
 
   return (
     <div className="p-8 max-w-4xl">
@@ -115,6 +119,11 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       {/* 보호자 · 연락처 */}
       <div className="border rounded-lg p-5 mb-6 bg-white">
         <ClientGuardiansPanel clientId={clientId} initialGuardians={guardians} />
+      </div>
+
+      {/* 알림 수신 설정 */}
+      <div className="border rounded-lg p-5 mb-6 bg-white">
+        <ClientNotificationPrefsPanel clientId={clientId} initialPref={notifPref} />
       </div>
 
       {/* 생애주기 + 태그 관리 */}
