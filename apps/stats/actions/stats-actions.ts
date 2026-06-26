@@ -183,3 +183,65 @@ export async function getYearlyStats(fromYear: number, toYear: number): Promise<
     return { success: false, error: String(e) }
   }
 }
+
+// ──────────────────────────────────────────
+// 확정 실적 (record_status = '완료')
+// ──────────────────────────────────────────
+
+export interface MonthlyConfirmedStats {
+  month: number
+  total_cases: number
+  total_clients: number
+  consult: number
+  assessment: number
+  trial: number
+  rental: number
+  custom_make: number
+  grant: number
+  education: number
+}
+
+export async function getMonthlyConfirmedStats(year: number): Promise<
+  { success: true; stats: MonthlyConfirmedStats[] } | { success: false; error: string }
+> {
+  try {
+    const supabase = createAdminClient()
+    const { data, error } = await supabase
+      .from('eval_service_records')
+      .select(
+        'client_id, application_month, received_at, ' +
+        'is_consult, is_assessment, is_trial, is_rental, is_custom_make, is_grant, is_education'
+      )
+      .eq('record_status', '완료')
+      .eq('application_year', year)
+
+    if (error) return { success: false, error: error.message }
+
+    const byMonth: Record<number, MonthlyConfirmedStats & { clientIds: Set<string> }> = {}
+    for (let m = 1; m <= 12; m++) {
+      byMonth[m] = { month: m, total_cases: 0, total_clients: 0, consult: 0, assessment: 0, trial: 0, rental: 0, custom_make: 0, grant: 0, education: 0, clientIds: new Set() }
+    }
+
+    for (const r of (data ?? []) as unknown as Array<Record<string, unknown>>) {
+      const m = (r.application_month as number | null) ?? (r.received_at ? new Date(r.received_at as string).getMonth() + 1 : null)
+      if (!m || !byMonth[m]) continue
+      byMonth[m].total_cases++
+      if (r.client_id) byMonth[m].clientIds.add(r.client_id as string)
+      if (r.is_consult) byMonth[m].consult++
+      if (r.is_assessment) byMonth[m].assessment++
+      if (r.is_trial) byMonth[m].trial++
+      if (r.is_rental) byMonth[m].rental++
+      if (r.is_custom_make) byMonth[m].custom_make++
+      if (r.is_grant) byMonth[m].grant++
+      if (r.is_education) byMonth[m].education++
+    }
+
+    const stats: MonthlyConfirmedStats[] = Object.values(byMonth).map(({ clientIds, ...row }) => ({
+      ...row,
+      total_clients: clientIds.size,
+    }))
+    return { success: true, stats }
+  } catch (e) {
+    return { success: false, error: String(e) }
+  }
+}
