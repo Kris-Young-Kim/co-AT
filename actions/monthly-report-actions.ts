@@ -45,6 +45,9 @@ function buildEmptyRow(month: number): MonthlyConfirmedRow & { clientIds: Set<st
 export async function getMonthlyConfirmedSummary(year: number): Promise<
   { success: true; rows: MonthlyConfirmedRow[] } | { success: false; error: string }
 > {
+  if (!Number.isInteger(year) || year < 2000 || year > 2100) {
+    return { success: false, error: '유효하지 않은 연도입니다' }
+  }
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
@@ -151,10 +154,14 @@ export async function generateMonthlyConfirmedExcel(year: number): Promise<
   sheet.getRow(1).font = { bold: true, size: 13 }
   sheet.mergeCells(1, 1, 1, HEADERS.length)
 
-  const buffer = await workbook.xlsx.writeBuffer()
-  return {
-    success: true,
-    buffer: Array.from(buffer as Uint8Array),
-    filename: `월별확정실적_${year}년.xlsx`,
+  try {
+    const buffer = await workbook.xlsx.writeBuffer()
+    return {
+      success: true,
+      buffer: Array.from(new Uint8Array(buffer as ArrayBuffer)),
+      filename: `월별확정실적_${year}년.xlsx`,
+    }
+  } catch (e) {
+    return { success: false, error: String(e) }
   }
 }

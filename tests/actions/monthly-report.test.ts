@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { getMonthlyConfirmedSummary } from '@/actions/monthly-report-actions'
+import { getMonthlyConfirmedSummary, generateMonthlyConfirmedExcel } from '@/actions/monthly-report-actions'
 import { mockHasAdminOrStaffPermission } from '../../tests/setup'
 import { createAdminClient } from '@/lib/supabase/admin'
 
@@ -85,5 +85,27 @@ describe('getMonthlyConfirmedSummary', () => {
     if (!result.success) return
     const july = result.rows.find(r => r.month === 7)!
     expect(july.consult).toBe(1)
+  })
+
+  it('generateMonthlyConfirmedExcel - 데이터 있으면 buffer와 filename 반환', async () => {
+    mockHasAdminOrStaffPermission.mockResolvedValueOnce(true)
+    const fakeRows = [
+      { client_id: 'c1', application_month: 1, received_at: null, is_consult: true, is_assessment: false, is_trial: false, is_rental: false, is_custom_make: false, is_grant: false, is_education: false, is_info_provision: false, is_other_business: false },
+    ]
+    const chain: any = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      then: (resolve: any) => Promise.resolve({ data: fakeRows, error: null }).then(resolve),
+    }
+    vi.mocked(createAdminClient).mockReturnValueOnce({ from: () => chain } as any)
+
+    const result = await generateMonthlyConfirmedExcel(2026)
+    expect(result.success).toBe(true)
+    if (result.success) {
+      expect(result.buffer).toBeDefined()
+      expect(Array.isArray(result.buffer)).toBe(true)
+      expect((result.buffer ?? []).length).toBeGreaterThan(0)
+      expect(result.filename).toBe('월별확정실적_2026년.xlsx')
+    }
   })
 })
