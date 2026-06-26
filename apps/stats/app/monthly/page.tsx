@@ -39,6 +39,9 @@ export default async function MonthlyPage({ searchParams }: MonthlyPageProps) {
         <p className="text-xs font-semibold text-green-700 uppercase tracking-wider mb-3">
           {year}년 확정 실적 (record_status = 완료)
         </p>
+        {!confirmedResult.success && (
+          <p className="text-xs text-red-500 mb-2">확정 실적을 불러오지 못했습니다.</p>
+        )}
         <div className="grid grid-cols-4 gap-4 sm:grid-cols-8">
           {[
             { label: '합계건수', value: confirmedTotal },

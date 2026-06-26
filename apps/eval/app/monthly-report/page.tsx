@@ -7,11 +7,11 @@ interface Props {
   searchParams: Promise<{ year?: string }>
 }
 
-const AVAILABLE_YEARS = [2024, 2025, 2026, 2027]
-
 export default async function MonthlyReportPage({ searchParams }: Props) {
   const params = await searchParams
   const year = parseInt(params.year ?? String(new Date().getFullYear()))
+  const currentYear = new Date().getFullYear()
+  const AVAILABLE_YEARS = Array.from({ length: 4 }, (_, i) => currentYear - 1 + i)
 
   const result = await getMonthlyConfirmedSummary(year)
   const rows = result.success ? result.rows : []
@@ -43,10 +43,12 @@ export default async function MonthlyReportPage({ searchParams }: Props) {
             </Link>
           ))}
         </div>
-        <DownloadReportButton
-          label={`${year}년 Excel 다운로드`}
-          action={downloadAction}
-        />
+        {result.success && (
+          <DownloadReportButton
+            label={`${year}년 Excel 다운로드`}
+            action={downloadAction}
+          />
+        )}
       </div>
 
       {!result.success ? (

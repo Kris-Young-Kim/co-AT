@@ -199,6 +199,8 @@ export interface MonthlyConfirmedStats {
   custom_make: number
   grant: number
   education: number
+  info_provision: number
+  other_business: number
 }
 
 export async function getMonthlyConfirmedStats(year: number): Promise<
@@ -210,7 +212,8 @@ export async function getMonthlyConfirmedStats(year: number): Promise<
       .from('eval_service_records')
       .select(
         'client_id, application_month, received_at, ' +
-        'is_consult, is_assessment, is_trial, is_rental, is_custom_make, is_grant, is_education'
+        'is_consult, is_assessment, is_trial, is_rental, is_custom_make, is_grant, is_education, ' +
+        'is_info_provision, is_other_business'
       )
       .eq('record_status', '완료')
       .eq('application_year', year)
@@ -219,7 +222,7 @@ export async function getMonthlyConfirmedStats(year: number): Promise<
 
     const byMonth: Record<number, MonthlyConfirmedStats & { clientIds: Set<string> }> = {}
     for (let m = 1; m <= 12; m++) {
-      byMonth[m] = { month: m, total_cases: 0, total_clients: 0, consult: 0, assessment: 0, trial: 0, rental: 0, custom_make: 0, grant: 0, education: 0, clientIds: new Set() }
+      byMonth[m] = { month: m, total_cases: 0, total_clients: 0, consult: 0, assessment: 0, trial: 0, rental: 0, custom_make: 0, grant: 0, education: 0, info_provision: 0, other_business: 0, clientIds: new Set() }
     }
 
     for (const r of (data ?? []) as unknown as Array<Record<string, unknown>>) {
@@ -234,6 +237,8 @@ export async function getMonthlyConfirmedStats(year: number): Promise<
       if (r.is_custom_make) byMonth[m].custom_make++
       if (r.is_grant) byMonth[m].grant++
       if (r.is_education) byMonth[m].education++
+      if (r.is_info_provision) byMonth[m].info_provision++
+      if (r.is_other_business) byMonth[m].other_business++
     }
 
     const stats: MonthlyConfirmedStats[] = Object.values(byMonth).map(({ clientIds, ...row }) => ({
