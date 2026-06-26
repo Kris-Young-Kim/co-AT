@@ -74,11 +74,14 @@ export function MonthlyReportTable({ rows, year }: Props) {
         <tfoot>
           <tr className="bg-yellow-50 font-semibold text-gray-900">
             <td className="px-3 py-2">합계</td>
-            {COLS.map(c => (
-              <td key={c.key} className="px-3 py-2 text-right tabular-nums">
-                {sumCol(rows, c.key)}
-              </td>
-            ))}
+            {COLS.map(c => {
+              const s = sumCol(rows, c.key)
+              return (
+                <td key={c.key} className="px-3 py-2 text-right tabular-nums">
+                  {s > 0 ? s : '-'}
+                </td>
+              )
+            })}
           </tr>
         </tfoot>
       </table>
