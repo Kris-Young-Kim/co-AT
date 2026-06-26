@@ -6,6 +6,7 @@ import {
   Users, BarChart3, LogOut, Phone, RefreshCw, Clock,
   FileEdit, GraduationCap, Gift, FileText, BarChart2,
   BookOpen, Kanban, QrCode, ClipboardList, Building2, Filter,
+  FileSpreadsheet,
 } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 
@@ -51,6 +52,7 @@ const NAV_ENTRIES: NavEntry[] = [
 
   { type: 'section', label: '지식·관리' },
   { type: 'item', href: '/knowledge', label: '보조기기 결과 이력', icon: BookOpen },
+  { type: 'item', href: '/monthly-report', label: '월별 확정 보고서', icon: FileSpreadsheet },
   { type: 'item', href: '/migration', label: 'Sheets 동기화', icon: RefreshCw },
 ]
 
