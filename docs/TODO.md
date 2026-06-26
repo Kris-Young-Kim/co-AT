@@ -957,10 +957,12 @@
 - [x] `actions/notification-preference-actions.ts` 옵트아웃 CRUD
 - [x] `ClientNotificationPrefsPanel` — 대상자 상세 페이지 알림 설정 토글 UI
 
-#### Phase H-2 — E-5 중앙보조기기센터 보고 양식 자동 집계 (2순위 예정)
+#### ✅ Phase H-2 — E-5 중앙보조기기센터 보고 양식 자동 집계 (완료 2026-06-26)
 > 서비스 기록 확정 → 월별 보고 양식 자동 집계, 중복 수작업 제거
-- [ ] **eval** — 서비스 기록 확정 시 보고 양식 항목 자동 집계 (월별)
-- [ ] **eval/stats** — 보고서 화면 연동 (현황 요약 + 엑셀 내보내기)
+- [x] **eval** — `/monthly-report` 신규 페이지: record_status='완료' 기준 월별 9개 사업유형 자동 집계
+- [x] **eval** — Excel 다운로드 (중앙보조기기센터 제출 양식, 연도별)
+- [x] **eval** — EvalSidebar "월별 확정 보고서" 메뉴 추가
+- [x] **stats** — `/monthly` 페이지에 확정 실적 요약 카드 추가 (연간 합계건수·연인원·9사업유형)
 
 #### Phase H-3 — E-2 상담 예약 셀프 신청 (3순위 예정)
 > 클라이언트 포털에서 상담 일정 슬롯 선택 → 직원 확정·배정
