@@ -73,6 +73,20 @@ export interface ServiceRecord extends ServiceRecordInput {
 export async function createServiceRecord(
   input: ServiceRecordInput
 ): Promise<{ success: boolean; id?: string; error?: string }> {
+  if (!input.received_at) return { success: false, error: '접수일은 필수입니다' }
+  if (
+    input.application_month != null &&
+    (input.application_month < 1 || input.application_month > 12)
+  ) return { success: false, error: '신청월은 1~12 사이여야 합니다' }
+  if (
+    input.application_year != null &&
+    (input.application_year < 2000 || input.application_year > 2100)
+  ) return { success: false, error: '신청년도가 유효하지 않습니다' }
+  if (
+    input.satisfaction_score != null &&
+    (input.satisfaction_score < 1 || input.satisfaction_score > 5)
+  ) return { success: false, error: '만족도 점수는 1~5 사이여야 합니다' }
+
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 

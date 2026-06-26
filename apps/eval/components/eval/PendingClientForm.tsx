@@ -109,7 +109,7 @@ export function PendingClientForm() {
     router.refresh()
   }
 
-  const field = (name: string, label: string, type = 'text', required = false) => (
+  const field = (name: string, label: string, type = 'text', required = false, placeholder?: string) => (
     <div>
       <label className="block text-xs font-medium text-gray-600 mb-1">
         {label}{required && <span className="text-red-500 ml-0.5">*</span>}
@@ -120,6 +120,7 @@ export function PendingClientForm() {
         value={form[name as keyof typeof form] as string}
         onChange={handleChange}
         required={required}
+        placeholder={placeholder}
         className={INPUT}
       />
     </div>
@@ -159,8 +160,8 @@ export function PendingClientForm() {
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          {field('contact', '본인 연락처')}
-          {field('email', '이메일', 'email')}
+          {field('contact', '본인 연락처', 'tel', false, '010-0000-0000')}
+          {field('email', '이메일', 'email', false, 'example@email.com')}
         </div>
         {select('economic_status', '경제상황', ECONOMIC_STATUSES)}
       </fieldset>
@@ -171,7 +172,7 @@ export function PendingClientForm() {
         <div className="grid grid-cols-3 gap-4">
           {field('guardian_name', '보호자 성명')}
           {field('guardian_relationship', '관계')}
-          {field('guardian_contact', '보호자 연락처')}
+          {field('guardian_contact', '보호자 연락처', 'tel', false, '010-0000-0000')}
         </div>
       </fieldset>
 

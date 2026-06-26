@@ -325,8 +325,10 @@ export function ServiceRecordForm({
             <input name="application_no" type="number" className={INPUT} />
           </div>
           <div className="flex items-center gap-2 pt-5">
-            <input name="is_re_application" type="checkbox" value="true" className="rounded border-gray-300" />
-            <label className="text-sm text-gray-700">재신청</label>
+            <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <input name="is_re_application" type="checkbox" value="true" className="rounded border-gray-300" />
+              재신청
+            </label>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4 pt-2 border-t">

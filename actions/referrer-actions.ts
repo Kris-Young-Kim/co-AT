@@ -139,6 +139,8 @@ export async function getReferrerById(id: string): Promise<{ success: boolean; r
 export async function createReferrer(
   input: CreateReferrerInput
 ): Promise<{ success: boolean; referrer?: Referrer; error?: string }> {
+  if (!input.name?.trim()) return { success: false, error: '기관명은 필수입니다' }
+  if (!input.type) return { success: false, error: '기관 유형은 필수입니다' }
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
@@ -160,6 +162,7 @@ export async function updateReferrer(
   id: string,
   input: UpdateReferrerInput
 ): Promise<{ success: boolean; error?: string }> {
+  if (input.name !== undefined && !input.name?.trim()) return { success: false, error: '기관명은 필수입니다' }
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
