@@ -4,9 +4,9 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   createReferrer, updateReferrer,
-  REFERRER_TYPE_LABELS,
   type Referrer, type CreateReferrerInput, type ReferrerType,
 } from '@/actions/referrer-actions'
+import { REFERRER_TYPE_LABELS } from '@/actions/referrer-constants'
 
 const TYPE_OPTIONS = Object.entries(REFERRER_TYPE_LABELS) as [ReferrerType, string][]
 
@@ -48,8 +48,8 @@ export function ReferrerForm({ defaultValues, mode = 'create' }: Props) {
         return
       }
 
-      if (mode === 'create' && 'referrer' in res && res.referrer) {
-        router.push(`/referrers/${res.referrer.id}`)
+      if (mode === 'create' && 'referrer' in res && res.referrer && typeof (res.referrer as Referrer).id === 'string') {
+        router.push(`/referrers/${(res.referrer as Referrer).id}`)
       } else {
         router.push('/referrers')
       }

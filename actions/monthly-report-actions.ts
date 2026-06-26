@@ -68,7 +68,7 @@ export async function getMonthlyConfirmedSummary(year: number): Promise<
     const byMonth: Record<number, MonthlyConfirmedRow & { clientIds: Set<string> }> = {}
     for (let m = 1; m <= 12; m++) byMonth[m] = buildEmptyRow(m)
 
-    for (const r of (data ?? []) as RawServiceRow[]) {
+    for (const r of (data ?? []) as unknown as RawServiceRow[]) {
       const m = r.application_month ?? (r.received_at ? new Date(r.received_at).getMonth() + 1 : null)
       if (!m || !byMonth[m]) continue
 

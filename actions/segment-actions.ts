@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { revalidatePath } from "next/cache"
 import { auth } from "@clerk/nextjs/server"
+import type { Json } from "@/types/database.types"
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -86,7 +87,7 @@ export async function createSegment(
 
   const { data, error } = await supabase
     .from('eval_client_segments')
-    .insert({ ...input, created_by: userId ?? 'system' })
+    .insert({ ...input, filters: input.filters as unknown as Json, created_by: userId ?? 'system' })
     .select()
     .single()
 
@@ -103,7 +104,12 @@ export async function updateSegment(
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
   const supabase = createAdminClient()
-  const { error } = await supabase.from('eval_client_segments').update(input).eq('id', id)
+  const { filters: rawFilters, ...rest } = input
+  const safeInput: { name?: string; description?: string; filters?: Json } = {
+    ...rest,
+    ...(rawFilters !== undefined && { filters: rawFilters as unknown as Json }),
+  }
+  const { error } = await supabase.from('eval_client_segments').update(safeInput).eq('id', id)
   if (error) return { success: false, error: error.message }
 
   revalidatePath('/segments')
@@ -153,8 +159,9 @@ export async function getClientsBySegment(
   }
 
   if (filters.service_type === 'rental') {
-    const { data: rentalIds } = await supabase
-      .from('inventory_rentals')
+    // inventory_rentals table not yet in generated types — cast until types are regenerated
+    const { data: rentalIds } = await (supabase as ReturnType<typeof createAdminClient>)
+      .from('inventory_rentals' as never)
       .select('client_id')
     const ids = (rentalIds ?? []).map((r: any) => r.client_id)
     if (ids.length > 0) query = query.in('id', ids)
