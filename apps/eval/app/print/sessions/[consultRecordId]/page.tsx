@@ -136,36 +136,59 @@ export default async function PrintSessionPage({ params }: Props) {
       {domainItems.length > 0 && (
         <div>
           <h2 className="font-bold text-sm mb-3 border-b pb-1">□ 영역별 평가 결과</h2>
-          <div className="space-y-4">
-            {domainItems.map((item, idx) => (
-              <div key={item.id} className="break-inside-avoid">
-                <h3 className="font-semibold text-xs mb-1">
-                  {idx + 1}. ({item.domain_type}) {DOMAIN_LABELS[item.domain_type] ?? item.domain_type} — {item.evaluation_date}
-                </h3>
-                <table className="w-full border-collapse border border-gray-400 text-xs">
-                  <tbody>
-                    <tr>
-                      <th className="border border-gray-400 bg-gray-100 px-3 py-1.5 text-left font-semibold w-28 align-top">평가자 의견</th>
-                      <td className="border border-gray-400 px-3 py-1.5 whitespace-pre-wrap min-h-[48px]">
-                        {item.evaluator_opinion ?? ''}
-                      </td>
-                    </tr>
-                    <tr>
-                      <th className="border border-gray-400 bg-gray-100 px-3 py-1.5 text-left font-semibold align-top">추천 보조기기</th>
-                      <td className="border border-gray-400 px-3 py-1.5">
-                        {item.recommended_device ?? ''}
-                      </td>
-                    </tr>
-                    <tr>
-                      <th className="border border-gray-400 bg-gray-100 px-3 py-1.5 text-left font-semibold align-top">향후 계획</th>
-                      <td className="border border-gray-400 px-3 py-1.5">
-                        {item.future_plan ?? ''}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            ))}
+          <div className="space-y-5">
+            {domainItems.map((item, idx) => {
+              const evalEntries = item.evaluation_data
+                ? Object.entries(item.evaluation_data).filter(([, v]) =>
+                    v !== null && v !== undefined && v !== '' &&
+                    !(Array.isArray(v) && (v as unknown[]).length === 0)
+                  )
+                : []
+
+              return (
+                <div key={item.id} className="break-inside-avoid">
+                  <h3 className="font-semibold text-xs mb-1.5">
+                    {idx + 1}. ({item.domain_type}) {DOMAIN_LABELS[item.domain_type] ?? item.domain_type} — {item.evaluation_date}
+                  </h3>
+                  <table className="w-full border-collapse border border-gray-400 text-xs">
+                    <tbody>
+                      {evalEntries.map(([key, value]) => (
+                        <tr key={key}>
+                          <th className="border border-gray-400 bg-gray-50 px-3 py-1 text-left font-medium w-36 align-top text-gray-600">
+                            {key.replace(/_/g, ' ')}
+                          </th>
+                          <td className="border border-gray-400 px-3 py-1 whitespace-pre-wrap">
+                            {Array.isArray(value)
+                              ? (value as string[]).join(', ')
+                              : typeof value === 'boolean'
+                              ? (value ? '예' : '아니오')
+                              : String(value)}
+                          </td>
+                        </tr>
+                      ))}
+                      <tr>
+                        <th className="border border-gray-400 bg-gray-100 px-3 py-1.5 text-left font-semibold w-36 align-top">평가자 의견</th>
+                        <td className="border border-gray-400 px-3 py-1.5 whitespace-pre-wrap">
+                          {item.evaluator_opinion ?? ''}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th className="border border-gray-400 bg-gray-100 px-3 py-1.5 text-left font-semibold align-top">추천 보조기기</th>
+                        <td className="border border-gray-400 px-3 py-1.5">
+                          {item.recommended_device ?? ''}
+                        </td>
+                      </tr>
+                      <tr>
+                        <th className="border border-gray-400 bg-gray-100 px-3 py-1.5 text-left font-semibold align-top">향후 계획</th>
+                        <td className="border border-gray-400 px-3 py-1.5">
+                          {item.future_plan ?? ''}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              )
+            })}
           </div>
         </div>
       )}

@@ -79,7 +79,11 @@ export default async function AssessmentSessionDetailPage({ params }: Props) {
             이 상담기록지에 연결된 영역 평가가 없습니다
           </p>
         ) : (
-          <SessionDomainList initialItems={domainItems} />
+          <SessionDomainList
+            initialItems={domainItems}
+            consultRecordId={consultRecordId}
+            clientId={clientId}
+          />
         )}
       </div>
     </div>

@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation'
 import {
   Users, BarChart3, LogOut, Phone, RefreshCw, Clock,
   FileEdit, GraduationCap, Gift, FileText, BarChart2,
-  BookOpen, Kanban, QrCode, ClipboardList, Building2, Filter,
+  BookOpen, Kanban, QrCode, ClipboardList, Building2, Filter, ClipboardCheck,
+  ExternalLink, Package, Globe,
 } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 
@@ -38,6 +39,7 @@ const NAV_ENTRIES: NavEntry[] = [
   { type: 'item', href: '/education', label: '교육 이력', icon: GraduationCap },
 
   { type: 'section', label: '영역별 평가' },
+  { type: 'item', href: '/sessions', label: '평가 세션 목록', icon: ClipboardCheck },
   { type: 'item', href: '/assessments', label: '평가 목록', icon: ClipboardList },
 
   { type: 'section', label: '교부사업 평가' },
@@ -110,9 +112,43 @@ export function EvalSidebar() {
         })}
       </nav>
 
+      <div className="border-t pt-3 mt-2">
+        <p className="px-3 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">다른 앱</p>
+        <a
+          href="https://stats.gwatc.cloud"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+        >
+          <BarChart3 className="h-4 w-4 shrink-0" />
+          통계
+          <ExternalLink className="h-3 w-3 ml-auto shrink-0 text-gray-400" />
+        </a>
+        <a
+          href="https://inventory.gwatc.cloud"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+        >
+          <Package className="h-4 w-4 shrink-0" />
+          보조기기 재고
+          <ExternalLink className="h-3 w-3 ml-auto shrink-0 text-gray-400" />
+        </a>
+        <a
+          href="https://gwatc.cloud"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+        >
+          <Globe className="h-4 w-4 shrink-0" />
+          홈페이지
+          <ExternalLink className="h-3 w-3 ml-auto shrink-0 text-gray-400" />
+        </a>
+      </div>
+
       <button
         onClick={() => signOut({ redirectUrl: '/sign-in' })}
-        className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors mt-2"
+        className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors mt-1"
       >
         <LogOut className="h-4 w-4 shrink-0" />
         로그아웃

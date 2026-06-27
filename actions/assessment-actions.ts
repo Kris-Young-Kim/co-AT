@@ -284,6 +284,77 @@ export interface AssessmentListItem {
   disability_type: string | null;
 }
 
+export interface AssessmentSession {
+  id: string
+  client_id: string
+  client_name: string
+  consultation_date: string
+  consultation_type: string
+  consultant: string | null
+  domain_types: string[]
+}
+
+export async function getAssessmentSessions(): Promise<{
+  success: boolean;
+  sessions?: AssessmentSession[];
+  error?: string;
+}> {
+  const hasPermission = await hasAdminOrStaffPermission();
+  if (!hasPermission) return { success: false, error: "권한이 없습니다" };
+
+  const supabase = createAdminClient();
+
+  // Step 1: all consultation records ordered by date
+  const { data: records, error: recErr } = await (supabase as any)
+    .from("eval_consultation_records")
+    .select("id,client_id,consultation_date,consultation_type,consultant")
+    .order("consultation_date", { ascending: false })
+    .limit(300);
+
+  if (recErr) {
+    console.error("getAssessmentSessions:", recErr);
+    return { success: false, error: "세션 목록 조회에 실패했습니다" };
+  }
+  if (!records || records.length === 0) return { success: true, sessions: [] };
+
+  const recordIds = (records as Record<string, unknown>[]).map(r => r.id as string);
+  const clientIds = [...new Set<string>((records as Record<string, unknown>[]).map(r => r.client_id as string))];
+
+  // Step 2: domain types per consultation record
+  const { data: domainRows } = await (supabase as any)
+    .from("domain_assessments")
+    .select("consultation_record_id,domain_type")
+    .in("consultation_record_id", recordIds);
+
+  const domainMap = new Map<string, string[]>();
+  for (const row of domainRows ?? []) {
+    const key = row.consultation_record_id as string;
+    if (!domainMap.has(key)) domainMap.set(key, []);
+    domainMap.get(key)!.push(row.domain_type as string);
+  }
+
+  // Step 3: client names
+  const { data: clients } = await (supabase as any)
+    .from("clients")
+    .select("id,name")
+    .in("id", clientIds);
+
+  const clientNameMap = new Map<string, string>();
+  for (const c of clients ?? []) clientNameMap.set(c.id as string, c.name as string);
+
+  const sessions: AssessmentSession[] = (records as Record<string, unknown>[]).map(r => ({
+    id: r.id as string,
+    client_id: r.client_id as string,
+    client_name: clientNameMap.get(r.client_id as string) ?? "—",
+    consultation_date: r.consultation_date as string,
+    consultation_type: r.consultation_type as string,
+    consultant: (r.consultant as string | null) ?? null,
+    domain_types: domainMap.get(r.id as string) ?? [],
+  }));
+
+  return { success: true, sessions };
+}
+
 export async function getAllDomainAssessments(): Promise<{
   success: boolean;
   assessments?: AssessmentListItem[];
