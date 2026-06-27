@@ -153,7 +153,7 @@ export async function getClientsBySegment(
   }
 
   if (filters.service_type === 'rental') {
-    const { data: rentalIds } = await supabase
+    const { data: rentalIds } = await (supabase as any)
       .from('inventory_rentals')
       .select('client_id')
     const ids = (rentalIds ?? []).map((r: any) => r.client_id)
@@ -162,7 +162,7 @@ export async function getClientsBySegment(
   }
 
   if (filters.service_type === 'custom') {
-    const { data: customIds } = await supabase
+    const { data: customIds } = await (supabase as any)
       .from('inventory_custom_orders')
       .select('client_id')
     const ids = (customIds ?? []).map((r: any) => r.client_id)
