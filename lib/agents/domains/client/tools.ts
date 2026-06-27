@@ -288,6 +288,7 @@ export const createClientTool: AgentToolImplementation = async (args) => {
       assigned_staff_id: null,
       source: "agent",
       status: "active",
+      lifecycle_status: "active",
     }
 
     const result = await createClientRecord(clientData)
