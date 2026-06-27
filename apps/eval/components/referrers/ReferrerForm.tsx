@@ -49,7 +49,7 @@ export function ReferrerForm({ defaultValues, mode = 'create' }: Props) {
       }
 
       if (mode === 'create' && 'referrer' in res && res.referrer) {
-        router.push(`/referrers/${res.referrer.id}`)
+        router.push(`/referrers/${(res.referrer as Referrer).id}`)
       } else {
         router.push('/referrers')
       }
