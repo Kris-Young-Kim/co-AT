@@ -7,8 +7,13 @@ import GrantEvalKanban from '@/eval/components/grant-eval/GrantEvalKanban'
 import { cn } from '@/lib/utils'
 
 interface Props {
-  searchParams: Promise<{ year?: string; org?: string; status?: string; view?: string }>
+  searchParams: Promise<{ year?: string; org?: string; status?: string; view?: string; search?: string }>
 }
+
+const GANGWON_SIGUN = [
+  '춘천시', '원주시', '강릉시', '동해시', '태백시', '속초시', '삼척시',
+  '홍천군', '횡성군', '영월군', '평창군', '정선군', '철원군', '화천군', '양구군', '인제군', '고성군', '양양군',
+]
 
 const RESULT_COLOR: Record<string, string> = {
   '적합': 'bg-green-100 text-green-700',
@@ -29,9 +34,10 @@ export default async function GrantEvalListPage({ searchParams }: Props) {
   const year = params.year ? parseInt(params.year) : new Date().getFullYear()
   const org = params.org
   const status = params.status
+  const search = params.search
   const view = params.view === 'board' ? 'board' : 'list'
 
-  const result = await listGrantAssessments({ year, referralOrg: org, status })
+  const result = await listGrantAssessments({ year, referralOrg: org, status, clientName: search })
   const assessments = result.success ? result.assessments ?? [] : []
 
   const badgeResult = await getActiveServiceBadgesByClientIds(assessments.map(a => a.client_id))
@@ -56,42 +62,77 @@ export default async function GrantEvalListPage({ searchParams }: Props) {
       </div>
 
       {/* 필터 */}
-      <form method="GET" className="flex gap-3 mb-6 flex-wrap">
+      <form method="GET" className="flex gap-3 mb-6 flex-wrap items-end">
         <input type="hidden" name="view" value={view} />
-        <select
-          name="year"
-          defaultValue={year}
-          className="px-3 py-2 border rounded-md text-sm focus:outline-none"
-        >
-          {years.map((y) => (
-            <option key={y} value={y}>{y}년</option>
-          ))}
-        </select>
-        <input
-          name="org"
-          defaultValue={org}
-          placeholder="의뢰기관 검색"
-          className="px-3 py-2 border rounded-md text-sm focus:outline-none w-48"
-        />
-        <select
-          name="status"
-          defaultValue={status ?? ''}
-          className="px-3 py-2 border rounded-md text-sm focus:outline-none"
-        >
-          <option value="">전체 상태</option>
-          <option value="draft">작성중</option>
-          <option value="submitted">제출됨</option>
-          <option value="completed">완료</option>
-        </select>
-        <button type="submit" className="px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-md hover:bg-gray-200">
+
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-500">연도</label>
+          <select
+            name="year"
+            defaultValue={year}
+            className="px-3 py-2 border rounded-md text-sm focus:outline-none"
+          >
+            {years.map((y) => (
+              <option key={y} value={y}>{y}년</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-500">의뢰기관</label>
+          <select
+            name="org"
+            defaultValue={org ?? ''}
+            className="px-3 py-2 border rounded-md text-sm focus:outline-none"
+          >
+            <option value="">전체</option>
+            {GANGWON_SIGUN.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-500">상태</label>
+          <select
+            name="status"
+            defaultValue={status ?? ''}
+            className="px-3 py-2 border rounded-md text-sm focus:outline-none"
+          >
+            <option value="">전체</option>
+            <option value="draft">작성중</option>
+            <option value="submitted">제출됨</option>
+            <option value="completed">완료</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-500">대상자명</label>
+          <input
+            name="search"
+            defaultValue={search ?? ''}
+            placeholder="이름 검색"
+            className="px-3 py-2 border rounded-md text-sm focus:outline-none w-36"
+          />
+        </div>
+
+        <button type="submit" className="px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-md hover:bg-gray-200 self-end">
           검색
         </button>
+        {(org || status || search) && (
+          <Link
+            href={`/grant-eval?year=${year}&view=${view}`}
+            className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700 self-end"
+          >
+            초기화
+          </Link>
+        )}
       </form>
 
       {/* 뷰 토글 */}
       <div className="flex gap-2 mb-4">
         <Link
-          href={`/grant-eval?year=${year}${org ? `&org=${org}` : ''}${status ? `&status=${status}` : ''}&view=list`}
+          href={`/grant-eval?year=${year}${org ? `&org=${org}` : ''}${status ? `&status=${status}` : ''}${search ? `&search=${search}` : ''}&view=list`}
           className={cn(
             "px-3 py-1.5 text-xs rounded-md border font-medium transition-colors",
             view === 'list' ? "bg-gray-900 text-white border-gray-900" : "text-gray-600 hover:bg-gray-50"
@@ -100,7 +141,7 @@ export default async function GrantEvalListPage({ searchParams }: Props) {
           목록
         </Link>
         <Link
-          href={`/grant-eval?year=${year}${org ? `&org=${org}` : ''}${status ? `&status=${status}` : ''}&view=board`}
+          href={`/grant-eval?year=${year}${org ? `&org=${org}` : ''}${status ? `&status=${status}` : ''}${search ? `&search=${search}` : ''}&view=board`}
           className={cn(
             "px-3 py-1.5 text-xs rounded-md border font-medium transition-colors",
             view === 'board' ? "bg-gray-900 text-white border-gray-900" : "text-gray-600 hover:bg-gray-50"
