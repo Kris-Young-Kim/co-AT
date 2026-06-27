@@ -167,7 +167,7 @@ export async function generateServiceRecordReport(params: {
     r.getCell(4).value = record.application_month as number
     r.getCell(5).value = record.application_no as number
     r.getCell(6).value = record.is_re_application ? '재신청' : ''
-    r.getCell(7).value = toReportStatus(record.record_status)
+    r.getCell(7).value = toReportStatus(record.record_status as string | null)
     r.getCell(10).value = record.gender as string
     r.getCell(11).value = record.economic_status as string
     r.getCell(42).value = record.service_major_category as string

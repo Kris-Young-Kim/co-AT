@@ -357,7 +357,7 @@ export async function getReferrerReferralStats(referrerId: string): Promise<{
 
   if (error) return { success: false, error: error.message }
 
-  const records = (data ?? []) as { service_date: string; status: string }[]
+  const records = (data ?? []) as unknown as { service_date: string; status: string }[]
 
   // Group by year + quarter
   const map = new Map<string, number>()
