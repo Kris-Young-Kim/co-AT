@@ -85,7 +85,11 @@ export async function createServiceRecord(
     .select('id')
     .single()
 
-  if (error) return { success: false, error: error.message }
+  if (error) {
+    console.error("createServiceRecord DB error:", error)
+    if (error.code === "23503") return { success: false, error: "유효하지 않은 신청서입니다. 신청서를 먼저 등록해주세요." }
+    return { success: false, error: "서비스 기록 저장에 실패했습니다" }
+  }
 
   if (input.client_id && input.application_id) {
     revalidatePath(`/clients/${input.client_id}/applications/${input.application_id}`)
@@ -111,7 +115,10 @@ export async function updateServiceRecord(
     .select('client_id, service_type, record_status')
     .single()
 
-  if (error) return { success: false, error: error.message }
+  if (error) {
+    console.error("updateServiceRecord DB error:", error)
+    return { success: false, error: "서비스 기록 수정에 실패했습니다" }
+  }
 
   revalidatePath('/service-records')
 
