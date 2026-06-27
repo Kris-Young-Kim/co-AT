@@ -4,34 +4,11 @@ import { getDomainAssessmentsByConsultationRecord } from '@/actions/assessment-a
 import type { ConsultDomainAssessment } from '@/actions/assessment-actions'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Printer } from 'lucide-react'
+import { DomainAssessmentEditCard } from '@/eval/components/eval/DomainAssessmentEditCard'
 
 interface Props {
   params: Promise<{ clientId: string; consultRecordId: string }>
-}
-
-const DOMAIN_LABELS: Record<string, string> = {
-  WC: '휠체어 및 이동',
-  ADL: '일상생활동작',
-  S: '감각',
-  SP: '앉기 및 자세',
-  EC: '주택 및 환경개조',
-  CA: '컴퓨터접근',
-  L: '레저',
-  AAC: '보완대체의사소통',
-  AM: '자동차개조',
-}
-
-const DOMAIN_COLORS: Record<string, string> = {
-  WC: 'bg-blue-50 text-blue-700',
-  ADL: 'bg-green-50 text-green-700',
-  S: 'bg-yellow-50 text-yellow-700',
-  SP: 'bg-purple-50 text-purple-700',
-  EC: 'bg-orange-50 text-orange-700',
-  CA: 'bg-cyan-50 text-cyan-700',
-  L: 'bg-pink-50 text-pink-700',
-  AAC: 'bg-indigo-50 text-indigo-700',
-  AM: 'bg-red-50 text-red-700',
 }
 
 export default async function AssessmentSessionDetailPage({ params }: Props) {
@@ -48,17 +25,29 @@ export default async function AssessmentSessionDetailPage({ params }: Props) {
 
   const client = clientResult.client
   const consult = consultResult.record
-  const domainItems: ConsultDomainAssessment[] = assessmentsResult.success ? (assessmentsResult.assessments ?? []) : []
+  const domainItems: ConsultDomainAssessment[] = assessmentsResult.success
+    ? (assessmentsResult.assessments ?? [])
+    : []
 
   return (
     <div className="p-8 max-w-3xl">
-      <Link
-        href={`/clients/${clientId}`}
-        className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-6"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        대상자 정보로
-      </Link>
+      <div className="flex items-center justify-between mb-6">
+        <Link
+          href={`/clients/${clientId}`}
+          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          대상자 정보로
+        </Link>
+        <Link
+          href={`/print/sessions/${consultRecordId}`}
+          target="_blank"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm border rounded-lg text-gray-600 hover:bg-gray-50"
+        >
+          <Printer className="h-4 w-4" />
+          인쇄
+        </Link>
+      </div>
 
       {/* Client + session header */}
       <div className="mb-6">
@@ -108,7 +97,7 @@ export default async function AssessmentSessionDetailPage({ params }: Props) {
         </dl>
       </div>
 
-      {/* Domain assessments */}
+      {/* Domain assessments (editable) */}
       <div>
         <h2 className="text-sm font-semibold text-gray-700 mb-3">
           영역별 평가
@@ -124,40 +113,7 @@ export default async function AssessmentSessionDetailPage({ params }: Props) {
         ) : (
           <div className="space-y-4">
             {domainItems.map(item => (
-              <div key={item.id} className="border rounded-lg overflow-hidden bg-white">
-                <div className="flex items-center gap-3 px-4 py-3 bg-gray-50 border-b">
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${DOMAIN_COLORS[item.domain_type] ?? 'bg-gray-100 text-gray-600'}`}>
-                    {item.domain_type}
-                  </span>
-                  <span className="text-sm font-medium text-gray-800">
-                    {DOMAIN_LABELS[item.domain_type] ?? item.domain_type}
-                  </span>
-                  <span className="ml-auto text-xs text-gray-400">{item.evaluation_date}</span>
-                </div>
-                <div className="px-4 py-3 space-y-2 text-sm">
-                  {item.evaluator_opinion && (
-                    <div>
-                      <span className="text-xs font-medium text-gray-500">평가자 의견</span>
-                      <p className="mt-0.5 text-gray-700 whitespace-pre-wrap">{item.evaluator_opinion}</p>
-                    </div>
-                  )}
-                  {item.recommended_device && (
-                    <div>
-                      <span className="text-xs font-medium text-gray-500">추천 보조기기</span>
-                      <p className="mt-0.5 text-gray-700">{item.recommended_device}</p>
-                    </div>
-                  )}
-                  {item.future_plan && (
-                    <div>
-                      <span className="text-xs font-medium text-gray-500">향후 계획</span>
-                      <p className="mt-0.5 text-gray-700">{item.future_plan}</p>
-                    </div>
-                  )}
-                  {!item.evaluator_opinion && !item.recommended_device && !item.future_plan && (
-                    <p className="text-gray-400 text-xs">세부 내용 없음</p>
-                  )}
-                </div>
-              </div>
+              <DomainAssessmentEditCard key={item.id} assessment={item} />
             ))}
           </div>
         )}
