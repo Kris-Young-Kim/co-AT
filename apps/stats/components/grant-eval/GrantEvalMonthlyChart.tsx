@@ -28,7 +28,7 @@ export function GrantEvalMonthlyChart({ stats, year }: Props) {
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="month" tick={{ fontSize: 12 }} />
           <YAxis allowDecimals={false} tick={{ fontSize: 12 }} width={32} />
-          <Tooltip formatter={(value: number) => [`${value}건`]} />
+          <Tooltip formatter={(value) => [`${value ?? 0}건`]} />
           <Legend wrapperStyle={{ fontSize: 12 }} />
           <Bar dataKey="전체" fill="#bfdbfe" radius={[3, 3, 0, 0]} />
           <Bar dataKey="적합" fill="#2563eb" radius={[3, 3, 0, 0]} />
