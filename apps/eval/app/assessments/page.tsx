@@ -1,6 +1,6 @@
 import { getAllDomainAssessments } from '@/actions/assessment-actions'
 import Link from 'next/link'
-import { ClipboardList, ExternalLink } from 'lucide-react'
+import { ClipboardList } from 'lucide-react'
 
 const DOMAIN_LABELS: Record<string, string> = {
   WC: '휠체어 및 이동',
@@ -30,10 +30,10 @@ export default async function AssessmentsPage() {
   const result = await getAllDomainAssessments()
   const assessments = result.success ? (result.assessments ?? []) : []
 
-  // 대상자별 그룹화
+  // Group by client_id
   const byClient = new Map<string, typeof assessments>()
   for (const a of assessments) {
-    const key = a.client_id
+    const key = a.client_id ?? `app-${a.application_id}`
     if (!byClient.has(key)) byClient.set(key, [])
     byClient.get(key)!.push(a)
   }
@@ -52,15 +52,31 @@ export default async function AssessmentsPage() {
         <div className="text-center py-16 text-gray-400">
           <ClipboardList className="h-10 w-10 mx-auto mb-3 opacity-40" />
           <p className="text-sm">등록된 평가가 없습니다</p>
-          <p className="text-xs mt-1">대상자 → 신청서 → 평가하기에서 작성하세요</p>
+          <p className="text-xs mt-1">대상자 → 상담 및 평가 시작에서 작성하세요</p>
         </div>
       ) : (
         <div className="space-y-6">
-          {Array.from(byClient.entries()).map(([clientId, items]) => {
+          {Array.from(byClient.entries()).map(([groupKey, items]) => {
             const first = items[0]
-            const appId = first.application_id
+            const clientId = first.client_id
+            const clientHref = clientId ? `/clients/${clientId}` : null
+
+            // Group items by consultation_record_id within the client
+            const byConsult = new Map<string, typeof items>()
+            const standalone: typeof items = []
+            for (const item of items) {
+              if (item.consultation_record_id) {
+                const g = byConsult.get(item.consultation_record_id) ?? []
+                g.push(item)
+                byConsult.set(item.consultation_record_id, g)
+              } else {
+                standalone.push(item)
+              }
+            }
+
             return (
-              <div key={clientId} className="border rounded-lg overflow-hidden">
+              <div key={groupKey} className="border rounded-lg overflow-hidden">
+                {/* Client header */}
                 <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b">
                   <div>
                     <span className="font-semibold text-sm">{first.client_name}</span>
@@ -72,29 +88,62 @@ export default async function AssessmentsPage() {
                     )}
                   </div>
                   <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span>{items.length}/9 영역 완료</span>
-                    <Link
-                      href={`/clients/${clientId}/applications/${appId}/assessment`}
-                      className="flex items-center gap-1 px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700"
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                      평가하기
-                    </Link>
+                    <span>{items.length}건</span>
+                    {clientHref && (
+                      <Link
+                        href={clientHref}
+                        className="px-2 py-1 bg-gray-200 text-gray-700 rounded text-xs hover:bg-gray-300"
+                      >
+                        대상자 보기
+                      </Link>
+                    )}
                   </div>
                 </div>
+
                 <div className="divide-y">
-                  {items.map((a) => (
-                    <Link
-                      key={a.id}
-                      href={`/clients/${a.client_id}/applications/${a.application_id}/assessment?domain=${a.domain_type}`}
-                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors"
-                    >
+                  {/* Consultation-linked groups */}
+                  {Array.from(byConsult.entries()).map(([consultId, group]) => {
+                    const href = clientId
+                      ? `/clients/${clientId}/sessions/${consultId}`
+                      : null
+                    const Row = href ? Link : 'div'
+                    return (
+                      <Row
+                        key={consultId}
+                        {...(href ? { href } : {})}
+                        className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="shrink-0 pt-0.5">
+                          <span className="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">상담</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex flex-wrap gap-1.5 mb-1">
+                            {group.map(a => (
+                              <span
+                                key={a.id}
+                                className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${DOMAIN_COLORS[a.domain_type] ?? 'bg-gray-100 text-gray-600'}`}
+                              >
+                                {a.domain_type}
+                                <span className="ml-1 font-normal opacity-70">{DOMAIN_LABELS[a.domain_type] ?? ''}</span>
+                              </span>
+                            ))}
+                          </div>
+                          <p className="text-xs text-gray-400">{group[0].evaluation_date}</p>
+                        </div>
+                        <span className="text-xs text-gray-400 shrink-0">{group.length}개 영역</span>
+                      </Row>
+                    )
+                  })}
+
+                  {/* Standalone (application-linked) */}
+                  {standalone.map(a => (
+                    <div key={a.id} className="flex items-center gap-3 px-4 py-2.5">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${DOMAIN_COLORS[a.domain_type] ?? 'bg-gray-100 text-gray-600'}`}>
                         {a.domain_type}
                       </span>
-                      <span className="text-sm flex-1">{DOMAIN_LABELS[a.domain_type] ?? a.domain_type}</span>
+                      <span className="text-sm flex-1 text-gray-600">{DOMAIN_LABELS[a.domain_type] ?? a.domain_type}</span>
                       <span className="text-xs text-gray-400">{a.evaluation_date}</span>
-                    </Link>
+                    </div>
                   ))}
                 </div>
               </div>

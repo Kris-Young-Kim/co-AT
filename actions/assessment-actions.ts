@@ -110,9 +110,14 @@ export async function getDomainAssessments(applicationId: string): Promise<{
   }
 }
 
+export interface ConsultDomainAssessment extends ClientDomainAssessment {
+  evaluation_data: Record<string, unknown> | null;
+  measurements: Record<string, number> | null;
+}
+
 export async function getDomainAssessmentsByConsultationRecord(
   consultationRecordId: string
-): Promise<{ success: boolean; assessments?: unknown[]; error?: string }> {
+): Promise<{ success: boolean; assessments?: ConsultDomainAssessment[]; error?: string }> {
   try {
     const hasPermission = await hasAdminOrStaffPermission();
     if (!hasPermission) return { success: false, error: "권한이 없습니다" };
@@ -120,7 +125,7 @@ export async function getDomainAssessmentsByConsultationRecord(
     const supabase = createAdminClient();
     const { data, error } = await (supabase as any)
       .from("domain_assessments")
-      .select("*")
+      .select("id,domain_type,evaluation_date,consultation_record_id,application_id,client_id,evaluator_opinion,recommended_device,future_plan,evaluation_data,measurements")
       .eq("consultation_record_id", consultationRecordId)
       .order("evaluation_date", { ascending: false });
 
@@ -128,16 +133,28 @@ export async function getDomainAssessmentsByConsultationRecord(
       console.error("getDomainAssessmentsByConsultationRecord:", error);
       return { success: false, error: "평가 조회에 실패했습니다" };
     }
-    return { success: true, assessments: data ?? [] };
+    return { success: true, assessments: (data ?? []) as ConsultDomainAssessment[] };
   } catch (e) {
     console.error("getDomainAssessmentsByConsultationRecord:", e);
     return { success: false, error: "예상치 못한 오류가 발생했습니다" };
   }
 }
 
+export interface ClientDomainAssessment {
+  id: string;
+  domain_type: string;
+  evaluation_date: string;
+  consultation_record_id: string | null;
+  application_id: string | null;
+  client_id: string | null;
+  evaluator_opinion: string | null;
+  recommended_device: string | null;
+  future_plan: string | null;
+}
+
 export async function getDomainAssessmentsByClient(
   clientId: string
-): Promise<{ success: boolean; assessments?: unknown[]; error?: string }> {
+): Promise<{ success: boolean; assessments?: ClientDomainAssessment[]; error?: string }> {
   try {
     const hasPermission = await hasAdminOrStaffPermission();
     if (!hasPermission) return { success: false, error: "권한이 없습니다" };
@@ -145,7 +162,7 @@ export async function getDomainAssessmentsByClient(
     const supabase = createAdminClient();
     const { data, error } = await (supabase as any)
       .from("domain_assessments")
-      .select("*")
+      .select("id,domain_type,evaluation_date,consultation_record_id,application_id,client_id,evaluator_opinion,recommended_device,future_plan")
       .eq("client_id", clientId)
       .order("evaluation_date", { ascending: false });
 
@@ -153,7 +170,7 @@ export async function getDomainAssessmentsByClient(
       console.error("getDomainAssessmentsByClient:", error);
       return { success: false, error: "평가 조회에 실패했습니다" };
     }
-    return { success: true, assessments: data ?? [] };
+    return { success: true, assessments: (data ?? []) as ClientDomainAssessment[] };
   } catch (e) {
     console.error("getDomainAssessmentsByClient:", e);
     return { success: false, error: "예상치 못한 오류가 발생했습니다" };
