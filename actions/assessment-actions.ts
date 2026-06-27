@@ -266,13 +266,11 @@ export async function getAllDomainAssessments(): Promise<{
   if (!hasPermission) return { success: false, error: "권한이 없습니다" };
 
   const supabase = createAdminClient();
-  const { data, error } = await (supabase as any)
+
+  // Step 1: raw domain assessments
+  const { data: rows, error } = await (supabase as any)
     .from("domain_assessments")
-    .select(`
-      id, domain_type, evaluation_date, application_id, consultation_record_id, client_id,
-      applications(id, client_id, clients(id, name, birth_date, disability_type)),
-      eval_consultation_records(id, client_id, eval_clients(id, name, birth_date, disability_type))
-    `)
+    .select("id,domain_type,evaluation_date,application_id,consultation_record_id,client_id")
     .order("evaluation_date", { ascending: false })
     .limit(500);
 
@@ -281,22 +279,56 @@ export async function getAllDomainAssessments(): Promise<{
     return { success: false, error: "평가 목록 조회에 실패했습니다" };
   }
 
-  const assessments: AssessmentListItem[] = (data ?? []).map((row: Record<string, unknown>) => {
-    const appRow = row.applications as Record<string, unknown> | null;
-    const consultRow = row.eval_consultation_records as Record<string, unknown> | null;
-    const appClient = appRow?.clients as Record<string, unknown> | null;
-    const consultClient = consultRow?.eval_clients as Record<string, unknown> | null;
-    const clientData = appClient ?? consultClient;
+  // Step 2: collect unique IDs for batch lookups
+  const directClientIds = [...new Set<string>(
+    (rows as Record<string, unknown>[]).filter(r => r.client_id).map(r => r.client_id as string)
+  )];
+  const appIds = [...new Set<string>(
+    (rows as Record<string, unknown>[]).filter(r => r.application_id && !r.client_id).map(r => r.application_id as string)
+  )];
+
+  interface ClientRow { id: string; name: string; birth_date: string | null; disability_type: string | null }
+  const clientMap = new Map<string, ClientRow>();
+
+  // Step 3: direct client lookup
+  if (directClientIds.length > 0) {
+    const { data: clients } = await (supabase as any)
+      .from("clients")
+      .select("id,name,birth_date,disability_type")
+      .in("id", directClientIds);
+    for (const c of clients ?? []) clientMap.set(c.id, c as ClientRow);
+  }
+
+  // Step 4: application-linked client lookup
+  const appClientMap = new Map<string, { clientId: string } & ClientRow>();
+  if (appIds.length > 0) {
+    const { data: apps } = await (supabase as any)
+      .from("applications")
+      .select("id,client_id,clients!inner(id,name,birth_date,disability_type)")
+      .in("id", appIds);
+    for (const a of apps ?? []) {
+      if (a.clients) {
+        appClientMap.set(a.id as string, { clientId: a.client_id as string, ...a.clients as ClientRow });
+      }
+    }
+  }
+
+  // Step 5: assemble results
+  const assessments: AssessmentListItem[] = (rows as Record<string, unknown>[]).map(row => {
+    const clientId = (row.client_id as string | null);
+    const appId = (row.application_id as string | null);
+    const clientInfo = clientId ? clientMap.get(clientId) : appId ? appClientMap.get(appId) : undefined;
+    const resolvedClientId = clientId ?? (appId ? appClientMap.get(appId)?.clientId ?? null : null);
     return {
       id: row.id as string,
       domain_type: row.domain_type as string,
       evaluation_date: row.evaluation_date as string,
-      application_id: (row.application_id as string | null) ?? null,
+      application_id: appId,
       consultation_record_id: (row.consultation_record_id as string | null) ?? null,
-      client_id: (row.client_id as string | null) ?? (appRow?.client_id as string | null) ?? null,
-      client_name: (clientData?.name as string | null) ?? "—",
-      birth_date: (clientData?.birth_date as string | null) ?? null,
-      disability_type: (clientData?.disability_type as string | null) ?? null,
+      client_id: resolvedClientId,
+      client_name: clientInfo?.name ?? "—",
+      birth_date: clientInfo?.birth_date ?? null,
+      disability_type: clientInfo?.disability_type ?? null,
     };
   });
 
