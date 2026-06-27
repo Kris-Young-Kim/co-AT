@@ -204,6 +204,33 @@ export async function getDomainAssessmentById(assessmentId: string): Promise<{
   }
 }
 
+export async function deleteDomainAssessment(
+  assessmentId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission();
+    if (!hasPermission) return { success: false, error: "권한이 없습니다" };
+
+    const supabase = createAdminClient();
+    const { error } = await (supabase as any)
+      .from("domain_assessments")
+      .delete()
+      .eq("id", assessmentId);
+
+    if (error) {
+      console.error("deleteDomainAssessment:", error);
+      return { success: false, error: "삭제에 실패했습니다" };
+    }
+
+    revalidatePath("/clients");
+    revalidatePath("/assessments");
+    return { success: true };
+  } catch (e) {
+    console.error("deleteDomainAssessment:", e);
+    return { success: false, error: "예상치 못한 오류가 발생했습니다" };
+  }
+}
+
 export async function updateDomainAssessment(
   assessmentId: string,
   updates: Partial<DomainAssessmentInput>

@@ -6,6 +6,8 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Printer } from 'lucide-react'
 import { DomainAssessmentEditCard } from '@/eval/components/eval/DomainAssessmentEditCard'
+import { ConsultationRecordEditSection } from '@/eval/components/eval/ConsultationRecordEditSection'
+import { SessionDomainList } from '@/eval/components/eval/SessionDomainList'
 
 interface Props {
   params: Promise<{ clientId: string; consultRecordId: string }>
@@ -60,44 +62,10 @@ export default async function AssessmentSessionDetailPage({ params }: Props) {
         </p>
       </div>
 
-      {/* Consultation record */}
-      <div className="border rounded-lg p-5 bg-white mb-6">
-        <h2 className="text-sm font-semibold text-gray-700 mb-4 pb-2 border-b">상담기록지</h2>
-        <dl className="space-y-3 text-sm">
-          {consult.purpose && (
-            <div>
-              <dt className="text-xs font-medium text-gray-500 mb-0.5">상담 목적</dt>
-              <dd className="text-gray-800">{consult.purpose}</dd>
-            </div>
-          )}
-          {consult.current_situation && (
-            <div>
-              <dt className="text-xs font-medium text-gray-500 mb-0.5">현재 상황</dt>
-              <dd className="text-gray-800 whitespace-pre-wrap">{consult.current_situation}</dd>
-            </div>
-          )}
-          {consult.content && (
-            <div>
-              <dt className="text-xs font-medium text-gray-500 mb-0.5">상담 내용</dt>
-              <dd className="text-gray-800 whitespace-pre-wrap">{consult.content}</dd>
-            </div>
-          )}
-          {consult.result && (
-            <div>
-              <dt className="text-xs font-medium text-gray-500 mb-0.5">상담 결과</dt>
-              <dd className="text-gray-800 whitespace-pre-wrap">{consult.result}</dd>
-            </div>
-          )}
-          {consult.next_plan && (
-            <div>
-              <dt className="text-xs font-medium text-gray-500 mb-0.5">다음 계획</dt>
-              <dd className="text-gray-800 whitespace-pre-wrap">{consult.next_plan}</dd>
-            </div>
-          )}
-        </dl>
-      </div>
+      {/* Consultation record (editable + deletable) */}
+      <ConsultationRecordEditSection record={consult} clientId={clientId} />
 
-      {/* Domain assessments (editable) */}
+      {/* Domain assessments (editable + deletable) */}
       <div>
         <h2 className="text-sm font-semibold text-gray-700 mb-3">
           영역별 평가
@@ -111,11 +79,7 @@ export default async function AssessmentSessionDetailPage({ params }: Props) {
             이 상담기록지에 연결된 영역 평가가 없습니다
           </p>
         ) : (
-          <div className="space-y-4">
-            {domainItems.map(item => (
-              <DomainAssessmentEditCard key={item.id} assessment={item} />
-            ))}
-          </div>
+          <SessionDomainList initialItems={domainItems} />
         )}
       </div>
     </div>

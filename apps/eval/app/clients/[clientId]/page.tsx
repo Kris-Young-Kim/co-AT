@@ -201,6 +201,48 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
           </Link>
         </div>
 
+        {/* 9개 영역 커버리지 */}
+        {(() => {
+          const ALL_DOMAINS = ['WC', 'ADL', 'S', 'SP', 'EC', 'CA', 'L', 'AAC', 'AM'] as const
+          const DOMAIN_LABELS_MAP: Record<string, string> = {
+            WC: '휠체어', ADL: '일상생활', S: '감각', SP: '자세', EC: '환경개조',
+            CA: '컴퓨터', L: '레저', AAC: 'AAC', AM: '자동차',
+          }
+          const coveredDomains = new Set(domainEvals.map(d => d.domain_type))
+          const coveredCount = ALL_DOMAINS.filter(d => coveredDomains.has(d)).length
+          return (
+            <div className="border rounded-lg p-4 bg-white mb-3">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-medium text-gray-600">9개 영역 커버리지</span>
+                <span className="text-xs font-bold text-blue-700">{coveredCount} / 9</span>
+              </div>
+              <div className="grid grid-cols-9 gap-1">
+                {ALL_DOMAINS.map(d => {
+                  const done = coveredDomains.has(d)
+                  return (
+                    <div
+                      key={d}
+                      title={DOMAIN_LABELS_MAP[d]}
+                      className={`flex flex-col items-center gap-0.5 py-1.5 rounded-md text-xs font-medium ${
+                        done
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-100 text-gray-400'
+                      }`}
+                    >
+                      <span className="text-[10px] font-bold leading-none">{d === 'AAC' ? 'AC' : d}</span>
+                    </div>
+                  )
+                })}
+              </div>
+              <div className="grid grid-cols-9 gap-1 mt-0.5">
+                {ALL_DOMAINS.map(d => (
+                  <p key={d} className="text-[9px] text-center text-gray-400 truncate">{DOMAIN_LABELS_MAP[d]}</p>
+                ))}
+              </div>
+            </div>
+          )
+        })()}
+
         {domainEvals.length === 0 ? (
           <p className="text-sm text-gray-400 py-4 text-center border rounded-lg bg-gray-50">
             영역 평가 이력이 없습니다

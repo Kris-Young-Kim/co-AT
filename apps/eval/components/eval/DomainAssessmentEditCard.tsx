@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Pencil, Loader2, Check, X } from 'lucide-react'
-import { updateDomainAssessment } from '@/actions/assessment-actions'
+import { Pencil, Loader2, Check, X, Trash2, ChevronDown, ChevronUp } from 'lucide-react'
+import { updateDomainAssessment, deleteDomainAssessment } from '@/actions/assessment-actions'
 import type { ConsultDomainAssessment } from '@/actions/assessment-actions'
-import { MultiCheck, FUTURE_PLAN_OPTIONS } from './domain-fields/shared'
+import { MultiCheck, FUTURE_PLAN_OPTIONS, type DomainData } from './domain-fields/shared'
+import { DomainFieldReadView } from './DomainFieldReadView'
+import type { AssessmentDomainType } from './DomainSelector'
 
 const DOMAIN_COLORS: Record<string, string> = {
   WC: 'bg-blue-50 text-blue-700',
@@ -32,15 +34,17 @@ const DOMAIN_LABELS: Record<string, string> = {
 
 interface Props {
   assessment: ConsultDomainAssessment
+  onDeleted?: (id: string) => void
 }
 
-export function DomainAssessmentEditCard({ assessment: initial }: Props) {
+export function DomainAssessmentEditCard({ assessment: initial, onDeleted }: Props) {
   const [saved, setSaved] = useState(initial)
   const [editing, setEditing] = useState(false)
+  const [showDetail, setShowDetail] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  // Edit form state (initialised from saved each time edit opens)
   const [evalDate, setEvalDate] = useState(saved.evaluation_date)
   const [opinion, setOpinion] = useState(saved.evaluator_opinion ?? '')
   const [device, setDevice] = useState(saved.recommended_device ?? '')
@@ -81,8 +85,51 @@ export function DomainAssessmentEditCard({ assessment: initial }: Props) {
     })
   }
 
+  function handleDelete() {
+    startTransition(async () => {
+      const result = await deleteDomainAssessment(saved.id)
+      if (!result.success) {
+        setError(result.error ?? '삭제에 실패했습니다')
+        setConfirmDelete(false)
+        return
+      }
+      onDeleted?.(saved.id)
+    })
+  }
+
+  const hasDetail = saved.evaluation_data && Object.keys(saved.evaluation_data).length > 0
   const colorClass = DOMAIN_COLORS[saved.domain_type] ?? 'bg-gray-100 text-gray-600'
   const label = DOMAIN_LABELS[saved.domain_type] ?? saved.domain_type
+
+  if (confirmDelete) {
+    return (
+      <div className="border border-red-200 rounded-lg p-4 bg-red-50">
+        <p className="text-sm font-medium text-red-800 mb-3">
+          ({saved.domain_type}) {label} 평가를 삭제하시겠습니까?
+        </p>
+        {error && <p className="text-xs text-red-600 mb-2">{error}</p>}
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setConfirmDelete(false)}
+            disabled={isPending}
+            className="px-3 py-1.5 border rounded text-sm text-gray-600 hover:bg-white"
+          >
+            취소
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={isPending}
+            className="inline-flex items-center gap-1 px-3 py-1.5 bg-red-600 text-white rounded text-sm hover:bg-red-700 disabled:opacity-50"
+          >
+            {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+            삭제
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="border rounded-lg overflow-hidden bg-white">
@@ -92,17 +139,26 @@ export function DomainAssessmentEditCard({ assessment: initial }: Props) {
           {saved.domain_type}
         </span>
         <span className="text-sm font-medium text-gray-800">{label}</span>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-1.5">
           <span className="text-xs text-gray-400">{saved.evaluation_date}</span>
           {!editing && (
-            <button
-              type="button"
-              onClick={openEdit}
-              className="inline-flex items-center gap-1 px-2 py-1 text-xs border rounded hover:bg-white transition-colors text-gray-600"
-            >
-              <Pencil className="h-3 w-3" />
-              수정
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={openEdit}
+                className="inline-flex items-center gap-1 px-2 py-1 text-xs border rounded hover:bg-white text-gray-600"
+              >
+                <Pencil className="h-3 w-3" />
+                수정
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(true)}
+                className="inline-flex items-center px-2 py-1 text-xs border border-red-200 rounded hover:bg-red-50 text-red-500"
+              >
+                <Trash2 className="h-3 w-3" />
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -130,6 +186,28 @@ export function DomainAssessmentEditCard({ assessment: initial }: Props) {
           )}
           {!saved.evaluator_opinion && !saved.recommended_device && !saved.future_plan && (
             <p className="text-gray-400 text-xs py-1">세부 내용 없음 — 수정 버튼으로 입력하세요</p>
+          )}
+
+          {/* Domain-specific data toggle */}
+          {hasDetail && (
+            <div className="pt-2 border-t">
+              <button
+                type="button"
+                onClick={() => setShowDetail(v => !v)}
+                className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
+              >
+                {showDetail ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                {showDetail ? '평가 세부 항목 접기' : '평가 세부 항목 보기'}
+              </button>
+              {showDetail && (
+                <div className="mt-3">
+                  <DomainFieldReadView
+                    domain={saved.domain_type as AssessmentDomainType}
+                    data={saved.evaluation_data as DomainData}
+                  />
+                </div>
+              )}
+            </div>
           )}
         </div>
       )}
