@@ -9,15 +9,26 @@ import type { ClientWithStats } from '@/actions/client-actions'
 const CURRENT_YEAR = new Date().getFullYear()
 const YEAR_OPTIONS = Array.from({ length: 6 }, (_, i) => CURRENT_YEAR - i)
 
-export function NewGrantAssessmentForm() {
+interface InitialClient {
+  id: string
+  name: string
+  birth_date: string | null
+  disability_type: string | null
+}
+
+interface Props {
+  initialClient?: InitialClient | null
+}
+
+export function NewGrantAssessmentForm({ initialClient }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
-  // Client search state
+  // Client search state — skip if initialClient provided
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<ClientWithStats[]>([])
   const [isSearching, setIsSearching] = useState(false)
-  const [selectedClient, setSelectedClient] = useState<ClientWithStats | null>(null)
+  const [selectedClient, setSelectedClient] = useState<ClientWithStats | InitialClient | null>(initialClient ?? null)
   const [searchError, setSearchError] = useState<string | null>(null)
 
   // Form field state
@@ -84,77 +95,80 @@ export function NewGrantAssessmentForm() {
 
   return (
     <div className="max-w-xl space-y-6">
-      {/* Client search */}
-      <section className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">대상자 검색</label>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder="이름 또는 생년월일(YYYY-MM-DD)"
-            className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={isSearching || isPending}
-          />
-          <button
-            type="button"
-            onClick={handleSearch}
-            disabled={isSearching || isPending}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {isSearching ? '검색 중…' : '검색'}
-          </button>
+      {/* Client — preselected or search */}
+      {initialClient ? (
+        <div className="flex items-center gap-3 rounded-lg bg-blue-50 border border-blue-200 px-4 py-3">
+          <svg className="h-4 w-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-blue-800">{initialClient.name}</p>
+            <p className="text-xs text-blue-600">
+              {[initialClient.birth_date, initialClient.disability_type].filter(Boolean).join(' · ')}
+            </p>
+          </div>
         </div>
-
-        {/* Search error */}
-        {searchError && (
-          <p className="text-sm text-red-600">{searchError}</p>
-        )}
-
-        {/* Search results dropdown */}
-        {searchResults.length > 0 && (
-          <ul className="mt-1 max-h-48 overflow-y-auto rounded-md border border-gray-200 bg-white shadow-sm">
-            {searchResults.map((client) => (
-              <li key={client.id}>
-                <button
-                  type="button"
-                  onClick={() => handleSelectClient(client)}
-                  className="w-full px-3 py-2 text-left text-sm hover:bg-blue-50 focus:bg-blue-50 focus:outline-none"
-                >
-                  <span className="font-medium text-gray-900">{client.name}</span>
-                  {client.birth_date && (
-                    <span className="ml-2 text-gray-500">{client.birth_date}</span>
-                  )}
-                  {client.disability_type && (
-                    <span className="ml-2 text-gray-400 text-xs">{client.disability_type}</span>
-                  )}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {/* Selected client confirmation */}
-        {selectedClient && (
-          <div className="flex items-center gap-2 rounded-md bg-blue-50 border border-blue-200 px-3 py-2 text-sm">
-            <svg className="h-4 w-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            <span className="font-medium text-blue-800">{selectedClient.name}</span>
-            {selectedClient.birth_date && (
-              <span className="text-blue-600">{selectedClient.birth_date}</span>
-            )}
+      ) : (
+        <section className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">대상자 검색</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              placeholder="이름 또는 생년월일(YYYY-MM-DD)"
+              className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={isSearching || isPending}
+            />
             <button
               type="button"
-              onClick={() => { setSelectedClient(null); setSearchQuery('') }}
-              className="ml-auto text-blue-400 hover:text-blue-600 text-xs"
+              onClick={handleSearch}
+              disabled={isSearching || isPending}
+              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
             >
-              변경
+              {isSearching ? '검색 중…' : '검색'}
             </button>
           </div>
-        )}
-      </section>
+
+          {searchError && <p className="text-sm text-red-600">{searchError}</p>}
+
+          {searchResults.length > 0 && (
+            <ul className="mt-1 max-h-48 overflow-y-auto rounded-md border border-gray-200 bg-white shadow-sm">
+              {searchResults.map((client) => (
+                <li key={client.id}>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectClient(client)}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-blue-50 focus:bg-blue-50 focus:outline-none"
+                  >
+                    <span className="font-medium text-gray-900">{client.name}</span>
+                    {client.birth_date && <span className="ml-2 text-gray-500">{client.birth_date}</span>}
+                    {client.disability_type && <span className="ml-2 text-gray-400 text-xs">{client.disability_type}</span>}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {selectedClient && (
+            <div className="flex items-center gap-2 rounded-md bg-blue-50 border border-blue-200 px-3 py-2 text-sm">
+              <svg className="h-4 w-4 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="font-medium text-blue-800">{selectedClient.name}</span>
+              {selectedClient.birth_date && <span className="text-blue-600">{selectedClient.birth_date}</span>}
+              <button
+                type="button"
+                onClick={() => { setSelectedClient(null); setSearchQuery('') }}
+                className="ml-auto text-blue-400 hover:text-blue-600 text-xs"
+              >
+                변경
+              </button>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Assessment year */}
       <section className="space-y-2">

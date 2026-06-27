@@ -186,6 +186,25 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
         <ClientIPPA initialAssessments={ippaItems} clientId={clientId} />
       </div>
 
+      {/* 교부사업 평가 */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-semibold text-gray-900">교부사업 평가</h2>
+          <Link
+            href={`/grant-eval/new?clientId=${clientId}`}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            + 평가 시작
+          </Link>
+        </div>
+        <Link
+          href={`/grant-eval?search=${encodeURIComponent(client.name)}`}
+          className="block text-sm text-gray-400 hover:text-blue-600 text-center py-3 border rounded-lg bg-gray-50 hover:bg-blue-50 transition-colors"
+        >
+          이 대상자의 교부사업 평가 목록 보기 →
+        </Link>
+      </div>
+
       {/* 신청 이력 */}
       <div>
         <h2 className="text-base font-semibold text-gray-900 mb-3">
