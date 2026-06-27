@@ -188,7 +188,11 @@ export async function createGrantAssessment(input: CreateGrantAssessmentInput): 
       .select("id")
       .single()
 
-    if (error || !data) return { success: false, error: "교부사업 평가 생성에 실패했습니다" }
+    if (error || !data) {
+      console.error("createGrantAssessment DB error:", error)
+      if (error?.code === "23505") return { success: false, error: "이 대상자는 해당 연도에 이미 평가가 등록되어 있습니다" }
+      return { success: false, error: `교부사업 평가 생성에 실패했습니다: ${error?.message ?? "알 수 없는 오류"}` }
+    }
 
     revalidatePath("/grant-eval")
     return { success: true, id: (data as { id: string }).id }

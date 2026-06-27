@@ -649,6 +649,7 @@ export async function createPendingClient(
     if (!input.name?.trim()) return { success: false, error: "이름은 필수 입력 항목입니다" }
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+    console.log("[createPendingClient] gender value:", JSON.stringify(input.gender), "hex:", Buffer.from(input.gender ?? "").toString("hex"))
     const supabase = createAdminClient()
     const { data, error } = await supabase
       .from("clients")
