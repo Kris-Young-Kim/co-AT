@@ -29,7 +29,10 @@ function buildSection0(
   const lines: string[] = []
 
   lines.push(para("보조기기 교부사업 적합성 평가 기록지"))
-  lines.push(para(`${assessment.assessment_year}년`))
+  const yearLabel = assessment.assessment_month
+    ? `${assessment.assessment_year}년 ${assessment.assessment_month}월`
+    : `${assessment.assessment_year}년`
+  lines.push(para(yearLabel))
   lines.push(para(""))
 
   lines.push(para("[ 대상자 정보 ]"))
@@ -41,10 +44,42 @@ function buildSection0(
   lines.push(para(`평가자: ${assessment.evaluator_name ?? "—"}`))
   lines.push(para(""))
 
+  // 장애정보
+  if (assessment.disability_cause_1 || assessment.disability_progression || assessment.disability_status_desc) {
+    lines.push(para("[ □ 장애정보 ]"))
+    if (assessment.disability_cause_1) {
+      lines.push(para(`장애원인 ①: ${assessment.disability_cause_1}  /  발생시기 ①: ${assessment.disability_onset_1 ?? "—"}`))
+    }
+    if (assessment.disability_cause_2) {
+      lines.push(para(`장애원인 ②: ${assessment.disability_cause_2}  /  발생시기 ②: ${assessment.disability_onset_2 ?? "—"}`))
+    }
+    if (assessment.disability_progression) {
+      lines.push(para(`장애진행정도: ${assessment.disability_progression}`))
+    }
+    if (assessment.disability_status_desc) {
+      lines.push(para(`장애상태기술: ${assessment.disability_status_desc}`))
+    }
+    lines.push(para(""))
+  }
+
+  // 기교부 실적
+  const priorRecords = assessment.prior_grant_records ?? []
+  if (priorRecords.length > 0) {
+    lines.push(para("[ 기교부 실적 ]"))
+    for (const r of priorRecords) {
+      lines.push(para(`${r.year}년  /  ${r.agency}  /  ${r.item}`))
+    }
+    lines.push(para(""))
+  }
+
   for (const item of assessment.items) {
     lines.push(para("─────────────────────────────────────────────────"))
-    lines.push(para(`품목 ${item.item_order} — ${item.item_category}`))
+    const itemHeader = item.item_remarks
+      ? `품목 ${item.item_order} — ${item.item_category} (${item.item_remarks})`
+      : `품목 ${item.item_order} — ${item.item_category}`
+    lines.push(para(itemHeader))
     if (item.item_name) lines.push(para(`품목명: ${item.item_name}`))
+    if (item.final_item_name) lines.push(para(`최종 품목명: ${item.final_item_name}`))
     if (item.use_plan) lines.push(para(`활용 계획: ${item.use_plan}`))
 
     const scores = [
@@ -63,7 +98,10 @@ function buildSection0(
     }
     lines.push(para(`결과: ${item.item_result ?? "—"}  /  추천 모델: ${item.recommended_model ?? "—"}`))
     if (item.support_amount) {
-      lines.push(para(`지원금액: ${item.support_amount.toLocaleString()}원`))
+      lines.push(para(`지원금액: ${item.support_amount.toLocaleString()}원${item.has_self_pay ? "  (자부담 있음)" : ""}`))
+    }
+    if (item.vendor_name) {
+      lines.push(para(`공급업체: ${item.vendor_name}${item.vendor_phone ? `  /  ${item.vendor_phone}` : ""}`))
     }
     lines.push(para(""))
   }
