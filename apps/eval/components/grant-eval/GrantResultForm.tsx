@@ -21,6 +21,7 @@ function ItemResultCard({ assessmentId, item }: { assessmentId: string; item: Gr
     support_amount: item.support_amount ? String(item.support_amount) : '',
     has_self_pay: item.has_self_pay ?? false,
     final_item_name: item.final_item_name ?? '',
+    item_remarks: item.item_remarks ?? '',
   })
   const [isPending, startTransition] = useTransition()
   const [saved, setSaved] = useState(false)
@@ -41,6 +42,7 @@ function ItemResultCard({ assessmentId, item }: { assessmentId: string; item: Gr
         support_amount: form.support_amount ? parseInt(form.support_amount) : null,
         has_self_pay: form.has_self_pay,
         final_item_name: form.final_item_name || null,
+        item_remarks: form.item_remarks || null,
       })
       if (result.success) { setSaved(true); setError(null) }
       else setError(result.error ?? '저장 실패')
@@ -85,11 +87,19 @@ function ItemResultCard({ assessmentId, item }: { assessmentId: string; item: Gr
             className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none" />
         </div>
       </div>
-      <label className="flex items-center gap-2 text-sm mb-4 cursor-pointer">
-        <input type="checkbox" checked={form.has_self_pay}
-          onChange={(e) => set('has_self_pay', e.target.checked)} />
-        자부담 있음
-      </label>
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <label className="flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" checked={form.has_self_pay}
+            onChange={(e) => set('has_self_pay', e.target.checked)} />
+          자부담 있음
+        </label>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">비고 (순위)</label>
+          <input value={form.item_remarks} onChange={(e) => set('item_remarks', e.target.value)}
+            placeholder="예: 1순위"
+            className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none" />
+        </div>
+      </div>
       <div className="flex items-center gap-4">
         <button onClick={handleSave} disabled={isPending}
           className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50">

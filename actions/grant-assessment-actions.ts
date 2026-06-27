@@ -50,6 +50,7 @@ export interface GrantAssessmentItem {
   support_amount: number | null
   has_self_pay: boolean | null
   final_item_name: string | null
+  item_remarks: string | null
 }
 
 export interface GrantAssessmentDetail {
@@ -64,6 +65,12 @@ export interface GrantAssessmentDetail {
   evaluator_staff_id: string | null
   evaluation_date: string | null
   prior_grant_records: Array<{ year: number; agency: string; item: string }> | null
+  disability_cause_1: string | null
+  disability_onset_1: string | null
+  disability_cause_2: string | null
+  disability_onset_2: string | null
+  disability_progression: string | null
+  disability_status_desc: string | null
   general_opinion: string | null
   change_cancel_reason: string | null
   final_result: string | null
@@ -87,6 +94,12 @@ export interface UpdateGrantAssessmentInput {
   evaluator_staff_id?: string | null
   evaluation_date?: string | null
   prior_grant_records?: Array<{ year: number; agency: string; item: string }> | null
+  disability_cause_1?: string | null
+  disability_onset_1?: string | null
+  disability_cause_2?: string | null
+  disability_onset_2?: string | null
+  disability_progression?: string | null
+  disability_status_desc?: string | null
   general_opinion?: string | null
   change_cancel_reason?: string | null
   final_result?: string | null
@@ -134,7 +147,7 @@ export async function getGrantAssessmentById(id: string): Promise<{
 
     const { data: a, error: aErr } = await (supabase as any)
       .from("eval_grant_assessments")
-      .select("id,client_id,application_id,assessment_year,assessment_month,referral_org,referral_doc_id,evaluator_name,evaluator_staff_id,evaluation_date,prior_grant_records,general_opinion,change_cancel_reason,final_result,status")
+      .select("id,client_id,application_id,assessment_year,assessment_month,referral_org,referral_doc_id,evaluator_name,evaluator_staff_id,evaluation_date,prior_grant_records,disability_cause_1,disability_onset_1,disability_cause_2,disability_onset_2,disability_progression,disability_status_desc,general_opinion,change_cancel_reason,final_result,status")
       .eq("id", id)
       .single()
 
@@ -142,7 +155,7 @@ export async function getGrantAssessmentById(id: string): Promise<{
 
     const { data: items, error: iErr } = await (supabase as any)
       .from("eval_grant_items")
-      .select("id,item_order,item_category,item_name,use_plan,use_location,use_location_detail,usage_experience,self_usage_possible,support_person,score_env,score_operation,score_disability,score_use_plan,score_effectiveness,total_score,checklist_responses,item_opinion,item_result,recommended_model,vendor_name,vendor_phone,support_amount,has_self_pay,final_item_name")
+      .select("id,item_order,item_category,item_name,use_plan,use_location,use_location_detail,usage_experience,self_usage_possible,support_person,score_env,score_operation,score_disability,score_use_plan,score_effectiveness,total_score,checklist_responses,item_opinion,item_result,recommended_model,vendor_name,vendor_phone,support_amount,has_self_pay,final_item_name,item_remarks")
       .eq("assessment_id", id)
       .order("item_order", { ascending: true })
 

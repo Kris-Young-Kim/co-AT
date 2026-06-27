@@ -37,6 +37,12 @@ export function GrantAssessmentBasicForm({ assessmentId, assessment }: Props) {
     assessment_month: assessment.assessment_month ? String(assessment.assessment_month) : '',
     referral_org: assessment.referral_org ?? '',
     evaluator_name: assessment.evaluator_name ?? '',
+    disability_cause_1: assessment.disability_cause_1 ?? '',
+    disability_onset_1: assessment.disability_onset_1 ?? '',
+    disability_cause_2: assessment.disability_cause_2 ?? '',
+    disability_onset_2: assessment.disability_onset_2 ?? '',
+    disability_progression: assessment.disability_progression ?? '',
+    disability_status_desc: assessment.disability_status_desc ?? '',
   })
 
   const [priorRecords, setPriorRecords] = useState<PriorRecord[]>(
@@ -76,6 +82,12 @@ export function GrantAssessmentBasicForm({ assessmentId, assessment }: Props) {
         referral_org: form.referral_org || null,
         evaluator_name: form.evaluator_name || null,
         prior_grant_records: prior.length > 0 ? prior : null,
+        disability_cause_1: form.disability_cause_1 || null,
+        disability_onset_1: form.disability_onset_1 || null,
+        disability_cause_2: form.disability_cause_2 || null,
+        disability_onset_2: form.disability_onset_2 || null,
+        disability_progression: form.disability_progression || null,
+        disability_status_desc: form.disability_status_desc || null,
       })
 
       if (result.success) { setSaved(true); setError(null) }
@@ -178,6 +190,73 @@ export function GrantAssessmentBasicForm({ assessmentId, assessment }: Props) {
             ))}
           </div>
         )}
+      </div>
+
+      {/* 장애정보 */}
+      <div className="border-t pt-5">
+        <p className="text-sm font-semibold text-gray-800 mb-4">□ 장애정보</p>
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">장애원인 ①</label>
+              <input
+                value={form.disability_cause_1}
+                onChange={(e) => setField('disability_cause_1', e.target.value)}
+                placeholder="예: 뇌병변"
+                className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">발생시기 ①</label>
+              <input
+                value={form.disability_onset_1}
+                onChange={(e) => setField('disability_onset_1', e.target.value)}
+                placeholder="예: 선천적"
+                className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">장애원인 ②</label>
+              <input
+                value={form.disability_cause_2}
+                onChange={(e) => setField('disability_cause_2', e.target.value)}
+                placeholder="(해당 시)"
+                className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">발생시기 ②</label>
+              <input
+                value={form.disability_onset_2}
+                onChange={(e) => setField('disability_onset_2', e.target.value)}
+                placeholder="(해당 시)"
+                className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">장애진행정도</label>
+            <textarea
+              rows={3}
+              value={form.disability_progression}
+              onChange={(e) => setField('disability_progression', e.target.value)}
+              placeholder="현재 기능 수준, 이동 방법, 일상생활 수행 정도 등"
+              className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">장애상태기술</label>
+            <textarea
+              rows={2}
+              value={form.disability_status_desc}
+              onChange={(e) => setField('disability_status_desc', e.target.value)}
+              placeholder="장애 상태에 대한 추가 기술"
+              className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+            />
+          </div>
+        </div>
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}

@@ -27,6 +27,7 @@ export interface GrantItemInput {
   support_amount?: number | null
   has_self_pay?: boolean | null
   final_item_name?: string | null
+  item_remarks?: string | null
 }
 
 export async function upsertGrantItem(
