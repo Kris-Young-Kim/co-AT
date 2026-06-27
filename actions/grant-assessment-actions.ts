@@ -111,6 +111,7 @@ export async function listGrantAssessments(options: {
   referralOrg?: string
   status?: string
   clientName?: string
+  clientId?: string
 } = {}): Promise<{ success: boolean; assessments?: GrantAssessmentListItem[]; error?: string }> {
   try {
     const hasPermission = await hasAdminOrStaffPermission()
@@ -120,12 +121,14 @@ export async function listGrantAssessments(options: {
     let query = (supabase as any)
       .from("eval_grant_assessment_list")
       .select("*")
+      .order("assessment_year", { ascending: false })
       .order("created_at", { ascending: false })
 
     if (options.year) query = query.eq("assessment_year", options.year)
     if (options.referralOrg) query = query.eq("referral_org", options.referralOrg)
     if (options.status) query = query.eq("status", options.status)
     if (options.clientName) query = query.ilike("client_name", `%${options.clientName}%`)
+    if (options.clientId) query = query.eq("client_id", options.clientId)
 
     const { data, error } = await query
     if (error) return { success: false, error: "목록 조회에 실패했습니다" }

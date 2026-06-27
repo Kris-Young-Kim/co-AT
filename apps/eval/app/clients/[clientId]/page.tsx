@@ -5,6 +5,7 @@ import { getConsultationRecordsByClient, getAssessmentNotesByClient } from '@/ac
 import { getClientIPPAAssessments } from '@/actions/ippa-actions'
 import { getGuardiansByClient } from '@/actions/guardian-actions'
 import { getNotificationPreference } from '@/actions/notification-preference-actions'
+import { listGrantAssessments } from '@/actions/grant-assessment-actions'
 import { ApplicationListCard } from '@/eval/components/eval/ApplicationListCard'
 import { CaseRecordPanel } from '@/eval/components/eval/CaseRecordPanel'
 import { ClientActiveServices } from '@/eval/components/eval/ClientActiveServices'
@@ -31,7 +32,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const clientResult = await getClientById(clientId)
   if (!clientResult.success || !clientResult.client) notFound()
 
-  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, consultationResult, assessmentResult, tagsResult, guardiansResult, notifPrefResult] = await Promise.all([
+  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, consultationResult, assessmentResult, tagsResult, guardiansResult, notifPrefResult, grantEvalsResult] = await Promise.all([
     getApplicationsByClientId(clientId),
     getClientActiveServices(clientId),
     getClientHistory(clientId),
@@ -46,6 +47,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     getClientTags(clientId),
     getGuardiansByClient(clientId),
     getNotificationPreference(clientId),
+    listGrantAssessments({ clientId }),
   ])
 
   const client = clientResult.client
@@ -61,6 +63,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const clientTags = tagsResult.success ? tagsResult.tags ?? [] : []
   const guardians = guardiansResult.success ? guardiansResult.guardians ?? [] : []
   const notifPref = notifPrefResult.success ? notifPrefResult.pref : undefined
+  const grantEvals = grantEvalsResult.success ? grantEvalsResult.assessments ?? [] : []
 
   return (
     <div className="p-8 max-w-4xl">
@@ -189,7 +192,12 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       {/* 교부사업 평가 */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-semibold text-gray-900">교부사업 평가</h2>
+          <h2 className="text-base font-semibold text-gray-900">
+            교부사업 평가
+            {grantEvals.length > 0 && (
+              <span className="ml-2 text-sm font-normal text-gray-400">({grantEvals.length}건)</span>
+            )}
+          </h2>
           <Link
             href={`/grant-eval/new?clientId=${clientId}`}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -197,12 +205,57 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
             + 평가 시작
           </Link>
         </div>
-        <Link
-          href={`/grant-eval?search=${encodeURIComponent(client.name)}`}
-          className="block text-sm text-gray-400 hover:text-blue-600 text-center py-3 border rounded-lg bg-gray-50 hover:bg-blue-50 transition-colors"
-        >
-          이 대상자의 교부사업 평가 목록 보기 →
-        </Link>
+
+        {grantEvals.length === 0 ? (
+          <p className="text-sm text-gray-400 py-4 text-center border rounded-lg bg-gray-50">
+            교부사업 평가 이력이 없습니다
+          </p>
+        ) : (
+          <div className="border rounded-lg overflow-hidden bg-white divide-y">
+            {grantEvals.map((g) => (
+              <Link
+                key={g.id}
+                href={`/grant-eval/${g.id}`}
+                className="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 transition-colors"
+              >
+                <div className="shrink-0 text-sm font-semibold text-gray-700 w-14">
+                  {g.assessment_year}년
+                  {g.assessment_month ? <span className="font-normal text-gray-400 ml-0.5">{g.assessment_month}월</span> : null}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {g.referral_org && (
+                      <span className="text-xs text-gray-500">{g.referral_org}</span>
+                    )}
+                    {(g.item_categories ?? []).map((cat, i) => (
+                      <span key={i} className="inline-block px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded text-xs">
+                        {cat}
+                      </span>
+                    ))}
+                    {g.item_count === 0 && <span className="text-xs text-gray-400">품목 미입력</span>}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  {g.final_result ? (
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                      g.final_result === '적합' ? 'bg-green-100 text-green-700' :
+                      g.final_result === '부적합' ? 'bg-red-100 text-red-700' :
+                      g.final_result === '조건부적합' ? 'bg-yellow-100 text-yellow-700' :
+                      'bg-gray-100 text-gray-500'
+                    }`}>
+                      {g.final_result}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-gray-400">미결정</span>
+                  )}
+                  <span className="text-xs text-gray-400">
+                    {g.status === 'completed' ? '완료' : g.status === 'submitted' ? '제출됨' : '작성중'}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 신청 이력 */}
