@@ -203,7 +203,6 @@ export async function markNotificationAsRead(
     // 알림 읽음 처리
     const { error } = await supabase
       .from("notifications" as any)
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         status: "read",
         read_at: new Date().toISOString(),
@@ -263,7 +262,6 @@ export async function markAllNotificationsAsRead(): Promise<{
     // 모든 미읽음 알림 읽음 처리
     const { error } = await supabase
       .from("notifications" as any)
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         status: "read",
         read_at: new Date().toISOString(),
@@ -322,7 +320,6 @@ export async function archiveNotification(
     // 알림 보관
     const { error } = await supabase
       .from("notifications" as any)
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
       .update({
         status: "archived",
       })
