@@ -3,9 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createServiceRecord } from '@/actions/service-record-actions'
-import { generateServiceRecordDraft, generateCompletionNote } from '@/actions/ai-actions'
 import { ITEM_CATEGORIES } from '@/eval/lib/item-categories'
-import { Sparkles, Loader2, CheckCircle2 } from 'lucide-react'
+import { CheckCircle2 } from 'lucide-react'
 
 const INPUT = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
 const SELECT = 'w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white'
@@ -114,8 +113,6 @@ export function ServiceRecordForm({
 }: ServiceRecordFormProps) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
-  const [aiLoading, setAiLoading] = useState(false)
-  const [completionNoteLoading, setCompletionNoteLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [satisfactionScore, setSatisfactionScore] = useState<number | null>(null)
   const [recordStatus, setRecordStatus] = useState('')
@@ -149,75 +146,6 @@ export function ServiceRecordForm({
     if (service_content !== undefined) setServiceContent(service_content)
     if (Object.keys(checkDefaults).length > 0) {
       setChecks(prev => ({ ...prev, ...(checkDefaults as Partial<Record<CheckKey, boolean>>) }))
-    }
-  }
-
-  async function handleAiDraft() {
-    setAiLoading(true)
-    setError(null)
-    const result = await generateServiceRecordDraft({ applicationId, clientId })
-    setAiLoading(false)
-    if (!result.success || !result.draft) {
-      setError(result.error ?? 'AI 초안 생성 실패')
-      return
-    }
-    const d = result.draft
-    if (d.service_content) setServiceContent(d.service_content)
-    if (d.service_major_category) setMajorCategory(d.service_major_category)
-    if (d.service_sub_category) setSubCategory(d.service_sub_category)
-    if (d.service_category) setServiceCategory(d.service_category)
-    if (d.service_area) setServiceArea(d.service_area)
-    if (d.product_name) setProductName(d.product_name)
-    if (d.referral_type) setReferralType(d.referral_type)
-    setChecks(prev => ({
-      ...prev,
-      is_consult: d.is_consult ?? prev.is_consult,
-      is_assessment: d.is_assessment ?? prev.is_assessment,
-      is_trial: d.is_trial ?? prev.is_trial,
-      is_rental: d.is_rental ?? prev.is_rental,
-      is_custom_make: d.is_custom_make ?? prev.is_custom_make,
-      is_grant: d.is_grant ?? prev.is_grant,
-      is_education: d.is_education ?? prev.is_education,
-      is_info_provision: d.is_info_provision ?? prev.is_info_provision,
-      is_repair: d.is_repair ?? prev.is_repair,
-    }))
-  }
-
-  async function handleGenerateCompletionNote() {
-    setCompletionNoteLoading(true)
-    setError(null)
-    const serviceTypes: string[] = []
-    if (checks.is_consult) serviceTypes.push('상담')
-    if (checks.is_rental) serviceTypes.push('대여')
-    if (checks.is_custom_make) serviceTypes.push('맞춤제작')
-    if (checks.is_repair) serviceTypes.push('수리')
-    if (checks.is_assessment) serviceTypes.push('평가')
-    if (checks.is_monitoring) serviceTypes.push('모니터링')
-    if (checks.is_grant) serviceTypes.push('교부')
-    if (checks.is_education) serviceTypes.push('교육')
-    if (checks.is_info_provision) serviceTypes.push('정보제공')
-    if (checks.is_reuse) serviceTypes.push('재사용')
-    if (checks.is_trial) serviceTypes.push('체험')
-
-    const result = await generateCompletionNote({
-      clientId,
-      serviceCategory: serviceCategory || null,
-      productName: productName || null,
-      serviceTypes,
-      existingContent: serviceContent || null,
-      satisfactionScore,
-    })
-    setCompletionNoteLoading(false)
-
-    if (!result.success || !result.note) {
-      setError(result.error ?? 'AI 완료 노트 생성 실패')
-      return
-    }
-    // 기존 내용이 있으면 구분선 후 추가, 없으면 대체
-    if (serviceContent.trim()) {
-      setServiceContent(prev => `${prev}\n\n── 완료 노트 ──\n${result.note}`)
-    } else {
-      setServiceContent(result.note!)
     }
   }
 
@@ -372,15 +300,6 @@ export function ServiceRecordForm({
       <section className="border rounded-lg p-6 bg-white space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-gray-900">② 서비스 내용</h3>
-          <button
-            type="button"
-            onClick={handleAiDraft}
-            disabled={aiLoading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-          >
-            {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
-            {aiLoading ? 'AI 분석 중...' : 'AI 자동 입력'}
-          </button>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -451,19 +370,8 @@ export function ServiceRecordForm({
           <div className="flex items-center gap-3 rounded-lg bg-green-50 border border-green-200 px-4 py-3">
             <CheckCircle2 className="h-4 w-4 text-green-600 shrink-0" />
             <p className="text-xs text-green-800 flex-1">
-              상태가 <strong>완료</strong>로 설정되었습니다. AI가 서비스 결과 요약·모니터링 계획을 포함한 완료 노트를 자동 생성합니다.
+              상태가 <strong>완료</strong>로 설정되었습니다.
             </p>
-            <button
-              type="button"
-              onClick={handleGenerateCompletionNote}
-              disabled={completionNoteLoading}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-600 text-white text-xs font-medium hover:bg-green-700 disabled:opacity-50 transition-colors whitespace-nowrap"
-            >
-              {completionNoteLoading
-                ? <><Loader2 className="h-3.5 w-3.5 animate-spin" />생성 중...</>
-                : <><Sparkles className="h-3.5 w-3.5" />완료 노트 생성</>
-              }
-            </button>
           </div>
         )}
 

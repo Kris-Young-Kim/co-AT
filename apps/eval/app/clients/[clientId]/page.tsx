@@ -3,7 +3,6 @@ import { getApplicationsByClientId } from '@/actions/application-actions'
 import { getClientCases } from '@/actions/case-actions'
 import { getConsultationRecordsByClient, getAssessmentNotesByClient } from '@/actions/case-record-actions'
 import { getClientIPPAAssessments } from '@/actions/ippa-actions'
-import { getTranscriptsByClient } from '@/actions/transcript-actions'
 import { getGuardiansByClient } from '@/actions/guardian-actions'
 import { getNotificationPreference } from '@/actions/notification-preference-actions'
 import { ApplicationListCard } from '@/eval/components/eval/ApplicationListCard'
@@ -12,9 +11,6 @@ import { ClientActiveServices } from '@/eval/components/eval/ClientActiveService
 import { ClientCases } from '@/eval/components/eval/ClientCases'
 import { ClientIPPA } from '@/eval/components/eval/ClientIPPA'
 import { ClientTimeline } from '@/eval/components/eval/ClientTimeline'
-import { ClientTranscripts } from '@/eval/components/eval/ClientTranscripts'
-import { DeviceRecommendationPanel } from '@/eval/components/eval/DeviceRecommendationPanel'
-import { EvaluationReportPanel } from '@/eval/components/eval/EvaluationReportPanel'
 import { PortalUserLink } from '@/eval/components/eval/PortalUserLink'
 import { ClientQrLabel } from '@/eval/components/clients/ClientQrLabel'
 import { ClientCrmPanel } from '@/eval/components/eval/ClientCrmPanel'
@@ -35,7 +31,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const clientResult = await getClientById(clientId)
   if (!clientResult.success || !clientResult.client) notFound()
 
-  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, transcriptsResult, consultationResult, assessmentResult, tagsResult, guardiansResult, notifPrefResult] = await Promise.all([
+  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, consultationResult, assessmentResult, tagsResult, guardiansResult, notifPrefResult] = await Promise.all([
     getApplicationsByClientId(clientId),
     getClientActiveServices(clientId),
     getClientHistory(clientId),
@@ -45,7 +41,6 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     (clientResult.client as any).portal_user_id
       ? getLinkedPortalUserInfo((clientResult.client as any).portal_user_id as string)
       : Promise.resolve({ success: true as const, user: undefined }),
-    getTranscriptsByClient(clientId),
     getConsultationRecordsByClient(clientId),
     getAssessmentNotesByClient(clientId),
     getClientTags(clientId),
@@ -61,7 +56,6 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const ippaItems = ippaResult.success ? ippaResult.assessments ?? [] : []
   const similarClients = similarResult.success ? similarResult.clients ?? [] : []
   const linkedPortalUser = portalUserResult.success ? portalUserResult.user ?? null : null
-  const transcripts = transcriptsResult.success ? transcriptsResult.transcripts ?? [] : []
   const consultationRecords = consultationResult.success ? consultationResult.records ?? [] : []
   const assessmentNotes = assessmentResult.success ? assessmentResult.notes ?? [] : []
   const clientTags = tagsResult.success ? tagsResult.tags ?? [] : []
@@ -187,30 +181,9 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
         />
       </div>
 
-      {/* STT 대화록 이력 */}
-      <div className="mb-6">
-        <h2 className="text-base font-semibold text-gray-900 mb-3">
-          STT 대화록 이력
-          {transcripts.length > 0 && (
-            <span className="ml-2 text-sm font-normal text-gray-400">({transcripts.length}건)</span>
-          )}
-        </h2>
-        <ClientTranscripts transcripts={transcripts} />
-      </div>
-
       {/* K-IPPA 기능적 성과 측정 */}
       <div className="mb-6">
         <ClientIPPA initialAssessments={ippaItems} clientId={clientId} />
-      </div>
-
-      {/* AI 보조기기 추천 */}
-      <div className="mb-6">
-        <DeviceRecommendationPanel clientId={clientId} disabilityType={client.disability_type ?? null} />
-      </div>
-
-      {/* AI 종합 평가 보고서 */}
-      <div className="mb-6">
-        <EvaluationReportPanel clientId={clientId} clientName={client.name} />
       </div>
 
       {/* 신청 이력 */}

@@ -9,7 +9,6 @@ import { GrantItemsForm } from '@/eval/components/grant-eval/GrantItemsForm'
 import { GrantSuitabilityForm } from '@/eval/components/grant-eval/GrantSuitabilityForm'
 import { GrantOpinionForm } from '@/eval/components/grant-eval/GrantOpinionForm'
 import { GrantResultForm } from '@/eval/components/grant-eval/GrantResultForm'
-import { InterviewVoiceFill } from '@/eval/components/grant-eval/InterviewVoiceFill'
 import type { ChecklistItem } from '@/eval/components/grant-eval/ChecklistSection'
 
 const TABS = [
@@ -89,14 +88,6 @@ export default async function GrantAssessmentDetailPage({ params, searchParams }
             {STATUS_LABEL[assessment.status] ?? assessment.status}
           </span>
         </div>
-      </div>
-
-      {/* 인터뷰 음성 자동 채우기 */}
-      <div className="mb-6">
-        <InterviewVoiceFill
-          assessmentId={id}
-          existingItems={assessment.items.map((i) => ({ item_order: i.item_order, item_category: i.item_category }))}
-        />
       </div>
 
       {/* 탭 네비게이션 */}

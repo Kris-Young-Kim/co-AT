@@ -11,9 +11,8 @@ import {
   deleteAssessmentNote,
   type AssessmentNote,
 } from '@/actions/case-record-actions'
-import { generateConsultationDraft, generateAssessmentNoteDraft } from '@/actions/ai-actions'
 import Link from 'next/link'
-import { Sparkles, Plus, Trash2, Loader2, ChevronDown, ChevronUp, ClipboardList, Stethoscope, Printer, Download, Pencil, X } from 'lucide-react'
+import { Plus, Trash2, Loader2, ChevronDown, ChevronUp, ClipboardList, Stethoscope, Printer, Download, Pencil, X } from 'lucide-react'
 
 // ──────────────────────────────────────────────────────────────
 // Types
@@ -121,30 +120,8 @@ function ConsultationForm({ clientId, onSaved }: { clientId: string; onSaved: (r
   const [consultationDate, setConsultationDate] = useState(() => new Date().toISOString().split('T')[0])
   const [consultationType, setConsultationType] = useState<string>('내방')
   const [consultant, setConsultant] = useState('')
-  const [memo, setMemo] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  const handleGenerateDraft = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const result = await generateConsultationDraft({ clientId, memo: memo || undefined })
-      if (result.success && result.draft) {
-        setDraft({
-          purpose: result.draft.purpose ?? '',
-          current_situation: result.draft.current_situation ?? '',
-          content: result.draft.content ?? '',
-          result: result.draft.result ?? '',
-          next_plan: result.draft.next_plan ?? '',
-        })
-      } else {
-        setError(result.error ?? 'AI 초안 생성 실패')
-      }
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleSave = async () => {
     if (!draft.content && !draft.purpose) {
@@ -164,12 +141,11 @@ function ConsultationForm({ clientId, onSaved }: { clientId: string; onSaved: (r
         content: draft.content || null,
         result: draft.result || null,
         next_plan: draft.next_plan || null,
-        ai_generated: !!(draft.purpose || draft.content),
+        ai_generated: false,
       })
       if (result.success && result.record) {
         onSaved(result.record)
         setDraft(EMPTY_CONSULTATION)
-        setMemo('')
         setConsultant('')
         setConsultationDate(new Date().toISOString().split('T')[0])
         setConsultationType('내방')
@@ -215,26 +191,6 @@ function ConsultationForm({ clientId, onSaved }: { clientId: string; onSaved: (r
         </div>
       </div>
 
-      <div>
-        <label className="text-xs text-gray-500">직원 메모 (AI 초안 생성에 활용)</label>
-        <textarea
-          value={memo}
-          onChange={(e) => setMemo(e.target.value)}
-          placeholder="오늘 상담 내용, 대상자 상황 등 자유롭게 메모"
-          className="w-full mt-1 text-sm border rounded-md px-3 py-2 min-h-[52px] resize-y focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
-      </div>
-
-      <button
-        type="button"
-        onClick={handleGenerateDraft}
-        disabled={loading}
-        className="flex items-center gap-1.5 px-3 py-1.5 border text-sm rounded-md hover:bg-gray-50 disabled:opacity-50"
-      >
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-amber-500" />}
-        AI 초안 생성
-      </button>
-
       <div className="space-y-3">
         {CONSULTATION_FIELDS.map(({ key, label, placeholder }) => (
           <FieldTextarea
@@ -271,31 +227,8 @@ function AssessmentForm({ clientId, onSaved }: { clientId: string; onSaved: (n: 
   const [draft, setDraft] = useState<AssessmentDraft>(EMPTY_ASSESSMENT)
   const [assessmentDate, setAssessmentDate] = useState(() => new Date().toISOString().split('T')[0])
   const [assessor, setAssessor] = useState('')
-  const [memo, setMemo] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-
-  const handleGenerateDraft = async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const result = await generateAssessmentNoteDraft({ clientId, memo: memo || undefined })
-      if (result.success && result.draft) {
-        setDraft({
-          physical_function: result.draft.physical_function ?? '',
-          cognitive_function: result.draft.cognitive_function ?? '',
-          environment: result.draft.environment ?? '',
-          device_needs: result.draft.device_needs ?? '',
-          recommendations: result.draft.recommendations ?? '',
-          notes: result.draft.notes ?? '',
-        })
-      } else {
-        setError(result.error ?? 'AI 초안 생성 실패')
-      }
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleSave = async () => {
     if (!draft.physical_function && !draft.device_needs && !draft.recommendations) {
@@ -315,12 +248,11 @@ function AssessmentForm({ clientId, onSaved }: { clientId: string; onSaved: (n: 
         device_needs: draft.device_needs || null,
         recommendations: draft.recommendations || null,
         notes: draft.notes || null,
-        ai_generated: !!(draft.physical_function || draft.device_needs),
+        ai_generated: false,
       })
       if (result.success && result.note) {
         onSaved(result.note)
         setDraft(EMPTY_ASSESSMENT)
-        setMemo('')
         setAssessor('')
         setAssessmentDate(new Date().toISOString().split('T')[0])
       } else {
@@ -354,26 +286,6 @@ function AssessmentForm({ clientId, onSaved }: { clientId: string; onSaved: (n: 
           />
         </div>
       </div>
-
-      <div>
-        <label className="text-xs text-gray-500">직원 메모 (AI 초안 생성에 활용)</label>
-        <textarea
-          value={memo}
-          onChange={(e) => setMemo(e.target.value)}
-          placeholder="평가 시 관찰 내용, 특이사항 등 자유롭게 메모"
-          className="w-full mt-1 text-sm border rounded-md px-3 py-2 min-h-[52px] resize-y focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
-      </div>
-
-      <button
-        type="button"
-        onClick={handleGenerateDraft}
-        disabled={loading}
-        className="flex items-center gap-1.5 px-3 py-1.5 border text-sm rounded-md hover:bg-gray-50 disabled:opacity-50"
-      >
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-amber-500" />}
-        AI 초안 생성
-      </button>
 
       <div className="space-y-3">
         {ASSESSMENT_FIELDS.map(({ key, label, placeholder }) => (
@@ -426,27 +338,8 @@ function ConsultationEditForm({
   const [consultationDate, setConsultationDate] = useState(record.consultation_date)
   const [consultationType, setConsultationType] = useState(record.consultation_type)
   const [consultant, setConsultant] = useState(record.consultant ?? '')
-  const [memo, setMemo] = useState('')
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
-
-  const handleGenerateDraft = () => {
-    startTransition(async () => {
-      setError(null)
-      const result = await generateConsultationDraft({ clientId, memo: memo || undefined })
-      if (result.success && result.draft) {
-        setDraft({
-          purpose: result.draft.purpose ?? '',
-          current_situation: result.draft.current_situation ?? '',
-          content: result.draft.content ?? '',
-          result: result.draft.result ?? '',
-          next_plan: result.draft.next_plan ?? '',
-        })
-      } else {
-        setError(result.error ?? 'AI 초안 생성 실패')
-      }
-    })
-  }
 
   const handleSave = () => {
     startTransition(async () => {
@@ -502,26 +395,6 @@ function ConsultationEditForm({
           />
         </div>
       </div>
-
-      <div>
-        <label className="text-xs text-gray-500">AI 재생성 메모 (선택)</label>
-        <textarea
-          value={memo}
-          onChange={(e) => setMemo(e.target.value)}
-          placeholder="수정 사항 메모 후 AI 초안 재생성 가능"
-          className="w-full mt-1 text-sm border rounded-md px-3 py-2 min-h-[44px] resize-y focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
-      </div>
-
-      <button
-        type="button"
-        onClick={handleGenerateDraft}
-        disabled={isPending}
-        className="flex items-center gap-1.5 px-3 py-1.5 border text-sm rounded-md hover:bg-gray-50 disabled:opacity-50"
-      >
-        {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-amber-500" />}
-        AI 초안 재생성
-      </button>
 
       <div className="space-y-3">
         {CONSULTATION_FIELDS.map(({ key, label, placeholder }) => (
@@ -579,28 +452,8 @@ function AssessmentEditForm({
   })
   const [assessmentDate, setAssessmentDate] = useState(note.assessment_date)
   const [assessor, setAssessor] = useState(note.assessor ?? '')
-  const [memo, setMemo] = useState('')
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
-
-  const handleGenerateDraft = () => {
-    startTransition(async () => {
-      setError(null)
-      const result = await generateAssessmentNoteDraft({ clientId, memo: memo || undefined })
-      if (result.success && result.draft) {
-        setDraft({
-          physical_function: result.draft.physical_function ?? '',
-          cognitive_function: result.draft.cognitive_function ?? '',
-          environment: result.draft.environment ?? '',
-          device_needs: result.draft.device_needs ?? '',
-          recommendations: result.draft.recommendations ?? '',
-          notes: result.draft.notes ?? '',
-        })
-      } else {
-        setError(result.error ?? 'AI 초안 생성 실패')
-      }
-    })
-  }
 
   const handleSave = () => {
     startTransition(async () => {
@@ -646,26 +499,6 @@ function AssessmentEditForm({
           />
         </div>
       </div>
-
-      <div>
-        <label className="text-xs text-gray-500">AI 재생성 메모 (선택)</label>
-        <textarea
-          value={memo}
-          onChange={(e) => setMemo(e.target.value)}
-          placeholder="수정 사항 메모 후 AI 초안 재생성 가능"
-          className="w-full mt-1 text-sm border rounded-md px-3 py-2 min-h-[44px] resize-y focus:outline-none focus:ring-1 focus:ring-blue-500"
-        />
-      </div>
-
-      <button
-        type="button"
-        onClick={handleGenerateDraft}
-        disabled={isPending}
-        className="flex items-center gap-1.5 px-3 py-1.5 border text-sm rounded-md hover:bg-gray-50 disabled:opacity-50"
-      >
-        {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-amber-500" />}
-        AI 초안 재생성
-      </button>
 
       <div className="space-y-3">
         {ASSESSMENT_FIELDS.map(({ key, label, placeholder }) => (
@@ -861,11 +694,6 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
                       {record.consultant && (
                         <span className="text-xs text-gray-500">{record.consultant}</span>
                       )}
-                      {record.ai_generated && (
-                        <span className="inline-flex items-center gap-0.5 text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
-                          <Sparkles className="h-3 w-3" /> AI
-                        </span>
-                      )}
                       <span className="text-xs text-gray-400 truncate max-w-[180px]">
                         {record.purpose?.slice(0, 40) ?? record.content?.slice(0, 40) ?? '—'}
                       </span>
@@ -964,11 +792,6 @@ export function CaseRecordPanel({ clientId, initialConsultationRecords, initialA
                       <span className="text-sm font-medium text-gray-900">{note.assessment_date}</span>
                       {note.assessor && (
                         <span className="text-xs text-gray-500">{note.assessor}</span>
-                      )}
-                      {note.ai_generated && (
-                        <span className="inline-flex items-center gap-0.5 text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
-                          <Sparkles className="h-3 w-3" /> AI
-                        </span>
                       )}
                       <span className="text-xs text-gray-400 truncate max-w-[200px]">
                         {note.recommendations?.slice(0, 40) ?? note.device_needs?.slice(0, 40) ?? '—'}
