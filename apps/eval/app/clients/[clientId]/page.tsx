@@ -1,5 +1,7 @@
 import { getClientById, getClientActiveServices, getClientHistory, getSimilarClients, getLinkedPortalUserInfo, getClientTags } from '@/actions/client-actions'
 import { getApplicationsByClientId } from '@/actions/application-actions'
+import { getDomainAssessmentsByClient } from '@/actions/assessment-actions'
+import type { ClientDomainAssessment } from '@/actions/assessment-actions'
 import { getClientCases } from '@/actions/case-actions'
 import { getConsultationRecordsByClient, getAssessmentNotesByClient } from '@/actions/case-record-actions'
 import { getClientIPPAAssessments } from '@/actions/ippa-actions'
@@ -32,7 +34,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const clientResult = await getClientById(clientId)
   if (!clientResult.success || !clientResult.client) notFound()
 
-  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, consultationResult, assessmentResult, tagsResult, guardiansResult, notifPrefResult, grantEvalsResult] = await Promise.all([
+  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, consultationResult, assessmentResult, tagsResult, guardiansResult, notifPrefResult, grantEvalsResult, domainEvalsResult] = await Promise.all([
     getApplicationsByClientId(clientId),
     getClientActiveServices(clientId),
     getClientHistory(clientId),
@@ -48,6 +50,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     getGuardiansByClient(clientId),
     getNotificationPreference(clientId),
     listGrantAssessments({ clientId }),
+    getDomainAssessmentsByClient(clientId),
   ])
 
   const client = clientResult.client
@@ -64,6 +67,20 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const guardians = guardiansResult.success ? guardiansResult.guardians ?? [] : []
   const notifPref = notifPrefResult.success ? notifPrefResult.pref : undefined
   const grantEvals = grantEvalsResult.success ? grantEvalsResult.assessments ?? [] : []
+  const domainEvals: ClientDomainAssessment[] = domainEvalsResult.success ? domainEvalsResult.assessments ?? [] : []
+
+  // Group domain assessments by consultation_record_id for display
+  const domainsByConsult = new Map<string, ClientDomainAssessment[]>()
+  const domainsByApp: ClientDomainAssessment[] = []
+  for (const d of domainEvals) {
+    if (d.consultation_record_id) {
+      const group = domainsByConsult.get(d.consultation_record_id) ?? []
+      group.push(d)
+      domainsByConsult.set(d.consultation_record_id, group)
+    } else {
+      domainsByApp.push(d)
+    }
+  }
 
   return (
     <div className="p-8 max-w-4xl">
@@ -165,6 +182,62 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       {/* 케이스 관리 */}
       <div className="mb-6">
         <ClientCases initialCases={caseItems} clientId={clientId} />
+      </div>
+
+      {/* 상담 및 영역 평가 */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-semibold text-gray-900">
+            상담 및 영역 평가
+            {domainEvals.length > 0 && (
+              <span className="ml-2 text-sm font-normal text-gray-400">({domainEvals.length}건)</span>
+            )}
+          </h2>
+          <Link
+            href={`/clients/${clientId}/sessions/new`}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            + 상담 및 평가 시작
+          </Link>
+        </div>
+
+        {domainEvals.length === 0 ? (
+          <p className="text-sm text-gray-400 py-4 text-center border rounded-lg bg-gray-50">
+            영역 평가 이력이 없습니다
+          </p>
+        ) : (
+          <div className="border rounded-lg overflow-hidden bg-white divide-y">
+            {Array.from(domainsByConsult.entries()).map(([consultId, items]) => {
+              const consultRecord = consultationRecords.find(r => r.id === consultId)
+              return (
+                <Link
+                  key={consultId}
+                  href={`/clients/${clientId}/sessions/${consultId}`}
+                  className="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 transition-colors"
+                >
+                  <div className="shrink-0 text-sm font-medium text-gray-700 w-24">
+                    {consultRecord?.consultation_date ?? items[0].evaluation_date}
+                  </div>
+                  <div className="flex-1 flex flex-wrap gap-1">
+                    {items.map(d => (
+                      <span key={d.id} className="inline-block px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded text-xs">
+                        {d.domain_type}
+                      </span>
+                    ))}
+                  </div>
+                  <span className="text-xs text-gray-400 shrink-0">{items.length}개 영역</span>
+                </Link>
+              )
+            })}
+            {domainsByApp.map(d => (
+              <div key={d.id} className="flex items-center gap-4 px-4 py-3 text-gray-500">
+                <div className="shrink-0 text-sm w-24">{d.evaluation_date}</div>
+                <span className="inline-block px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">{d.domain_type}</span>
+                <span className="text-xs text-gray-400 ml-auto">신청서 연동</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 상담기록지 · 평가지 */}
