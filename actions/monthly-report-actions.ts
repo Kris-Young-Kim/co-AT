@@ -51,6 +51,9 @@ export interface MonthlyGridItem {
 export async function getYearlyMonthlyGrid(
   year: number
 ): Promise<{ success: true; grid: MonthlyGridItem[] } | { success: false; error: string }> {
+  if (!Number.isInteger(year) || year < 2000 || year > 2100)
+    return { success: false, error: '유효하지 않은 연도입니다' }
+
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
@@ -95,13 +98,24 @@ export async function getMonthlyReportSummary(
   year: number,
   month: number
 ): Promise<{ success: true; summary: MonthlyReportSummary } | { success: false; error: string }> {
+  if (!Number.isInteger(year) || year < 2000 || year > 2100)
+    return { success: false, error: '유효하지 않은 연도입니다' }
+  if (!Number.isInteger(month) || month < 1 || month > 12)
+    return { success: false, error: '유효하지 않은 월입니다' }
+
   const hasPermission = await hasAdminOrStaffPermission()
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from('eval_service_records')
-    .select('*')
+    .select(`
+      is_consult, is_trial, is_rental, is_custom_make, is_grant,
+      is_education, is_info_provision, is_cleaning, is_repair,
+      is_reuse, is_monitoring, is_other_business,
+      is_public_funding, is_private_funding, is_self_pay,
+      economic_status, disability_severity
+    `)
     .eq('application_year', year)
     .eq('application_month', month)
     .limit(5000)
