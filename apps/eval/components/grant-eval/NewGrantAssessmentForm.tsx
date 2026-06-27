@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { searchClients } from '@/actions/client-actions'
 import { createGrantAssessment } from '@/actions/grant-assessment-actions'
 import type { ClientWithStats } from '@/actions/client-actions'
+import type { ReferrerListItem } from '@/actions/referrer-actions'
 
 const CURRENT_YEAR = new Date().getFullYear()
 const YEAR_OPTIONS = Array.from({ length: 6 }, (_, i) => CURRENT_YEAR - i)
@@ -18,9 +19,10 @@ interface InitialClient {
 
 interface Props {
   initialClient?: InitialClient | null
+  referrers?: ReferrerListItem[]
 }
 
-export function NewGrantAssessmentForm({ initialClient }: Props) {
+export function NewGrantAssessmentForm({ initialClient, referrers = [] }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -170,41 +172,55 @@ export function NewGrantAssessmentForm({ initialClient }: Props) {
         </section>
       )}
 
-      {/* Assessment year */}
-      <section className="space-y-2">
-        <label htmlFor="assessment-year" className="block text-sm font-medium text-gray-700">
-          평가 연도
-        </label>
-        <select
-          id="assessment-year"
-          value={assessmentYear}
-          onChange={(e) => setAssessmentYear(Number(e.target.value))}
-          disabled={isPending}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {YEAR_OPTIONS.map((year) => (
-            <option key={year} value={year}>
-              {year}년
-            </option>
-          ))}
-        </select>
-      </section>
+      {/* Assessment year + Referral org — side by side */}
+      <div className="grid grid-cols-2 gap-4">
+        <section className="space-y-1.5">
+          <label htmlFor="assessment-year" className="block text-sm font-medium text-gray-700">
+            평가 연도
+          </label>
+          <select
+            id="assessment-year"
+            value={assessmentYear}
+            onChange={(e) => setAssessmentYear(Number(e.target.value))}
+            disabled={isPending}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            {YEAR_OPTIONS.map((year) => (
+              <option key={year} value={year}>{year}년</option>
+            ))}
+          </select>
+        </section>
 
-      {/* Referral org */}
-      <section className="space-y-2">
-        <label htmlFor="referral-org" className="block text-sm font-medium text-gray-700">
-          의뢰기관 <span className="text-gray-400 font-normal">(선택)</span>
-        </label>
-        <input
-          id="referral-org"
-          type="text"
-          value={referralOrg}
-          onChange={(e) => setReferralOrg(e.target.value)}
-          placeholder="의뢰기관명을 입력하세요"
-          disabled={isPending}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </section>
+        <section className="space-y-1.5">
+          <label htmlFor="referral-org" className="block text-sm font-medium text-gray-700">
+            의뢰기관 <span className="text-gray-400 font-normal">(선택)</span>
+          </label>
+          {referrers.length > 0 ? (
+            <select
+              id="referral-org"
+              value={referralOrg}
+              onChange={(e) => setReferralOrg(e.target.value)}
+              disabled={isPending}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">선택 안 함</option>
+              {referrers.map((r) => (
+                <option key={r.id} value={r.name}>{r.name}</option>
+              ))}
+            </select>
+          ) : (
+            <input
+              id="referral-org"
+              type="text"
+              value={referralOrg}
+              onChange={(e) => setReferralOrg(e.target.value)}
+              placeholder="의뢰기관명 입력"
+              disabled={isPending}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          )}
+        </section>
+      </div>
 
       {/* Submit error */}
       {submitError && (

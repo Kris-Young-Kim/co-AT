@@ -1,5 +1,6 @@
 import { NewGrantAssessmentForm } from '@/eval/components/grant-eval/NewGrantAssessmentForm'
 import { getClientById } from '@/actions/client-actions'
+import { listReferrers } from '@/actions/referrer-actions'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
@@ -18,6 +19,9 @@ export default async function NewGrantEvalPage({ searchParams }: Props) {
       preselectedClient = { id: c.id, name: c.name, birth_date: c.birth_date ?? null, disability_type: c.disability_type ?? null }
     }
   }
+
+  const referrersResult = await listReferrers({ is_active: true })
+  const referrers = referrersResult.referrers ?? []
 
   return (
     <div className="p-8">
@@ -38,7 +42,7 @@ export default async function NewGrantEvalPage({ searchParams }: Props) {
           <p className="text-sm text-gray-500 mt-1">대상자 검색 후 평가를 시작합니다</p>
         )}
       </div>
-      <NewGrantAssessmentForm initialClient={preselectedClient} />
+      <NewGrantAssessmentForm initialClient={preselectedClient} referrers={referrers} />
     </div>
   )
 }
