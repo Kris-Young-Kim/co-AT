@@ -4,9 +4,9 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   createReferrer, updateReferrer,
-  REFERRER_TYPE_LABELS,
   type Referrer, type CreateReferrerInput, type ReferrerType,
 } from '@/actions/referrer-actions'
+import { REFERRER_TYPE_LABELS } from '@/actions/referrer-constants'
 
 const TYPE_OPTIONS = Object.entries(REFERRER_TYPE_LABELS) as [ReferrerType, string][]
 

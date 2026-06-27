@@ -1,4 +1,5 @@
-import { listReferrers, REFERRER_TYPE_LABELS, type ReferrerType } from '@/actions/referrer-actions'
+import { listReferrers } from '@/actions/referrer-actions'
+import { REFERRER_TYPE_LABELS, type ReferrerType } from '@/actions/referrer-constants'
 import Link from 'next/link'
 import { Plus, Building2, Phone, Mail, Users, TrendingUp } from 'lucide-react'
 

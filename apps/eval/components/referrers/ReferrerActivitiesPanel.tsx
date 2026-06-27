@@ -3,9 +3,9 @@
 import { useState, useTransition } from 'react'
 import {
   createActivity, deleteActivity,
-  ACTIVITY_TYPE_LABELS,
   type ReferrerActivity, type CreateActivityInput, type ActivityType,
 } from '@/actions/referrer-actions'
+import { ACTIVITY_TYPE_LABELS } from '@/actions/referrer-constants'
 import { Plus, Trash2, CalendarDays } from 'lucide-react'
 
 const ACTIVITY_TYPES = Object.entries(ACTIVITY_TYPE_LABELS) as [ActivityType, string][]

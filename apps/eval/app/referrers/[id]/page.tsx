@@ -1,8 +1,8 @@
 import {
   getReferrerById, getContactsByReferrer, getActivitiesByReferrer,
   getReferrerReferralStats, updateReferrer,
-  REFERRER_TYPE_LABELS,
 } from '@/actions/referrer-actions'
+import { REFERRER_TYPE_LABELS } from '@/actions/referrer-constants'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Building2, ToggleLeft, ToggleRight } from 'lucide-react'
