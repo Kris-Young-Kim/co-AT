@@ -337,6 +337,7 @@ export async function generateMonthlyReportExcel(
     { header: '맞춤제작',     key: 'is_custom_make',   width: 8  },
     { header: '교부',         key: 'is_grant',         width: 6  },
     { header: '교육',         key: 'is_education',     width: 6  },
+    { header: '정보제공',     key: 'is_info_provision', width: 6 },
     { header: '상태',         key: 'record_status',    width: 8  },
     { header: '담당자',       key: 'staff_name',       width: 10 },
   ]
@@ -359,6 +360,7 @@ export async function generateMonthlyReportExcel(
       is_custom_make:    r.is_custom_make ? '✓' : '',
       is_grant:          r.is_grant      ? '✓' : '',
       is_education:      r.is_education  ? '✓' : '',
+      is_info_provision: r.is_info_provision ? '✓' : '',
       record_status:     r.record_status ?? '',
       staff_name:        r.staff_name ?? '',
     })
