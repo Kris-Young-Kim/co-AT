@@ -84,7 +84,7 @@ export async function createSegment(
   const { userId } = await auth()
   const supabase = createAdminClient()
 
-  const { data, error } = await supabase
+  const { data, error } = await (supabase as any)
     .from('eval_client_segments')
     .insert({ ...input, created_by: userId ?? 'system' })
     .select()
@@ -103,7 +103,7 @@ export async function updateSegment(
   if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
   const supabase = createAdminClient()
-  const { error } = await supabase.from('eval_client_segments').update(input).eq('id', id)
+  const { error } = await (supabase as any).from('eval_client_segments').update(input).eq('id', id)
   if (error) return { success: false, error: error.message }
 
   revalidatePath('/segments')
