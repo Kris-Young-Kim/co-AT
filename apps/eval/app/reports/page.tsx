@@ -9,7 +9,8 @@ interface Props {
 export default async function ReportsPage({ searchParams }: Props) {
   const params = await searchParams
   const currentYear = new Date().getFullYear()
-  const year = params.year ? parseInt(params.year) : currentYear
+  const parsedYear = parseInt(params.year ?? String(currentYear), 10)
+  const year = isNaN(parsedYear) ? currentYear : parsedYear
 
   const result = await getYearlyMonthlyGrid(year)
 
