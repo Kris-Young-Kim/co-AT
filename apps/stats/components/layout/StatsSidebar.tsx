@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, CalendarDays, Briefcase, TrendingUp,
   Target, FileSpreadsheet, ClipboardList, Megaphone,
-  LineChart, PhoneIncoming,
+  LineChart, PhoneIncoming, ClipboardCheck,
 } from 'lucide-react'
 
 type NavItem = {
@@ -30,6 +30,7 @@ const NAV_ENTRIES: NavEntry[] = [
   { type: 'item', href: '/business', label: '사업별 현황', icon: Briefcase },
   { type: 'item', href: '/yearly', label: '연도별 추이', icon: TrendingUp },
   { type: 'item', href: '/programs', label: '프로그램 실적', icon: ClipboardList },
+  { type: 'item', href: '/grant-eval', label: '교부사업 평가', icon: ClipboardCheck },
   { type: 'item', href: '/promotion', label: '홍보 실적', icon: Megaphone },
   { type: 'item', href: '/intake', label: '채널별 접수', icon: PhoneIncoming },
 
