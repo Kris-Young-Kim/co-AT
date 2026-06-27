@@ -5,10 +5,13 @@ import { useRouter } from 'next/navigation'
 import { searchClients } from '@/actions/client-actions'
 import { createGrantAssessment } from '@/actions/grant-assessment-actions'
 import type { ClientWithStats } from '@/actions/client-actions'
-import type { ReferrerListItem } from '@/actions/referrer-actions'
-
 const CURRENT_YEAR = new Date().getFullYear()
 const YEAR_OPTIONS = Array.from({ length: 6 }, (_, i) => CURRENT_YEAR - i)
+
+const GANGWON_SIGUN = [
+  '춘천시', '원주시', '강릉시', '동해시', '태백시', '속초시', '삼척시',
+  '홍천군', '횡성군', '영월군', '평창군', '정선군', '철원군', '화천군', '양구군', '인제군', '고성군', '양양군',
+]
 
 interface InitialClient {
   id: string
@@ -19,10 +22,9 @@ interface InitialClient {
 
 interface Props {
   initialClient?: InitialClient | null
-  referrers?: ReferrerListItem[]
 }
 
-export function NewGrantAssessmentForm({ initialClient, referrers = [] }: Props) {
+export function NewGrantAssessmentForm({ initialClient }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -195,30 +197,18 @@ export function NewGrantAssessmentForm({ initialClient, referrers = [] }: Props)
           <label htmlFor="referral-org" className="block text-sm font-medium text-gray-700">
             의뢰기관 <span className="text-gray-400 font-normal">(선택)</span>
           </label>
-          {referrers.length > 0 ? (
-            <select
-              id="referral-org"
-              value={referralOrg}
-              onChange={(e) => setReferralOrg(e.target.value)}
-              disabled={isPending}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">선택 안 함</option>
-              {referrers.map((r) => (
-                <option key={r.id} value={r.name}>{r.name}</option>
-              ))}
-            </select>
-          ) : (
-            <input
-              id="referral-org"
-              type="text"
-              value={referralOrg}
-              onChange={(e) => setReferralOrg(e.target.value)}
-              placeholder="의뢰기관명 입력"
-              disabled={isPending}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          )}
+          <select
+            id="referral-org"
+            value={referralOrg}
+            onChange={(e) => setReferralOrg(e.target.value)}
+            disabled={isPending}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">선택 안 함</option>
+            {GANGWON_SIGUN.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
         </section>
       </div>
 

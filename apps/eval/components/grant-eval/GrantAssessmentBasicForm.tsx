@@ -4,6 +4,11 @@ import { useState, useTransition } from 'react'
 import { updateGrantAssessment, type GrantAssessmentDetail } from '@/actions/grant-assessment-actions'
 import { Plus, Trash2 } from 'lucide-react'
 
+const GANGWON_SIGUN = [
+  '춘천시', '원주시', '강릉시', '동해시', '태백시', '속초시', '삼척시',
+  '홍천군', '횡성군', '영월군', '평창군', '정선군', '철원군', '화천군', '양구군', '인제군', '고성군', '양양군',
+]
+
 interface Props {
   assessmentId: string
   assessment: GrantAssessmentDetail
@@ -122,11 +127,16 @@ export function GrantAssessmentBasicForm({ assessmentId, assessment }: Props) {
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">의뢰기관</label>
-        <input
+        <select
           value={form.referral_org}
           onChange={(e) => setField('referral_org', e.target.value)}
           className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        >
+          <option value="">선택 안 함</option>
+          {GANGWON_SIGUN.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
       </div>
 
       <div>
