@@ -167,6 +167,19 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
         <ClientCases initialCases={caseItems} clientId={clientId} />
       </div>
 
+      {/* 상담 및 영역 평가 */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-semibold text-gray-900">상담 및 영역 평가</h2>
+          <Link
+            href={`/clients/${clientId}/sessions/new`}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            + 상담 및 평가 시작
+          </Link>
+        </div>
+      </div>
+
       {/* 상담기록지 · 평가지 */}
       <div className="mb-6">
         <h2 className="text-base font-semibold text-gray-900 mb-3">
