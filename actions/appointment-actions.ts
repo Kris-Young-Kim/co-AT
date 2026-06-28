@@ -88,9 +88,6 @@ async function resolveClientId(userId: string): Promise<string | null> {
   return (data as { id: string } | null)?.id ?? null
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyClient = any
-
 // ─── Portal (client-facing) ──────────────────────────────────
 
 export async function getAvailableSlots(fromDate?: string, toDate?: string): Promise<{
@@ -99,7 +96,7 @@ export async function getAvailableSlots(fromDate?: string, toDate?: string): Pro
   error?: string
 }> {
   try {
-    const supabase = createAdminClient() as AnyClient
+    const supabase = createAdminClient()
     const today = fromDate ?? new Date().toISOString().slice(0, 10)
     let query = supabase
       .from('appointment_slots')
@@ -132,7 +129,7 @@ export async function getMyAppointments(): Promise<{
     const { userId } = await auth()
     if (!userId) return { success: false, error: '로그인이 필요합니다' }
 
-    const supabase = createAdminClient() as AnyClient
+    const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('appointment_requests')
       .select('*, appointment_slots(slot_date, slot_time, duration_minutes)')
@@ -165,7 +162,7 @@ export async function requestAppointment(input: RequestAppointmentInput): Promis
     const { userId } = await auth()
     if (!userId) return { success: false, error: '로그인이 필요합니다' }
 
-    const supabase = createAdminClient() as AnyClient
+    const supabase = createAdminClient()
 
     // Check slot availability
     const { data: slot } = await supabase
@@ -230,7 +227,7 @@ export async function cancelMyAppointment(requestId: string): Promise<{
     const { userId } = await auth()
     if (!userId) return { success: false, error: '로그인이 필요합니다' }
 
-    const supabase = createAdminClient() as AnyClient
+    const supabase = createAdminClient()
 
     const { data: req } = await supabase
       .from('appointment_requests')
@@ -284,7 +281,7 @@ export async function getAppointmentSlots(year?: number, month?: number): Promis
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
-    const supabase = createAdminClient() as AnyClient
+    const supabase = createAdminClient()
     let query = supabase
       .from('appointment_slots')
       .select('*')
@@ -318,7 +315,7 @@ export async function createAppointmentSlot(input: CreateSlotInput): Promise<{
     const { userId } = await auth()
     if (!userId) return { success: false, error: '로그인이 필요합니다' }
 
-    const supabase = createAdminClient() as AnyClient
+    const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('appointment_slots')
       .insert({
@@ -351,7 +348,7 @@ export async function updateAppointmentSlot(id: string, input: Partial<CreateSlo
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
-    const supabase = createAdminClient() as AnyClient
+    const supabase = createAdminClient()
     const { error } = await supabase
       .from('appointment_slots')
       .update(input)
@@ -373,7 +370,7 @@ export async function deleteAppointmentSlot(id: string): Promise<{
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
-    const supabase = createAdminClient() as AnyClient
+    const supabase = createAdminClient()
     const { data: slot } = await supabase
       .from('appointment_slots')
       .select('current_bookings')
@@ -401,7 +398,7 @@ export async function getPendingAppointmentRequests(): Promise<{
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
-    const supabase = createAdminClient() as AnyClient
+    const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('appointment_requests')
       .select('*, appointment_slots(slot_date, slot_time), clients(name)')
@@ -437,7 +434,7 @@ export async function getAllAppointmentRequests(filters?: {
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
-    const supabase = createAdminClient() as AnyClient
+    const supabase = createAdminClient()
     let query = supabase
       .from('appointment_requests')
       .select('*, appointment_slots(slot_date, slot_time), clients(name)')
@@ -472,7 +469,7 @@ export async function confirmAppointmentRequest(
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
-    const supabase = createAdminClient() as AnyClient
+    const supabase = createAdminClient()
 
     const { data: req } = await supabase
       .from('appointment_requests')
@@ -490,7 +487,7 @@ export async function confirmAppointmentRequest(
     let scheduleId: string | null = null
     if (r.appointment_slots && r.slot_id && input.assignedStaffId) {
       const { slot_date, slot_time } = r.appointment_slots
-      const adminSupabase = createAdminClient() as AnyClient
+      const adminSupabase = createAdminClient()
       const { data: sched } = await adminSupabase
         .from('schedules')
         .insert({
@@ -544,7 +541,7 @@ export async function rejectAppointmentRequest(
     const hasPermission = await hasAdminOrStaffPermission()
     if (!hasPermission) return { success: false, error: '권한이 없습니다' }
 
-    const supabase = createAdminClient() as AnyClient
+    const supabase = createAdminClient()
 
     const { data: req } = await supabase
       .from('appointment_requests')
