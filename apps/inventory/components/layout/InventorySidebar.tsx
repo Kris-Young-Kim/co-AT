@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard, Package, ArrowLeftRight, Wrench,
   RefreshCw, Cpu, Settings, FileBarChart, Map, Droplets, ScanLine, PackageCheck, Menu,
+  Search, Tag,
 } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
@@ -32,6 +33,8 @@ const NAV_ENTRIES: NavEntry[] = [
   { type: 'item', href: '/rentals', label: '대여 관리', icon: ArrowLeftRight },
   { type: 'item', href: '/scan/match', label: '스캔 대여', icon: ScanLine },
   { type: 'item', href: '/scan/return', label: '스캔 반납', icon: PackageCheck },
+  { type: 'item', href: '/scan/lookup', label: '스캔 조회', icon: Search },
+  { type: 'item', href: '/scan/labels', label: 'QR 라벨 인쇄', icon: Tag },
   { type: 'item', href: '/reuse', label: '재사용', icon: RefreshCw },
 
   { type: 'section', label: '제작' },
