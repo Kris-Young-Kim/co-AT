@@ -44,6 +44,20 @@ type CheckKey =
   | 'is_visit_out' | 'is_public_funding' | 'is_private_funding' | 'is_self_pay'
   | 'is_funding_secured' | 'is_closed'
 
+function CheckBox({ k, label, checked, onChange }: { k: CheckKey; label: string; checked: boolean; onChange: () => void }) {
+  return (
+    <label className="flex items-center gap-1.5 cursor-pointer">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        className="rounded border-gray-300"
+      />
+      <span className="text-sm">{label}</span>
+    </label>
+  )
+}
+
 const INITIAL_CHECKS: Record<CheckKey, boolean> = {
   is_consult: false, is_assessment: false, is_trial: false, is_rental: false,
   is_custom_make: false, is_grant: false, is_education: false, is_info_provision: false,
@@ -201,20 +215,6 @@ export function ServiceRecordForm({
     if (!result.success) { setError(result.error ?? '저장 실패'); return }
     router.push(redirectTo)
     router.refresh()
-  }
-
-  function CheckBox({ k, label }: { k: CheckKey; label: string }) {
-    return (
-      <label className="flex items-center gap-1.5 cursor-pointer">
-        <input
-          type="checkbox"
-          checked={checks[k]}
-          onChange={() => toggleCheck(k)}
-          className="rounded border-gray-300"
-        />
-        <span className="text-sm">{label}</span>
-      </label>
-    )
   }
 
   return (
@@ -389,40 +389,40 @@ export function ServiceRecordForm({
         <div>
           <p className="text-xs font-medium text-gray-600 mb-2">서비스 유형</p>
           <div className="flex flex-wrap gap-3">
-            <CheckBox k="is_consult" label="상담" />
-            <CheckBox k="is_assessment" label="평가" />
-            <CheckBox k="is_trial" label="체험" />
-            <CheckBox k="is_rental" label="대여" />
-            <CheckBox k="is_custom_make" label="맞춤제작" />
-            <CheckBox k="is_grant" label="교부" />
-            <CheckBox k="is_education" label="교육" />
-            <CheckBox k="is_info_provision" label="정보제공" />
-            <CheckBox k="is_repair" label="수리" />
-            <CheckBox k="is_cleaning" label="소독" />
-            <CheckBox k="is_reuse" label="재사용" />
-            <CheckBox k="is_monitoring" label="모니터링" />
-            <CheckBox k="is_other_business" label="기타사업" />
+            <CheckBox k="is_consult" label="상담" checked={checks.is_consult} onChange={() => toggleCheck('is_consult')} />
+            <CheckBox k="is_assessment" label="평가" checked={checks.is_assessment} onChange={() => toggleCheck('is_assessment')} />
+            <CheckBox k="is_trial" label="체험" checked={checks.is_trial} onChange={() => toggleCheck('is_trial')} />
+            <CheckBox k="is_rental" label="대여" checked={checks.is_rental} onChange={() => toggleCheck('is_rental')} />
+            <CheckBox k="is_custom_make" label="맞춤제작" checked={checks.is_custom_make} onChange={() => toggleCheck('is_custom_make')} />
+            <CheckBox k="is_grant" label="교부" checked={checks.is_grant} onChange={() => toggleCheck('is_grant')} />
+            <CheckBox k="is_education" label="교육" checked={checks.is_education} onChange={() => toggleCheck('is_education')} />
+            <CheckBox k="is_info_provision" label="정보제공" checked={checks.is_info_provision} onChange={() => toggleCheck('is_info_provision')} />
+            <CheckBox k="is_repair" label="수리" checked={checks.is_repair} onChange={() => toggleCheck('is_repair')} />
+            <CheckBox k="is_cleaning" label="소독" checked={checks.is_cleaning} onChange={() => toggleCheck('is_cleaning')} />
+            <CheckBox k="is_reuse" label="재사용" checked={checks.is_reuse} onChange={() => toggleCheck('is_reuse')} />
+            <CheckBox k="is_monitoring" label="모니터링" checked={checks.is_monitoring} onChange={() => toggleCheck('is_monitoring')} />
+            <CheckBox k="is_other_business" label="기타사업" checked={checks.is_other_business} onChange={() => toggleCheck('is_other_business')} />
           </div>
         </div>
         <div>
           <p className="text-xs font-medium text-gray-600 mb-2">연락 방식</p>
           <div className="flex flex-wrap gap-3">
-            <CheckBox k="is_phone" label="유선" />
-            <CheckBox k="is_visit_in" label="내방" />
-            <CheckBox k="is_visit_out" label="방문(외)" />
+            <CheckBox k="is_phone" label="유선" checked={checks.is_phone} onChange={() => toggleCheck('is_phone')} />
+            <CheckBox k="is_visit_in" label="내방" checked={checks.is_visit_in} onChange={() => toggleCheck('is_visit_in')} />
+            <CheckBox k="is_visit_out" label="방문(외)" checked={checks.is_visit_out} onChange={() => toggleCheck('is_visit_out')} />
           </div>
         </div>
         <div>
           <p className="text-xs font-medium text-gray-600 mb-2">재원</p>
           <div className="flex flex-wrap gap-3">
-            <CheckBox k="is_public_funding" label="공적급여" />
-            <CheckBox k="is_private_funding" label="민간지원" />
-            <CheckBox k="is_self_pay" label="자부담" />
-            <CheckBox k="is_funding_secured" label="재원확보" />
+            <CheckBox k="is_public_funding" label="공적급여" checked={checks.is_public_funding} onChange={() => toggleCheck('is_public_funding')} />
+            <CheckBox k="is_private_funding" label="민간지원" checked={checks.is_private_funding} onChange={() => toggleCheck('is_private_funding')} />
+            <CheckBox k="is_self_pay" label="자부담" checked={checks.is_self_pay} onChange={() => toggleCheck('is_self_pay')} />
+            <CheckBox k="is_funding_secured" label="재원확보" checked={checks.is_funding_secured} onChange={() => toggleCheck('is_funding_secured')} />
           </div>
         </div>
         <div className="flex items-center">
-          <CheckBox k="is_closed" label="종결" />
+          <CheckBox k="is_closed" label="종결" checked={checks.is_closed} onChange={() => toggleCheck('is_closed')} />
         </div>
       </section>
 
