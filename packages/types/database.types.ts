@@ -134,6 +134,124 @@ export type Database = {
           },
         ]
       }
+      appointment_requests: {
+        Row: {
+          assigned_staff_id: string | null
+          client_id: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          portal_user_id: string
+          requester_contact: string | null
+          requester_name: string | null
+          schedule_id: string | null
+          service_type: string
+          slot_id: string | null
+          staff_note: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_staff_id?: string | null
+          client_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          portal_user_id: string
+          requester_contact?: string | null
+          requester_name?: string | null
+          schedule_id?: string | null
+          service_type: string
+          slot_id?: string | null
+          staff_note?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_staff_id?: string | null
+          client_id?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          portal_user_id?: string
+          requester_contact?: string | null
+          requester_name?: string | null
+          schedule_id?: string | null
+          service_type?: string
+          slot_id?: string | null
+          staff_note?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointment_requests_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointment_requests_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "schedules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointment_requests_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "appointment_slots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      appointment_slots: {
+        Row: {
+          created_at: string
+          current_bookings: number
+          duration_minutes: number
+          id: string
+          is_active: boolean
+          max_bookings: number
+          notes: string | null
+          service_types: string[]
+          slot_date: string
+          slot_time: string
+          staff_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_bookings?: number
+          duration_minutes?: number
+          id?: string
+          is_active?: boolean
+          max_bookings?: number
+          notes?: string | null
+          service_types?: string[]
+          slot_date: string
+          slot_time: string
+          staff_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_bookings?: number
+          duration_minutes?: number
+          id?: string
+          is_active?: boolean
+          max_bookings?: number
+          notes?: string | null
+          service_types?: string[]
+          slot_date?: string
+          slot_time?: string
+          staff_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       approval_delegations: {
         Row: {
           created_at: string
@@ -1046,7 +1164,9 @@ export type Database = {
       }
       domain_assessments: {
         Row: {
-          application_id: string
+          application_id: string | null
+          client_id: string | null
+          consultation_record_id: string | null
           created_at: string | null
           domain_type: string
           evaluation_data: Json | null
@@ -1060,7 +1180,9 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          application_id: string
+          application_id?: string | null
+          client_id?: string | null
+          consultation_record_id?: string | null
           created_at?: string | null
           domain_type: string
           evaluation_data?: Json | null
@@ -1074,7 +1196,9 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          application_id?: string
+          application_id?: string | null
+          client_id?: string | null
+          consultation_record_id?: string | null
           created_at?: string | null
           domain_type?: string
           evaluation_data?: Json | null
@@ -1093,6 +1217,13 @@ export type Database = {
             columns: ["application_id"]
             isOneToOne: false
             referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "domain_assessments_consultation_record_id_fkey"
+            columns: ["consultation_record_id"]
+            isOneToOne: false
+            referencedRelation: "eval_consultation_records"
             referencedColumns: ["id"]
           },
           {
@@ -1377,6 +1508,12 @@ export type Database = {
           change_cancel_reason: string | null
           client_id: string
           created_at: string | null
+          disability_cause_1: string | null
+          disability_cause_2: string | null
+          disability_onset_1: string | null
+          disability_onset_2: string | null
+          disability_progression: string | null
+          disability_status_desc: string | null
           evaluation_date: string | null
           evaluator_name: string | null
           evaluator_staff_id: string | null
@@ -1397,6 +1534,12 @@ export type Database = {
           change_cancel_reason?: string | null
           client_id: string
           created_at?: string | null
+          disability_cause_1?: string | null
+          disability_cause_2?: string | null
+          disability_onset_1?: string | null
+          disability_onset_2?: string | null
+          disability_progression?: string | null
+          disability_status_desc?: string | null
           evaluation_date?: string | null
           evaluator_name?: string | null
           evaluator_staff_id?: string | null
@@ -1417,6 +1560,12 @@ export type Database = {
           change_cancel_reason?: string | null
           client_id?: string
           created_at?: string | null
+          disability_cause_1?: string | null
+          disability_cause_2?: string | null
+          disability_onset_1?: string | null
+          disability_onset_2?: string | null
+          disability_progression?: string | null
+          disability_status_desc?: string | null
           evaluation_date?: string | null
           evaluator_name?: string | null
           evaluator_staff_id?: string | null
@@ -1473,6 +1622,7 @@ export type Database = {
           item_name: string | null
           item_opinion: string | null
           item_order: number
+          item_remarks: string | null
           item_result: string | null
           recommended_model: string | null
           score_disability: number | null
@@ -1503,6 +1653,7 @@ export type Database = {
           item_name?: string | null
           item_opinion?: string | null
           item_order: number
+          item_remarks?: string | null
           item_result?: string | null
           recommended_model?: string | null
           score_disability?: number | null
@@ -1533,6 +1684,7 @@ export type Database = {
           item_name?: string | null
           item_opinion?: string | null
           item_order?: number
+          item_remarks?: string | null
           item_result?: string | null
           recommended_model?: string | null
           score_disability?: number | null
@@ -1709,6 +1861,51 @@ export type Database = {
           question_id?: string
           question_order?: number
           question_text?: string
+        }
+        Relationships: []
+      }
+      eval_product_knowledge: {
+        Row: {
+          application_notes: string | null
+          as_info: string | null
+          category: string | null
+          cautions: string | null
+          contraindications: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          manufacturer: string | null
+          manufacturer_contact: string | null
+          product_name: string
+          updated_at: string
+        }
+        Insert: {
+          application_notes?: string | null
+          as_info?: string | null
+          category?: string | null
+          cautions?: string | null
+          contraindications?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          manufacturer?: string | null
+          manufacturer_contact?: string | null
+          product_name: string
+          updated_at?: string
+        }
+        Update: {
+          application_notes?: string | null
+          as_info?: string | null
+          category?: string | null
+          cautions?: string | null
+          contraindications?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          manufacturer?: string | null
+          manufacturer_contact?: string | null
+          product_name?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -3918,41 +4115,32 @@ export type Database = {
       }
       notification_preferences: {
         Row: {
-          channel: string
-          clerk_user_id: string | null
-          created_at: string | null
-          enabled: boolean | null
+          client_id: string
+          email_opt_out: boolean
           id: string
-          type_filter: string[] | null
-          updated_at: string | null
-          user_id: string
+          sms_opt_out: boolean
+          updated_at: string
         }
         Insert: {
-          channel: string
-          clerk_user_id?: string | null
-          created_at?: string | null
-          enabled?: boolean | null
+          client_id: string
+          email_opt_out?: boolean
           id?: string
-          type_filter?: string[] | null
-          updated_at?: string | null
-          user_id: string
+          sms_opt_out?: boolean
+          updated_at?: string
         }
         Update: {
-          channel?: string
-          clerk_user_id?: string | null
-          created_at?: string | null
-          enabled?: boolean | null
+          client_id?: string
+          email_opt_out?: boolean
           id?: string
-          type_filter?: string[] | null
-          updated_at?: string | null
-          user_id?: string
+          sms_opt_out?: boolean
+          updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "notification_preferences_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
+            foreignKeyName: "notification_preferences_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: true
+            referencedRelation: "clients"
             referencedColumns: ["id"]
           },
         ]
