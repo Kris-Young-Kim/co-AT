@@ -59,6 +59,8 @@
 | Vercel 앱별 독립 프로젝트 배포 | ✅ |
 | GitHub Actions Node.js 24 opt-in (`FORCE_JAVASCRIPT_ACTIONS_TO_NODE24`) | ✅ |
 | CI build filter에 inventory 추가 | ✅ |
+| CI 테스트 실패 수정 (chart-utils API 불일치, grant-assessment mock, pwa-install-banner 누락) | ✅ |
+| 빌드 실패 수정 (migration 105 후 domain_assessments 타입 오류 — DomainAssessmentFull 타입 추가) | ✅ |
 | E2E 테스트 (Playwright) | ⬜ |
 
 ### 인증 (Clerk 멀티도메인)
