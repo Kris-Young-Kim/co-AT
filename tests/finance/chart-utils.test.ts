@@ -24,21 +24,24 @@ describe('getExecutionColor', () => {
 })
 
 describe('buildFundingSourceData', () => {
-  it('splits budget and spent 50/50', () => {
-    const result = buildFundingSourceData(10_000_000, 6_000_000)
+  it('returns national and provincial breakdown', () => {
+    const result = buildFundingSourceData({
+      nationalBudget: 5_000_000, nationalSpent: 3_000_000,
+      provincialBudget: 5_000_000, provincialSpent: 3_000_000,
+    })
     expect(result).toEqual([
       { name: '국비', 예산: 5_000_000, 집행액: 3_000_000 },
       { name: '도비', 예산: 5_000_000, 집행액: 3_000_000 },
     ])
   })
   it('handles zero values', () => {
-    expect(buildFundingSourceData(0, 0)).toEqual([
+    expect(buildFundingSourceData({ nationalBudget: 0, nationalSpent: 0, provincialBudget: 0, provincialSpent: 0 })).toEqual([
       { name: '국비', 예산: 0, 집행액: 0 },
       { name: '도비', 예산: 0, 집행액: 0 },
     ])
   })
-  it('rounds odd amounts down', () => {
-    const result = buildFundingSourceData(9_999_999, 5_000_001)
+  it('maps values directly without splitting', () => {
+    const result = buildFundingSourceData({ nationalBudget: 4_999_999, nationalSpent: 2_500_000, provincialBudget: 5_000_000, provincialSpent: 2_500_001 })
     expect(result[0]['예산']).toBe(4_999_999)
     expect(result[0]['집행액']).toBe(2_500_000)
   })

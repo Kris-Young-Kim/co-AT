@@ -106,13 +106,8 @@ export default async function AssessmentsPage() {
                     const href = clientId
                       ? `/clients/${clientId}/sessions/${consultId}`
                       : null
-                    const Row = href ? Link : 'div'
-                    return (
-                      <Row
-                        key={consultId}
-                        {...(href ? { href } : {})}
-                        className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
-                      >
+                    const innerContent = (
+                      <>
                         <div className="shrink-0 pt-0.5">
                           <span className="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">상담</span>
                         </div>
@@ -131,7 +126,13 @@ export default async function AssessmentsPage() {
                           <p className="text-xs text-gray-400">{group[0].evaluation_date}</p>
                         </div>
                         <span className="text-xs text-gray-400 shrink-0">{group.length}개 영역</span>
-                      </Row>
+                      </>
+                    )
+                    const rowClass = "flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                    return href ? (
+                      <Link key={consultId} href={href} className={rowClass}>{innerContent}</Link>
+                    ) : (
+                      <div key={consultId} className={rowClass}>{innerContent}</div>
                     )
                   })}
 

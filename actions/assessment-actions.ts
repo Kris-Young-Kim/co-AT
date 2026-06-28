@@ -85,7 +85,7 @@ export async function createDomainAssessment(
 
 export async function getDomainAssessments(applicationId: string): Promise<{
   success: boolean;
-  assessments?: unknown[];
+  assessments?: DomainAssessmentFull[];
   error?: string;
 }> {
   try {
@@ -103,7 +103,7 @@ export async function getDomainAssessments(applicationId: string): Promise<{
       console.error("getDomainAssessments:", error);
       return { success: false, error: "평가 조회에 실패했습니다" };
     }
-    return { success: true, assessments: data ?? [] };
+    return { success: true, assessments: (data ?? []) as DomainAssessmentFull[] };
   } catch (e) {
     console.error("getDomainAssessments:", e);
     return { success: false, error: "예상치 못한 오류가 발생했습니다" };
@@ -152,6 +152,11 @@ export interface ClientDomainAssessment {
   future_plan: string | null;
 }
 
+export interface DomainAssessmentFull extends ClientDomainAssessment {
+  evaluation_data: Record<string, unknown> | null;
+  measurements: Record<string, number> | null;
+}
+
 export async function getDomainAssessmentsByClient(
   clientId: string
 ): Promise<{ success: boolean; assessments?: ClientDomainAssessment[]; error?: string }> {
@@ -179,7 +184,7 @@ export async function getDomainAssessmentsByClient(
 
 export async function getDomainAssessmentById(assessmentId: string): Promise<{
   success: boolean;
-  assessment?: unknown;
+  assessment?: DomainAssessmentFull;
   error?: string;
 }> {
   try {
@@ -197,7 +202,7 @@ export async function getDomainAssessmentById(assessmentId: string): Promise<{
       console.error("getDomainAssessmentById:", error);
       return { success: false, error: "평가 조회에 실패했습니다" };
     }
-    return { success: true, assessment: data };
+    return { success: true, assessment: data as DomainAssessmentFull };
   } catch (e) {
     console.error("getDomainAssessmentById:", e);
     return { success: false, error: "예상치 못한 오류가 발생했습니다" };
@@ -234,7 +239,7 @@ export async function deleteDomainAssessment(
 export async function updateDomainAssessment(
   assessmentId: string,
   updates: Partial<DomainAssessmentInput>
-): Promise<{ success: boolean; assessment?: unknown; error?: string }> {
+): Promise<{ success: boolean; assessment?: DomainAssessmentFull; error?: string }> {
   try {
     const hasPermission = await hasAdminOrStaffPermission();
     if (!hasPermission) return { success: false, error: "권한이 없습니다" };
@@ -265,7 +270,7 @@ export async function updateDomainAssessment(
     }
 
     revalidatePath("/clients");
-    return { success: true, assessment: data };
+    return { success: true, assessment: data as DomainAssessmentFull };
   } catch (e) {
     console.error("updateDomainAssessment:", e);
     return { success: false, error: "예상치 못한 오류가 발생했습니다" };

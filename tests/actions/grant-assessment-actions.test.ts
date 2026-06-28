@@ -45,9 +45,11 @@ describe('listGrantAssessments', () => {
 
   it('성공 — 목록 반환', async () => {
     mockHasAdminOrStaffPermission.mockResolvedValueOnce(true)
-    const chain = makeChain({
-      order: vi.fn(() => Promise.resolve({ data: [{ id: 'a-1', client_name: '홍길동' }], error: null })),
-    })
+    const mockData = [{ id: 'a-1', client_name: '홍길동' }]
+    // override order to return chain (chainable), and chain.then to resolve with data
+    const chain = makeChain({ order: vi.fn().mockReturnThis() })
+    chain.then = (resolve: (v: { data: typeof mockData; error: null }) => unknown) =>
+      Promise.resolve({ data: mockData, error: null }).then(resolve)
     vi.mocked(createAdminClient).mockReturnValueOnce(chain as any)
     const result = await listGrantAssessments()
     expect(result.success).toBe(true)

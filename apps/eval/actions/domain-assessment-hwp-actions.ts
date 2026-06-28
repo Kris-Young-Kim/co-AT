@@ -111,16 +111,21 @@ export async function generateDomainAssessmentHwpx(assessmentId: string): Promis
   }
   const assessment = assessmentResult.assessment
 
-  const supabase = createAdminClient()
-  const { data: app } = await (supabase as any)
-    .from("applications")
-    .select("client_id")
-    .eq("id", assessment.application_id)
-    .single()
+  let resolvedClientId: string | null = assessment.client_id ?? null
 
-  if (!app) return { success: false, error: "신청 정보를 찾을 수 없습니다" }
+  if (!resolvedClientId && assessment.application_id) {
+    const supabase = createAdminClient()
+    const { data: app } = await (supabase as any)
+      .from("applications")
+      .select("client_id")
+      .eq("id", assessment.application_id)
+      .single()
+    resolvedClientId = app?.client_id ?? null
+  }
 
-  const clientResult = await getClientById(app.client_id)
+  if (!resolvedClientId) return { success: false, error: "대상자 정보를 찾을 수 없습니다" }
+
+  const clientResult = await getClientById(resolvedClientId)
   if (!clientResult.success || !clientResult.client) {
     return { success: false, error: "대상자 정보를 찾을 수 없습니다" }
   }

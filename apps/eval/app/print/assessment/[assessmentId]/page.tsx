@@ -20,15 +20,21 @@ export default async function AssessmentPrintPage({ params }: AssessmentPrintPag
   if (!assessmentResult.success || !assessmentResult.assessment) notFound()
 
   const assessment = assessmentResult.assessment
-  const supabase = await createClient()
-  const { data: app } = await supabase
-    .from('applications')
-    .select('client_id')
-    .eq('id', assessment.application_id)
-    .single()
-  if (!app) notFound()
+  let clientId: string | null = assessment.client_id ?? null
 
-  const clientResult = await getClientById((app as { client_id: string }).client_id)
+  if (!clientId && assessment.application_id) {
+    const supabase = await createClient()
+    const { data: app } = await supabase
+      .from('applications')
+      .select('client_id')
+      .eq('id', assessment.application_id)
+      .single()
+    clientId = (app as { client_id: string } | null)?.client_id ?? null
+  }
+
+  if (!clientId) notFound()
+
+  const clientResult = await getClientById(clientId)
   if (!clientResult.success || !clientResult.client) notFound()
 
   return (
@@ -38,7 +44,7 @@ export default async function AssessmentPrintPage({ params }: AssessmentPrintPag
         <PdfDownloadButton action={generateAssessmentPdf.bind(null, assessmentId)} />
         <PrintButton />
       </div>
-      <AssessmentPrintView assessment={assessment} client={clientResult.client} />
+      <AssessmentPrintView assessment={assessment as any} client={clientResult.client} />
     </>
   )
 }
