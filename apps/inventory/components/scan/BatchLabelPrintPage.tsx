@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useTransition } from 'react'
-import { Printer, Square, CheckSquare, Loader2 } from 'lucide-react'
+import { Printer, Square, CheckSquare, Loader2, AlertTriangle } from 'lucide-react'
 import QRCode from 'qrcode'
 import { getInventoryDevicesForLabels, type LabelDevice } from '@/inventory/actions/scan-labels-actions'
 import { DeviceStatusBadge } from '@/inventory/components/inventory/DeviceStatusBadge'
@@ -11,15 +11,21 @@ const INVENTORY_BASE_URL = process.env.NEXT_PUBLIC_INVENTORY_URL ?? 'https://inv
 interface QrLabelProps {
   device: LabelDevice
   qrDataUrl: string
+  failed: boolean
 }
 
-function QrLabel({ device, qrDataUrl }: QrLabelProps) {
+function QrLabel({ device, qrDataUrl, failed }: QrLabelProps) {
   return (
     <div className="w-48 p-3 border border-gray-300 text-center print:border-black">
       {qrDataUrl ? (
         <img src={qrDataUrl} width={160} height={160} alt="QR" className="mx-auto" />
+      ) : failed ? (
+        <div className="w-40 h-40 mx-auto bg-red-50 flex flex-col items-center justify-center gap-1 print:hidden">
+          <AlertTriangle className="h-6 w-6 text-red-400" />
+          <span className="text-xs text-red-500">생성 실패</span>
+        </div>
       ) : (
-        <div className="w-40 h-40 mx-auto bg-gray-100 flex items-center justify-center">
+        <div className="w-40 h-40 mx-auto bg-gray-100 flex items-center justify-center print:hidden">
           <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
         </div>
       )}
@@ -36,6 +42,7 @@ export function BatchLabelPrintPage() {
   const [devices, setDevices] = useState<LabelDevice[]>([])
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [qrMap, setQrMap] = useState<Record<string, string>>({})
+  const [failedQr, setFailedQr] = useState<Set<string>>(new Set())
   const [error, setError] = useState<string>('')
   const loadedRef = useRef(false)
 
@@ -54,22 +61,36 @@ export function BatchLabelPrintPage() {
 
   // Generate QR data URLs for newly selected devices
   useEffect(() => {
-    const toGenerate = [...selected].filter((id) => !qrMap[id])
+    const toGenerate = [...selected].filter((id) => !qrMap[id] && !failedQr.has(id))
     if (toGenerate.length === 0) return
 
     const deviceMap = Object.fromEntries(devices.map((d) => [d.id, d]))
-    Promise.all(
+    Promise.allSettled(
       toGenerate.map(async (id) => {
         const dev = deviceMap[id]
-        if (!dev) return [id, ''] as [string, string]
+        if (!dev?.qr_token) throw new Error(id)
         const url = `${INVENTORY_BASE_URL}/scan/${dev.qr_token}`
         const dataUrl = await QRCode.toDataURL(url, { width: 160, errorCorrectionLevel: 'M' })
         return [id, dataUrl] as [string, string]
       })
-    ).then((entries) => {
-      setQrMap((prev) => ({ ...prev, ...Object.fromEntries(entries) }))
+    ).then((results) => {
+      const succeeded: [string, string][] = []
+      const failed: string[] = []
+      results.forEach((r, i) => {
+        if (r.status === 'fulfilled') {
+          succeeded.push(r.value)
+        } else {
+          failed.push(toGenerate[i])
+        }
+      })
+      if (succeeded.length > 0) {
+        setQrMap((prev) => ({ ...prev, ...Object.fromEntries(succeeded) }))
+      }
+      if (failed.length > 0) {
+        setFailedQr((prev) => new Set([...prev, ...failed]))
+      }
     })
-  }, [selected, devices, qrMap])
+  }, [selected, devices, qrMap, failedQr])
 
   const toggleSelect = (id: string) => {
     setSelected((prev) => {
@@ -85,6 +106,10 @@ export function BatchLabelPrintPage() {
 
   const selectedDevices = devices.filter((d) => selected.has(d.id))
   const allChecked = devices.length > 0 && selected.size === devices.length
+  const pendingQrCount = selectedDevices.filter(
+    (d) => !qrMap[d.id] && !failedQr.has(d.id)
+  ).length
+  const canPrint = selected.size > 0 && pendingQrCount === 0
 
   return (
     <>
@@ -99,11 +124,17 @@ export function BatchLabelPrintPage() {
           </div>
           <button
             onClick={() => window.print()}
-            disabled={selected.size === 0}
+            disabled={!canPrint}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            <Printer className="h-4 w-4" />
-            라벨 인쇄 ({selected.size}개)
+            {pendingQrCount > 0 ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Printer className="h-4 w-4" />
+            )}
+            {pendingQrCount > 0
+              ? `QR 생성 중... (${pendingQrCount}개 남음)`
+              : `라벨 인쇄 (${selected.size}개)`}
           </button>
         </div>
 
@@ -179,12 +210,31 @@ export function BatchLabelPrintPage() {
         )}
       </div>
 
+      {/* Failed QR warning — print:hidden */}
+      {failedQr.size > 0 && (
+        <div className="print:hidden max-w-5xl mx-auto px-4 pb-4">
+          <div className="flex items-center gap-2 p-3 rounded-md bg-amber-50 border border-amber-200">
+            <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
+            <p className="text-sm text-amber-700">
+              QR 코드 생성에 실패한 기기 {failedQr.size}개가 있습니다. 인쇄 목록에서 제외됩니다.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Print output — hidden on screen, flex-wrap on print */}
       {selectedDevices.length > 0 && (
         <div className="hidden print:flex print:flex-wrap gap-4 p-8">
-          {selectedDevices.map((device) => (
-            <QrLabel key={device.id} device={device} qrDataUrl={qrMap[device.id] ?? ''} />
-          ))}
+          {selectedDevices
+            .filter((d) => qrMap[d.id])
+            .map((device) => (
+              <QrLabel
+                key={device.id}
+                device={device}
+                qrDataUrl={qrMap[device.id]}
+                failed={false}
+              />
+            ))}
         </div>
       )}
     </>

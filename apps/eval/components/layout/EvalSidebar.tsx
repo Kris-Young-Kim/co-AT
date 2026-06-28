@@ -55,7 +55,7 @@ const NAV_ENTRIES: NavEntry[] = [
   { type: 'item', href: '/reports', label: '월별 실적 보고서', icon: FileBarChart },
 
   { type: 'section', label: '지식·관리' },
-  { type: 'item', href: '/knowledge', label: '보조기기 결과 이력', icon: BookOpen },
+  { type: 'item', href: '/knowledge', label: '지식 관리', icon: BookOpen },
   { type: 'item', href: '/migration', label: 'Sheets 동기화', icon: RefreshCw },
 ]
 

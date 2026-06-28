@@ -55,9 +55,16 @@ export function ScanLookupPage() {
       )}
 
       {error && (
-        <div className="flex items-center gap-2 p-3 rounded-md bg-red-50 border border-red-200">
-          <XCircle className="h-4 w-4 text-red-500 shrink-0" />
-          <p className="text-sm text-red-700">{error}</p>
+        <div className="flex items-start gap-2 p-3 rounded-md bg-red-50 border border-red-200">
+          <XCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm text-red-700">{error}</p>
+            {error === '권한이 없습니다' && (
+              <p className="text-xs text-red-500 mt-1">
+                관리자 또는 직원 계정으로 로그인한 후 이용해주세요.
+              </p>
+            )}
+          </div>
         </div>
       )}
 

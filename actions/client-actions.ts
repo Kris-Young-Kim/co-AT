@@ -5,7 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 import { Database } from "@/types/database.types"
 import { clerkClient } from '@clerk/nextjs/server'
-import { notifyClientRegistered, notifyLifecycleChanged } from "@/lib/utils/crm-notify"
+import { notifyClientRegistered, notifyLifecycleChanged, notifyStaffHandover } from "@/lib/utils/crm-notify"
 
 export type Client = Database["public"]["Tables"]["clients"]["Row"]
 
@@ -777,6 +777,73 @@ export async function getStaffMembers(): Promise<StaffMember[]> {
   } catch (error) {
     console.error("Unexpected error in getStaffMembers:", error)
     return []
+  }
+}
+
+export async function changeAssignedStaff(
+  clientId: string,
+  newStaffId: string | null
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+    const supabase = createAdminClient()
+
+    // Fetch current client for handover context
+    const { data: client, error: fetchError } = await supabase
+      .from('clients')
+      .select('name, disability_type, birth_date, contact, lifecycle_status, assigned_staff_id')
+      .eq('id', clientId)
+      .single()
+
+    if (fetchError || !client) return { success: false, error: '대상자를 찾을 수 없습니다' }
+
+    // Resolve previous staff name if any
+    let prevStaffName: string | null = null
+    const prevStaffId = (client as any).assigned_staff_id as string | null
+    if (prevStaffId) {
+      const clerk = await clerkClient()
+      const prevUser = await clerk.users.getUser(prevStaffId).catch(() => null)
+      prevStaffName = prevUser?.fullName ?? null
+    }
+
+    const { error: updateError } = await supabase
+      .from('clients')
+      .update({ assigned_staff_id: newStaffId, updated_at: new Date().toISOString() })
+      .eq('id', clientId)
+
+    if (updateError) return { success: false, error: '담당자 변경에 실패했습니다' }
+
+    revalidatePath(`/clients/${clientId}`)
+
+    // Send handover email to new staff (fire-and-forget)
+    if (newStaffId) {
+      const [serviceResult, consultResult, ippaResult] = await Promise.all([
+        supabase.from('eval_service_records' as any).select('id', { count: 'exact', head: true }).eq('client_id', clientId),
+        supabase.from('eval_consultation_records' as any).select('id', { count: 'exact', head: true }).eq('client_id', clientId),
+        supabase.from('eval_ippa_assessments' as any).select('id').eq('client_id', clientId).is('post_score', null),
+      ])
+
+      notifyStaffHandover({
+        newStaffId,
+        prevStaffName,
+        clientId,
+        clientName: (client as any).name,
+        clientDisabilityType: (client as any).disability_type ?? null,
+        clientBirthDate: (client as any).birth_date ?? null,
+        clientContact: (client as any).contact ?? null,
+        lifecycleStatus: (client as any).lifecycle_status ?? 'active',
+        serviceCount: serviceResult.count ?? 0,
+        consultationCount: consultResult.count ?? 0,
+        hasActiveIppa: ((ippaResult.data ?? []).length > 0),
+      }).catch(console.error)
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('changeAssignedStaff:', error)
+    return { success: false, error: '예상치 못한 오류가 발생했습니다' }
   }
 }
 

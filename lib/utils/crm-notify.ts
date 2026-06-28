@@ -11,6 +11,7 @@ import { LifecycleChangedEmail, lifecycleChangedSubject } from '@/lib/email/temp
 import { IppaCompletedEmail, ippaCompletedSubject } from '@/lib/email/templates/IppaCompletedEmail'
 import { ServiceStatusChangedEmail, serviceStatusChangedSubject } from '@/lib/email/templates/ServiceStatusChangedEmail'
 import { LongInactiveEmail, longInactiveSubject } from '@/lib/email/templates/LongInactiveEmail'
+import { StaffHandoverEmail, staffHandoverSubject } from '@/lib/email/templates/StaffHandoverEmail'
 
 type EmailResult = { success: boolean; error?: string }
 
@@ -317,6 +318,51 @@ export async function notifyServiceStatusChanged(params: {
     newStatus: params.newStatus,
   }))
   await sendEmail(staffEmail, serviceStatusChangedSubject(params.clientName), html)
+}
+
+// ─── C-9: 담당자 인수인계 ────────────────────────────────────────────────────
+
+export async function notifyStaffHandover(params: {
+  newStaffId: string
+  prevStaffName: string | null
+  clientId: string
+  clientName: string
+  clientDisabilityType: string | null
+  clientBirthDate: string | null
+  clientContact: string | null
+  lifecycleStatus: string
+  serviceCount: number
+  consultationCount: number
+  hasActiveIppa: boolean
+}): Promise<void> {
+  const enabled = await isEmailEnabled()
+  if (!enabled) return
+
+  const newStaffEmail = await getStaffEmail(params.newStaffId)
+  if (!newStaffEmail) return
+
+  const { clerkClient } = await import('@clerk/nextjs/server')
+  const clerk = await clerkClient()
+  const newUser = await clerk.users.getUser(params.newStaffId).catch(() => null)
+  const newStaffName = newUser?.fullName ?? '담당자'
+
+  const evalBaseUrl = process.env.NEXT_PUBLIC_EVAL_URL ?? 'https://eval.gwatc.cloud'
+  const clientPageUrl = `${evalBaseUrl}/clients/${params.clientId}`
+
+  const html = await render(StaffHandoverEmail({
+    newStaffName,
+    prevStaffName: params.prevStaffName,
+    clientName: params.clientName,
+    clientDisabilityType: params.clientDisabilityType,
+    clientBirthDate: params.clientBirthDate,
+    clientContact: params.clientContact,
+    lifecycleStatus: params.lifecycleStatus,
+    serviceCount: params.serviceCount,
+    consultationCount: params.consultationCount,
+    hasActiveIppa: params.hasActiveIppa,
+    clientPageUrl,
+  }))
+  await sendEmail(newStaffEmail, staffHandoverSubject(params.clientName), html)
 }
 
 // ─── C-8: 장기 미활동 (cron에서 호출) ────────────────────────────────────────

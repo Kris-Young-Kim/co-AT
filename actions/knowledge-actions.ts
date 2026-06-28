@@ -1,5 +1,7 @@
 "use server"
 
+import { revalidatePath } from 'next/cache'
+import { auth } from '@clerk/nextjs/server'
 import { createAdminClient } from "@/lib/supabase/admin"
 import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
 
@@ -95,5 +97,146 @@ export async function getDeviceOutcomes(): Promise<{
   } catch (error) {
     console.error("Unexpected error in getDeviceOutcomes:", error)
     return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+  }
+}
+
+// ─── 품목별 지식베이스 ────────────────────────────────────────────────────────
+
+export interface ProductKnowledge {
+  id: string
+  product_name: string
+  category: string | null
+  manufacturer: string | null
+  manufacturer_contact: string | null
+  as_info: string | null
+  cautions: string | null
+  application_notes: string | null
+  contraindications: string | null
+  created_by: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface ProductKnowledgeWithStats extends ProductKnowledge {
+  service_count: number
+}
+
+export type UpsertProductKnowledgeInput = Omit<ProductKnowledge, 'id' | 'created_by' | 'created_at' | 'updated_at'>
+
+export async function getProductKnowledgeList(): Promise<{
+  success: boolean
+  items?: ProductKnowledgeWithStats[]
+  error?: string
+}> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+    const supabase = createAdminClient()
+
+    const [knowledgeResult, serviceResult] = await Promise.all([
+      (supabase as any).from('eval_product_knowledge').select('*').order('product_name'),
+      (supabase as any)
+        .from('eval_service_records')
+        .select('product_name')
+        .not('product_name', 'is', null)
+        .not('product_name', 'eq', ''),
+    ])
+
+    if (knowledgeResult.error) return { success: false, error: '조회에 실패했습니다' }
+
+    // Count services per product name
+    const serviceCountMap: Record<string, number> = {}
+    ;(serviceResult.data ?? []).forEach((r: any) => {
+      if (r.product_name) serviceCountMap[r.product_name] = (serviceCountMap[r.product_name] ?? 0) + 1
+    })
+
+    // Merge known products from service records without knowledge entries
+    const existingNames = new Set((knowledgeResult.data ?? []).map((k: any) => k.product_name))
+    const fromServices: ProductKnowledgeWithStats[] = Object.keys(serviceCountMap)
+      .filter((name) => !existingNames.has(name))
+      .map((name) => ({
+        id: '',
+        product_name: name,
+        category: null,
+        manufacturer: null,
+        manufacturer_contact: null,
+        as_info: null,
+        cautions: null,
+        application_notes: null,
+        contraindications: null,
+        created_by: null,
+        created_at: '',
+        updated_at: '',
+        service_count: serviceCountMap[name] ?? 0,
+      }))
+
+    const withStats: ProductKnowledgeWithStats[] = [
+      ...(knowledgeResult.data ?? []).map((k: any) => ({
+        ...k,
+        service_count: serviceCountMap[k.product_name] ?? 0,
+      })),
+      ...fromServices,
+    ].sort((a, b) => b.service_count - a.service_count)
+
+    return { success: true, items: withStats }
+  } catch (error) {
+    console.error('getProductKnowledgeList:', error)
+    return { success: false, error: '예상치 못한 오류가 발생했습니다' }
+  }
+}
+
+export async function upsertProductKnowledge(input: UpsertProductKnowledgeInput): Promise<{
+  success: boolean
+  item?: ProductKnowledge
+  error?: string
+}> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+    const { userId } = await auth()
+    const supabase = createAdminClient()
+
+    const { data, error } = await (supabase as any)
+      .from('eval_product_knowledge')
+      .upsert(
+        { ...input, created_by: userId, updated_at: new Date().toISOString() },
+        { onConflict: 'product_name', ignoreDuplicates: false }
+      )
+      .select()
+      .single()
+
+    if (error) return { success: false, error: '저장에 실패했습니다' }
+
+    revalidatePath('/knowledge')
+    return { success: true, item: data }
+  } catch (error) {
+    console.error('upsertProductKnowledge:', error)
+    return { success: false, error: '예상치 못한 오류가 발생했습니다' }
+  }
+}
+
+export async function deleteProductKnowledge(id: string): Promise<{
+  success: boolean
+  error?: string
+}> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+    const supabase = createAdminClient()
+    const { error } = await (supabase as any)
+      .from('eval_product_knowledge')
+      .delete()
+      .eq('id', id)
+
+    if (error) return { success: false, error: '삭제에 실패했습니다' }
+
+    revalidatePath('/knowledge')
+    return { success: true }
+  } catch (error) {
+    console.error('deleteProductKnowledge:', error)
+    return { success: false, error: '예상치 못한 오류가 발생했습니다' }
   }
 }

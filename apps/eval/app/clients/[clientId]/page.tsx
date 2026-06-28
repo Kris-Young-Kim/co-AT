@@ -8,6 +8,7 @@ import { getClientIPPAAssessments } from '@/actions/ippa-actions'
 import { getGuardiansByClient } from '@/actions/guardian-actions'
 import { getNotificationPreference } from '@/actions/notification-preference-actions'
 import { listGrantAssessments } from '@/actions/grant-assessment-actions'
+import { getStaffMembers } from '@/actions/client-actions'
 import { ApplicationListCard } from '@/eval/components/eval/ApplicationListCard'
 import { CaseRecordPanel } from '@/eval/components/eval/CaseRecordPanel'
 import { ClientActiveServices } from '@/eval/components/eval/ClientActiveServices'
@@ -17,6 +18,7 @@ import { ClientTimeline } from '@/eval/components/eval/ClientTimeline'
 import { PortalUserLink } from '@/eval/components/eval/PortalUserLink'
 import { ClientQrLabel } from '@/eval/components/clients/ClientQrLabel'
 import { ClientCrmPanel } from '@/eval/components/eval/ClientCrmPanel'
+import { ClientStaffPanel } from '@/eval/components/eval/ClientStaffPanel'
 import { ClientGuardiansPanel } from '@/eval/components/clients/ClientGuardiansPanel'
 import { ClientNotificationPrefsPanel } from '@/eval/components/clients/ClientNotificationPrefsPanel'
 import { notFound } from 'next/navigation'
@@ -34,7 +36,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const clientResult = await getClientById(clientId)
   if (!clientResult.success || !clientResult.client) notFound()
 
-  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, consultationResult, assessmentResult, tagsResult, guardiansResult, notifPrefResult, grantEvalsResult, domainEvalsResult] = await Promise.all([
+  const [appsResult, activeResult, historyResult, casesResult, ippaResult, similarResult, portalUserResult, consultationResult, assessmentResult, tagsResult, guardiansResult, notifPrefResult, grantEvalsResult, domainEvalsResult, staffMembers] = await Promise.all([
     getApplicationsByClientId(clientId),
     getClientActiveServices(clientId),
     getClientHistory(clientId),
@@ -51,6 +53,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     getNotificationPreference(clientId),
     listGrantAssessments({ clientId }),
     getDomainAssessmentsByClient(clientId),
+    getStaffMembers(),
   ])
 
   const client = clientResult.client
@@ -128,6 +131,15 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
             </dd>
           </div>
         </dl>
+      </div>
+
+      {/* 담당자 */}
+      <div className="mb-6">
+        <ClientStaffPanel
+          clientId={clientId}
+          initialStaffId={(client as any).assigned_staff_id ?? null}
+          staffMembers={staffMembers}
+        />
       </div>
 
       {/* 보호자 · 연락처 */}
