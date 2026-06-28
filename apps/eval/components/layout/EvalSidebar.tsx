@@ -6,7 +6,7 @@ import {
   Users, BarChart3, LogOut, Phone, RefreshCw, Clock,
   FileEdit, GraduationCap, Gift, FileText, BarChart2,
   BookOpen, Kanban, QrCode, ClipboardList, Building2, Filter, ClipboardCheck,
-  ExternalLink, Package, Globe,
+  ExternalLink, Package, Globe, FileBarChart,
 } from 'lucide-react'
 import { useClerk } from '@clerk/nextjs'
 
@@ -50,6 +50,9 @@ const NAV_ENTRIES: NavEntry[] = [
   { type: 'section', label: '의뢰처 관리' },
   { type: 'item', href: '/referrers', label: '의뢰처 CRM', icon: Building2 },
   { type: 'item', href: '/segments', label: '대상자 세그먼트', icon: Filter },
+
+  { type: 'section', label: '보고서' },
+  { type: 'item', href: '/reports', label: '월별 실적 보고서', icon: FileBarChart },
 
   { type: 'section', label: '지식·관리' },
   { type: 'item', href: '/knowledge', label: '보조기기 결과 이력', icon: BookOpen },
