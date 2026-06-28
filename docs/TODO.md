@@ -16,7 +16,8 @@
 **완료**: Phase G — 의뢰처 CRM (eval /referrers, 4탭) + 대상자 세그먼트 (eval /segments) + 보호자 다중 연락처 (ClientGuardiansPanel) — 2026-06-20
 **완료**: Phase H-1 — E-6 이메일 자동 발송 CRM (이벤트 기반 8 트리거 + Resend 이메일 + 수신 거부 옵트아웃 + 장기 미활동 Cron) — 2026-06-20  
 **완료**: Phase H-2 — E-5 중앙보조기기센터 보고 양식 자동 집계 (서비스 기록 확정 → 월별 집계, 중복 수작업 제거) — 2026-06-28  
-**완료**: Phase H-4 — E-3 지식관리 마무리 (담당자 인수인계 자동화 + 품목별 지식베이스) + inventory scan QR 안정화 — 2026-06-28
+**완료**: Phase H-4 — E-3 지식관리 마무리 (담당자 인수인계 자동화 + 품목별 지식베이스) + inventory scan QR 안정화 — 2026-06-28  
+**완료**: Phase H-3 — E-2 상담 예약 셀프 신청 (포털 예약 신청 UI + 어드민 예약 관리 + 마이페이지 예약 현황) — 2026-06-28
 
 ---
 
@@ -739,7 +740,7 @@
 | 포털 계정 연결 — 담당자가 eval 대상자 상세에서 이메일/전화/이름+생년월일로 검색 → 연결/해제 | ✅ |
 | 포털 가입 후 이름+생년월일 입력 온보딩 (`/onboarding`) → Clerk publicMetadata 저장 | ✅ |
 | 서비스 진행 상황 실시간 상태 표시 (접수→검토→지원→완료) | ✅ |
-| 상담 예약 셀프 신청 (일정 선택 → 직원 확정) | ⬜ |
+| 상담 예약 셀프 신청 (일정 선택 → 직원 확정) | ✅ |
 | K-IPPA 사후 측정 셀프 제출 (링크 발송 → 대상자 직접 응답) | ✅ |
 | SMS/카카오 알림 — 서비스 상태 변경 시 자동 발송 (automation 앱 연동) | ⬜ |
 
@@ -978,11 +979,16 @@
 - [x] **inventory** — BatchLabelPrintPage Promise.allSettled + failedQr 추적, 인쇄 전 QR 준비 완료 체크
 - [x] **inventory** — ScanLookupPage 권한 오류 시 로그인 안내 문구 추가
 
-#### Phase H-3 — E-2 상담 예약 셀프 신청 (다음 예정)
+#### ✅ Phase H-3 — E-2 상담 예약 셀프 신청 (완료 2026-06-28)
 > 클라이언트 포털에서 상담 일정 슬롯 선택 → 직원 확정·배정
-- [ ] **web** — `/appointments` 예약 신청 UI (가능 슬롯 선택)
-- [ ] **admin** — 직원 확정·배정 + 예약 상태 관리
-- [ ] **web** — 포털 마이페이지 예약 현황 표시
+- [x] Migration 107: `appointment_slots` + `appointment_requests` 테이블 + RLS
+- [x] `actions/appointment-actions.ts` — 포털/어드민 서버 액션 전체 (getAvailableSlots, requestAppointment, cancelMyAppointment, getMyAppointments, createAppointmentSlot, confirmAppointmentRequest, rejectAppointmentRequest 등)
+- [x] **web** — `/appointments` 예약 신청 UI (가능 슬롯 선택, 서비스 유형 선택, 예약 현황)
+- [x] **admin** — 직원 확정·배정 + 예약 상태 관리 (대기 중/전체/슬롯 관리 3탭)
+- [x] **web** — 포털 마이페이지 예약 현황 표시 (`MyAppointmentList`)
+- [x] **admin** — 예약 확정 시 schedules 연동 (선택적)
+- [x] 모바일 하단 내비에 예약 탭 추가, 어드민 사이드바에 예약 관리 메뉴 추가
+> ⚠️ migration 107 Supabase 대시보드 적용 + `pnpm gen:types` 실행 필요
 
 ---
 

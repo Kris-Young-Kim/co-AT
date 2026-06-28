@@ -3,6 +3,7 @@ import { EvalServiceRecordList } from "@/components/features/portal/EvalServiceR
 import { ClientTimelineList } from "@/components/features/portal/ClientTimelineList"
 import { ServiceStatusTracker } from "@/components/features/portal/ServiceStatusTracker"
 import { PortalIPPAList } from "@/components/features/portal/PortalIPPAList"
+import { MyAppointmentList } from "@/components/features/appointments/MyAppointmentList"
 import {
   getMyRentals,
   getMyEvalServiceRecords,
@@ -10,6 +11,7 @@ import {
   getMyActiveApplications,
   getMyIPPAAssessments,
 } from "@/actions/portal-actions"
+import { getMyAppointments } from "@/actions/appointment-actions"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -24,12 +26,13 @@ export default async function MyPage() {
     redirect("/sign-in")
   }
 
-  const [rentalsResult, evalRecordsResult, historyResult, activeAppsResult, ippaResult] = await Promise.all([
+  const [rentalsResult, evalRecordsResult, historyResult, activeAppsResult, ippaResult, appointmentsResult] = await Promise.all([
     getMyRentals(),
     getMyEvalServiceRecords(),
     getMyServiceHistory(),
     getMyActiveApplications(),
     getMyIPPAAssessments(),
+    getMyAppointments(),
   ])
 
   const rentals = rentalsResult.success ? rentalsResult.rentals ?? [] : []
@@ -37,6 +40,7 @@ export default async function MyPage() {
   const history = historyResult.success ? historyResult.history ?? [] : []
   const activeApplications = activeAppsResult.success ? activeAppsResult.applications ?? [] : []
   const ippaAssessments = ippaResult.success ? ippaResult.assessments ?? [] : []
+  const myAppointments = appointmentsResult.success ? appointmentsResult.appointments ?? [] : []
   const clientLinked = rentalsResult.clientLinked ?? evalRecordsResult.clientLinked ?? false
 
   return (
@@ -68,6 +72,7 @@ export default async function MyPage() {
         {/* 좌측: 대여 중인 기기 + 서비스 기록 */}
         <div className="lg:col-span-1 space-y-6">
           <ClientRentStatus rentals={rentals} />
+          <MyAppointmentList appointments={myAppointments} />
           <EvalServiceRecordList records={evalRecords} />
           {clientLinked && <PortalIPPAList assessments={ippaAssessments} />}
         </div>

@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Users,
   Calendar,
+  CalendarCheck,
   Settings,
   Globe,
   Sparkles,
@@ -36,6 +37,7 @@ const NAV_ENTRIES: NavEntry[] = [
   { type: "section", label: "콘텐츠" },
   { type: "item", href: "/notices-management", label: "웹 관리", icon: Globe },
   { type: "item", href: "/schedule", label: "일정 관리", icon: Calendar },
+  { type: "item", href: "/appointments", label: "예약 관리", icon: CalendarCheck },
 
   { type: "section", label: "업무" },
   { type: "item", href: "/work-tasks", label: "업무 관리", icon: ClipboardList },
