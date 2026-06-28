@@ -1,4 +1,4 @@
-﻿export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic'
 
 import { getRentals, getOverdueRentals } from '@/actions/rental-actions'
 import { RentalListTable } from '@/inventory/components/rental/RentalListTable'
@@ -18,6 +18,8 @@ export default async function RentalsPage({ searchParams }: RentalsPageProps) {
 
   const rentals = rentalsResult.success ? rentalsResult.rentals ?? [] : []
   const overdueCount = overdueResult.success ? (overdueResult.rentals ?? []).length : 0
+
+  const isOverdueView = status === 'overdue'
 
   return (
     <div className="p-8">
@@ -48,11 +50,26 @@ export default async function RentalsPage({ searchParams }: RentalsPageProps) {
             }`}
           >
             {opt.label}
+            {opt.value === 'overdue' && overdueCount > 0 && (
+              <span className="ml-1.5 inline-flex items-center justify-center w-4 h-4 text-xs bg-red-500 text-white rounded-full">
+                {overdueCount}
+              </span>
+            )}
           </a>
         ))}
       </div>
 
-      <RentalListTable rentals={rentals} />
+      {isOverdueView && overdueCount > 0 && (
+        <p className="text-sm text-gray-500 mb-4">
+          연체 건을 선택해 바로 반납 처리하거나 기간을 연장할 수 있습니다.
+        </p>
+      )}
+
+      <RentalListTable
+        rentals={rentals}
+        showContact={isOverdueView || status === 'rented'}
+        showActions={isOverdueView || status === 'rented'}
+      />
     </div>
   )
 }
