@@ -2,8 +2,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
 import { getMonthlyReportSummary } from '@/actions/monthly-report-actions'
-import { MonthlyReportSummaryTable } from '@/eval/components/reports/MonthlyReportSummary'
-import { MonthlyReportExportButton } from '@/eval/components/reports/MonthlyReportExportButton'
+import { MonthlyReportSummaryTable } from '@/components/reports/MonthlyReportSummary'
+import { MonthlyReportExportButton } from '@/components/reports/MonthlyReportExportButton'
 
 interface Props {
   params: Promise<{ year: string; month: string }>
