@@ -212,3 +212,79 @@ export async function createRentalFromScan(
     return { success: false, error: '오류가 발생했습니다' }
   }
 }
+
+export interface DeviceLookupResult {
+  id: string
+  name: string
+  model: string | null
+  status: string
+  is_rental_available: boolean
+  qr_token: string | null
+  barcode: string | null
+  asset_code: string | null
+  category: string | null
+  activeRental: {
+    rentalId: string
+    clientName: string
+    rentalStartDate: string
+  } | null
+}
+
+export async function getDeviceByScanValue(value: string): Promise<{
+  success: boolean
+  device?: DeviceLookupResult
+  error?: string
+}> {
+  try {
+    const hasPermission = await hasAdminOrStaffPermission()
+    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+
+    const supabase = createAdminClient()
+    const token = extractQrToken(value)
+
+    const { data: byQr } = await supabase
+      .from('inventory')
+      .select('id, name, model, status, is_rental_available, qr_token, barcode, asset_code, category')
+      .eq('qr_token', token)
+      .single()
+
+    const { data: byBarcode } = byQr
+      ? { data: null }
+      : await supabase
+          .from('inventory')
+          .select('id, name, model, status, is_rental_available, qr_token, barcode, asset_code, category')
+          .eq('barcode', value.trim())
+          .single()
+
+    const raw = (byQr ?? byBarcode) as Omit<DeviceLookupResult, 'activeRental'> | null
+    if (!raw) return { success: false, error: '기기 QR/바코드를 찾을 수 없습니다' }
+
+    const { data: rental } = await supabase
+      .from('rentals')
+      .select('id, rental_start_date, client_id')
+      .eq('inventory_id', raw.id)
+      .in('status', ['rented', 'overdue'])
+      .order('rental_start_date', { ascending: false })
+      .limit(1)
+      .single()
+
+    let activeRental: DeviceLookupResult['activeRental'] = null
+    if (rental) {
+      const r = rental as { id: string; rental_start_date: string; client_id: string }
+      const { data: client } = await supabase
+        .from('clients')
+        .select('name')
+        .eq('id', r.client_id)
+        .single()
+      activeRental = {
+        rentalId: r.id,
+        clientName: (client as { name: string } | null)?.name ?? '알 수 없음',
+        rentalStartDate: r.rental_start_date,
+      }
+    }
+
+    return { success: true, device: { ...raw, activeRental } }
+  } catch {
+    return { success: false, error: '오류가 발생했습니다' }
+  }
+}
