@@ -181,8 +181,9 @@
 | 랜딩 페이지 (Hero, Quick Menu, 공지사항, 갤러리) | ✅ |
 | 서비스 신청 시스템 (8개 폼, Wizard, Zod 검증) | ✅ |
 | 공지사항 목록/상세 | ✅ |
+| 공지사항 카테고리 탭 (전체/공지/활동/지원사업/사례) + 검색 | ✅ |
 | 보조기기 정보 페이지 | ✅ |
-| 마이페이지 (신청 이력, 대여 상태) | ✅ |
+| 마이페이지 (신청 이력, 대여 상태 D-Day + 연장 문의 안내) | ✅ |
 | SEO (sitemap, robots.txt, OG 태그, Schema.org) | ✅ |
 | OG 이미지 실제 파일 생성 (`public/og-image.jpg`) | ⬜ 수동 |
 | Google Search Console 등록 | ⬜ 수동 |

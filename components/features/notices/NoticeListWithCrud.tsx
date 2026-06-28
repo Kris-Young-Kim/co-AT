@@ -4,10 +4,11 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { format } from "date-fns"
 import { ko } from "date-fns/locale"
 import Link from "next/link"
-import { Pin, Calendar, Pencil, Trash2, Plus } from "lucide-react"
+import { Pin, Calendar, Pencil, Trash2, Plus, Search, X } from "lucide-react"
 import { type Notice, deleteNotice } from "@/actions/notice-actions"
 import { NoticeEditDialog } from "@/components/features/admin/notices/NoticeEditDialog"
 import { NoticeCreateDialog } from "@/components/features/admin/notices/NoticeCreateDialog"
@@ -16,6 +17,7 @@ interface NoticeListWithCrudProps {
   notices: Notice[]
   isStaff: boolean
   emptyMessage?: string
+  showSearch?: boolean
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -29,15 +31,24 @@ export function NoticeListWithCrud({
   notices: initialNotices,
   isStaff,
   emptyMessage = "등록된 공지사항이 없습니다",
+  showSearch,
 }: NoticeListWithCrudProps) {
   const [notices, setNotices] = useState<Notice[]>(initialNotices)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
     setNotices(initialNotices)
   }, [initialNotices])
 
-  const handleDelete = async (e: React.MouseEvent, id: string) => {
+  const displayed = searchTerm
+    ? notices.filter(n =>
+        n.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        n.content.replace(/<[^>]*>/g, "").toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : notices
+
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault()
     e.stopPropagation()
     if (!confirm("정말로 삭제하시겠습니까?")) return
@@ -56,15 +67,38 @@ export function NoticeListWithCrud({
 
   return (
     <>
-      {notices.length === 0 ? (
+      {showSearch && (
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <Input
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            placeholder="제목 또는 내용으로 검색..."
+            className="pl-9 pr-9"
+          />
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              aria-label="검색어 지우기"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      )}
+
+      {displayed.length === 0 ? (
         <Card>
           <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground">{emptyMessage}</p>
+            <p className="text-muted-foreground">
+              {searchTerm ? `"${searchTerm}" 검색 결과가 없습니다` : emptyMessage}
+            </p>
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-4">
-          {notices.map((notice) => (
+          {displayed.map((notice) => (
             <div key={notice.id} className="relative group">
               <Link href={`/notices/${notice.id}`}>
                 <Card className="hover:shadow-md transition-shadow cursor-pointer">

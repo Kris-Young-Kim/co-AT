@@ -6,7 +6,7 @@ import { format, differenceInDays, isPast, isToday } from "date-fns"
 import { ko } from "date-fns/locale"
 import { cn } from "@/lib/utils"
 import type { RentalStatus } from "@/actions/portal-actions"
-import { Calendar, Package, AlertTriangle } from "lucide-react"
+import { Calendar, Package, AlertTriangle, Phone } from "lucide-react"
 
 interface ClientRentStatusProps {
   rentals: RentalStatus[]
@@ -115,6 +115,16 @@ export function ClientRentStatus({ rentals }: ClientRentStatusProps) {
                     <span>반납까지 {daysRemaining}일 남음</span>
                   )}
                 </div>
+
+                {(isOverdue || isDueToday || daysRemaining <= 7) && (
+                  <a
+                    href="tel:033-000-0000"
+                    className="mt-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <Phone className="h-3 w-3" />
+                    반납·연장 문의: 033-000-0000
+                  </a>
+                )}
               </div>
             </div>
           )
