@@ -14,10 +14,12 @@ export function createAppMiddleware(appKey?: AppKey) {
   return clerkMiddleware(async (auth, req) => {
     if (isPublicRoute(req)) return
 
-    const { userId, sessionClaims, redirectToSignIn } = await auth()
+    const { userId, sessionClaims } = await auth()
 
     if (!userId) {
-      return redirectToSignIn({ returnBackUrl: req.url })
+      const url = new URL('/sign-in', req.url)
+      url.searchParams.set('redirect_url', req.url)
+      return NextResponse.redirect(url)
     }
 
     if (appKey) {

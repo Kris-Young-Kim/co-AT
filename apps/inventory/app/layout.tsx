@@ -22,8 +22,8 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider
-      signInUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL ?? 'https://gwatc.cloud/sign-in'}
-      signUpUrl={process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL ?? 'https://gwatc.cloud/sign-up'}
+      signInUrl="/sign-in"
+      signUpUrl="https://gwatc.cloud/sign-up"
     >
       <html lang="ko">
         <body className="bg-gray-50">
