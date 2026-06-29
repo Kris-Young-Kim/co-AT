@@ -58,7 +58,6 @@ export async function getResources(type?: "document" | "video"): Promise<Resourc
   const { data, error } = await query
 
   if (error) {
-    console.error("[Resource Actions] 자료 조회 실패:", error)
     return []
   }
 
@@ -75,7 +74,6 @@ export async function getResourceById(id: string): Promise<Resource | null> {
     .single()
 
   if (error) {
-    console.error("[Resource Actions] 자료 상세 조회 실패:", error)
     return null
   }
 
@@ -97,7 +95,6 @@ export async function createResource(
       .single()
 
     if (error) {
-      console.error("[Resource Actions] 자료 생성 실패:", error)
       return { success: false, error: error.message }
     }
 
@@ -120,7 +117,6 @@ export async function updateResource(
       .eq("id", id)
 
     if (error) {
-      console.error("[Resource Actions] 자료 수정 실패:", error)
       return { success: false, error: error.message }
     }
 
@@ -139,7 +135,6 @@ export async function deleteResource(
     const { error } = await supabase.from("resources").delete().eq("id", id)
 
     if (error) {
-      console.error("[Resource Actions] 자료 삭제 실패:", error)
       return { success: false, error: error.message }
     }
 

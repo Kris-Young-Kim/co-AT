@@ -11,7 +11,6 @@ import { createNotification } from "@/actions/notification-actions"
  */
 export async function GET(request: Request) {
   try {
-    console.log("[Schedule Reminders] 일정 리마인더 알림 스케줄러 시작")
 
     // 보안: Cron Secret 확인 (Vercel Cron 사용 시)
     const authHeader = request.headers.get("Authorization")
@@ -26,8 +25,6 @@ export async function GET(request: Request) {
     const tomorrow = new Date(today)
     tomorrow.setDate(today.getDate() + 1)
     const tomorrowStr = tomorrow.toISOString().split("T")[0] // YYYY-MM-DD
-
-    console.log(`[Schedule Reminders] 다음날 일정 조회: ${tomorrowStr}`)
 
     // 다음날 예정된 일정 조회
     const { data: schedules, error } = await supabase
@@ -58,7 +55,6 @@ export async function GET(request: Request) {
       .eq("status", "scheduled")
 
     if (error) {
-      console.error("[Schedule Reminders] 일정 조회 실패:", error)
       return NextResponse.json(
         {
           success: false,
@@ -70,15 +66,12 @@ export async function GET(request: Request) {
     }
 
     if (!schedules || schedules.length === 0) {
-      console.log("[Schedule Reminders] 다음날 일정 없음")
       return NextResponse.json({
         success: true,
         notificationsCreated: 0,
         timestamp: new Date().toISOString(),
       })
     }
-
-    console.log(`[Schedule Reminders] ${schedules.length}개 일정 발견`)
 
     let totalNotifications = 0
 
@@ -132,9 +125,7 @@ export async function GET(request: Request) {
 
           if (result.success) {
             totalNotifications++
-            console.log(`[Schedule Reminders] 담당자 알림 생성 성공: ${schedule.id}`)
           } else {
-            console.error(`[Schedule Reminders] 담당자 알림 생성 실패: ${schedule.id}`, result.error)
           }
         }
 
@@ -166,9 +157,7 @@ export async function GET(request: Request) {
 
             if (clientResult.success) {
               totalNotifications++
-              console.log(`[Schedule Reminders] 클라이언트 알림 생성 성공: ${schedule.id}`)
             } else {
-              console.error(`[Schedule Reminders] 클라이언트 알림 생성 실패: ${schedule.id}`, clientResult.error)
             }
           }
         }
@@ -177,8 +166,6 @@ export async function GET(request: Request) {
         // 개별 일정 알림 실패해도 계속 진행
       }
     }
-
-    console.log(`[Schedule Reminders] 완료: 총 ${totalNotifications}개 알림 생성`)
 
     return NextResponse.json({
       success: true,

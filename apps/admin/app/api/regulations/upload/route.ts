@@ -101,7 +101,6 @@ export async function POST(req: Request) {
       }
     }
 
-    console.error("[규정 문서 업로드] 실패:", error)
     return NextResponse.json(
       { error: "업로드 실패: " + error.message },
       { status: 500 }

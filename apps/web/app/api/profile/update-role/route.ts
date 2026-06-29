@@ -38,7 +38,6 @@ export async function POST(req: Request) {
       .single()
 
     if (error) {
-      console.error("[Profile Update] 역할 업데이트 실패:", error)
       return NextResponse.json(
         { 
           error: "역할 업데이트에 실패했습니다", 
@@ -48,8 +47,6 @@ export async function POST(req: Request) {
         { status: 500 }
       )
     }
-
-    console.log("[Profile Update] 역할 업데이트 성공:", updatedProfile)
 
     return NextResponse.json({
       success: true,

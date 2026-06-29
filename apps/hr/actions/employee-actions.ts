@@ -18,7 +18,6 @@ export async function getEmployees(): Promise<HrEmployee[]> {
     .eq('is_active', true)
     .order('name')
   if (error) {
-    console.error('[getEmployees]', error)
     return []
   }
   return data ?? []
@@ -65,7 +64,6 @@ export async function createEmployee(input: CreateEmployeeInput): Promise<HrEmpl
     .select()
     .single()
   if (error) {
-    console.error('[createEmployee]', error)
     return null
   }
   return data
@@ -81,7 +79,6 @@ export async function updateEmployee(id: string, input: UpdateEmployeeInput): Pr
     .select()
     .single()
   if (error) {
-    console.error('[updateEmployee]', error)
     return null
   }
   return data

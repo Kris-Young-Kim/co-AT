@@ -63,7 +63,6 @@ export async function getConsultationRecordsByClient(
       .order("created_at", { ascending: false })
 
     if (error) {
-      console.error("[case-record-actions] getConsultationRecordsByClient:", error)
       return { success: false, error: "상담기록지 조회에 실패했습니다" }
     }
     return { success: true, records: data ?? [] }
@@ -97,7 +96,6 @@ export async function getConsultationRecordById(
       .single()
 
     if (error) {
-      console.error("[case-record-actions] getConsultationRecordById:", error)
       return { success: false, error: "상담기록지를 찾을 수 없습니다" }
     }
     return { success: true, record: data }
@@ -117,7 +115,6 @@ export async function getAssessmentNoteById(
       .single()
 
     if (error) {
-      console.error("[case-record-actions] getAssessmentNoteById:", error)
       return { success: false, error: "평가지를 찾을 수 없습니다" }
     }
     return { success: true, note: data }
@@ -153,7 +150,6 @@ export async function createConsultationRecord(
       .single()
 
     if (error) {
-      console.error("[case-record-actions] createConsultationRecord:", error)
       return { success: false, error: "상담기록지 저장에 실패했습니다" }
     }
 
@@ -190,7 +186,6 @@ export async function updateConsultationRecord(
       .single()
 
     if (error) {
-      console.error("[case-record-actions] updateConsultationRecord:", error)
       return { success: false, error: "상담기록지 수정에 실패했습니다" }
     }
 
@@ -212,7 +207,6 @@ export async function deleteConsultationRecord(
       .eq("id", recordId)
 
     if (error) {
-      console.error("[case-record-actions] deleteConsultationRecord:", error)
       return { success: false, error: "상담기록지 삭제에 실패했습니다" }
     }
 
@@ -239,7 +233,6 @@ export async function getAssessmentNotesByClient(
       .order("created_at", { ascending: false })
 
     if (error) {
-      console.error("[case-record-actions] getAssessmentNotesByClient:", error)
       return { success: false, error: "평가지 조회에 실패했습니다" }
     }
     return { success: true, notes: data ?? [] }
@@ -289,7 +282,6 @@ export async function createAssessmentNote(
       .single()
 
     if (error) {
-      console.error("[case-record-actions] createAssessmentNote:", error)
       return { success: false, error: "평가지 저장에 실패했습니다" }
     }
 
@@ -326,7 +318,6 @@ export async function updateAssessmentNote(
       .single()
 
     if (error) {
-      console.error("[case-record-actions] updateAssessmentNote:", error)
       return { success: false, error: "평가지 수정에 실패했습니다" }
     }
 
@@ -348,7 +339,6 @@ export async function deleteAssessmentNote(
       .eq("id", noteId)
 
     if (error) {
-      console.error("[case-record-actions] deleteAssessmentNote:", error)
       return { success: false, error: "평가지 삭제에 실패했습니다" }
     }
 

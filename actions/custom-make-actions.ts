@@ -113,18 +113,12 @@ export async function createCustomMake(input: CreateCustomMakeInput): Promise<{
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Custom Make Actions] 맞춤제작 프로젝트 생성 시작:", input);
 
       const supabase = await createClient();
 
       // 맞춤제작 횟수 제한 체크
       const limitCheck = await checkCustomLimit(input.client_id);
       if (limitCheck.success && limitCheck.isExceeded) {
-        console.warn("[Custom Make Actions] 맞춤제작 횟수 제한 초과:", {
-          clientId: input.client_id,
-          currentCount: limitCheck.currentCount,
-          limit: limitCheck.limit,
-        });
         return {
           success: false,
           error: `맞춤제작 연간 제한(2회)을 초과했습니다. 현재 ${limitCheck.currentCount}회 사용 중입니다.`,
@@ -138,13 +132,6 @@ export async function createCustomMake(input: CreateCustomMakeInput): Promise<{
           input.cost_materials
         );
         if (costLimitCheck.success && costLimitCheck.isExceeded) {
-          console.warn("[Custom Make Actions] 맞춤제작비 한도 초과:", {
-            clientId: input.client_id,
-            currentTotal: costLimitCheck.currentTotal,
-            newAmount: input.cost_materials,
-            newTotal: costLimitCheck.newTotal,
-            limit: costLimitCheck.limit,
-          });
           return {
             success: false,
             error: `맞춤제작비(재료비) 연간 한도(10만원)를 초과했습니다. 현재 누적: ${costLimitCheck.currentTotal?.toLocaleString()}원, 신규: ${input.cost_materials.toLocaleString()}원, 합계: ${costLimitCheck.newTotal?.toLocaleString()}원입니다. 초과분은 자부담입니다.`,
@@ -181,10 +168,6 @@ export async function createCustomMake(input: CreateCustomMakeInput): Promise<{
         .single();
 
       if (error) {
-        console.error(
-          "[Custom Make Actions] 맞춤제작 프로젝트 생성 실패:",
-          error
-        );
         return { success: false, error: "맞춤제작 프로젝트 생성에 실패했습니다" };
       }
 
@@ -216,14 +199,8 @@ export async function createCustomMake(input: CreateCustomMakeInput): Promise<{
             notes: `맞춤제작 완료 예정: ${input.item_name}`,
             status: "scheduled",
           });
-          console.log(
-            "[Custom Make Actions] 맞춤제작 완료 일정 생성:",
-            input.expected_completion_date
-          );
         }
       }
-
-      console.log("[Custom Make Actions] 맞춤제작 프로젝트 생성 성공:", customMakeData.id);
 
       revalidatePath("/custom-makes");
       revalidatePath("/schedule");
@@ -269,10 +246,6 @@ export async function updateCustomMakeProgress(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Custom Make Actions] 진행도 업데이트:", {
-        customMakeId,
-        progress,
-      });
 
       const { userId } = await auth();
       if (!userId) {
@@ -315,7 +288,6 @@ export async function updateCustomMakeProgress(
         .single();
 
       if (updateError) {
-        console.error("[Custom Make Actions] 진행도 업데이트 실패:", updateError);
         return { success: false, error: "진행도 업데이트에 실패했습니다" };
       }
 
@@ -378,10 +350,6 @@ export async function updateCustomMakeProgress(
               notes: `맞춤제작 시작: ${customMakeTyped.item_name}`,
               status: "scheduled",
             });
-            console.log(
-              "[Custom Make Actions] 제작 시작 일정 생성:",
-              progress.manufacturing_start_date
-            );
           }
 
           // 납품일 일정 생성
@@ -397,15 +365,9 @@ export async function updateCustomMakeProgress(
               notes: `맞춤제작 납품: ${customMakeTyped.item_name}`,
               status: "scheduled",
             });
-            console.log(
-              "[Custom Make Actions] 납품 일정 생성:",
-              progress.delivery_date
-            );
           }
         }
       }
-
-      console.log("[Custom Make Actions] 진행도 업데이트 성공:", customMakeId);
 
       revalidatePath("/custom-makes");
       revalidatePath("/schedule");
@@ -438,10 +400,6 @@ export async function assignEquipment(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Custom Make Actions] 장비 배정:", {
-        customMakeId,
-        equipmentId,
-      });
 
       const supabase = await createClient();
 
@@ -480,7 +438,6 @@ export async function assignEquipment(
         .single();
 
       if (updateError) {
-        console.error("[Custom Make Actions] 장비 배정 실패:", updateError);
         return { success: false, error: "장비 배정에 실패했습니다" };
       }
 
@@ -495,8 +452,6 @@ export async function assignEquipment(
         // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
         .update({ status: "in_use", updated_at: new Date().toISOString() })
         .eq("id", equipmentId);
-
-      console.log("[Custom Make Actions] 장비 배정 성공:", customMakeId);
 
       revalidatePath("/custom-makes");
       revalidatePath(`/custom-makes/${customMakeId}`);
@@ -532,7 +487,6 @@ export async function getCustomMakes(params?: {
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Custom Make Actions] 맞춤제작 목록 조회:", params);
 
       const supabase = await createClient();
 
@@ -569,7 +523,6 @@ export async function getCustomMakes(params?: {
       const { data, error, count } = await query;
 
       if (error) {
-        console.error("[Custom Make Actions] 맞춤제작 목록 조회 실패:", error);
         return { success: false, error: "맞춤제작 목록 조회에 실패했습니다" };
       }
 
@@ -582,11 +535,6 @@ export async function getCustomMakes(params?: {
           equipment_name: item.equipment?.name || null,
           application_status: item.applications?.status || null,
         })) || [];
-
-      console.log("[Custom Make Actions] 맞춤제작 목록 조회 성공:", {
-        count: customMakes.length,
-        total: count,
-      });
 
       return {
         success: true,
@@ -617,7 +565,6 @@ export async function getCustomMakeById(customMakeId: string): Promise<{
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Custom Make Actions] 맞춤제작 상세 조회:", customMakeId);
 
       const supabase = await createClient();
 
@@ -637,7 +584,6 @@ export async function getCustomMakeById(customMakeId: string): Promise<{
         .single();
 
       if (error) {
-        console.error("[Custom Make Actions] 맞춤제작 상세 조회 실패:", error);
         return { success: false, error: "맞춤제작 정보를 찾을 수 없습니다" };
       }
 
@@ -649,10 +595,6 @@ export async function getCustomMakeById(customMakeId: string): Promise<{
         .order("created_at", { ascending: false });
 
       if (progressError) {
-        console.error(
-          "[Custom Make Actions] 진행도 이력 조회 실패:",
-          progressError
-        );
       }
 
       const customMake: CustomMakeWithDetails = {
@@ -695,7 +637,6 @@ export async function getEquipment(params?: {
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Custom Make Actions] 장비 목록 조회:", params);
 
       const supabase = await createClient();
 
@@ -720,7 +661,6 @@ export async function getEquipment(params?: {
       const { data, error } = await query;
 
       if (error) {
-        console.error("[Custom Make Actions] 장비 목록 조회 실패:", error);
         return { success: false, error: "장비 목록 조회에 실패했습니다" };
       }
 
@@ -760,7 +700,6 @@ export async function createEquipment(data: {
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Custom Make Actions] 장비 등록:", data);
 
       const supabase = await createClient();
 
@@ -782,12 +721,10 @@ export async function createEquipment(data: {
         .single();
 
       if (error) {
-        console.error("[Custom Make Actions] 장비 등록 실패:", error);
         return { success: false, error: "장비 등록에 실패했습니다" };
       }
 
       const equipmentTyped = asTableRow("equipment", equipment) as EquipmentItem | null;
-      console.log("[Custom Make Actions] 장비 등록 성공:", equipmentTyped?.id);
       return { success: true, equipment: equipmentTyped || undefined };
     } catch (error) {
       console.error("[Custom Make Actions] 장비 등록 중 오류:", error);
@@ -825,7 +762,6 @@ export async function updateEquipment(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Custom Make Actions] 장비 수정:", { id, data });
 
       const supabase = await createClient();
 
@@ -841,12 +777,10 @@ export async function updateEquipment(
         .single();
 
       if (error) {
-        console.error("[Custom Make Actions] 장비 수정 실패:", error);
         return { success: false, error: "장비 수정에 실패했습니다" };
       }
 
       const equipmentTyped = asTableRow("equipment", equipment) as EquipmentItem | null;
-      console.log("[Custom Make Actions] 장비 수정 성공:", equipmentTyped?.id);
       return { success: true, equipment: equipmentTyped || undefined };
     } catch (error) {
       console.error("[Custom Make Actions] 장비 수정 중 오류:", error);
@@ -870,7 +804,6 @@ export async function deleteEquipment(id: string): Promise<{
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Custom Make Actions] 장비 삭제:", id);
 
       const supabase = await createClient();
 
@@ -889,11 +822,9 @@ export async function deleteEquipment(id: string): Promise<{
       const { error } = await supabase.from("equipment").delete().eq("id", id);
 
       if (error) {
-        console.error("[Custom Make Actions] 장비 삭제 실패:", error);
         return { success: false, error: "장비 삭제에 실패했습니다" };
       }
 
-      console.log("[Custom Make Actions] 장비 삭제 성공:", id);
       return { success: true };
     } catch (error) {
       console.error("[Custom Make Actions] 장비 삭제 중 오류:", error);

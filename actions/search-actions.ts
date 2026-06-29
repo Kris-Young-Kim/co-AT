@@ -32,7 +32,6 @@ export async function performGlobalSearch(query: string): Promise<SearchResult> 
       .limit(20)
 
     if (noticesError) {
-      console.error("[Search Actions] 공지사항 검색 실패:", noticesError)
     }
 
     // 2. 자료실 검색
@@ -44,7 +43,6 @@ export async function performGlobalSearch(query: string): Promise<SearchResult> 
       .limit(20)
 
     if (resourcesError) {
-      console.error("[Search Actions] 자료실 검색 실패:", resourcesError)
     }
 
     const notices = (noticesData || []) as Notice[]

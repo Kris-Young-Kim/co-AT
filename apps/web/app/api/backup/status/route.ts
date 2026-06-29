@@ -8,7 +8,6 @@ import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
  */
 export async function GET(request: Request) {
   try {
-    console.log("[Backup Status API] 백업 상태 조회")
 
     // 권한 확인
     const hasPermission = await hasAdminOrStaffPermission()
@@ -39,7 +38,6 @@ export async function GET(request: Request) {
     const { data: backups, error } = await query
 
     if (error) {
-      console.error("[Backup Status API] 백업 로그 조회 실패:", error)
       return NextResponse.json(
         { error: "백업 로그 조회에 실패했습니다", details: error.message },
         { status: 500 }
@@ -67,8 +65,6 @@ export async function GET(request: Request) {
         not_tested: backups?.filter((b: any) => b.restore_test_status === "not_tested" || !b.restore_test_status).length || 0,
       },
     }
-
-    console.log("[Backup Status API] 백업 상태 조회 성공:", stats)
 
     return NextResponse.json({
       backups: backups || [],

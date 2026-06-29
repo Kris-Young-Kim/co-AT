@@ -63,14 +63,6 @@ export async function POST(req: Request) {
     // Supabase Storage에 업로드
     const fileBuffer = await file.arrayBuffer()
     
-    console.log("파일 업로드 시도:", {
-      fileName: file.name,
-      fileSize: file.size,
-      fileType: fileType,
-      filePath: filePath,
-      userId: userId,
-    })
-    
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from("notices")
       .upload(filePath, fileBuffer, {
@@ -79,12 +71,6 @@ export async function POST(req: Request) {
       })
 
     if (uploadError) {
-      console.error("파일 업로드 실패:", {
-        error: uploadError,
-        message: uploadError.message,
-        statusCode: (uploadError as any).statusCode,
-        errorCode: (uploadError as any).error,
-      })
       
       // 버킷이 없는 경우 더 명확한 에러 메시지
       const errorMessage = uploadError.message || String(uploadError)

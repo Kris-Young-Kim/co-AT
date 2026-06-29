@@ -61,11 +61,9 @@ export async function POST(req: Request) {
     } as any)
 
     if (error) {
-      console.error('프로필 생성 실패:', error)
       return new Response('프로필 생성 실패', { status: 500 })
     }
 
-    console.log('프로필 생성 성공:', userId)
   }
 
   // 로그인 시도 추적
@@ -94,7 +92,6 @@ export async function POST(req: Request) {
       },
     })
     if (logError) {
-      console.error('[Security] 로그인 시도 추적 실패:', logError)
     }
   }
 
@@ -109,11 +106,9 @@ export async function POST(req: Request) {
       .eq('clerk_user_id', userId!)
 
     if (error) {
-      console.error('프로필 삭제 실패:', error)
       return new Response('프로필 삭제 실패', { status: 500 })
     }
 
-    console.log('프로필 삭제 성공:', userId)
   }
 
   return new Response('Webhook 처리 완료', { status: 200 })

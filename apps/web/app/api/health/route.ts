@@ -55,8 +55,6 @@ export async function GET() {
     timestamp: new Date().toISOString(),
   }
 
-  console.log("[/api/health] status:", payload) // 핵심 기능 로그
-
   return NextResponse.json(payload, {
     status: overall === "ok" ? 200 : 503,
     headers: {

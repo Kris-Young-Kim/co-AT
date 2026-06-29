@@ -27,7 +27,6 @@ export async function GET() {
 
     // PGRST116은 "결과 없음"을 의미하는 정상적인 코드입니다
     if (error && error.code !== 'PGRST116') {
-      console.error("[Profile GET] 프로필 조회 오류:", error)
       return NextResponse.json({
         clerkUserId: userId,
         clerkUser: {

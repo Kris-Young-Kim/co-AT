@@ -109,7 +109,6 @@ export async function getDashboardStats(): Promise<{
         .lte("created_at", todayEndStr)
 
       if (newTodayError) {
-        console.error("오늘의 신규 접수 조회 실패:", newTodayError)
       }
 
       // 진행 중 건수
@@ -119,7 +118,6 @@ export async function getDashboardStats(): Promise<{
         .eq("status", "진행")
 
       if (inProgressError) {
-        console.error("진행 중 건수 조회 실패:", inProgressError)
       }
 
       // 오늘 완료 건수
@@ -131,7 +129,6 @@ export async function getDashboardStats(): Promise<{
         .lte("updated_at", todayEndStr)
 
       if (completedTodayError) {
-        console.error("오늘 완료 건수 조회 실패:", completedTodayError)
       }
 
       // 4대 사업별 통계 조회
@@ -405,7 +402,6 @@ export async function getNewApplications(limit: number = 10): Promise<{
         .limit(limit)
 
       if (error) {
-        console.error("신규 접수 조회 실패:", error)
         return { success: false, error: "신규 접수 조회에 실패했습니다" }
       }
 
@@ -472,7 +468,6 @@ export async function getTodaySchedules(): Promise<{
         .order("scheduled_time", { ascending: true, nullsFirst: false })
 
       if (error) {
-        console.error("오늘의 일정 조회 실패:", error)
         return { success: false, error: "오늘의 일정 조회에 실패했습니다" }
       }
 

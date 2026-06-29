@@ -61,7 +61,6 @@ export async function POST(req: Request) {
         .single()
 
       if (createClientError || !newClient) {
-        console.error("클라이언트 생성 오류:", createClientError)
         return NextResponse.json(
           { success: false, error: "클라이언트 정보 생성에 실패했습니다" },
           { status: 500 }
@@ -103,7 +102,6 @@ export async function POST(req: Request) {
       .single()
 
     if (applicationError || !application) {
-      console.error("신청서 생성 오류:", applicationError)
       return NextResponse.json(
         {
           success: false,
@@ -120,7 +118,6 @@ export async function POST(req: Request) {
       .eq("id", schedule_id)
 
     if (updateScheduleError) {
-      console.error("일정 업데이트 오류:", updateScheduleError)
       // 신청서는 생성되었으므로 경고만 하고 성공으로 처리
     }
 

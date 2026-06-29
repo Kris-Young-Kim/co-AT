@@ -31,7 +31,6 @@ export async function createCareer(input: CreateCareerInput): Promise<HrCareer |
     .select()
     .single()
   if (error) {
-    console.error('[createCareer]', error)
     return null
   }
   return data

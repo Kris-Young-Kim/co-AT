@@ -208,7 +208,6 @@ export async function getMyRentals(): Promise<{
       .order("rental_end_date", { ascending: true })
 
     if (rentalsError) {
-      console.error("Rentals fetch error:", rentalsError)
       return { success: false, error: "대여 정보 조회에 실패했습니다" }
     }
 
@@ -253,7 +252,6 @@ export async function getMyCustomMakes(): Promise<{
       .order("created_at", { ascending: false })
 
     if (customMakesError) {
-      console.error("Custom makes fetch error:", customMakesError)
       return { success: false, error: "맞춤제작 정보 조회에 실패했습니다" }
     }
 
@@ -307,7 +305,6 @@ export async function getMyReuseServices(): Promise<{
       .order("created_at", { ascending: false })
 
     if (reuseLogsError) {
-      console.error("Reuse services fetch error:", reuseLogsError)
       return { success: false, error: "재사용 기기 지원 이력 조회에 실패했습니다" }
     }
 
@@ -351,7 +348,6 @@ export async function getMyEvalServiceRecords(): Promise<{
       .order("created_at", { ascending: false })
 
     if (error) {
-      console.error("eval_service_records fetch error:", error)
       return { success: false, error: "서비스 기록 조회에 실패했습니다" }
     }
 
@@ -404,7 +400,6 @@ export async function getMyActiveApplications(): Promise<{
       .order("created_at", { ascending: false })
 
     if (error) {
-      console.error("getMyActiveApplications:", error)
       return { success: false, error: "진행 중 신청 조회에 실패했습니다" }
     }
 

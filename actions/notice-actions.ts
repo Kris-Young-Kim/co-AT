@@ -99,7 +99,6 @@ export async function getNoticesByCategory(
     .limit(limit)
 
   if (error) {
-    console.error("카테고리별 공지사항 조회 실패:", error.message, { code: error.code, details: error.details, hint: error.hint })
     return []
   }
 
@@ -121,7 +120,6 @@ export async function getNoticeById(id: string): Promise<Notice | null> {
     .single()
 
   if (error) {
-    console.error("[공지사항 조회] 상세 조회 실패:", { error: error.message, code: error.code, id })
     return null
   }
 
@@ -167,14 +165,6 @@ export async function createNotice(
         .single()
 
       if (error) {
-        console.error("[공지사항 생성] 실패:", {
-          error: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint,
-          insertData,
-          profileId,
-        })
         return { 
           success: false, 
           error: `공지사항 생성에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
@@ -230,7 +220,6 @@ export async function updateNotice(
         .eq("id", input.id)
 
       if (error) {
-        console.error("공지사항 수정 실패:", error)
         return { success: false, error: "공지사항 수정에 실패했습니다" }
       }
 
@@ -261,7 +250,6 @@ export async function deleteNotice(
       const { error } = await supabase.from("notices").delete().eq("id", id)
 
       if (error) {
-        console.error("공지사항 삭제 실패:", error)
         return { success: false, error: "공지사항 삭제에 실패했습니다" }
       }
 
@@ -298,12 +286,6 @@ export async function getAllNotices(): Promise<{
         .order("created_at", { ascending: false })
 
       if (error) {
-        console.error("[공지사항 조회] 실패:", {
-          error: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint,
-        })
         return {
           success: false,
           error: `공지사항 조회에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}`

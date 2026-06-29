@@ -25,7 +25,6 @@ export async function getExpiringPrivacyData(): Promise<{
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Privacy Actions] 만료 예정 개인정보 조회 시작")
 
       const supabase = await createClient()
 
@@ -54,7 +53,6 @@ export async function getExpiringPrivacyData(): Promise<{
         .order("created_at", { ascending: true })
 
       if (error) {
-        console.error("[Privacy Actions] 만료 예정 개인정보 조회 실패:", error)
         return { success: false, error: "만료 예정 개인정보 조회에 실패했습니다" }
       }
 
@@ -75,10 +73,6 @@ export async function getExpiringPrivacyData(): Promise<{
           expiration_date: expirationDate.toISOString().split("T")[0],
           days_until_expiration: daysUntilExpiration,
         }
-      })
-
-      console.log("[Privacy Actions] 만료 예정 개인정보 조회 성공:", {
-        count: clientsWithExpiration.length,
       })
 
       return {
@@ -111,7 +105,6 @@ export async function getExpiredPrivacyData(): Promise<{
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Privacy Actions] 만료된 개인정보 조회 시작")
 
       const supabase = await createClient()
 
@@ -130,7 +123,6 @@ export async function getExpiredPrivacyData(): Promise<{
         .order("created_at", { ascending: true })
 
       if (error) {
-        console.error("[Privacy Actions] 만료된 개인정보 조회 실패:", error)
         return { success: false, error: "만료된 개인정보 조회에 실패했습니다" }
       }
 
@@ -151,10 +143,6 @@ export async function getExpiredPrivacyData(): Promise<{
           expiration_date: expirationDate.toISOString().split("T")[0],
           days_since_expiration: daysSinceExpiration,
         }
-      })
-
-      console.log("[Privacy Actions] 만료된 개인정보 조회 성공:", {
-        count: expiredClients.length,
       })
 
       return {
@@ -186,7 +174,6 @@ export async function getPrivacyRetentionStats(): Promise<{
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Privacy Actions] 개인정보 보유 기간 통계 조회 시작")
 
       const supabase = await createClient()
 
@@ -196,7 +183,6 @@ export async function getPrivacyRetentionStats(): Promise<{
         .select("*", { count: "exact", head: true })
 
       if (totalError) {
-        console.error("[Privacy Actions] 전체 대상자 수 조회 실패:", totalError)
       }
 
       // 만료 예정 및 만료된 데이터 조회

@@ -85,7 +85,6 @@ export async function createApplication(
         .single()
 
       if (createClientError || !newClient) {
-        console.error("Client creation error:", createClientError)
         return { success: false, error: "클라이언트 정보 생성에 실패했습니다: " + (createClientError?.message || "알 수 없는 오류") }
       }
 
@@ -114,7 +113,6 @@ export async function createApplication(
       .single()
 
     if (applicationError || !application) {
-      console.error("Application creation error:", applicationError)
       return {
         success: false,
         error: "신청서 생성에 실패했습니다: " + (applicationError?.message || "알 수 없는 오류"),
@@ -165,9 +163,7 @@ export async function createApplication(
         })
 
         if (scheduleResult.success) {
-          console.log("[워크플로우 자동화] 신청 접수 시 일정 자동 생성 성공:", scheduleResult.data?.id)
         } else {
-          console.error("[워크플로우 자동화] 일정 자동 생성 실패:", scheduleResult.error)
         }
       } catch (error) {
         console.error("[워크플로우 자동화] 일정 자동 생성 중 오류:", error)
@@ -245,7 +241,6 @@ export async function createApplicationWithPendingClient(
         .single()
 
       if (clientError || !clientData) {
-        console.error("createApplicationWithPendingClient (client):", clientError)
         return { success: false, error: "클라이언트 생성에 실패했습니다" }
       }
       clientId = (clientData as { id: string }).id
@@ -270,7 +265,6 @@ export async function createApplicationWithPendingClient(
       .single()
 
     if (appError || !appData) {
-      console.error("createApplicationWithPendingClient (application):", appError)
       return { success: false, error: "신청서 생성에 실패했습니다" }
     }
 
@@ -392,7 +386,6 @@ export async function updateApplicationDetails(
         .eq('id', input.applicationId)
 
       if (error) {
-        console.error('updateApplicationDetails:', error)
         return { success: false, error: '신청서 수정에 실패했습니다: ' + error.message }
       }
 

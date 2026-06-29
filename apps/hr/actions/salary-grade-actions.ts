@@ -13,7 +13,6 @@ export async function getSalaryGrades(): Promise<HrSalaryGrade[]> {
     .select('*')
     .order('grade_name')
   if (error) {
-    console.error('[getSalaryGrades]', error)
     return []
   }
   return data ?? []
@@ -28,7 +27,6 @@ export async function createSalaryGrade(input: CreateSalaryGradeInput): Promise<
     .select()
     .single()
   if (error) {
-    console.error('[createSalaryGrade]', error)
     return null
   }
   return data
@@ -44,7 +42,6 @@ export async function updateSalaryGrade(id: string, input: UpdateSalaryGradeInpu
     .select()
     .single()
   if (error) {
-    console.error('[updateSalaryGrade]', error)
     return null
   }
   return data

@@ -22,16 +22,13 @@ export async function POST() {
     }
 
     // 권한 확인
-    console.log("[Admin Session] 권한 확인 시작 - userId:", userId)
     const hasPermission = await hasAdminOrStaffPermission()
     dbgLog('api/admin/session/POST:permission', '권한 확인 완료', { hasPermission })
-    console.log("[Admin Session] 권한 확인 결과:", hasPermission)
     
     if (!hasPermission) {
       // 더 자세한 정보를 위해 역할 확인
       const { getCurrentUserRole } = await import("@/lib/utils/permissions")
       const role = await getCurrentUserRole()
-      console.log("[Admin Session] 현재 사용자 역할:", role)
       
       return NextResponse.json(
         { 

@@ -10,7 +10,6 @@ import { notifyRentalExpiry } from "@/lib/utils/notification-helper"
  */
 export async function GET(request: Request) {
   try {
-    console.log("[Rental Expiry Notifications] 대여 만료 알림 스케줄러 시작")
 
     // 보안: Cron Secret 확인 (Vercel Cron 사용 시)
     const authHeader = request.headers.get("Authorization")
@@ -30,8 +29,6 @@ export async function GET(request: Request) {
       const targetDate = new Date(today)
       targetDate.setDate(today.getDate() + days)
       const targetDateStr = targetDate.toISOString().split("T")[0] // YYYY-MM-DD
-
-      console.log(`[Rental Expiry Notifications] ${days}일 후 만료 대여 조회: ${targetDateStr}`)
 
       // 만료 예정 대여 조회
       const { data: rentals, error } = await supabase
@@ -56,12 +53,10 @@ export async function GET(request: Request) {
         .eq("rental_end_date", targetDateStr)
 
       if (error) {
-        console.error(`[Rental Expiry Notifications] ${days}일 후 만료 대여 조회 실패:`, error)
         continue
       }
 
       if (!rentals || rentals.length === 0) {
-        console.log(`[Rental Expiry Notifications] ${days}일 후 만료 대여 없음`)
         continue
       }
 
@@ -87,19 +82,10 @@ export async function GET(request: Request) {
 
         if (result.success) {
           totalNotifications++
-          console.log(
-            `[Rental Expiry Notifications] 알림 생성 성공: ${rental.id} (${days}일 후 만료)`
-          )
         } else {
-          console.error(
-            `[Rental Expiry Notifications] 알림 생성 실패: ${rental.id}`,
-            result.error
-          )
         }
       }
     }
-
-    console.log(`[Rental Expiry Notifications] 완료: 총 ${totalNotifications}개 알림 생성`)
 
     return NextResponse.json({
       success: true,

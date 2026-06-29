@@ -85,7 +85,6 @@ export async function createServiceRecord(
       .single()
 
     if (error) {
-      console.error("createServiceRecord DB error:", error)
       if (error.code === "23503") return { success: false, error: "유효하지 않은 신청서입니다. 신청서를 먼저 등록해주세요." }
       return { success: false, error: "서비스 기록 저장에 실패했습니다" }
     }
@@ -115,7 +114,6 @@ export async function updateServiceRecord(
       .single()
 
     if (error) {
-      console.error("updateServiceRecord DB error:", error)
       return { success: false, error: "서비스 기록 수정에 실패했습니다" }
     }
 

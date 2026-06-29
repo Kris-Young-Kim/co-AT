@@ -39,7 +39,6 @@ export async function PUT(
       .single()
 
     if (error) {
-      console.error("[Admin Users] 역할 업데이트 실패:", error)
       return NextResponse.json(
         {
           error: "역할 업데이트에 실패했습니다",
@@ -49,8 +48,6 @@ export async function PUT(
         { status: 500 }
       )
     }
-
-    console.log("[Admin Users] 역할 업데이트 성공:", updatedProfile)
 
     return NextResponse.json({
       success: true,

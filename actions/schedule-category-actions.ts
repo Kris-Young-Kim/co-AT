@@ -25,7 +25,6 @@ export async function getScheduleCategories(): Promise<ScheduleCategory[]> {
     .order("name", { ascending: true })
 
   if (error) {
-    console.error("[카테고리 조회] 실패:", error)
     return []
   }
   return (data || []) as ScheduleCategory[]

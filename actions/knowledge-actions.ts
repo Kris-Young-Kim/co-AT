@@ -31,7 +31,6 @@ export async function getDeviceOutcomes(): Promise<{
         .not("product_name", "eq", "")
 
       if (recError) {
-        console.error("getDeviceOutcomes records:", recError)
         return { success: false, error: "서비스 기록 조회에 실패했습니다" }
       }
 
@@ -42,7 +41,6 @@ export async function getDeviceOutcomes(): Promise<{
         .not("outcome_score", "is", null)
 
       if (ippaError) {
-        console.error("getDeviceOutcomes ippa:", ippaError)
       }
 
       // Build IPPA outcome map: client_id → latest outcome_score

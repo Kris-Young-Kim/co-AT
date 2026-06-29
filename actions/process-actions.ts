@@ -63,7 +63,6 @@ export async function createProcessLog(input: ProcessLogInput): Promise<{
         .single();
 
       if (error) {
-        console.error("서비스 진행 기록 생성 실패:", error);
         return {
           success: false,
           error:
@@ -298,7 +297,6 @@ export async function getProcessLogs(applicationId: string): Promise<{
         .order("log_date", { ascending: false });
 
       if (error) {
-        console.error("진행 기록 조회 실패:", error);
         return { success: false, error: "진행 기록 조회에 실패했습니다" };
       }
 

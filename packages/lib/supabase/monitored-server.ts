@@ -124,7 +124,6 @@ export async function createMonitoredClient(): Promise<MonitoredSupabaseClient> 
               cookieStore.set(name, value, options);
             });
           } catch (error) {
-            console.warn("Cookie setAll failed:", error);
           }
         },
       },

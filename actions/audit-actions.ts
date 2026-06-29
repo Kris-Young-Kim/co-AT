@@ -106,14 +106,8 @@ export async function getAuditLogs(
       const { data: auditLogs, error, count } = await query
 
       if (error) {
-        console.error("[Audit Actions] 감사 로그 조회 실패:", error)
         return { success: false, error: "감사 로그 조회에 실패했습니다" }
       }
-
-      console.log("[Audit Actions] 감사 로그 조회 성공:", {
-        count: auditLogs?.length,
-        total: count,
-      })
 
       return {
         success: true,
@@ -153,15 +147,8 @@ export async function getAuditLogsByRecord(
         .order("created_at", { ascending: false })
 
       if (error) {
-        console.error("[Audit Actions] 레코드 감사 로그 조회 실패:", error)
         return { success: false, error: "감사 로그 조회에 실패했습니다" }
       }
-
-      console.log("[Audit Actions] 레코드 감사 로그 조회 성공:", {
-        tableName,
-        recordId,
-        count: auditLogs?.length,
-      })
 
       return {
         success: true,
@@ -204,11 +191,8 @@ export async function getSuspiciousActivityLogs(
       const { data: auditLogs, error } = await query
 
       if (error) {
-        console.error("[Audit Actions] 의심스러운 활동 로그 조회 실패:", error)
         return { success: false, error: "의심스러운 활동 로그 조회에 실패했습니다" }
       }
-
-      console.log("[Audit Actions] 의심스러운 활동 로그 조회 성공:", auditLogs?.length)
 
       return {
         success: true,

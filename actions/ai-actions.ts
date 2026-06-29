@@ -44,8 +44,6 @@ export async function generateIntakeDraft(
 
       if (!input.memo.trim()) return { success: false, error: "메모를 입력해주세요" }
 
-      console.log("[AI Actions] 초안 생성 시작:", { memoLength: input.memo.trim().length })
-
       const supabase = createAdminClient()
 
       const [clientResult, assessmentResult] = await Promise.all([
@@ -74,8 +72,6 @@ export async function generateIntakeDraft(
         return { success: false, error: '접근 권한이 없습니다' }
       }
 
-      console.log("[AI Actions] 클라이언트 컨텍스트 조회 완료")
-
       const client = clientResult.data
       const clientContext = client
         ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}`
@@ -93,13 +89,9 @@ export async function generateIntakeDraft(
       const model = getGeminiModel("gemini-2.5-flash")
       const prompt = `${INTAKE_DRAFT_SYSTEM_PROMPT}\n\n클라이언트 정보:\n${clientContext}\n\n영역별 평가 의견:\n${assessmentContext}\n\n직원 메모:\n${input.memo}`
 
-      console.log("[AI Actions] Gemini API 호출 중...")
-
       const result = await model.generateContent(prompt)
       const response = await result.response
       const generatedText = response.text()
-
-      console.log("[AI Actions] Gemini 응답 수신:", { responseLength: generatedText.length })
 
       let draft: IntakeDraft
       try {
@@ -127,8 +119,6 @@ export async function generateIntakeDraft(
           error: `AI 응답 파싱에 실패했습니다: ${parseError instanceof Error ? parseError.message : "알 수 없는 오류"}`,
         }
       }
-
-      console.log("[AI Actions] 초안 생성 성공")
 
       return { success: true, draft }
     } catch (error) {

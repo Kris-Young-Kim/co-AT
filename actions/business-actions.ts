@@ -19,7 +19,6 @@ export async function checkCustomLimit(clientId: string): Promise<{
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Business Actions] 맞춤제작 횟수 제한 체크:", clientId)
 
       const supabase = await createClient()
 
@@ -39,7 +38,6 @@ export async function checkCustomLimit(clientId: string): Promise<{
         .lte("created_at", yearEnd)
 
       if (customMakesError) {
-        console.error("[Business Actions] custom_makes 조회 실패:", customMakesError)
       }
 
       // 2. applications 테이블에서도 조회 (신청서 기준)
@@ -53,20 +51,12 @@ export async function checkCustomLimit(clientId: string): Promise<{
         .lte("created_at", yearEnd)
 
       if (applicationsError) {
-        console.error("[Business Actions] applications 조회 실패:", applicationsError)
       }
 
       // 두 결과 중 큰 값을 사용 (중복 방지)
       const currentCount = Math.max(customMakesCount || 0, applicationsCount || 0)
       const limit = 2 // 연 2회 제한
       const isExceeded = currentCount >= limit
-
-      console.log("[Business Actions] 맞춤제작 횟수 체크 결과:", {
-        clientId,
-        currentCount,
-        limit,
-        isExceeded,
-      })
 
       return {
         success: true,
@@ -103,7 +93,6 @@ export async function checkCustomMakeCostLimit(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Business Actions] 맞춤제작비 한도 체크:", { clientId, amount })
 
       const supabase = await createClient()
 
@@ -123,7 +112,6 @@ export async function checkCustomMakeCostLimit(
       let currentTotal = 0
 
       if (customMakesError) {
-        console.error("[Business Actions] custom_makes 조회 실패:", customMakesError)
       } else if (customMakes && customMakes.length > 0) {
         // 재료비(cost_materials) 우선, 없으면 총 비용(cost_total) 사용
         currentTotal =
@@ -140,15 +128,6 @@ export async function checkCustomMakeCostLimit(
       const limit = 100000 // 10만원 한도 (재료비 기준)
       const newTotal = currentTotal + amount
       const isExceeded = newTotal > limit
-
-      console.log("[Business Actions] 맞춤제작비 한도 체크 결과:", {
-        clientId,
-        currentTotal,
-        newAmount: amount,
-        newTotal,
-        limit,
-        isExceeded,
-      })
 
       return {
         success: true,
@@ -186,7 +165,6 @@ export async function checkRepairLimit(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Business Actions] 수리비 한도 체크:", { clientId, amount })
 
       const supabase = await createClient()
 
@@ -216,7 +194,6 @@ export async function checkRepairLimit(
       let currentTotal = 0
 
       if (serviceLogsError) {
-        console.error("[Business Actions] service_logs 조회 실패:", serviceLogsError)
         // JOIN이 실패할 경우 대체 방법 사용
         // 1. 해당 client의 수리 신청서 조회
         const { data: applications, error: appsError } = await supabase
@@ -262,15 +239,6 @@ export async function checkRepairLimit(
       const limit = 100000 // 10만원 한도
       const newTotal = currentTotal + amount
       const isExceeded = newTotal > limit
-
-      console.log("[Business Actions] 수리비 한도 체크 결과:", {
-        clientId,
-        currentTotal,
-        newAmount: amount,
-        newTotal,
-        limit,
-        isExceeded,
-      })
 
       return {
         success: true,

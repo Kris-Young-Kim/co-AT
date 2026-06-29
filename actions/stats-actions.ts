@@ -111,7 +111,6 @@ export async function getMonthlyStats(
         .lte("created_at", yearEnd)
 
       if (error) {
-        console.error("[Stats] 월별 통계 조회 실패:", error)
         return { success: false, error: "월별 통계 조회에 실패했습니다" }
       }
 
@@ -185,7 +184,6 @@ export async function getYearlyStats(
         .lte("created_at", endDate)
 
       if (error) {
-        console.error("[Stats] 연도별 통계 조회 실패:", error)
         return { success: false, error: "연도별 통계 조회에 실패했습니다" }
       }
 
@@ -253,7 +251,6 @@ export async function getBusinessDetailStats(
         .lte("created_at", endDate)
 
       if (error) {
-        console.error("[Stats] 사업별 상세 통계 조회 실패:", error)
         return { success: false, error: "사업별 상세 통계 조회에 실패했습니다" }
       }
 
@@ -369,7 +366,6 @@ export async function getStatsSummary(
         .lte("created_at", endDate)
 
       if (appsError) {
-        console.error("[Stats] 신청서 조회 실패:", appsError)
         return { success: false, error: "통계 조회에 실패했습니다" }
       }
 

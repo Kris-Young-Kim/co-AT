@@ -29,7 +29,6 @@ export async function getPublicYouTubeVideos(limit: number = 10): Promise<YouTub
 
     // attachments 컬럼이 없어서 에러가 발생한 경우, attachments 없이 재시도
     if (error && (error.code === "42703" || error.message?.includes("column") || error.message?.includes("attachments"))) {
-      console.log("attachments 컬럼이 없습니다. 기본 필드만 조회합니다.")
       const retryResult = await supabase
         .from("notices")
         .select("id, title")
@@ -43,12 +42,6 @@ export async function getPublicYouTubeVideos(limit: number = 10): Promise<YouTub
 
     if (error) {
       // 에러 상세 정보 로깅
-      console.error("유튜브 영상 조회 실패:", {
-        message: error.message,
-        details: error.details,
-        hint: error.hint,
-        code: error.code,
-      })
       return []
     }
 

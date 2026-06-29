@@ -10,7 +10,6 @@ import { hasAdminOrStaffPermission } from "@co-at/auth"
  */
 export async function GET() {
   try {
-    console.log("[DB Monitor] 모니터링 정보 조회 시작")
 
     // 권한 확인
     const hasPermission = await hasAdminOrStaffPermission()
@@ -52,11 +51,6 @@ export async function GET() {
       connectionPool: poolStatus,
       timestamp: new Date().toISOString(),
     }
-
-    console.log("[DB Monitor] 모니터링 정보 조회 성공:", {
-      slowQueriesCount: slowQueries.length,
-      connectionStatus: poolStatus.status,
-    })
 
     return NextResponse.json(response)
   } catch (error) {

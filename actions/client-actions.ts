@@ -122,7 +122,6 @@ export async function searchClients(params: ClientSearchParams = {}): Promise<{
       const { data, error, count } = await queryBuilder
 
       if (error) {
-        console.error("대상자 검색 실패:", error)
         return { success: false, error: "대상자 검색에 실패했습니다" }
       }
 
@@ -192,7 +191,6 @@ export async function getClientById(clientId: string): Promise<{
         .single()
 
       if (error) {
-        console.error("대상자 조회 실패:", error)
         return { success: false, error: "대상자 조회에 실패했습니다" }
       }
 
@@ -230,7 +228,6 @@ export async function createClientRecord(
         .single()
 
       if (error) {
-        console.error("대상자 등록 실패:", error)
         return { success: false, error: "대상자 등록에 실패했습니다: " + (error.message || "알 수 없는 오류") }
       }
 
@@ -294,7 +291,6 @@ export async function updateClient(
         .single()
 
       if (error) {
-        console.error("대상자 수정 실패:", error)
         return { success: false, error: "대상자 수정에 실패했습니다" }
       }
 
@@ -360,7 +356,6 @@ export async function deleteClient(clientId: string): Promise<{
         .eq("id", clientId)
 
       if (error) {
-        console.error("대상자 삭제 실패:", error)
         return { success: false, error: "대상자 삭제에 실패했습니다: " + (error.message || "알 수 없는 오류") }
       }
 
@@ -403,7 +398,6 @@ export async function getClientHistory(clientId: string): Promise<{
         .order("created_at", { ascending: false })
 
       if (appsError) {
-        console.error("신청서 이력 조회 실패:", appsError)
       }
 
       // 2. 일정 이력
@@ -415,7 +409,6 @@ export async function getClientHistory(clientId: string): Promise<{
         .order("scheduled_time", { ascending: false })
 
       if (schedulesError) {
-        console.error("일정 이력 조회 실패:", schedulesError)
       }
 
       // 3. 서비스 로그 이력 (applications를 통해 조회)
@@ -430,7 +423,6 @@ export async function getClientHistory(clientId: string): Promise<{
           .order("service_date", { ascending: false })
 
         if (logsError) {
-          console.error("서비스 로그 이력 조회 실패:", logsError)
         } else {
           serviceLogs = logs || []
         }
@@ -444,7 +436,6 @@ export async function getClientHistory(clientId: string): Promise<{
         .order('created_at', { ascending: false })
 
       if (grantError) {
-        console.error("교부사업 평가 이력 조회 실패:", grantError)
       }
 
       // 5. 서비스 기록 이력
@@ -455,7 +446,6 @@ export async function getClientHistory(clientId: string): Promise<{
         .order('received_at', { ascending: false })
 
       if (serviceRecordError) {
-        console.error("서비스 기록 이력 조회 실패:", serviceRecordError)
       }
 
       // 모든 이력을 하나의 배열로 통합
@@ -581,7 +571,6 @@ export async function getPendingClients(): Promise<{
         .eq("status", "pending")
         .order("created_at", { ascending: false })
       if (error) {
-        console.error("getPendingClients:", error)
         return { success: false, error: "조회에 실패했습니다" }
       }
       return { success: true, clients: (data ?? []) as Client[] }
@@ -634,7 +623,6 @@ export async function createPendingClient(
         .select()
         .single()
       if (error) {
-        console.error("createPendingClient:", error)
         return { success: false, error: "등록에 실패했습니다: " + error.message }
       }
       return { success: true, client: data as Client }
@@ -657,7 +645,6 @@ export async function getNextRegistrationCode(): Promise<string> {
     .order("registration_number", { ascending: false })
     .limit(1)
   if (error) {
-    console.error("getNextRegistrationCode:", error)
     throw new Error("등록코드 생성에 실패했습니다")
   }
   const rows = data as Array<{ registration_number: string | null }> | null
@@ -688,7 +675,6 @@ export async function registerClient(
         .select()
         .single()
       if (error) {
-        console.error("registerClient:", error)
         return { success: false, error: "등록 처리에 실패했습니다" }
       }
       revalidatePath('/clients')
@@ -883,7 +869,6 @@ export async function linkPortalUser(
         .eq('id', clientId)
 
       if (error) {
-        console.error('linkPortalUser update:', error)
         return { success: false, error: '연결에 실패했습니다' }
       }
 
@@ -982,7 +967,6 @@ export async function linkPortalUserByName(
         .eq('id', clientId)
 
       if (error) {
-        console.error('linkPortalUserByName update:', error)
         return { success: false, error: '연결에 실패했습니다' }
       }
 
@@ -1008,7 +992,6 @@ export async function unlinkPortalUser(
         .eq('id', clientId)
 
       if (error) {
-        console.error('unlinkPortalUser update:', error)
         return { success: false, error: '연결 해제에 실패했습니다' }
       }
 
@@ -1166,7 +1149,6 @@ export async function getSimilarClients(
         .limit(limit)
 
       if (error) {
-        console.error("getSimilarClients:", error)
         return { success: false, error: "유사 대상자 조회에 실패했습니다" }
       }
 

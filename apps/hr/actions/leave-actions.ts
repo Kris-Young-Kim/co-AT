@@ -46,7 +46,6 @@ export async function createLeaveRequest(input: CreateLeaveRequestInput): Promis
     .select()
     .single()
   if (error) {
-    console.error('[createLeaveRequest]', error)
     return null
   }
   return data

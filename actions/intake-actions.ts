@@ -72,7 +72,6 @@ export async function createIntakeRecord(
         .single()
 
       if (error) {
-        console.error("상담 기록 생성 실패:", error)
         return {
           success: false,
           error: "상담 기록 생성에 실패했습니다: " + (error.message || "알 수 없는 오류"),
@@ -95,9 +94,7 @@ export async function createIntakeRecord(
           .eq("id", input.application_id)
 
         if (updateError) {
-          console.error("[워크플로우 자동화] 신청서 상태 전환 실패:", updateError)
         } else {
-          console.log("[워크플로우 자동화] 상담 완료 → 배정 상태 자동 전환:", input.application_id)
         }
       }
 

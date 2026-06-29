@@ -47,7 +47,6 @@ export async function getPublicSchedules(
   const { data, error } = await query
 
   if (error) {
-    console.error("공개 일정 조회 실패:", error)
     return []
   }
 
@@ -72,7 +71,6 @@ export async function getPublicSchedulesByDate(
     .order("scheduled_time", { ascending: true })
 
   if (error) {
-    console.error("일정 조회 실패:", error)
     return []
   }
 
@@ -169,7 +167,6 @@ export async function getSchedules(
       const { data: schedules, error } = await query
 
       if (error) {
-        console.error("[일정 조회] 실패:", error)
         return { success: false, error: error.message }
       }
 
@@ -247,12 +244,10 @@ export async function getSchedules(
             return (a.scheduled_time || "").localeCompare(b.scheduled_time || "")
           })
 
-          console.log("[일정 조회] 성공:", allSchedules.length, "개 (일반:", schedules?.length || 0, "개, 맞춤제작:", customMakeSchedules.length, "개)")
           return { success: true, data: allSchedules }
         }
       }
 
-      console.log("[일정 조회] 성공:", schedules?.length || 0, "개")
       return { success: true, data: schedules || [] }
     } catch (error) {
       console.error("[일정 조회] 예외:", error)
@@ -271,7 +266,6 @@ export async function createSchedule(
     try {
       const staffId = await getCurrentUserProfileId()
       if (!staffId) {
-        console.error("[일정 생성] 사용자 프로필 ID 없음")
         return { success: false, error: "사용자 정보를 찾을 수 없습니다" }
       }
 
@@ -298,13 +292,6 @@ export async function createSchedule(
         .single()
 
       if (error) {
-        console.error("[일정 생성] 실패:", {
-          error: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint,
-          input,
-        })
         return { 
           success: false, 
           error: `일정 생성에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
@@ -312,7 +299,6 @@ export async function createSchedule(
       }
 
       const scheduleData = data as unknown as Schedule | null;
-      console.log("[일정 생성] 성공:", scheduleData?.id)
       revalidatePath("/schedule")
       revalidatePath("/") // 메인페이지 캘린더도 갱신
       return { success: true, data: scheduleData || undefined }
@@ -355,14 +341,6 @@ export async function updateSchedule(
         .single()
 
       if (error) {
-        console.error("[일정 수정] 실패:", {
-          error: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint,
-          id: input.id,
-          updateData,
-        })
         return { 
           success: false, 
           error: `일정 수정에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
@@ -370,7 +348,6 @@ export async function updateSchedule(
       }
 
       const updatedScheduleData = data as unknown as Schedule | null;
-      console.log("[일정 수정] 성공:", updatedScheduleData?.id)
       revalidatePath("/schedule")
       revalidatePath("/") // 메인페이지 캘린더도 갱신
       return { success: true, data: updatedScheduleData || undefined }
@@ -398,20 +375,12 @@ export async function deleteSchedule(
         .eq("id", id)
 
       if (error) {
-        console.error("[일정 삭제] 실패:", {
-          error: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint,
-          id,
-        })
         return { 
           success: false, 
           error: `일정 삭제에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
         }
       }
 
-      console.log("[일정 삭제] 성공:", id)
       revalidatePath("/schedule")
       revalidatePath("/") // 메인페이지 캘린더도 갱신
       return { success: true }

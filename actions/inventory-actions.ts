@@ -69,7 +69,6 @@ export async function getReusableDevices(limit: number = 20): Promise<ReusableDe
     .limit(limit)
 
   if (error) {
-    console.error("[Inventory Actions] 재사용 기기 조회 실패:", error)
     return []
   }
 
@@ -126,7 +125,6 @@ export async function getPublicInventoryList(params?: {
     const { data, error } = await query
 
     if (error) {
-      console.error("[Inventory Actions] 공개 재고 목록 조회 실패:", error)
       return []
     }
 
@@ -145,7 +143,6 @@ export async function getInventoryList(
 ): Promise<InventoryListResult> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Inventory Actions] 재고 목록 조회 시작:", params)
 
       // RLS를 우회하기 위해 서비스 역할 사용
       const supabase = createAdminClient()
@@ -185,11 +182,8 @@ export async function getInventoryList(
       const { data, error, count } = await query
 
       if (error) {
-        console.error("[Inventory Actions] 재고 목록 조회 실패:", error)
         return { success: false, error: "재고 목록 조회에 실패했습니다" }
       }
-
-      console.log("[Inventory Actions] 재고 목록 조회 성공:", { count: data?.length, total: count })
 
       return {
         success: true,
@@ -215,7 +209,6 @@ export async function getInventoryItem(id: string): Promise<{
   error?: string
 }> {
   try {
-    console.log("[Inventory Actions] 재고 상세 조회:", id)
 
     // RLS를 우회하기 위해 서비스 역할 사용
     const supabase = createAdminClient()
@@ -227,7 +220,6 @@ export async function getInventoryItem(id: string): Promise<{
       .single()
 
     if (error) {
-      console.error("[Inventory Actions] 재고 상세 조회 실패:", error)
       return { success: false, error: "재고 정보를 찾을 수 없습니다" }
     }
 
@@ -253,7 +245,6 @@ export async function createInventoryItem(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Inventory Actions] 재고 등록 시작:", data)
 
       // 권한 확인
       // RLS를 우회하기 위해 서비스 역할 사용
@@ -278,13 +269,6 @@ export async function createInventoryItem(
         .single()
 
       if (error) {
-        console.error("[Inventory Actions] 재고 등록 실패:", {
-          error: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint,
-          data,
-        })
         return { 
           success: false, 
           error: `재고 등록에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
@@ -293,7 +277,6 @@ export async function createInventoryItem(
 
       // 타입 캐스팅
       const newItemTyped = newItem as InventoryItem | null;
-      console.log("[Inventory Actions] 재고 등록 성공:", newItemTyped?.id);
 
       return { success: true, item: newItemTyped || undefined }
     } catch (error) {
@@ -319,7 +302,6 @@ export async function updateInventoryItem(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Inventory Actions] 재고 수정 시작:", { id, data })
 
       // 권한 확인
       // RLS를 우회하기 위해 서비스 역할 사용
@@ -336,21 +318,11 @@ export async function updateInventoryItem(
         .single()
 
       if (error) {
-        console.error("[Inventory Actions] 재고 수정 실패:", {
-          error: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint,
-          id,
-          data,
-        })
         return { 
           success: false, 
           error: `재고 수정에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
         }
       }
-
-      console.log("[Inventory Actions] 재고 수정 성공:", id)
 
       return { success: true, item: updatedItem as InventoryItem }
     } catch (error) {
@@ -372,7 +344,6 @@ export async function deleteInventoryItem(id: string): Promise<{
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Inventory Actions] 재고 삭제 시작:", id)
 
       // 권한 확인
       // RLS를 우회하기 위해 서비스 역할 사용
@@ -381,11 +352,8 @@ export async function deleteInventoryItem(id: string): Promise<{
       const { error } = await supabase.from("inventory").delete().eq("id", id)
 
       if (error) {
-        console.error("[Inventory Actions] 재고 삭제 실패:", error)
         return { success: false, error: "재고 삭제에 실패했습니다" }
       }
-
-      console.log("[Inventory Actions] 재고 삭제 성공:", id)
 
       return { success: true }
     } catch (error) {
@@ -411,7 +379,6 @@ export async function updateInventoryStatus(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Inventory Actions] 재고 상태 변경:", { id, status })
 
       // 권한 확인
       // RLS를 우회하기 위해 서비스 역할 사용
@@ -428,11 +395,8 @@ export async function updateInventoryStatus(
         .single()
 
       if (error) {
-        console.error("[Inventory Actions] 재고 상태 변경 실패:", error)
         return { success: false, error: "재고 상태 변경에 실패했습니다" }
       }
-
-      console.log("[Inventory Actions] 재고 상태 변경 성공:", { id, status })
 
       return { success: true, item: updatedItem as InventoryItem }
     } catch (error) {
@@ -454,7 +418,6 @@ export async function getInventoryByQRCode(qrCode: string): Promise<{
   error?: string
 }> {
   try {
-    console.log("[Inventory Actions] QR 코드로 재고 조회:", qrCode)
 
     // RLS를 우회하기 위해 서비스 역할 사용
     const supabase = createAdminClient()
@@ -466,7 +429,6 @@ export async function getInventoryByQRCode(qrCode: string): Promise<{
       .single()
 
     if (error) {
-      console.error("[Inventory Actions] QR 코드로 재고 조회 실패:", error)
       return { success: false, error: "QR 코드에 해당하는 재고를 찾을 수 없습니다" }
     }
 
@@ -507,7 +469,6 @@ export async function getGroupedInventoryForPublic(): Promise<GroupedDevice[]> {
     .order("name")
 
   if (error) {
-    console.error("[Inventory Actions] 그룹 재고 조회 실패:", error)
     return []
   }
 
@@ -634,7 +595,6 @@ export async function getInventoryItemByBarcode(
       .maybeSingle()
 
     if (error) {
-      console.error("[Inventory Actions] 바코드 조회 실패:", error)
       return { success: false, error: error.message }
     }
 

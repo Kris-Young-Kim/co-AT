@@ -58,7 +58,6 @@ export async function createRental(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Rental Actions] 대여 생성 시작:", input)
 
       // 권한 확인
       const supabase = await createClient()
@@ -71,7 +70,6 @@ export async function createRental(
         .single()
 
       if (inventoryError || !inventory) {
-        console.error("[Rental Actions] 재고 조회 실패:", inventoryError)
         return { success: false, error: "재고 정보를 찾을 수 없습니다" }
       }
 
@@ -104,19 +102,16 @@ export async function createRental(
         .single()
 
       if (rentalError) {
-        console.error("[Rental Actions] 대여 생성 실패:", rentalError)
         return { success: false, error: "대여 생성에 실패했습니다" }
       }
 
       // 재고 상태를 '대여중'으로 변경
       const statusResult = await updateInventoryStatus(input.inventory_id, "대여중")
       if (!statusResult.success) {
-        console.error("[Rental Actions] 재고 상태 변경 실패:", statusResult.error)
         // 대여는 생성되었지만 상태 변경 실패 - 경고만 표시
       }
 
       const rentalTyped = rental as { id: string } | null;
-      console.log("[Rental Actions] 대여 생성 성공:", rentalTyped?.id)
 
       // 경로 무효화
       revalidatePath("/clients")
@@ -167,7 +162,6 @@ export async function returnRental(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Rental Actions] 대여 반납 시작:", { rentalId, returnDate })
 
       // 권한 확인
       const supabase = await createClient()
@@ -180,7 +174,6 @@ export async function returnRental(
         .single()
 
       if (rentalError || !rental) {
-        console.error("[Rental Actions] 대여 조회 실패:", rentalError)
         return { success: false, error: "대여 정보를 찾을 수 없습니다" }
       }
 
@@ -206,7 +199,6 @@ export async function returnRental(
         .single()
 
       if (updateError) {
-        console.error("[Rental Actions] 대여 반납 실패:", updateError)
         return { success: false, error: "대여 반납에 실패했습니다" }
       }
 
@@ -214,11 +206,8 @@ export async function returnRental(
       const rentalWithIds = rentalTyped as { inventory_id?: string; client_id?: string } | null;
       const statusResult = await updateInventoryStatus(rentalWithIds?.inventory_id || "", "보관")
       if (!statusResult.success) {
-        console.error("[Rental Actions] 재고 상태 변경 실패:", statusResult.error)
         // 반납은 완료되었지만 상태 변경 실패 - 경고만 표시
       }
-
-      console.log("[Rental Actions] 대여 반납 성공:", rentalId)
 
       // 경로 무효화
       const rentalClientId = rentalWithIds?.client_id || "";
@@ -273,7 +262,6 @@ export async function extendRental(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Rental Actions] 대여 연장 시작:", { rentalId, newEndDate })
 
       // 권한 확인
       const supabase = await createClient()
@@ -286,7 +274,6 @@ export async function extendRental(
         .single()
 
       if (rentalError || !rental) {
-        console.error("[Rental Actions] 대여 조회 실패:", rentalError)
         return { success: false, error: "대여 정보를 찾을 수 없습니다" }
       }
 
@@ -317,11 +304,8 @@ export async function extendRental(
         .single()
 
       if (updateError) {
-        console.error("[Rental Actions] 대여 연장 실패:", updateError)
         return { success: false, error: "대여 연장에 실패했습니다" }
       }
-
-      console.log("[Rental Actions] 대여 연장 성공:", rentalId)
 
       // 경로 무효화
       const rentalClientIdForExtension = (rentalForExtension as { client_id?: string })?.client_id || "";
@@ -379,7 +363,6 @@ export async function getRentals(params?: {
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Rental Actions] 대여 목록 조회 시작:", params)
 
       const supabase = await createClient()
 
@@ -416,7 +399,6 @@ export async function getRentals(params?: {
       const { data, error, count } = await query
 
       if (error) {
-        console.error("[Rental Actions] 대여 목록 조회 실패:", error)
         return { success: false, error: "대여 목록 조회에 실패했습니다" }
       }
 
@@ -438,8 +420,6 @@ export async function getRentals(params?: {
             is_due_today: isDueToday,
           }
         }) || []
-
-      console.log("[Rental Actions] 대여 목록 조회 성공:", { count: rentals.length, total: count })
 
       return {
         success: true,
@@ -466,7 +446,6 @@ export async function getRentalById(rentalId: string): Promise<{
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Rental Actions] 대여 상세 조회:", rentalId)
 
       const supabase = await createClient()
 
@@ -483,7 +462,6 @@ export async function getRentalById(rentalId: string): Promise<{
         .single()
 
       if (error) {
-        console.error("[Rental Actions] 대여 상세 조회 실패:", error)
         return { success: false, error: "대여 정보를 찾을 수 없습니다" }
       }
 
@@ -528,7 +506,6 @@ export async function getOverdueRentals(): Promise<{
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Rental Actions] 연체 대여 목록 조회 시작")
 
       const supabase = await createClient()
 
@@ -550,7 +527,6 @@ export async function getOverdueRentals(): Promise<{
         .order("rental_end_date", { ascending: true })
 
       if (error) {
-        console.error("[Rental Actions] 연체 대여 목록 조회 실패:", error)
         return { success: false, error: "연체 대여 목록 조회에 실패했습니다" }
       }
 
@@ -570,8 +546,6 @@ export async function getOverdueRentals(): Promise<{
             is_due_today: false,
           }
         }) || []
-
-      console.log("[Rental Actions] 연체 대여 목록 조회 성공:", { count: rentals.length })
 
       return { success: true, rentals }
     } catch (error) {
@@ -595,7 +569,6 @@ export async function getExpiringRentals(daysAhead: number = 7): Promise<{
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Rental Actions] 만료 예정 대여 목록 조회 시작:", { daysAhead })
 
       const supabase = await createClient()
 
@@ -619,7 +592,6 @@ export async function getExpiringRentals(daysAhead: number = 7): Promise<{
         .order("rental_end_date", { ascending: true })
 
       if (error) {
-        console.error("[Rental Actions] 만료 예정 대여 목록 조회 실패:", error)
         return { success: false, error: "만료 예정 대여 목록 조회에 실패했습니다" }
       }
 
@@ -640,8 +612,6 @@ export async function getExpiringRentals(daysAhead: number = 7): Promise<{
             is_due_today: isDueToday,
           }
         }) || []
-
-      console.log("[Rental Actions] 만료 예정 대여 목록 조회 성공:", { count: rentals.length })
 
       return { success: true, rentals }
     } catch (error) {

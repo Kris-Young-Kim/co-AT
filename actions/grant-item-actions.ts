@@ -50,7 +50,6 @@ export async function upsertGrantItem(
         .single()
 
       if (error) {
-        console.error("upsertGrantItem:", error)
         return { success: false, error: error.message ?? "품목 저장에 실패했습니다" }
       }
 

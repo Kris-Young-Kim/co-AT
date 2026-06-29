@@ -47,7 +47,6 @@ export async function createDailyWage(input: CreateDailyWageInput): Promise<HrDa
     .select()
     .single()
   if (error) {
-    console.error('[createDailyWage]', error)
     return null
   }
   return data

@@ -46,7 +46,6 @@ export async function POST(req: NextRequest) {
   // 1. 권한 확인 — clerkClient fallback for session tokens without publicMetadata
   const hasPermission = await checkAgentPermission()
   if (!hasPermission) {
-    console.error("[agents/chat] unauthorized — no valid role found")
     return NextResponse.json({ error: "권한이 없습니다" }, { status: 403 })
   }
 

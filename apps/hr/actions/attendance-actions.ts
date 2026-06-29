@@ -24,7 +24,6 @@ export async function getAttendanceByEmployee(
     .lte('date', endDate)
     .order('date')
   if (error) {
-    console.error('[getAttendanceByEmployee]', error)
     return []
   }
   return data ?? []
@@ -67,7 +66,6 @@ export async function upsertAttendance(input: UpsertAttendanceInput): Promise<Hr
     .select()
     .single()
   if (error) {
-    console.error('[upsertAttendance]', error)
     return null
   }
   return data

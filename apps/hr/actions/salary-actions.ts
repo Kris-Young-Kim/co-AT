@@ -19,7 +19,6 @@ export async function getSalaryRecordsByMonth(yearMonth: string): Promise<HrSala
     .eq('year_month', yearMonth)
     .order('created_at')
   if (error) {
-    console.error('[getSalaryRecordsByMonth]', error)
     return []
   }
   return data ?? []
@@ -59,7 +58,6 @@ export async function createSalaryRecord(input: CreateSalaryRecordInput): Promis
     .select()
     .single()
   if (error) {
-    console.error('[createSalaryRecord]', error)
     return null
   }
   return data
@@ -75,7 +73,6 @@ export async function updateSalaryRecord(id: string, input: UpdateSalaryRecordIn
     .single()
 
   if (current?.confirmed_at) {
-    console.error('[updateSalaryRecord] Cannot update confirmed record')
     return null
   }
 
@@ -98,7 +95,6 @@ export async function updateSalaryRecord(id: string, input: UpdateSalaryRecordIn
     .select()
     .single()
   if (error) {
-    console.error('[updateSalaryRecord]', error)
     return null
   }
   return data

@@ -210,7 +210,6 @@ export async function getYearOverYearComparison(
         },
       }
 
-      console.log("[Advanced Dashboard] 전년 동기 대비 실적 비교 성공")
       return { success: true, comparison }
     } catch (error) {
       console.error("[Advanced Dashboard] 전년 동기 대비 실적 비교 실패:", error)
@@ -371,7 +370,6 @@ export async function getTeamPerformance(
         return a.teamName.localeCompare(b.teamName)
       })
 
-      console.log("[Advanced Dashboard] 팀별 성과 분석 성공:", teams.length, "개 팀")
       return { success: true, teams }
     } catch (error) {
       console.error("[Advanced Dashboard] 팀별 성과 분석 실패:", error)
@@ -478,7 +476,6 @@ export async function getBudgetExecution(
         byMonth,
       }
 
-      console.log("[Advanced Dashboard] 예산 집행 현황 조회 성공")
       return { success: true, budget }
     } catch (error) {
       console.error("[Advanced Dashboard] 예산 집행 현황 조회 실패:", error)

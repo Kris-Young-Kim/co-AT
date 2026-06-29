@@ -10,7 +10,6 @@ type BackupType = "daily" | "weekly" | "monthly" | "manual"
  */
 export async function POST(request: Request) {
   try {
-    console.log("[Backup API] 백업 요청 수신")
 
     // 권한 확인
     const hasPermission = await hasAdminOrStaffPermission()
@@ -36,7 +35,6 @@ export async function POST(request: Request) {
     const result = await runBackup(backupType)
 
     if (result.success) {
-      console.log("[Backup API] 백업 성공:", result.backupName)
       return NextResponse.json({
         success: true,
         backupId: result.backupId,
@@ -45,7 +43,6 @@ export async function POST(request: Request) {
         recordsCount: result.recordsCount,
       })
     } else {
-      console.error("[Backup API] 백업 실패:", result.error)
       return NextResponse.json(
         { success: false, error: result.error },
         { status: 500 }

@@ -48,7 +48,6 @@ export async function createNotification(
   params: CreateNotificationParams
 ): Promise<{ success: boolean; notificationId?: string; error?: string }> {
   try {
-    console.log("[Notification Actions] 알림 생성 시작:", params);
 
     const supabase = createAdminClient();
 
@@ -70,15 +69,10 @@ export async function createNotification(
       .single();
 
     if (error) {
-      console.error("[Notification Actions] 알림 생성 실패:", error);
       return { success: false, error: "알림 생성에 실패했습니다" };
     }
 
     const notificationTyped = notification as unknown as { id: string } | null;
-    console.log(
-      "[Notification Actions] 알림 생성 성공:",
-      notificationTyped?.id
-    );
 
     // Realtime으로 알림 발송 (Supabase가 자동으로 처리)
     // 클라이언트에서 구독 중이면 자동으로 수신됨
@@ -144,7 +138,6 @@ export async function getNotifications(params?: {
     const { data: notifications, error, count } = await query;
 
     if (error) {
-      console.error("[Notification Actions] 알림 목록 조회 실패:", error);
       return { success: false, error: "알림 목록 조회에 실패했습니다" };
     }
 
@@ -180,7 +173,6 @@ export async function markNotificationAsRead(
   notificationId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    console.log("[Notification Actions] 알림 읽음 처리:", notificationId);
 
     const { userId } = await auth();
     if (!userId) {
@@ -211,11 +203,9 @@ export async function markNotificationAsRead(
       .or(`user_id.eq.${(profile as { id: string }).id},user_id.is.null`); // 본인 알림 또는 브로드캐스트만
 
     if (error) {
-      console.error("[Notification Actions] 알림 읽음 처리 실패:", error);
       return { success: false, error: "알림 읽음 처리에 실패했습니다" };
     }
 
-    console.log("[Notification Actions] 알림 읽음 처리 성공:", notificationId);
     revalidatePath("/");
 
     return { success: true };
@@ -239,7 +229,6 @@ export async function markAllNotificationsAsRead(): Promise<{
   error?: string;
 }> {
   try {
-    console.log("[Notification Actions] 모든 알림 읽음 처리");
 
     const { userId } = await auth();
     if (!userId) {
@@ -270,11 +259,9 @@ export async function markAllNotificationsAsRead(): Promise<{
       .eq("status", "unread");
 
     if (error) {
-      console.error("[Notification Actions] 모든 알림 읽음 처리 실패:", error);
       return { success: false, error: "모든 알림 읽음 처리에 실패했습니다" };
     }
 
-    console.log("[Notification Actions] 모든 알림 읽음 처리 성공");
     revalidatePath("/");
 
     return { success: true };
@@ -297,7 +284,6 @@ export async function archiveNotification(
   notificationId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    console.log("[Notification Actions] 알림 보관:", notificationId);
 
     const { userId } = await auth();
     if (!userId) {
@@ -327,11 +313,9 @@ export async function archiveNotification(
       .or(`user_id.eq.${(profile as { id: string }).id},user_id.is.null`);
 
     if (error) {
-      console.error("[Notification Actions] 알림 보관 실패:", error);
       return { success: false, error: "알림 보관에 실패했습니다" };
     }
 
-    console.log("[Notification Actions] 알림 보관 성공:", notificationId);
     revalidatePath("/");
 
     return { success: true };

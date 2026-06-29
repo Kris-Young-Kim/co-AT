@@ -70,7 +70,6 @@ export default function ProfileDebugPage() {
       
       // 프로필이 이미 존재하고 역할이 "user"인 경우 자동으로 "manager"로 업데이트
       if (data.needsRoleUpdate && data.profile?.role === "user") {
-        console.log("[Profile Debug] 역할 자동 업데이트 시도...")
         const updateResponse = await fetch("/api/profile/update-role", {
           method: "POST",
           headers: {

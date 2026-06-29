@@ -64,9 +64,6 @@ async function getEmbedding(
 
     // 에러가 발생하면 간단한 해시 기반 벡터 생성 (임시 방편)
     // 실제 운영 환경에서는 반드시 Gemini Embedding API를 사용해야 합니다
-    console.warn(
-      "[RAG Actions] Embedding API 실패, 해시 기반 벡터 사용 (임시)"
-    );
     return generateHashBasedVector(text);
   }
 }
@@ -163,7 +160,6 @@ export async function embedRegulations(options?: {
   const hasPermission = await hasAdminOrStaffPermission();
   if (!hasPermission) return { success: false, message: "권한이 없습니다" };
   try {
-    console.log("[RAG Actions] 규정 문서 벡터화 시작");
 
       const docsDir = join(process.cwd(), "docs");
       const regulationsDir = join(docsDir, "regulations");
@@ -270,7 +266,6 @@ export async function embedRegulations(options?: {
       }
 
       const chunks = allChunks;
-      console.log(`[RAG Actions] ${chunks.length}개의 청크 생성`);
 
       const supabase = await createClient();
 
@@ -307,7 +302,6 @@ export async function embedRegulations(options?: {
           });
 
           if (error) {
-            console.error(`[RAG Actions] 청크 ${i} 저장 실패:`, error);
             continue;
           }
 
@@ -315,17 +309,12 @@ export async function embedRegulations(options?: {
 
           // 진행 상황 로그 (10개마다)
           if ((i + 1) % 10 === 0) {
-            console.log(`[RAG Actions] 진행: ${i + 1}/${chunks.length}`);
           }
         } catch (error) {
           console.error(`[RAG Actions] 청크 ${i} 처리 실패:`, error);
           continue;
         }
       }
-
-      console.log(
-        `[RAG Actions] 벡터화 완료: ${successCount}/${chunks.length}개 저장`
-      );
 
       return {
         success: true,
@@ -355,7 +344,6 @@ export async function searchRegulations(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[RAG Actions] 규정 검색 시작:", { query, limit });
 
       // 권한 확인
       // 질문을 벡터화 (RETRIEVAL_QUERY 타입 사용)
@@ -368,7 +356,6 @@ export async function searchRegulations(
         .select("id, title, content, section, category, embedding");
 
       if (error) {
-        console.error("[RAG Actions] 규정 조회 실패:", error);
 
         // 테이블이 없는 경우 명확한 안내 메시지
         if (error.code === "PGRST205") {
@@ -417,8 +404,6 @@ export async function searchRegulations(
         .sort((a: any, b: any) => (b?.similarity || 0) - (a?.similarity || 0))
         .slice(0, limit);
 
-      console.log(`[RAG Actions] ${similarities.length}개의 유사 청크 발견`);
-
       return {
         success: true,
         chunks: similarities as RegulationChunk[],
@@ -443,7 +428,6 @@ export async function generateRegulationAnswer(query: string): Promise<{
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[RAG Actions] RAG 답변 생성 시작:", { query });
 
       // 권한 확인
       // 유사한 규정 청크 검색
@@ -494,8 +478,6 @@ export async function generateRegulationAnswer(query: string): Promise<{
           (sum, chunk) => sum + (chunk.similarity || 0),
           0
         ) / searchResult.chunks.length;
-
-      console.log("[RAG Actions] RAG 답변 생성 완료");
 
       return {
         success: true,

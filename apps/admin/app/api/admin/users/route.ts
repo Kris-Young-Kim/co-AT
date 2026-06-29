@@ -22,7 +22,6 @@ export async function GET() {
       .order("created_at", { ascending: false })
 
     if (error) {
-      console.error("[Admin Users] 사용자 목록 조회 실패:", error)
       return NextResponse.json(
         {
           error: "사용자 목록 조회 실패",

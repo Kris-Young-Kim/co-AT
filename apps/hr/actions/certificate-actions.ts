@@ -21,7 +21,6 @@ export async function getCertificates(employeeId?: string): Promise<CertWithRela
   if (employeeId) query = query.eq('employee_id', employeeId)
   const { data, error } = await query
   if (error) {
-    console.error('[getCertificates]', error)
     return []
   }
   return data ?? []
@@ -42,11 +41,9 @@ export async function issueCertificate(input: CreateCertificateInput): Promise<H
     .maybeSingle()
 
   if (issuerError) {
-    console.error('[issueCertificate] Failed to fetch issuer:', issuerError)
     return null
   }
   if (!issuer) {
-    console.error('[issueCertificate] Issuer not found in hr_employees for clerk_user_id:', userId)
     return null
   }
 
@@ -62,7 +59,6 @@ export async function issueCertificate(input: CreateCertificateInput): Promise<H
     .single()
 
   if (error) {
-    console.error('[issueCertificate]', error)
     return null
   }
   return data

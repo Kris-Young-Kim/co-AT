@@ -67,7 +67,6 @@ export async function createDomainAssessment(
         .single();
 
       if (error) {
-        console.error("createDomainAssessment:", error);
         return { success: false, error: "평가 생성에 실패했습니다: " + (error.message ?? "알 수 없는 오류") };
       }
 
@@ -99,7 +98,6 @@ export async function getDomainAssessments(applicationId: string): Promise<{
         .order("evaluation_date", { ascending: false });
 
       if (error) {
-        console.error("getDomainAssessments:", error);
         return { success: false, error: "평가 조회에 실패했습니다" };
       }
       return { success: true, assessments: (data ?? []) as DomainAssessmentFull[] };
@@ -129,7 +127,6 @@ export async function getDomainAssessmentsByConsultationRecord(
         .order("evaluation_date", { ascending: false });
 
       if (error) {
-        console.error("getDomainAssessmentsByConsultationRecord:", error);
         return { success: false, error: "평가 조회에 실패했습니다" };
       }
       return { success: true, assessments: (data ?? []) as ConsultDomainAssessment[] };
@@ -171,7 +168,6 @@ export async function getDomainAssessmentsByClient(
         .order("evaluation_date", { ascending: false });
 
       if (error) {
-        console.error("getDomainAssessmentsByClient:", error);
         return { success: false, error: "평가 조회에 실패했습니다" };
       }
       return { success: true, assessments: (data ?? []) as ClientDomainAssessment[] };
@@ -198,7 +194,6 @@ export async function getDomainAssessmentById(assessmentId: string): Promise<{
         .single();
 
       if (error) {
-        console.error("getDomainAssessmentById:", error);
         return { success: false, error: "평가 조회에 실패했습니다" };
       }
       return { success: true, assessment: data as DomainAssessmentFull };
@@ -222,7 +217,6 @@ export async function deleteDomainAssessment(
         .eq("id", assessmentId);
 
       if (error) {
-        console.error("deleteDomainAssessment:", error);
         return { success: false, error: "삭제에 실패했습니다" };
       }
 
@@ -264,7 +258,6 @@ export async function updateDomainAssessment(
         .single();
 
       if (error) {
-        console.error("updateDomainAssessment:", error);
         return { success: false, error: "평가 수정에 실패했습니다" };
       }
 
@@ -316,7 +309,6 @@ export async function getAssessmentSessions(): Promise<{
       .limit(300);
 
     if (recErr) {
-      console.error("getAssessmentSessions:", recErr);
       return { success: false, error: "세션 목록 조회에 실패했습니다" };
     }
     if (!records || records.length === 0) return { success: true, sessions: [] };
@@ -377,7 +369,6 @@ export async function getAllDomainAssessments(): Promise<{
       .limit(500);
 
     if (error) {
-      console.error("getAllDomainAssessments:", error);
       return { success: false, error: "평가 목록 조회에 실패했습니다" };
     }
 

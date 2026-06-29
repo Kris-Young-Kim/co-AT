@@ -14,7 +14,6 @@ export async function getAllowanceTypes(): Promise<HrAllowanceType[]> {
     .eq('is_active', true)
     .order('name')
   if (error) {
-    console.error('[getAllowanceTypes]', error)
     return []
   }
   return data ?? []
@@ -29,7 +28,6 @@ export async function createAllowanceType(input: CreateAllowanceTypeInput): Prom
     .select()
     .single()
   if (error) {
-    console.error('[createAllowanceType]', error)
     return null
   }
   return data

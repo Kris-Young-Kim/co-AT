@@ -8,7 +8,6 @@ import { hasAdminOrStaffPermission } from "@co-at/auth"
  */
 export async function GET(request: Request) {
   try {
-    console.log("[Security Events API] 보안 이벤트 조회")
 
     // 권한 확인
     const hasPermission = await hasAdminOrStaffPermission()
@@ -54,7 +53,6 @@ export async function GET(request: Request) {
     const { data: events, error } = await query
 
     if (error) {
-      console.error("[Security Events API] 보안 로그 조회 실패:", error)
       return NextResponse.json(
         { error: "보안 로그 조회에 실패했습니다", details: error.message },
         { status: 500 }
@@ -81,8 +79,6 @@ export async function GET(request: Request) {
       blocked: events?.filter((e: any) => e.blocked).length || 0,
       notified: events?.filter((e: any) => e.notified).length || 0,
     }
-
-    console.log("[Security Events API] 보안 이벤트 조회 성공:", stats)
 
     return NextResponse.json({
       events: events || [],

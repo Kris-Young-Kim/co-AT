@@ -73,7 +73,6 @@ export async function createServiceLog(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Service Log Actions] 서비스 로그 생성 시작:", input)
 
       const { userId } = await auth()
       if (!userId) {
@@ -90,7 +89,6 @@ export async function createServiceLog(
         .single()
 
       if (appError || !application) {
-        console.error("[Service Log Actions] 신청서 조회 실패:", appError)
         return { success: false, error: "신청서 정보를 찾을 수 없습니다" }
       }
 
@@ -99,10 +97,6 @@ export async function createServiceLog(
 
       // 수리비 한도 체크 (service_type이 'repair'이고 cost_total이 있는 경우)
       if (input.service_type === "repair" && input.cost_total && input.cost_total > 0) {
-        console.log("[Service Log Actions] 수리비 한도 체크 시작:", {
-          clientId,
-          costTotal: input.cost_total,
-        })
 
         const limitCheck = await checkRepairLimit(clientId, input.cost_total)
 
@@ -114,13 +108,6 @@ export async function createServiceLog(
         }
 
         if (limitCheck.isExceeded) {
-          console.warn("[Service Log Actions] 수리비 한도 초과:", {
-            clientId,
-            currentTotal: limitCheck.currentTotal,
-            newAmount: input.cost_total,
-            newTotal: limitCheck.newTotal,
-            limit: limitCheck.limit,
-          })
 
           // 한도 초과 시에도 계속 진행할 수 있도록 limitCheck 정보 반환
           // (UI에서 경고 다이얼로그를 표시하고 사용자가 확인하면 진행)
@@ -136,11 +123,6 @@ export async function createServiceLog(
           }
         }
 
-        console.log("[Service Log Actions] 수리비 한도 체크 통과:", {
-          currentTotal: limitCheck.currentTotal,
-          newTotal: limitCheck.newTotal,
-          limit: limitCheck.limit,
-        })
       }
 
       // 담당자 ID 조회
@@ -176,12 +158,10 @@ export async function createServiceLog(
         .single()
 
       if (error) {
-        console.error("[Service Log Actions] 서비스 로그 생성 실패:", error)
         return { success: false, error: "서비스 로그 생성에 실패했습니다" }
       }
 
       const serviceLogData = data as ServiceLogItem | null;
-      console.log("[Service Log Actions] 서비스 로그 생성 성공:", serviceLogData?.id)
 
       // 감사 로그 기록
       const { logAuditEvent } = await import("@/lib/utils/audit-logger")
@@ -230,7 +210,6 @@ export async function updateServiceLog(
 }> {
   return withStaffPermission(async () => {
     try {
-      console.log("[Service Log Actions] 서비스 로그 수정 시작:", { id, input })
 
       const supabase = await createClient()
 
@@ -312,11 +291,8 @@ export async function updateServiceLog(
         .single()
 
       if (error) {
-        console.error("[Service Log Actions] 서비스 로그 수정 실패:", error)
         return { success: false, error: "서비스 로그 수정에 실패했습니다" }
       }
-
-      console.log("[Service Log Actions] 서비스 로그 수정 성공:", id)
 
       // 감사 로그 기록
       const { logAuditEvent, compareValues } = await import("@/lib/utils/audit-logger")
