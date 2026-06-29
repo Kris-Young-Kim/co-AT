@@ -1,7 +1,7 @@
 "use server"
 
 import { createAdminClient } from "@/lib/supabase/admin"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from "next/cache"
 
 // ─── Types ─────────────────────────────────────────────────────────────────
@@ -40,48 +40,48 @@ export type UpdateGuardianInput = Partial<Omit<CreateGuardianInput, 'client_id'>
 export async function getGuardiansByClient(
   clientId: string
 ): Promise<{ success: boolean; guardians?: Guardian[]; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('client_guardians')
-    .select('*')
-    .eq('client_id', clientId)
-    .order('is_primary', { ascending: false })
-    .order('created_at')
+    const supabase = createAdminClient()
+    const { data, error } = await supabase
+      .from('client_guardians')
+      .select('*')
+      .eq('client_id', clientId)
+      .order('is_primary', { ascending: false })
+      .order('created_at')
 
-  if (error) return { success: false, error: error.message }
-  return { success: true, guardians: (data ?? []) as Guardian[] }
+    if (error) return { success: false, error: error.message }
+    return { success: true, guardians: (data ?? []) as Guardian[] }
+  })
 }
 
 export async function createGuardian(
   input: CreateGuardianInput
 ): Promise<{ success: boolean; guardian?: Guardian; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
+    const supabase = createAdminClient()
 
-  // 주 보호자로 설정하면 기존 주 보호자 해제
-  if (input.is_primary) {
-    await supabase
+    // 주 보호자로 설정하면 기존 주 보호자 해제
+    if (input.is_primary) {
+      await supabase
+        .from('client_guardians')
+        .update({ is_primary: false })
+        .eq('client_id', input.client_id)
+        .eq('is_primary', true)
+    }
+
+    const { data, error } = await supabase
       .from('client_guardians')
-      .update({ is_primary: false })
-      .eq('client_id', input.client_id)
-      .eq('is_primary', true)
-  }
+      .insert(input)
+      .select()
+      .single()
 
-  const { data, error } = await supabase
-    .from('client_guardians')
-    .insert(input)
-    .select()
-    .single()
+    if (error) return { success: false, error: error.message }
 
-  if (error) return { success: false, error: error.message }
-
-  revalidatePath(`/clients/${input.client_id}`)
-  return { success: true, guardian: data as Guardian }
+    revalidatePath(`/clients/${input.client_id}`)
+    return { success: true, guardian: data as Guardian }
+  })
 }
 
 export async function updateGuardian(
@@ -89,64 +89,64 @@ export async function updateGuardian(
   clientId: string,
   input: UpdateGuardianInput
 ): Promise<{ success: boolean; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
+    const supabase = createAdminClient()
 
-  if (input.is_primary) {
-    await supabase
-      .from('client_guardians')
-      .update({ is_primary: false })
-      .eq('client_id', clientId)
-      .eq('is_primary', true)
-      .neq('id', id)
-  }
+    if (input.is_primary) {
+      await supabase
+        .from('client_guardians')
+        .update({ is_primary: false })
+        .eq('client_id', clientId)
+        .eq('is_primary', true)
+        .neq('id', id)
+    }
 
-  const { error } = await supabase.from('client_guardians').update(input).eq('id', id)
-  if (error) return { success: false, error: error.message }
+    const { error } = await supabase.from('client_guardians').update(input).eq('id', id)
+    if (error) return { success: false, error: error.message }
 
-  revalidatePath(`/clients/${clientId}`)
-  return { success: true }
+    revalidatePath(`/clients/${clientId}`)
+    return { success: true }
+  })
 }
 
 export async function deleteGuardian(
   id: string,
   clientId: string
 ): Promise<{ success: boolean; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
-  const { error } = await supabase.from('client_guardians').delete().eq('id', id)
-  if (error) return { success: false, error: error.message }
+    const supabase = createAdminClient()
+    const { error } = await supabase.from('client_guardians').delete().eq('id', id)
+    if (error) return { success: false, error: error.message }
 
-  revalidatePath(`/clients/${clientId}`)
-  return { success: true }
+    revalidatePath(`/clients/${clientId}`)
+    return { success: true }
+  })
 }
 
 export async function setPrimaryGuardian(
   id: string,
   clientId: string
 ): Promise<{ success: boolean; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
+    const supabase = createAdminClient()
 
-  // Clear existing primary
-  await supabase
-    .from('client_guardians')
-    .update({ is_primary: false })
-    .eq('client_id', clientId)
+    // Clear existing primary
+    await supabase
+      .from('client_guardians')
+      .update({ is_primary: false })
+      .eq('client_id', clientId)
 
-  const { error } = await supabase
-    .from('client_guardians')
-    .update({ is_primary: true })
-    .eq('id', id)
+    const { error } = await supabase
+      .from('client_guardians')
+      .update({ is_primary: true })
+      .eq('id', id)
 
-  if (error) return { success: false, error: error.message }
+    if (error) return { success: false, error: error.message }
 
-  revalidatePath(`/clients/${clientId}`)
-  return { success: true }
+    revalidatePath(`/clients/${clientId}`)
+    return { success: true }
+  })
 }

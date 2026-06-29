@@ -1,7 +1,7 @@
 "use server"
 
 import { createAdminClient } from "@/lib/supabase/admin"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { notifyIppaCompleted } from "@/lib/utils/crm-notify"
@@ -56,58 +56,58 @@ export async function getClientIPPAAssessments(clientId: string): Promise<{
   assessments?: IPPAAssessment[]
   error?: string
 }> {
-  const allowed = await hasAdminOrStaffPermission()
-  if (!allowed) return { success: false, error: "권한이 없습니다" }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
-  const { data, error } = await (supabase as any)
-    .from("eval_ippa_assessments")
-    .select("*")
-    .eq("client_id", clientId)
-    .order("created_at", { ascending: false })
+    const supabase = createAdminClient()
+    const { data, error } = await (supabase as any)
+      .from("eval_ippa_assessments")
+      .select("*")
+      .eq("client_id", clientId)
+      .order("created_at", { ascending: false })
 
-  if (error) return { success: false, error: error.message }
-  return { success: true, assessments: (data ?? []) as IPPAAssessment[] }
+    if (error) return { success: false, error: error.message }
+    return { success: true, assessments: (data ?? []) as IPPAAssessment[] }
+  })
 }
 
 export async function createIPPAAssessment(
   clientId: string,
   input: CreateIPPAInput
 ): Promise<{ success: boolean; id?: string; error?: string }> {
-  const allowed = await hasAdminOrStaffPermission()
-  if (!allowed) return { success: false, error: "권한이 없습니다" }
+  return withStaffPermission(async () => {
 
-  const { userId } = await auth()
-  if (!userId) return { success: false, error: "로그인이 필요합니다" }
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: "로그인이 필요합니다" }
 
-  if (input.items.length < 3 || input.items.length > 5) {
-    return { success: false, error: "활동 문제는 3~5개 선정해야 합니다" }
-  }
+    if (input.items.length < 3 || input.items.length > 5) {
+      return { success: false, error: "활동 문제는 3~5개 선정해야 합니다" }
+    }
 
-  const items: IPPAItem[] = input.items.map((it) => ({
-    problem: it.problem.trim(),
-    pre_score: it.pre_score,
-    post_score: null,
-  }))
+    const items: IPPAItem[] = input.items.map((it) => ({
+      problem: it.problem.trim(),
+      pre_score: it.pre_score,
+      post_score: null,
+    }))
 
-  const supabase = createAdminClient()
-  const { data, error } = await (supabase as any)
-    .from("eval_ippa_assessments")
-    .insert({
-      client_id: clientId,
-      assessment_year: input.assessment_year,
-      pre_date: input.pre_date,
-      items,
-      notes: input.notes ?? null,
-      status: "pre_only",
-      staff_id: userId,
-    })
-    .select("id")
-    .single()
+    const supabase = createAdminClient()
+    const { data, error } = await (supabase as any)
+      .from("eval_ippa_assessments")
+      .insert({
+        client_id: clientId,
+        assessment_year: input.assessment_year,
+        pre_date: input.pre_date,
+        items,
+        notes: input.notes ?? null,
+        status: "pre_only",
+        staff_id: userId,
+      })
+      .select("id")
+      .single()
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath(`/clients/${clientId}`)
-  return { success: true, id: data.id }
+    if (error) return { success: false, error: error.message }
+    revalidatePath(`/clients/${clientId}`)
+    return { success: true, id: data.id }
+  })
 }
 
 export async function saveIPPAPostMeasurement(
@@ -115,63 +115,63 @@ export async function saveIPPAPostMeasurement(
   clientId: string,
   input: SavePostInput
 ): Promise<{ success: boolean; outcomeScore?: number | null; error?: string }> {
-  const allowed = await hasAdminOrStaffPermission()
-  if (!allowed) return { success: false, error: "권한이 없습니다" }
+  return withStaffPermission(async () => {
 
-  const items: IPPAItem[] = input.items.map((it) => ({
-    problem: it.problem,
-    pre_score: it.pre_score,
-    post_score: it.post_score,
-  }))
+    const items: IPPAItem[] = input.items.map((it) => ({
+      problem: it.problem,
+      pre_score: it.pre_score,
+      post_score: it.post_score,
+    }))
 
-  const outcomeScore = calcOutcome(items)
+    const outcomeScore = calcOutcome(items)
 
-  const supabase = createAdminClient()
-  const { error } = await (supabase as any)
-    .from("eval_ippa_assessments")
-    .update({
-      post_date: input.post_date,
-      items,
-      outcome_score: outcomeScore,
-      status: "completed",
-    })
-    .eq("id", assessmentId)
-    .eq("client_id", clientId)
+    const supabase = createAdminClient()
+    const { error } = await (supabase as any)
+      .from("eval_ippa_assessments")
+      .update({
+        post_date: input.post_date,
+        items,
+        outcome_score: outcomeScore,
+        status: "completed",
+      })
+      .eq("id", assessmentId)
+      .eq("client_id", clientId)
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath(`/clients/${clientId}`)
+    if (error) return { success: false, error: error.message }
+    revalidatePath(`/clients/${clientId}`)
 
-  // C-6: K-IPPA 사후측정 완료 알림 (fire-and-forget)
-  const clientRow = await (createAdminClient() as any)
-    .from('clients')
-    .select('name, assigned_staff_id')
-    .eq('id', clientId)
-    .single()
-  notifyIppaCompleted({
-    clientId,
-    clientName: clientRow.data?.name ?? '대상자',
-    outcomeScore,
-    assignedStaffId: clientRow.data?.assigned_staff_id ?? null,
-  }).catch(() => {})
+    // C-6: K-IPPA 사후측정 완료 알림 (fire-and-forget)
+    const clientRow = await (createAdminClient() as any)
+      .from('clients')
+      .select('name, assigned_staff_id')
+      .eq('id', clientId)
+      .single()
+    notifyIppaCompleted({
+      clientId,
+      clientName: clientRow.data?.name ?? '대상자',
+      outcomeScore,
+      assignedStaffId: clientRow.data?.assigned_staff_id ?? null,
+    }).catch(() => {})
 
-  return { success: true, outcomeScore }
+    return { success: true, outcomeScore }
+  })
 }
 
 export async function deleteIPPAAssessment(
   assessmentId: string,
   clientId: string
 ): Promise<{ success: boolean; error?: string }> {
-  const allowed = await hasAdminOrStaffPermission()
-  if (!allowed) return { success: false, error: "권한이 없습니다" }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
-  const { error } = await (supabase as any)
-    .from("eval_ippa_assessments")
-    .delete()
-    .eq("id", assessmentId)
-    .eq("client_id", clientId)
+    const supabase = createAdminClient()
+    const { error } = await (supabase as any)
+      .from("eval_ippa_assessments")
+      .delete()
+      .eq("id", assessmentId)
+      .eq("client_id", clientId)
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath(`/clients/${clientId}`)
-  return { success: true }
+    if (error) return { success: false, error: error.message }
+    revalidatePath(`/clients/${clientId}`)
+    return { success: true }
+  })
 }

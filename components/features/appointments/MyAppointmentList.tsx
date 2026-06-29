@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AppointmentStatusBadge } from './AppointmentStatusBadge'
-import { cancelMyAppointment, SERVICE_TYPE_LABELS, type MyAppointment } from '@/actions/appointment-actions'
+import { cancelMyAppointment, type MyAppointment } from '@/actions/appointment-actions'
+import { APPOINTMENT_SERVICE_LABELS } from '@/lib/constants/mappings'
 import { CalendarDays, Clock } from 'lucide-react'
 import Link from 'next/link'
 
@@ -48,7 +49,7 @@ export function MyAppointmentList({ appointments }: MyAppointmentListProps) {
               <div key={appt.id} className="p-3 rounded-lg border space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm font-medium">
-                    {SERVICE_TYPE_LABELS[appt.service_type] ?? appt.service_type}
+                    {APPOINTMENT_SERVICE_LABELS[appt.service_type] ?? appt.service_type}
                   </span>
                   <AppointmentStatusBadge status={appt.status} />
                 </div>

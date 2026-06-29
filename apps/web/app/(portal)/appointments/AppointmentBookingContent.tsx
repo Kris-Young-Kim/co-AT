@@ -12,10 +12,10 @@ import {
 import { MyAppointmentList } from '@/components/features/appointments/MyAppointmentList'
 import {
   requestAppointment,
-  SERVICE_TYPE_LABELS,
   type AppointmentSlot,
   type MyAppointment,
 } from '@/actions/appointment-actions'
+import { APPOINTMENT_SERVICE_LABELS } from '@/lib/constants/mappings'
 import { CalendarDays, Clock, Users, ChevronRight } from 'lucide-react'
 
 interface AppointmentBookingContentProps {
@@ -25,7 +25,7 @@ interface AppointmentBookingContentProps {
 
 type Tab = 'book' | 'mine'
 
-const SERVICE_OPTIONS = Object.entries(SERVICE_TYPE_LABELS)
+const SERVICE_OPTIONS = Object.entries(APPOINTMENT_SERVICE_LABELS)
 
 function groupByDate(slots: AppointmentSlot[]): Record<string, AppointmentSlot[]> {
   return slots.reduce<Record<string, AppointmentSlot[]>>((acc, s) => {
@@ -137,7 +137,7 @@ export function AppointmentBookingContent({ slots, myAppointments }: Appointment
                               <div className="mt-2 flex flex-wrap gap-1">
                                 {slot.service_types.map(s => (
                                   <span key={s} className="text-xs px-2 py-0.5 bg-muted rounded-full">
-                                    {SERVICE_TYPE_LABELS[s] ?? s}
+                                    {APPOINTMENT_SERVICE_LABELS[s] ?? s}
                                   </span>
                                 ))}
                               </div>

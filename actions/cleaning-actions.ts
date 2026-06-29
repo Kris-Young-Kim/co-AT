@@ -1,7 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
-import { hasAdminOrStaffPermission } from '@/lib/utils/permissions'
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from 'next/cache'
 import { auth } from '@clerk/nextjs/server'
 
@@ -108,26 +108,26 @@ export async function logBatchCleaning(input: {
   technician: string
   notes?: string
 }): Promise<{ success: boolean; error?: string }> {
-  const ok = await hasAdminOrStaffPermission()
-  if (!ok) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const { userId } = await auth()
-  const supabase = createAdminClient()
+    const { userId } = await auth()
+    const supabase = createAdminClient()
 
-  const rows = input.deviceIds.map(device_id => ({
-    device_id,
-    type: 'cleaning' as const,
-    status: 'done' as const,
-    performed_at: input.performedAt,
-    technician: input.technician || null,
-    notes: input.notes || null,
-    created_by: userId,
-  }))
+    const rows = input.deviceIds.map(device_id => ({
+      device_id,
+      type: 'cleaning' as const,
+      status: 'done' as const,
+      performed_at: input.performedAt,
+      technician: input.technician || null,
+      notes: input.notes || null,
+      created_by: userId,
+    }))
 
-  const { error } = await supabase.from('inventory_maintenance_logs').insert(rows)
-  if (error) return { success: false, error: error.message }
+    const { error } = await supabase.from('inventory_maintenance_logs').insert(rows)
+    if (error) return { success: false, error: error.message }
 
-  revalidatePath('/cleaning')
-  revalidatePath('/maintenance')
-  return { success: true }
+    revalidatePath('/cleaning')
+    revalidatePath('/maintenance')
+    return { success: true }
+  })
 }

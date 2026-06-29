@@ -1,7 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
-import { hasAdminOrStaffPermission } from '@/lib/utils/permissions'
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from 'next/cache'
 import type { InventoryFabEquipment, FabEquipmentStatus } from '@co-at/types'
 
@@ -53,37 +53,37 @@ export async function createFabEquipment(input: {
   purchased_at?: string
   notes?: string
 }): Promise<{ success: boolean; error?: string }> {
-  const ok = await hasAdminOrStaffPermission()
-  if (!ok) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const { error } = await supabase()
-    .from('inventory_fab_equipment')
-    .insert({
-      name: input.name,
-      type: input.type,
-      serial_number: input.serial_number ?? null,
-      purchased_at: input.purchased_at ?? null,
-      notes: input.notes ?? null,
-    })
+    const { error } = await supabase()
+      .from('inventory_fab_equipment')
+      .insert({
+        name: input.name,
+        type: input.type,
+        serial_number: input.serial_number ?? null,
+        purchased_at: input.purchased_at ?? null,
+        notes: input.notes ?? null,
+      })
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath('/fab-equipment')
-  return { success: true }
+    if (error) return { success: false, error: error.message }
+    revalidatePath('/fab-equipment')
+    return { success: true }
+  })
 }
 
 export async function updateFabEquipmentStatus(
   id: string,
   status: FabEquipmentStatus
 ): Promise<{ success: boolean; error?: string }> {
-  const ok = await hasAdminOrStaffPermission()
-  if (!ok) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const { error } = await supabase()
-    .from('inventory_fab_equipment')
-    .update({ status, updated_at: new Date().toISOString() })
-    .eq('id', id)
+    const { error } = await supabase()
+      .from('inventory_fab_equipment')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', id)
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath('/fab-equipment')
-  return { success: true }
+    if (error) return { success: false, error: error.message }
+    revalidatePath('/fab-equipment')
+    return { success: true }
+  })
 }

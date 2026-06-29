@@ -1,7 +1,7 @@
 "use server"
 
 import { getGeminiModel } from "@/lib/gemini/client"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { auth } from "@clerk/nextjs/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
@@ -36,119 +36,119 @@ const INTAKE_DRAFT_SYSTEM_PROMPT = `당신은 보조기기센터 전문가입니
 export async function generateIntakeDraft(
   input: IntakeDraftInput
 ): Promise<{ success: boolean; draft?: IntakeDraft; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) return { success: false, error: "권한이 없습니다" }
-
-    const { userId } = await auth()
-    if (!userId) return { success: false, error: "로그인이 필요합니다" }
-
-    if (!input.memo.trim()) return { success: false, error: "메모를 입력해주세요" }
-
-    console.log("[AI Actions] 초안 생성 시작:", { memoLength: input.memo.trim().length })
-
-    const supabase = createAdminClient()
-
-    const [clientResult, assessmentResult] = await Promise.all([
-      supabase
-        .from('clients')
-        .select('name, birth_date, disability_type')
-        .eq('id', input.clientId)
-        .single(),
-      supabase
-        .from('domain_assessments')
-        .select('domain_type, evaluator_opinion')
-        .eq('application_id', input.applicationId),
-    ])
-
-    if (clientResult.error) console.error("[AI Actions] 클라이언트 조회 오류:", clientResult.error)
-    if (assessmentResult.error) console.error("[AI Actions] 평가 조회 오류:", assessmentResult.error)
-
-    // Verify the application belongs to this client
-    const { data: appRow } = await supabase
-      .from('applications')
-      .select('client_id')
-      .eq('id', input.applicationId)
-      .single()
-
-    if (!appRow || appRow.client_id !== input.clientId) {
-      return { success: false, error: '접근 권한이 없습니다' }
-    }
-
-    console.log("[AI Actions] 클라이언트 컨텍스트 조회 완료")
-
-    const client = clientResult.data
-    const clientContext = client
-      ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}`
-      : '클라이언트 정보 없음'
-
-    const assessments = assessmentResult.data ?? []
-    const assessmentContext =
-      assessments.length > 0
-        ? assessments
-            .filter((a) => a.evaluator_opinion)
-            .map((a) => `${a.domain_type}: ${a.evaluator_opinion}`)
-            .join('\n')
-        : '평가 정보 없음'
-
-    const model = getGeminiModel("gemini-2.5-flash")
-    const prompt = `${INTAKE_DRAFT_SYSTEM_PROMPT}\n\n클라이언트 정보:\n${clientContext}\n\n영역별 평가 의견:\n${assessmentContext}\n\n직원 메모:\n${input.memo}`
-
-    console.log("[AI Actions] Gemini API 호출 중...")
-
-    const result = await model.generateContent(prompt)
-    const response = await result.response
-    const generatedText = response.text()
-
-    console.log("[AI Actions] Gemini 응답 수신:", { responseLength: generatedText.length })
-
-    let draft: IntakeDraft
+  return withStaffPermission(async () => {
     try {
-      const cleanedText = generatedText
-        .replace(/```json\s*/g, '')
-        .replace(/```\s*/g, '')
-        .trim()
 
-      draft = JSON.parse(cleanedText) as IntakeDraft
+      const { userId } = await auth()
+      if (!userId) return { success: false, error: "로그인이 필요합니다" }
 
-      if (
-        !draft.consultation_content ||
-        !draft.main_activity_place ||
-        !draft.activity_posture ||
-        !draft.main_supporter ||
-        !draft.environment_limitations
-      ) {
-        throw new Error("초안 필수 필드가 누락되었습니다")
+      if (!input.memo.trim()) return { success: false, error: "메모를 입력해주세요" }
+
+      console.log("[AI Actions] 초안 생성 시작:", { memoLength: input.memo.trim().length })
+
+      const supabase = createAdminClient()
+
+      const [clientResult, assessmentResult] = await Promise.all([
+        supabase
+          .from('clients')
+          .select('name, birth_date, disability_type')
+          .eq('id', input.clientId)
+          .single(),
+        supabase
+          .from('domain_assessments')
+          .select('domain_type, evaluator_opinion')
+          .eq('application_id', input.applicationId),
+      ])
+
+      if (clientResult.error) console.error("[AI Actions] 클라이언트 조회 오류:", clientResult.error)
+      if (assessmentResult.error) console.error("[AI Actions] 평가 조회 오류:", assessmentResult.error)
+
+      // Verify the application belongs to this client
+      const { data: appRow } = await supabase
+        .from('applications')
+        .select('client_id')
+        .eq('id', input.applicationId)
+        .single()
+
+      if (!appRow || appRow.client_id !== input.clientId) {
+        return { success: false, error: '접근 권한이 없습니다' }
       }
-    } catch (parseError) {
-      console.error("[AI Actions] 초안 JSON 파싱 실패:", parseError)
-      console.error("[AI Actions] 원본 응답:", generatedText)
-      return {
-        success: false,
-        error: `AI 응답 파싱에 실패했습니다: ${parseError instanceof Error ? parseError.message : "알 수 없는 오류"}`,
+
+      console.log("[AI Actions] 클라이언트 컨텍스트 조회 완료")
+
+      const client = clientResult.data
+      const clientContext = client
+        ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}`
+        : '클라이언트 정보 없음'
+
+      const assessments = assessmentResult.data ?? []
+      const assessmentContext =
+        assessments.length > 0
+          ? assessments
+              .filter((a) => a.evaluator_opinion)
+              .map((a) => `${a.domain_type}: ${a.evaluator_opinion}`)
+              .join('\n')
+          : '평가 정보 없음'
+
+      const model = getGeminiModel("gemini-2.5-flash")
+      const prompt = `${INTAKE_DRAFT_SYSTEM_PROMPT}\n\n클라이언트 정보:\n${clientContext}\n\n영역별 평가 의견:\n${assessmentContext}\n\n직원 메모:\n${input.memo}`
+
+      console.log("[AI Actions] Gemini API 호출 중...")
+
+      const result = await model.generateContent(prompt)
+      const response = await result.response
+      const generatedText = response.text()
+
+      console.log("[AI Actions] Gemini 응답 수신:", { responseLength: generatedText.length })
+
+      let draft: IntakeDraft
+      try {
+        const cleanedText = generatedText
+          .replace(/```json\s*/g, '')
+          .replace(/```\s*/g, '')
+          .trim()
+
+        draft = JSON.parse(cleanedText) as IntakeDraft
+
+        if (
+          !draft.consultation_content ||
+          !draft.main_activity_place ||
+          !draft.activity_posture ||
+          !draft.main_supporter ||
+          !draft.environment_limitations
+        ) {
+          throw new Error("초안 필수 필드가 누락되었습니다")
+        }
+      } catch (parseError) {
+        console.error("[AI Actions] 초안 JSON 파싱 실패:", parseError)
+        console.error("[AI Actions] 원본 응답:", generatedText)
+        return {
+          success: false,
+          error: `AI 응답 파싱에 실패했습니다: ${parseError instanceof Error ? parseError.message : "알 수 없는 오류"}`,
+        }
       }
+
+      console.log("[AI Actions] 초안 생성 성공")
+
+      return { success: true, draft }
+    } catch (error) {
+      console.error("[AI Actions] 초안 생성 오류:", error)
+
+      if (error instanceof Error) {
+        if (error.message.includes("GOOGLE_AI_API_KEY")) {
+          return { success: false, error: "Google AI API 키가 설정되지 않았습니다" }
+        }
+
+        if (error.message.includes("API_KEY")) {
+          return { success: false, error: "Google AI API 키가 유효하지 않습니다" }
+        }
+
+        return { success: false, error: `AI 생성 중 오류가 발생했습니다: ${error.message}` }
+      }
+
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" }
     }
-
-    console.log("[AI Actions] 초안 생성 성공")
-
-    return { success: true, draft }
-  } catch (error) {
-    console.error("[AI Actions] 초안 생성 오류:", error)
-
-    if (error instanceof Error) {
-      if (error.message.includes("GOOGLE_AI_API_KEY")) {
-        return { success: false, error: "Google AI API 키가 설정되지 않았습니다" }
-      }
-
-      if (error.message.includes("API_KEY")) {
-        return { success: false, error: "Google AI API 키가 유효하지 않습니다" }
-      }
-
-      return { success: false, error: `AI 생성 중 오류가 발생했습니다: ${error.message}` }
-    }
-
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
-  }
+  })
 }
 
 export interface CallLogAnswerInput {
@@ -170,40 +170,40 @@ const CALL_LOG_ANSWER_PROMPT = `당신은 강원특별자치도 보조기기센�
 export async function generateCallLogAnswer(
   input: CallLogAnswerInput
 ): Promise<{ success: boolean; answer?: string; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+  return withStaffPermission(async () => {
+    try {
 
-    const { userId } = await auth()
-    if (!userId) return { success: false, error: "로그인이 필요합니다" }
+      const { userId } = await auth()
+      if (!userId) return { success: false, error: "로그인이 필요합니다" }
 
-    if (!input.questionContent.trim())
-      return { success: false, error: "질문 내용을 먼저 입력해 주세요" }
+      if (!input.questionContent.trim())
+        return { success: false, error: "질문 내용을 먼저 입력해 주세요" }
 
-    const contextLines = [
-      input.activeQuestionTypes.length > 0 && `질문 유형: ${input.activeQuestionTypes.join(", ")}`,
-      input.requesterType && `의뢰인 유형: ${input.requesterType}`,
-      input.disabilityType && `장애유형: ${input.disabilityType}`,
-    ].filter(Boolean).join("\n")
+      const contextLines = [
+        input.activeQuestionTypes.length > 0 && `질문 유형: ${input.activeQuestionTypes.join(", ")}`,
+        input.requesterType && `의뢰인 유형: ${input.requesterType}`,
+        input.disabilityType && `장애유형: ${input.disabilityType}`,
+      ].filter(Boolean).join("\n")
 
-    const model = getGeminiModel("gemini-2.5-flash")
-    const prompt = `${CALL_LOG_ANSWER_PROMPT}
+      const model = getGeminiModel("gemini-2.5-flash")
+      const prompt = `${CALL_LOG_ANSWER_PROMPT}
 
-${contextLines}
+  ${contextLines}
 
-질문 내용:
-${input.questionContent}`
+  질문 내용:
+  ${input.questionContent}`
 
-    const result = await model.generateContent(prompt)
-    const answer = result.response.text().trim()
+      const result = await model.generateContent(prompt)
+      const answer = result.response.text().trim()
 
-    if (!answer) throw new Error("빈 응답")
+      if (!answer) throw new Error("빈 응답")
 
-    return { success: true, answer }
-  } catch (error) {
-    console.error("[AI Actions] 콜로그 답변 생성 오류:", error)
-    return { success: false, error: "AI 답변 생성 중 오류가 발생했습니다" }
-  }
+      return { success: true, answer }
+    } catch (error) {
+      console.error("[AI Actions] 콜로그 답변 생성 오류:", error)
+      return { success: false, error: "AI 답변 생성 중 오류가 발생했습니다" }
+    }
+  })
 }
 
 export interface ServiceRecordDraftInput {
@@ -256,90 +256,90 @@ const SERVICE_RECORD_DRAFT_PROMPT = `당신은 보조기기센터 전문가입�
 export async function generateServiceRecordDraft(
   input: ServiceRecordDraftInput
 ): Promise<{ success: boolean; draft?: ServiceRecordDraft; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
+    try {
 
-    const { userId } = await auth()
-    if (!userId) return { success: false, error: '로그인이 필요합니다' }
+      const { userId } = await auth()
+      if (!userId) return { success: false, error: '로그인이 필요합니다' }
 
-    const supabase = createAdminClient()
+      const supabase = createAdminClient()
 
-    const { data: appRow } = await supabase
-      .from('applications')
-      .select('client_id, category, sub_category, status')
-      .eq('id', input.applicationId)
-      .single()
+      const { data: appRow } = await supabase
+        .from('applications')
+        .select('client_id, category, sub_category, status')
+        .eq('id', input.applicationId)
+        .single()
 
-    if (!appRow || appRow.client_id !== input.clientId) {
-      return { success: false, error: '접근 권한이 없습니다' }
+      if (!appRow || appRow.client_id !== input.clientId) {
+        return { success: false, error: '접근 권한이 없습니다' }
+      }
+
+      const [clientResult, intakeResult, assessmentResult] = await Promise.all([
+        supabase
+          .from('clients')
+          .select('name, birth_date, disability_type, disability_grade, economic_status, address')
+          .eq('id', input.clientId)
+          .single(),
+        supabase
+          .from('intake_records')
+          .select('consultation_content, main_activity_place, environment_limitations')
+          .eq('application_id', input.applicationId)
+          .order('consult_date', { ascending: false })
+          .limit(1),
+        supabase
+          .from('domain_assessments')
+          .select('domain_type, evaluator_opinion')
+          .eq('application_id', input.applicationId)
+          .not('evaluator_opinion', 'is', null),
+      ])
+
+      const client = clientResult.data
+      const latestIntake = (intakeResult.data ?? [])[0]
+      const assessments = assessmentResult.data ?? []
+
+      const clientCtx = client
+        ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}, 장애등급: ${client.disability_grade ?? '미상'}, 경제상황: ${client.economic_status ?? '미상'}, 주소: ${client.address ?? '미상'}`
+        : '클라이언트 정보 없음'
+
+      const appCtx = `사업분류: ${appRow.category ?? '미상'}, 서비스분류: ${appRow.sub_category ?? '미상'}, 상태: ${appRow.status ?? '미상'}`
+
+      const intakeCtx = latestIntake
+        ? `상담내용: ${latestIntake.consultation_content ?? '없음'}, 주활동장소: ${latestIntake.main_activity_place ?? '없음'}, 환경제한: ${latestIntake.environment_limitations ?? '없음'}`
+        : '상담기록지 없음'
+
+      const assessmentCtx = assessments.length > 0
+        ? assessments
+            .filter((a) => a.evaluator_opinion)
+            .map((a) => `${a.domain_type}: ${a.evaluator_opinion}`)
+            .join('\n')
+        : '평가 정보 없음'
+
+      const memoCtx = input.memo?.trim() ? `\n추가 메모:\n${input.memo.trim()}` : ''
+
+      const model = getGeminiModel('gemini-2.5-flash')
+      const prompt = `${SERVICE_RECORD_DRAFT_PROMPT}\n\n클라이언트 정보:\n${clientCtx}\n\n신청서 정보:\n${appCtx}\n\n상담기록지:\n${intakeCtx}\n\n영역별 평가:\n${assessmentCtx}${memoCtx}`
+
+      const result = await model.generateContent(prompt)
+      const generatedText = result.response.text()
+
+      const cleanedText = generatedText
+        .replace(/```json\s*/g, '')
+        .replace(/```\s*/g, '')
+        .trim()
+
+      const draft = JSON.parse(cleanedText) as ServiceRecordDraft
+
+      if (!draft.service_content) throw new Error('service_content 누락')
+
+      return { success: true, draft }
+    } catch (error) {
+      console.error('[AI Actions] 서비스 기록 초안 생성 오류:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? `AI 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+      }
     }
-
-    const [clientResult, intakeResult, assessmentResult] = await Promise.all([
-      supabase
-        .from('clients')
-        .select('name, birth_date, disability_type, disability_grade, economic_status, address')
-        .eq('id', input.clientId)
-        .single(),
-      supabase
-        .from('intake_records')
-        .select('consultation_content, main_activity_place, environment_limitations')
-        .eq('application_id', input.applicationId)
-        .order('consult_date', { ascending: false })
-        .limit(1),
-      supabase
-        .from('domain_assessments')
-        .select('domain_type, evaluator_opinion')
-        .eq('application_id', input.applicationId)
-        .not('evaluator_opinion', 'is', null),
-    ])
-
-    const client = clientResult.data
-    const latestIntake = (intakeResult.data ?? [])[0]
-    const assessments = assessmentResult.data ?? []
-
-    const clientCtx = client
-      ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}, 장애등급: ${client.disability_grade ?? '미상'}, 경제상황: ${client.economic_status ?? '미상'}, 주소: ${client.address ?? '미상'}`
-      : '클라이언트 정보 없음'
-
-    const appCtx = `사업분류: ${appRow.category ?? '미상'}, 서비스분류: ${appRow.sub_category ?? '미상'}, 상태: ${appRow.status ?? '미상'}`
-
-    const intakeCtx = latestIntake
-      ? `상담내용: ${latestIntake.consultation_content ?? '없음'}, 주활동장소: ${latestIntake.main_activity_place ?? '없음'}, 환경제한: ${latestIntake.environment_limitations ?? '없음'}`
-      : '상담기록지 없음'
-
-    const assessmentCtx = assessments.length > 0
-      ? assessments
-          .filter((a) => a.evaluator_opinion)
-          .map((a) => `${a.domain_type}: ${a.evaluator_opinion}`)
-          .join('\n')
-      : '평가 정보 없음'
-
-    const memoCtx = input.memo?.trim() ? `\n추가 메모:\n${input.memo.trim()}` : ''
-
-    const model = getGeminiModel('gemini-2.5-flash')
-    const prompt = `${SERVICE_RECORD_DRAFT_PROMPT}\n\n클라이언트 정보:\n${clientCtx}\n\n신청서 정보:\n${appCtx}\n\n상담기록지:\n${intakeCtx}\n\n영역별 평가:\n${assessmentCtx}${memoCtx}`
-
-    const result = await model.generateContent(prompt)
-    const generatedText = result.response.text()
-
-    const cleanedText = generatedText
-      .replace(/```json\s*/g, '')
-      .replace(/```\s*/g, '')
-      .trim()
-
-    const draft = JSON.parse(cleanedText) as ServiceRecordDraft
-
-    if (!draft.service_content) throw new Error('service_content 누락')
-
-    return { success: true, draft }
-  } catch (error) {
-    console.error('[AI Actions] 서비스 기록 초안 생성 오류:', error)
-    return {
-      success: false,
-      error: error instanceof Error ? `AI 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
-    }
-  }
+  })
 }
 
 // ────────────────────────────────────────────
@@ -367,33 +367,33 @@ const TRANSCRIPT_SUMMARY_PROMPT = `당신은 보조공학센터 전문 기록사
 export async function summarizeTranscript(
   transcript: string
 ): Promise<{ success: boolean; summary?: string; keyPoints?: TranscriptKeyPoints; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const { userId } = await auth()
-  if (!userId) return { success: false, error: '로그인이 필요합니다' }
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: '로그인이 필요합니다' }
 
-  if (!transcript.trim()) return { success: false, error: '대화 내용이 없습니다' }
+    if (!transcript.trim()) return { success: false, error: '대화 내용이 없습니다' }
 
-  try {
-    const model = getGeminiModel('gemini-2.5-flash')
-    const result = await model.generateContent(
-      `${TRANSCRIPT_SUMMARY_PROMPT}\n\n대화 내용:\n${transcript}`
-    )
-    const raw = result.response.text()
-      .replace(/```json\s*/g, '')
-      .replace(/```\s*/g, '')
-      .trim()
-    const parsed = JSON.parse(raw) as TranscriptKeyPoints & { summary?: string }
-    const { summary, ...keyPoints } = parsed
-    return { success: true, summary: summary ?? undefined, keyPoints }
-  } catch (error) {
-    console.error('[AI Actions] 대화록 요약 오류:', error)
-    return {
-      success: false,
-      error: error instanceof Error ? `AI 요약 오류: ${error.message}` : 'AI 요약 중 오류가 발생했습니다',
+    try {
+      const model = getGeminiModel('gemini-2.5-flash')
+      const result = await model.generateContent(
+        `${TRANSCRIPT_SUMMARY_PROMPT}\n\n대화 내용:\n${transcript}`
+      )
+      const raw = result.response.text()
+        .replace(/```json\s*/g, '')
+        .replace(/```\s*/g, '')
+        .trim()
+      const parsed = JSON.parse(raw) as TranscriptKeyPoints & { summary?: string }
+      const { summary, ...keyPoints } = parsed
+      return { success: true, summary: summary ?? undefined, keyPoints }
+    } catch (error) {
+      console.error('[AI Actions] 대화록 요약 오류:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? `AI 요약 오류: ${error.message}` : 'AI 요약 중 오류가 발생했습니다',
+      }
     }
-  }
+  })
 }
 
 export interface CallLogDraftFromTranscriptInput {
@@ -431,43 +431,43 @@ const CALL_LOG_FROM_TRANSCRIPT_PROMPT = `당신은 보조공학센터 전문 기
 export async function generateCallLogDraftFromTranscript(
   input: CallLogDraftFromTranscriptInput
 ): Promise<{ success: boolean; draft?: CallLogDraftFromTranscript; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const { userId } = await auth()
-  if (!userId) return { success: false, error: '로그인이 필요합니다' }
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: '로그인이 필요합니다' }
 
-  if (!input.transcript.trim()) return { success: false, error: '대화 내용이 없습니다' }
+    if (!input.transcript.trim()) return { success: false, error: '대화 내용이 없습니다' }
 
-  try {
-    const contextLines = [
-      input.clientName && `대상자: ${input.clientName}`,
-      input.disabilityType && `장애유형: ${input.disabilityType}`,
-      `상담일: ${input.sessionDate}`,
-    ].filter(Boolean).join('\n')
+    try {
+      const contextLines = [
+        input.clientName && `대상자: ${input.clientName}`,
+        input.disabilityType && `장애유형: ${input.disabilityType}`,
+        `상담일: ${input.sessionDate}`,
+      ].filter(Boolean).join('\n')
 
-    const model = getGeminiModel('gemini-2.5-flash')
-    const prompt = `${CALL_LOG_FROM_TRANSCRIPT_PROMPT}\n\n${contextLines}\n\n대화 내용:\n${input.transcript}`
-    const result = await model.generateContent(prompt)
-    const raw = result.response.text()
-      .replace(/```json\s*/g, '')
-      .replace(/```\s*/g, '')
-      .trim()
-    const draft = JSON.parse(raw) as CallLogDraftFromTranscript
-    if (!draft.question_content) throw new Error('question_content 누락')
-    draft.q_public_benefit = Boolean(draft.q_public_benefit)
-    draft.q_private_benefit = Boolean(draft.q_private_benefit)
-    draft.q_device = Boolean(draft.q_device)
-    draft.q_case_management = Boolean(draft.q_case_management)
-    draft.q_other = Boolean(draft.q_other)
-    return { success: true, draft }
-  } catch (error) {
-    console.error('[AI Actions] 콜로그 초안 생성 오류:', error)
-    return {
-      success: false,
-      error: error instanceof Error ? `AI 콜로그 초안 생성 오류: ${error.message}` : 'AI 콜로그 초안 생성 중 오류가 발생했습니다',
+      const model = getGeminiModel('gemini-2.5-flash')
+      const prompt = `${CALL_LOG_FROM_TRANSCRIPT_PROMPT}\n\n${contextLines}\n\n대화 내용:\n${input.transcript}`
+      const result = await model.generateContent(prompt)
+      const raw = result.response.text()
+        .replace(/```json\s*/g, '')
+        .replace(/```\s*/g, '')
+        .trim()
+      const draft = JSON.parse(raw) as CallLogDraftFromTranscript
+      if (!draft.question_content) throw new Error('question_content 누락')
+      draft.q_public_benefit = Boolean(draft.q_public_benefit)
+      draft.q_private_benefit = Boolean(draft.q_private_benefit)
+      draft.q_device = Boolean(draft.q_device)
+      draft.q_case_management = Boolean(draft.q_case_management)
+      draft.q_other = Boolean(draft.q_other)
+      return { success: true, draft }
+    } catch (error) {
+      console.error('[AI Actions] 콜로그 초안 생성 오류:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? `AI 콜로그 초안 생성 오류: ${error.message}` : 'AI 콜로그 초안 생성 중 오류가 발생했습니다',
+      }
     }
-  }
+  })
 }
 
 // ────────────────────────────────────────────
@@ -502,108 +502,108 @@ const EVALUATION_REPORT_PROMPT = `당신은 강원특별자치도 보조공학�
 export async function generateEvaluationReport(
   clientId: string
 ): Promise<{ success: boolean; report?: string; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  try {
-    const supabase = createAdminClient()
+    try {
+      const supabase = createAdminClient()
 
-    const [clientResult, ippaResult, serviceResult, assessmentResult] = await Promise.all([
-      supabase
-        .from('clients')
-        .select('name, birth_date, gender, disability_type, disability_grade, economic_status, address')
-        .eq('id', clientId)
-        .single(),
-      (supabase as any)
-        .from('eval_ippa_assessments')
-        .select('assessment_year, pre_date, post_date, items, outcome_score, status')
-        .eq('client_id', clientId)
-        .order('assessment_year', { ascending: false })
-        .limit(3),
-      (supabase as any)
-        .from('eval_service_records')
-        .select('received_at, service_major_category, service_category, product_name, satisfaction_score, record_status')
-        .eq('client_id', clientId)
-        .order('received_at', { ascending: false, nullsFirst: false })
-        .limit(5),
-      (supabase as any)
-        .from('domain_assessments')
-        .select('domain_type, evaluator_opinion, score')
-        .eq('client_id', clientId)
-        .not('evaluator_opinion', 'is', null)
-        .order('created_at', { ascending: false })
-        .limit(9),
-    ])
+      const [clientResult, ippaResult, serviceResult, assessmentResult] = await Promise.all([
+        supabase
+          .from('clients')
+          .select('name, birth_date, gender, disability_type, disability_grade, economic_status, address')
+          .eq('id', clientId)
+          .single(),
+        (supabase as any)
+          .from('eval_ippa_assessments')
+          .select('assessment_year, pre_date, post_date, items, outcome_score, status')
+          .eq('client_id', clientId)
+          .order('assessment_year', { ascending: false })
+          .limit(3),
+        (supabase as any)
+          .from('eval_service_records')
+          .select('received_at, service_major_category, service_category, product_name, satisfaction_score, record_status')
+          .eq('client_id', clientId)
+          .order('received_at', { ascending: false, nullsFirst: false })
+          .limit(5),
+        (supabase as any)
+          .from('domain_assessments')
+          .select('domain_type, evaluator_opinion, score')
+          .eq('client_id', clientId)
+          .not('evaluator_opinion', 'is', null)
+          .order('created_at', { ascending: false })
+          .limit(9),
+      ])
 
-    const client = clientResult.data
-    if (!client) return { success: false, error: '대상자를 찾을 수 없습니다' }
+      const client = clientResult.data
+      if (!client) return { success: false, error: '대상자를 찾을 수 없습니다' }
 
-    const today = new Date().toLocaleDateString('ko-KR')
+      const today = new Date().toLocaleDateString('ko-KR')
 
-    const clientCtx = `이름: ${client.name}
-생년월일: ${client.birth_date ?? '미상'} | 성별: ${client.gender ?? '미상'}
-장애유형: ${client.disability_type ?? '미상'} | 장애정도: ${client.disability_grade ?? '미상'}
-경제상황: ${client.economic_status ?? '미상'}`
+      const clientCtx = `이름: ${client.name}
+  생년월일: ${client.birth_date ?? '미상'} | 성별: ${client.gender ?? '미상'}
+  장애유형: ${client.disability_type ?? '미상'} | 장애정도: ${client.disability_grade ?? '미상'}
+  경제상황: ${client.economic_status ?? '미상'}`
 
-    const ippaRows = (ippaResult.data ?? []) as Array<{
-      assessment_year: number; pre_date: string | null; post_date: string | null
-      items: Array<{ problem: string; pre_score: number; post_score: number | null }>
-      outcome_score: number | null; status: string
-    }>
-    const ippaCtx = ippaRows.length === 0
-      ? '측정 이력 없음'
-      : ippaRows.map(r => {
-          const outcome = r.outcome_score != null ? `성과점수: ${r.outcome_score > 0 ? '+' : ''}${r.outcome_score}` : '사후 미측정'
-          const items = r.items.map(it => `${it.problem}(전:${it.pre_score}→후:${it.post_score ?? '미측정'})`).join(', ')
-          return `${r.assessment_year}년 [${outcome}] ${items}`
-        }).join('\n')
+      const ippaRows = (ippaResult.data ?? []) as Array<{
+        assessment_year: number; pre_date: string | null; post_date: string | null
+        items: Array<{ problem: string; pre_score: number; post_score: number | null }>
+        outcome_score: number | null; status: string
+      }>
+      const ippaCtx = ippaRows.length === 0
+        ? '측정 이력 없음'
+        : ippaRows.map(r => {
+            const outcome = r.outcome_score != null ? `성과점수: ${r.outcome_score > 0 ? '+' : ''}${r.outcome_score}` : '사후 미측정'
+            const items = r.items.map(it => `${it.problem}(전:${it.pre_score}→후:${it.post_score ?? '미측정'})`).join(', ')
+            return `${r.assessment_year}년 [${outcome}] ${items}`
+          }).join('\n')
 
-    const serviceRows = (serviceResult.data ?? []) as Array<{
-      received_at: string | null; service_major_category: string | null
-      service_category: string | null; product_name: string | null
-      satisfaction_score: number | null; record_status: string | null
-    }>
-    const serviceCtx = serviceRows.length === 0
-      ? '서비스 이력 없음'
-      : serviceRows.map(r =>
-          `[${r.received_at?.slice(0, 7) ?? '?'}] ${r.service_major_category ?? ''} > ${r.service_category ?? ''} ${r.product_name ? '(' + r.product_name + ')' : ''} 만족도:${r.satisfaction_score ?? '미기록'}`
-        ).join('\n')
+      const serviceRows = (serviceResult.data ?? []) as Array<{
+        received_at: string | null; service_major_category: string | null
+        service_category: string | null; product_name: string | null
+        satisfaction_score: number | null; record_status: string | null
+      }>
+      const serviceCtx = serviceRows.length === 0
+        ? '서비스 이력 없음'
+        : serviceRows.map(r =>
+            `[${r.received_at?.slice(0, 7) ?? '?'}] ${r.service_major_category ?? ''} > ${r.service_category ?? ''} ${r.product_name ? '(' + r.product_name + ')' : ''} 만족도:${r.satisfaction_score ?? '미기록'}`
+          ).join('\n')
 
-    const domainRows = (assessmentResult.data ?? []) as Array<{
-      domain_type: string; evaluator_opinion: string | null; score: number | null
-    }>
-    const domainCtx = domainRows.length === 0
-      ? '영역 평가 없음'
-      : domainRows.map(r => `[${r.domain_type}] ${r.score != null ? r.score + '점' : ''} ${r.evaluator_opinion ?? ''}`).join('\n')
+      const domainRows = (assessmentResult.data ?? []) as Array<{
+        domain_type: string; evaluator_opinion: string | null; score: number | null
+      }>
+      const domainCtx = domainRows.length === 0
+        ? '영역 평가 없음'
+        : domainRows.map(r => `[${r.domain_type}] ${r.score != null ? r.score + '점' : ''} ${r.evaluator_opinion ?? ''}`).join('\n')
 
-    const prompt = `${EVALUATION_REPORT_PROMPT}
+      const prompt = `${EVALUATION_REPORT_PROMPT}
 
-평가일: ${today}
-대상자 정보:
-${clientCtx}
+  평가일: ${today}
+  대상자 정보:
+  ${clientCtx}
 
-서비스 지원 이력 (최근 5건):
-${serviceCtx}
+  서비스 지원 이력 (최근 5건):
+  ${serviceCtx}
 
-K-IPPA 기능 성과 측정:
-${ippaCtx}
+  K-IPPA 기능 성과 측정:
+  ${ippaCtx}
 
-영역별 평가:
-${domainCtx}`
+  영역별 평가:
+  ${domainCtx}`
 
-    const model = getGeminiModel('gemini-2.5-flash')
-    const result = await model.generateContent(prompt)
-    const report = result.response.text().trim()
+      const model = getGeminiModel('gemini-2.5-flash')
+      const result = await model.generateContent(prompt)
+      const report = result.response.text().trim()
 
-    if (!report) throw new Error('빈 응답')
-    return { success: true, report }
-  } catch (error) {
-    console.error('[AI Actions] 평가 보고서 생성 오류:', error)
-    return {
-      success: false,
-      error: error instanceof Error ? `보고서 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+      if (!report) throw new Error('빈 응답')
+      return { success: true, report }
+    } catch (error) {
+      console.error('[AI Actions] 평가 보고서 생성 오류:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? `보고서 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+      }
     }
-  }
+  })
 }
 
 // ────────────────────────────────────────────
@@ -638,69 +638,69 @@ const CONSULTATION_DRAFT_PROMPT = `당신은 보조공학센터 사례관리 전
 export async function generateConsultationDraft(
   input: ConsultationDraftInput
 ): Promise<{ success: boolean; draft?: ConsultationDraft; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const { userId } = await auth()
-  if (!userId) return { success: false, error: '로그인이 필요합니다' }
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: '로그인이 필요합니다' }
 
-  try {
-    const supabase = createAdminClient()
+    try {
+      const supabase = createAdminClient()
 
-    const [clientResult, recordsResult] = await Promise.all([
-      supabase
-        .from('clients')
-        .select('name, birth_date, disability_type, disability_grade, economic_status')
-        .eq('id', input.clientId)
-        .single(),
-      (supabase as any)
-        .from('eval_service_records')
-        .select('service_category, product_name, service_content, received_at')
-        .eq('client_id', input.clientId)
-        .order('received_at', { ascending: false, nullsFirst: false })
-        .limit(3),
-    ])
+      const [clientResult, recordsResult] = await Promise.all([
+        supabase
+          .from('clients')
+          .select('name, birth_date, disability_type, disability_grade, economic_status')
+          .eq('id', input.clientId)
+          .single(),
+        (supabase as any)
+          .from('eval_service_records')
+          .select('service_category, product_name, service_content, received_at')
+          .eq('client_id', input.clientId)
+          .order('received_at', { ascending: false, nullsFirst: false })
+          .limit(3),
+      ])
 
-    const client = clientResult.data
-    const records = (recordsResult.data ?? []) as Array<{
-      service_category: string | null
-      product_name: string | null
-      service_content: string | null
-      received_at: string | null
-    }>
+      const client = clientResult.data
+      const records = (recordsResult.data ?? []) as Array<{
+        service_category: string | null
+        product_name: string | null
+        service_content: string | null
+        received_at: string | null
+      }>
 
-    const clientCtx = client
-      ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}, 장애등급: ${client.disability_grade ?? '미상'}, 경제상황: ${client.economic_status ?? '미상'}`
-      : '대상자 정보 없음'
+      const clientCtx = client
+        ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}, 장애등급: ${client.disability_grade ?? '미상'}, 경제상황: ${client.economic_status ?? '미상'}`
+        : '대상자 정보 없음'
 
-    const serviceCtx = records.length > 0
-      ? records
-          .map(r => `[${r.received_at?.slice(0, 7) ?? '?'}] ${r.service_category ?? ''} ${r.product_name ? '(' + r.product_name + ')' : ''}: ${r.service_content?.slice(0, 80) ?? ''}`)
-          .join('\n')
-      : '최근 서비스 이력 없음'
+      const serviceCtx = records.length > 0
+        ? records
+            .map(r => `[${r.received_at?.slice(0, 7) ?? '?'}] ${r.service_category ?? ''} ${r.product_name ? '(' + r.product_name + ')' : ''}: ${r.service_content?.slice(0, 80) ?? ''}`)
+            .join('\n')
+        : '최근 서비스 이력 없음'
 
-    const memoCtx = input.memo?.trim() ? `\n직원 메모:\n${input.memo.trim()}` : ''
+      const memoCtx = input.memo?.trim() ? `\n직원 메모:\n${input.memo.trim()}` : ''
 
-    const model = getGeminiModel('gemini-2.5-flash')
-    const prompt = `${CONSULTATION_DRAFT_PROMPT}\n\n대상자 정보:\n${clientCtx}\n\n최근 서비스 이력:\n${serviceCtx}${memoCtx}`
+      const model = getGeminiModel('gemini-2.5-flash')
+      const prompt = `${CONSULTATION_DRAFT_PROMPT}\n\n대상자 정보:\n${clientCtx}\n\n최근 서비스 이력:\n${serviceCtx}${memoCtx}`
 
-    const result = await model.generateContent(prompt)
-    const raw = result.response.text()
-      .replace(/```json\s*/g, '')
-      .replace(/```\s*/g, '')
-      .trim()
+      const result = await model.generateContent(prompt)
+      const raw = result.response.text()
+        .replace(/```json\s*/g, '')
+        .replace(/```\s*/g, '')
+        .trim()
 
-    const draft = JSON.parse(raw) as ConsultationDraft
-    if (!draft.purpose && !draft.content) throw new Error('purpose 또는 content 필드 누락')
+      const draft = JSON.parse(raw) as ConsultationDraft
+      if (!draft.purpose && !draft.content) throw new Error('purpose 또는 content 필드 누락')
 
-    return { success: true, draft }
-  } catch (error) {
-    console.error('[AI Actions] 상담기록지 초안 생성 오류:', error)
-    return {
-      success: false,
-      error: error instanceof Error ? `상담기록지 초안 생성 오류: ${error.message}` : 'AI 상담기록지 초안 생성 중 오류가 발생했습니다',
+      return { success: true, draft }
+    } catch (error) {
+      console.error('[AI Actions] 상담기록지 초안 생성 오류:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? `상담기록지 초안 생성 오류: ${error.message}` : 'AI 상담기록지 초안 생성 중 오류가 발생했습니다',
+      }
     }
-  }
+  })
 }
 
 // ────────────────────────────────────────────
@@ -736,84 +736,84 @@ const ASSESSMENT_DRAFT_PROMPT = `당신은 보조공학센터 재활공학사 �
 export async function generateAssessmentNoteDraft(
   input: AssessmentNoteDraftInput
 ): Promise<{ success: boolean; draft?: AssessmentNoteDraft; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const { userId } = await auth()
-  if (!userId) return { success: false, error: '로그인이 필요합니다' }
+    const { userId } = await auth()
+    if (!userId) return { success: false, error: '로그인이 필요합니다' }
 
-  try {
-    const supabase = createAdminClient()
+    try {
+      const supabase = createAdminClient()
 
-    const [clientResult, recordsResult, consultResult] = await Promise.all([
-      supabase
-        .from('clients')
-        .select('name, birth_date, disability_type, disability_grade, disability_description, care_level')
-        .eq('id', input.clientId)
-        .single(),
-      (supabase as any)
-        .from('eval_service_records')
-        .select('service_category, product_name, service_content, received_at')
-        .eq('client_id', input.clientId)
-        .order('received_at', { ascending: false, nullsFirst: false })
-        .limit(3),
-      (supabase as any)
-        .from('eval_consultation_records')
-        .select('purpose, current_situation, content')
-        .eq('client_id', input.clientId)
-        .order('consultation_date', { ascending: false })
-        .limit(1),
-    ])
+      const [clientResult, recordsResult, consultResult] = await Promise.all([
+        supabase
+          .from('clients')
+          .select('name, birth_date, disability_type, disability_grade, disability_description, care_level')
+          .eq('id', input.clientId)
+          .single(),
+        (supabase as any)
+          .from('eval_service_records')
+          .select('service_category, product_name, service_content, received_at')
+          .eq('client_id', input.clientId)
+          .order('received_at', { ascending: false, nullsFirst: false })
+          .limit(3),
+        (supabase as any)
+          .from('eval_consultation_records')
+          .select('purpose, current_situation, content')
+          .eq('client_id', input.clientId)
+          .order('consultation_date', { ascending: false })
+          .limit(1),
+      ])
 
-    const client = clientResult.data
-    const records = (recordsResult.data ?? []) as Array<{
-      service_category: string | null
-      product_name: string | null
-      service_content: string | null
-      received_at: string | null
-    }>
-    const latestConsult = (consultResult.data ?? [])[0] as {
-      purpose: string | null
-      current_situation: string | null
-      content: string | null
-    } | undefined
+      const client = clientResult.data
+      const records = (recordsResult.data ?? []) as Array<{
+        service_category: string | null
+        product_name: string | null
+        service_content: string | null
+        received_at: string | null
+      }>
+      const latestConsult = (consultResult.data ?? [])[0] as {
+        purpose: string | null
+        current_situation: string | null
+        content: string | null
+      } | undefined
 
-    const clientCtx = client
-      ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}, 장애등급: ${client.disability_grade ?? '미상'}${client.care_level ? ', 장기요양등급: ' + client.care_level : ''}${client.disability_description ? ', 장애 설명: ' + client.disability_description : ''}`
-      : '대상자 정보 없음'
+      const clientCtx = client
+        ? `이름: ${client.name}, 생년월일: ${client.birth_date ?? '미상'}, 장애유형: ${client.disability_type ?? '미상'}, 장애등급: ${client.disability_grade ?? '미상'}${client.care_level ? ', 장기요양등급: ' + client.care_level : ''}${client.disability_description ? ', 장애 설명: ' + client.disability_description : ''}`
+        : '대상자 정보 없음'
 
-    const serviceCtx = records.length > 0
-      ? records
-          .map(r => `[${r.received_at?.slice(0, 7) ?? '?'}] ${r.service_category ?? ''} ${r.product_name ? '(' + r.product_name + ')' : ''}: ${r.service_content?.slice(0, 80) ?? ''}`)
-          .join('\n')
-      : '최근 서비스 이력 없음'
+      const serviceCtx = records.length > 0
+        ? records
+            .map(r => `[${r.received_at?.slice(0, 7) ?? '?'}] ${r.service_category ?? ''} ${r.product_name ? '(' + r.product_name + ')' : ''}: ${r.service_content?.slice(0, 80) ?? ''}`)
+            .join('\n')
+        : '최근 서비스 이력 없음'
 
-    const consultCtx = latestConsult
-      ? `최근 상담 주호소: ${latestConsult.purpose ?? ''}\n현재 상황: ${latestConsult.current_situation ?? ''}\n상담 내용: ${latestConsult.content ?? ''}`
-      : ''
+      const consultCtx = latestConsult
+        ? `최근 상담 주호소: ${latestConsult.purpose ?? ''}\n현재 상황: ${latestConsult.current_situation ?? ''}\n상담 내용: ${latestConsult.content ?? ''}`
+        : ''
 
-    const memoCtx = input.memo?.trim() ? `\n직원 메모:\n${input.memo.trim()}` : ''
+      const memoCtx = input.memo?.trim() ? `\n직원 메모:\n${input.memo.trim()}` : ''
 
-    const model = getGeminiModel('gemini-2.5-flash')
-    const prompt = `${ASSESSMENT_DRAFT_PROMPT}\n\n대상자 정보:\n${clientCtx}\n\n최근 서비스 이력:\n${serviceCtx}${consultCtx ? '\n\n' + consultCtx : ''}${memoCtx}`
+      const model = getGeminiModel('gemini-2.5-flash')
+      const prompt = `${ASSESSMENT_DRAFT_PROMPT}\n\n대상자 정보:\n${clientCtx}\n\n최근 서비스 이력:\n${serviceCtx}${consultCtx ? '\n\n' + consultCtx : ''}${memoCtx}`
 
-    const result = await model.generateContent(prompt)
-    const raw = result.response.text()
-      .replace(/```json\s*/g, '')
-      .replace(/```\s*/g, '')
-      .trim()
+      const result = await model.generateContent(prompt)
+      const raw = result.response.text()
+        .replace(/```json\s*/g, '')
+        .replace(/```\s*/g, '')
+        .trim()
 
-    const draft = JSON.parse(raw) as AssessmentNoteDraft
-    if (!draft.physical_function && !draft.device_needs) throw new Error('필수 필드 누락')
+      const draft = JSON.parse(raw) as AssessmentNoteDraft
+      if (!draft.physical_function && !draft.device_needs) throw new Error('필수 필드 누락')
 
-    return { success: true, draft }
-  } catch (error) {
-    console.error('[AI Actions] 평가지 초안 생성 오류:', error)
-    return {
-      success: false,
-      error: error instanceof Error ? `평가지 초안 생성 오류: ${error.message}` : 'AI 평가지 초안 생성 중 오류가 발생했습니다',
+      return { success: true, draft }
+    } catch (error) {
+      console.error('[AI Actions] 평가지 초안 생성 오류:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? `평가지 초안 생성 오류: ${error.message}` : 'AI 평가지 초안 생성 중 오류가 발생했습니다',
+      }
     }
-  }
+  })
 }
 
 // ────────────────────────────────────────────
@@ -835,40 +835,40 @@ export async function generateCaseNote(input: {
   caseType: string
   memo: string
 }): Promise<{ success: boolean; note?: string; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
-  if (!input.memo.trim()) return { success: false, error: '메모를 입력해주세요' }
+  return withStaffPermission(async () => {
+    if (!input.memo.trim()) return { success: false, error: '메모를 입력해주세요' }
 
-  try {
-    const supabase = createAdminClient()
-    const { data: client } = await supabase
-      .from('clients')
-      .select('name, disability_type')
-      .eq('id', input.clientId)
-      .single()
+    try {
+      const supabase = createAdminClient()
+      const { data: client } = await supabase
+        .from('clients')
+        .select('name, disability_type')
+        .eq('id', input.clientId)
+        .single()
 
-    const CASE_TYPE_MAP: Record<string, string> = {
-      multi: '다중 서비스', grant_eval: '교부사업', rental: '대여',
-      custom_make: '맞춤제작', other: '기타',
+      const CASE_TYPE_MAP: Record<string, string> = {
+        multi: '다중 서비스', grant_eval: '교부사업', rental: '대여',
+        custom_make: '맞춤제작', other: '기타',
+      }
+      const ctx = [
+        client && `대상자: ${client.name}, 장애유형: ${client.disability_type ?? '미상'}`,
+        `케이스 유형: ${CASE_TYPE_MAP[input.caseType] ?? input.caseType}`,
+        `메모: ${input.memo.trim()}`,
+      ].filter(Boolean).join('\n')
+
+      const model = getGeminiModel('gemini-2.5-flash')
+      const result = await model.generateContent(`${CASE_NOTE_PROMPT}\n\n${ctx}`)
+      const note = result.response.text().trim()
+      if (!note) throw new Error('빈 응답')
+      return { success: true, note }
+    } catch (error) {
+      console.error('[AI Actions] 사례관리 일지 생성 오류:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? `일지 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+      }
     }
-    const ctx = [
-      client && `대상자: ${client.name}, 장애유형: ${client.disability_type ?? '미상'}`,
-      `케이스 유형: ${CASE_TYPE_MAP[input.caseType] ?? input.caseType}`,
-      `메모: ${input.memo.trim()}`,
-    ].filter(Boolean).join('\n')
-
-    const model = getGeminiModel('gemini-2.5-flash')
-    const result = await model.generateContent(`${CASE_NOTE_PROMPT}\n\n${ctx}`)
-    const note = result.response.text().trim()
-    if (!note) throw new Error('빈 응답')
-    return { success: true, note }
-  } catch (error) {
-    console.error('[AI Actions] 사례관리 일지 생성 오류:', error)
-    return {
-      success: false,
-      error: error instanceof Error ? `일지 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
-    }
-  }
+  })
 }
 
 // ────────────────────────────────────────────
@@ -897,43 +897,43 @@ const COMPLETION_NOTE_PROMPT = `당신은 보조공학센터 전문 기록사입
 export async function generateCompletionNote(
   input: CompletionNoteInput
 ): Promise<{ success: boolean; note?: string; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  try {
-    const supabase = createAdminClient()
-    const { data: client } = await supabase
-      .from('clients')
-      .select('name, disability_type')
-      .eq('id', input.clientId)
-      .single()
+    try {
+      const supabase = createAdminClient()
+      const { data: client } = await supabase
+        .from('clients')
+        .select('name, disability_type')
+        .eq('id', input.clientId)
+        .single()
 
-    const clientCtx = client
-      ? `대상자: ${client.name}, 장애유형: ${client.disability_type ?? '미상'}`
-      : ''
+      const clientCtx = client
+        ? `대상자: ${client.name}, 장애유형: ${client.disability_type ?? '미상'}`
+        : ''
 
-    const serviceCtx = [
-      input.serviceCategory && `서비스구분: ${input.serviceCategory}`,
-      input.productName && `기기/품목: ${input.productName}`,
-      input.serviceTypes.length > 0 && `서비스유형: ${input.serviceTypes.join(', ')}`,
-      input.existingContent && `기존 내용: ${input.existingContent}`,
-      input.satisfactionScore != null && `만족도: ${input.satisfactionScore}점`,
-    ].filter(Boolean).join('\n')
+      const serviceCtx = [
+        input.serviceCategory && `서비스구분: ${input.serviceCategory}`,
+        input.productName && `기기/품목: ${input.productName}`,
+        input.serviceTypes.length > 0 && `서비스유형: ${input.serviceTypes.join(', ')}`,
+        input.existingContent && `기존 내용: ${input.existingContent}`,
+        input.satisfactionScore != null && `만족도: ${input.satisfactionScore}점`,
+      ].filter(Boolean).join('\n')
 
-    const model = getGeminiModel('gemini-2.5-flash')
-    const result = await model.generateContent(
-      `${COMPLETION_NOTE_PROMPT}\n\n${clientCtx}\n${serviceCtx}`
-    )
-    const note = result.response.text().trim()
-    if (!note) throw new Error('빈 응답')
-    return { success: true, note }
-  } catch (error) {
-    console.error('[AI Actions] 완료 노트 생성 오류:', error)
-    return {
-      success: false,
-      error: error instanceof Error ? `완료 노트 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+      const model = getGeminiModel('gemini-2.5-flash')
+      const result = await model.generateContent(
+        `${COMPLETION_NOTE_PROMPT}\n\n${clientCtx}\n${serviceCtx}`
+      )
+      const note = result.response.text().trim()
+      if (!note) throw new Error('빈 응답')
+      return { success: true, note }
+    } catch (error) {
+      console.error('[AI Actions] 완료 노트 생성 오류:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? `완료 노트 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+      }
     }
-  }
+  })
 }
 
 // ────────────────────────────────────────────
@@ -956,81 +956,81 @@ const DEVICE_RECOMMENDATION_PROMPT = `당신은 보조공학 전문가입니다.
 export async function generateDeviceRecommendations(
   clientId: string
 ): Promise<{ success: boolean; recommendations?: string; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  try {
-    const supabase = createAdminClient()
+    try {
+      const supabase = createAdminClient()
 
-    const [clientResult, ippaResult, recordResult] = await Promise.all([
-      supabase
-        .from('clients')
-        .select('name, disability_type, disability_grade, birth_date')
-        .eq('id', clientId)
-        .single(),
-      (supabase as any)
-        .from('eval_ippa_assessments')
-        .select('items, outcome_score, status')
-        .eq('client_id', clientId)
-        .order('assessment_year', { ascending: false })
-        .limit(1),
-      (supabase as any)
-        .from('eval_service_records')
-        .select('product_name, disability_type, satisfaction_score')
-        .not('product_name', 'is', null)
-        .not('product_name', 'eq', '')
-        .limit(200),
-    ])
+      const [clientResult, ippaResult, recordResult] = await Promise.all([
+        supabase
+          .from('clients')
+          .select('name, disability_type, disability_grade, birth_date')
+          .eq('id', clientId)
+          .single(),
+        (supabase as any)
+          .from('eval_ippa_assessments')
+          .select('items, outcome_score, status')
+          .eq('client_id', clientId)
+          .order('assessment_year', { ascending: false })
+          .limit(1),
+        (supabase as any)
+          .from('eval_service_records')
+          .select('product_name, disability_type, satisfaction_score')
+          .not('product_name', 'is', null)
+          .not('product_name', 'eq', '')
+          .limit(200),
+      ])
 
-    const client = clientResult.data
-    if (!client) return { success: false, error: '대상자를 찾을 수 없습니다' }
+      const client = clientResult.data
+      if (!client) return { success: false, error: '대상자를 찾을 수 없습니다' }
 
-    const clientCtx = `장애유형: ${client.disability_type ?? '미상'} | 장애정도: ${client.disability_grade ?? '미상'}`
+      const clientCtx = `장애유형: ${client.disability_type ?? '미상'} | 장애정도: ${client.disability_grade ?? '미상'}`
 
-    const ippaRows = (ippaResult.data ?? []) as Array<{
-      items: Array<{ problem: string; pre_score: number; post_score: number | null }>
-    }>
-    const problemAreas = ippaRows.length > 0 && Array.isArray(ippaRows[0]?.items) && ippaRows[0].items.length > 0
-      ? ippaRows[0].items.map(it => `${it.problem} (어려움 ${it.pre_score}점)`).join(', ')
-      : '측정 이력 없음'
+      const ippaRows = (ippaResult.data ?? []) as Array<{
+        items: Array<{ problem: string; pre_score: number; post_score: number | null }>
+      }>
+      const problemAreas = ippaRows.length > 0 && Array.isArray(ippaRows[0]?.items) && ippaRows[0].items.length > 0
+        ? ippaRows[0].items.map(it => `${it.problem} (어려움 ${it.pre_score}점)`).join(', ')
+        : '측정 이력 없음'
 
-    const allRecords = (recordResult.data ?? []) as Array<{
-      product_name: string; disability_type: string | null; satisfaction_score: number | null
-    }>
-    const matching = client.disability_type
-      ? allRecords.filter(r => (r.disability_type ?? '').includes(client.disability_type ?? ''))
-      : allRecords
+      const allRecords = (recordResult.data ?? []) as Array<{
+        product_name: string; disability_type: string | null; satisfaction_score: number | null
+      }>
+      const matching = client.disability_type
+        ? allRecords.filter(r => (r.disability_type ?? '').includes(client.disability_type ?? ''))
+        : allRecords
 
-    const grouped: Record<string, { count: number; satisfactions: number[] }> = {}
-    matching.forEach(r => {
-      if (!grouped[r.product_name]) grouped[r.product_name] = { count: 0, satisfactions: [] }
-      grouped[r.product_name].count++
-      if (r.satisfaction_score != null) grouped[r.product_name].satisfactions.push(r.satisfaction_score)
-    })
-
-    const knowledgeCtx = Object.entries(grouped)
-      .sort((a, b) => b[1].count - a[1].count)
-      .slice(0, 10)
-      .map(([name, { count, satisfactions }]) => {
-        const avg = satisfactions.length > 0
-          ? (satisfactions.reduce((a, b) => a + b, 0) / satisfactions.length).toFixed(1)
-          : null
-        return `${name}: ${count}건${avg ? `, 만족도 ${avg}점` : ''}`
+      const grouped: Record<string, { count: number; satisfactions: number[] }> = {}
+      matching.forEach(r => {
+        if (!grouped[r.product_name]) grouped[r.product_name] = { count: 0, satisfactions: [] }
+        grouped[r.product_name].count++
+        if (r.satisfaction_score != null) grouped[r.product_name].satisfactions.push(r.satisfaction_score)
       })
-      .join('\n')
 
-    const model = getGeminiModel('gemini-2.5-flash')
-    const prompt = `${DEVICE_RECOMMENDATION_PROMPT}\n\n대상자 정보:\n${clientCtx}\n\nK-IPPA 활동 문제 영역:\n${problemAreas}\n\n기관 실적 (동일 장애유형 상위 10개):\n${knowledgeCtx || '데이터 없음'}`
+      const knowledgeCtx = Object.entries(grouped)
+        .sort((a, b) => b[1].count - a[1].count)
+        .slice(0, 10)
+        .map(([name, { count, satisfactions }]) => {
+          const avg = satisfactions.length > 0
+            ? (satisfactions.reduce((a, b) => a + b, 0) / satisfactions.length).toFixed(1)
+            : null
+          return `${name}: ${count}건${avg ? `, 만족도 ${avg}점` : ''}`
+        })
+        .join('\n')
 
-    const result = await model.generateContent(prompt)
-    const recommendations = result.response.text().trim()
-    if (!recommendations) throw new Error('빈 응답')
-    return { success: true, recommendations }
-  } catch (error) {
-    console.error('[AI Actions] 보조기기 추천 생성 오류:', error)
-    return {
-      success: false,
-      error: error instanceof Error ? `추천 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+      const model = getGeminiModel('gemini-2.5-flash')
+      const prompt = `${DEVICE_RECOMMENDATION_PROMPT}\n\n대상자 정보:\n${clientCtx}\n\nK-IPPA 활동 문제 영역:\n${problemAreas}\n\n기관 실적 (동일 장애유형 상위 10개):\n${knowledgeCtx || '데이터 없음'}`
+
+      const result = await model.generateContent(prompt)
+      const recommendations = result.response.text().trim()
+      if (!recommendations) throw new Error('빈 응답')
+      return { success: true, recommendations }
+    } catch (error) {
+      console.error('[AI Actions] 보조기기 추천 생성 오류:', error)
+      return {
+        success: false,
+        error: error instanceof Error ? `추천 생성 오류: ${error.message}` : '예상치 못한 오류가 발생했습니다',
+      }
     }
-  }
+  })
 }

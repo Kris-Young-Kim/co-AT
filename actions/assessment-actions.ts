@@ -1,7 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions";
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
@@ -32,55 +32,55 @@ export interface DomainAssessmentInput {
 export async function createDomainAssessment(
   input: DomainAssessmentInput
 ): Promise<{ success: boolean; assessmentId?: string; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission();
-    if (!hasPermission) return { success: false, error: "권한이 없습니다" };
+  return withStaffPermission(async () => {
+    try {
 
-    const { userId } = await auth();
-    if (!userId) return { success: false, error: "로그인이 필요합니다" };
+      const { userId } = await auth();
+      if (!userId) return { success: false, error: "로그인이 필요합니다" };
 
-    const supabase = createAdminClient();
+      const supabase = createAdminClient();
 
-    const { data: profile } = await (supabase as any)
-      .from("profiles")
-      .select("id")
-      .eq("clerk_user_id", userId)
-      .single();
+      const { data: profile } = await (supabase as any)
+        .from("profiles")
+        .select("id")
+        .eq("clerk_user_id", userId)
+        .single();
 
-    const profileId = profile ? (profile as { id: string }).id : null;
+      const profileId = profile ? (profile as { id: string }).id : null;
 
-    const { data, error } = await (supabase as any)
-      .from("domain_assessments")
-      .insert({
-        application_id: input.application_id ?? null,
-        consultation_record_id: input.consultation_record_id ?? null,
-        client_id: input.client_id ?? null,
-        evaluator_id: profileId,
-        domain_type: input.domain_type,
-        evaluation_date: input.evaluation_date,
-        evaluation_data: input.evaluation_data ?? null,
-        measurements: input.measurements ?? null,
-        evaluator_opinion: input.evaluator_opinion ?? null,
-        recommended_device: input.recommended_device ?? null,
-        future_plan: input.future_plan ?? null,
-      })
-      .select("id")
-      .single();
+      const { data, error } = await (supabase as any)
+        .from("domain_assessments")
+        .insert({
+          application_id: input.application_id ?? null,
+          consultation_record_id: input.consultation_record_id ?? null,
+          client_id: input.client_id ?? null,
+          evaluator_id: profileId,
+          domain_type: input.domain_type,
+          evaluation_date: input.evaluation_date,
+          evaluation_data: input.evaluation_data ?? null,
+          measurements: input.measurements ?? null,
+          evaluator_opinion: input.evaluator_opinion ?? null,
+          recommended_device: input.recommended_device ?? null,
+          future_plan: input.future_plan ?? null,
+        })
+        .select("id")
+        .single();
 
-    if (error) {
-      console.error("createDomainAssessment:", error);
-      return { success: false, error: "평가 생성에 실패했습니다: " + (error.message ?? "알 수 없는 오류") };
+      if (error) {
+        console.error("createDomainAssessment:", error);
+        return { success: false, error: "평가 생성에 실패했습니다: " + (error.message ?? "알 수 없는 오류") };
+      }
+
+      const clientId = input.client_id ?? null;
+      revalidatePath("/clients");
+      if (clientId) revalidatePath(`/clients/${clientId}`);
+
+      return { success: true, assessmentId: (data as { id: string }).id };
+    } catch (e) {
+      console.error("createDomainAssessment:", e);
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" };
     }
-
-    const clientId = input.client_id ?? null;
-    revalidatePath("/clients");
-    if (clientId) revalidatePath(`/clients/${clientId}`);
-
-    return { success: true, assessmentId: (data as { id: string }).id };
-  } catch (e) {
-    console.error("createDomainAssessment:", e);
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" };
-  }
+  })
 }
 
 export async function getDomainAssessments(applicationId: string): Promise<{
@@ -88,26 +88,26 @@ export async function getDomainAssessments(applicationId: string): Promise<{
   assessments?: DomainAssessmentFull[];
   error?: string;
 }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission();
-    if (!hasPermission) return { success: false, error: "권한이 없습니다" };
+  return withStaffPermission(async () => {
+    try {
 
-    const supabase = createAdminClient();
-    const { data, error } = await (supabase as any)
-      .from("domain_assessments")
-      .select("*")
-      .eq("application_id", applicationId)
-      .order("evaluation_date", { ascending: false });
+      const supabase = createAdminClient();
+      const { data, error } = await (supabase as any)
+        .from("domain_assessments")
+        .select("*")
+        .eq("application_id", applicationId)
+        .order("evaluation_date", { ascending: false });
 
-    if (error) {
-      console.error("getDomainAssessments:", error);
-      return { success: false, error: "평가 조회에 실패했습니다" };
+      if (error) {
+        console.error("getDomainAssessments:", error);
+        return { success: false, error: "평가 조회에 실패했습니다" };
+      }
+      return { success: true, assessments: (data ?? []) as DomainAssessmentFull[] };
+    } catch (e) {
+      console.error("getDomainAssessments:", e);
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" };
     }
-    return { success: true, assessments: (data ?? []) as DomainAssessmentFull[] };
-  } catch (e) {
-    console.error("getDomainAssessments:", e);
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" };
-  }
+  })
 }
 
 export interface ConsultDomainAssessment extends ClientDomainAssessment {
@@ -118,26 +118,26 @@ export interface ConsultDomainAssessment extends ClientDomainAssessment {
 export async function getDomainAssessmentsByConsultationRecord(
   consultationRecordId: string
 ): Promise<{ success: boolean; assessments?: ConsultDomainAssessment[]; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission();
-    if (!hasPermission) return { success: false, error: "권한이 없습니다" };
+  return withStaffPermission(async () => {
+    try {
 
-    const supabase = createAdminClient();
-    const { data, error } = await (supabase as any)
-      .from("domain_assessments")
-      .select("id,domain_type,evaluation_date,consultation_record_id,application_id,client_id,evaluator_opinion,recommended_device,future_plan,evaluation_data,measurements")
-      .eq("consultation_record_id", consultationRecordId)
-      .order("evaluation_date", { ascending: false });
+      const supabase = createAdminClient();
+      const { data, error } = await (supabase as any)
+        .from("domain_assessments")
+        .select("id,domain_type,evaluation_date,consultation_record_id,application_id,client_id,evaluator_opinion,recommended_device,future_plan,evaluation_data,measurements")
+        .eq("consultation_record_id", consultationRecordId)
+        .order("evaluation_date", { ascending: false });
 
-    if (error) {
-      console.error("getDomainAssessmentsByConsultationRecord:", error);
-      return { success: false, error: "평가 조회에 실패했습니다" };
+      if (error) {
+        console.error("getDomainAssessmentsByConsultationRecord:", error);
+        return { success: false, error: "평가 조회에 실패했습니다" };
+      }
+      return { success: true, assessments: (data ?? []) as ConsultDomainAssessment[] };
+    } catch (e) {
+      console.error("getDomainAssessmentsByConsultationRecord:", e);
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" };
     }
-    return { success: true, assessments: (data ?? []) as ConsultDomainAssessment[] };
-  } catch (e) {
-    console.error("getDomainAssessmentsByConsultationRecord:", e);
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" };
-  }
+  })
 }
 
 export interface ClientDomainAssessment {
@@ -160,26 +160,26 @@ export interface DomainAssessmentFull extends ClientDomainAssessment {
 export async function getDomainAssessmentsByClient(
   clientId: string
 ): Promise<{ success: boolean; assessments?: ClientDomainAssessment[]; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission();
-    if (!hasPermission) return { success: false, error: "권한이 없습니다" };
+  return withStaffPermission(async () => {
+    try {
 
-    const supabase = createAdminClient();
-    const { data, error } = await (supabase as any)
-      .from("domain_assessments")
-      .select("id,domain_type,evaluation_date,consultation_record_id,application_id,client_id,evaluator_opinion,recommended_device,future_plan")
-      .eq("client_id", clientId)
-      .order("evaluation_date", { ascending: false });
+      const supabase = createAdminClient();
+      const { data, error } = await (supabase as any)
+        .from("domain_assessments")
+        .select("id,domain_type,evaluation_date,consultation_record_id,application_id,client_id,evaluator_opinion,recommended_device,future_plan")
+        .eq("client_id", clientId)
+        .order("evaluation_date", { ascending: false });
 
-    if (error) {
-      console.error("getDomainAssessmentsByClient:", error);
-      return { success: false, error: "평가 조회에 실패했습니다" };
+      if (error) {
+        console.error("getDomainAssessmentsByClient:", error);
+        return { success: false, error: "평가 조회에 실패했습니다" };
+      }
+      return { success: true, assessments: (data ?? []) as ClientDomainAssessment[] };
+    } catch (e) {
+      console.error("getDomainAssessmentsByClient:", e);
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" };
     }
-    return { success: true, assessments: (data ?? []) as ClientDomainAssessment[] };
-  } catch (e) {
-    console.error("getDomainAssessmentsByClient:", e);
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" };
-  }
+  })
 }
 
 export async function getDomainAssessmentById(assessmentId: string): Promise<{
@@ -187,94 +187,94 @@ export async function getDomainAssessmentById(assessmentId: string): Promise<{
   assessment?: DomainAssessmentFull;
   error?: string;
 }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission();
-    if (!hasPermission) return { success: false, error: "권한이 없습니다" };
+  return withStaffPermission(async () => {
+    try {
 
-    const supabase = createAdminClient();
-    const { data, error } = await (supabase as any)
-      .from("domain_assessments")
-      .select("*")
-      .eq("id", assessmentId)
-      .single();
+      const supabase = createAdminClient();
+      const { data, error } = await (supabase as any)
+        .from("domain_assessments")
+        .select("*")
+        .eq("id", assessmentId)
+        .single();
 
-    if (error) {
-      console.error("getDomainAssessmentById:", error);
-      return { success: false, error: "평가 조회에 실패했습니다" };
+      if (error) {
+        console.error("getDomainAssessmentById:", error);
+        return { success: false, error: "평가 조회에 실패했습니다" };
+      }
+      return { success: true, assessment: data as DomainAssessmentFull };
+    } catch (e) {
+      console.error("getDomainAssessmentById:", e);
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" };
     }
-    return { success: true, assessment: data as DomainAssessmentFull };
-  } catch (e) {
-    console.error("getDomainAssessmentById:", e);
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" };
-  }
+  })
 }
 
 export async function deleteDomainAssessment(
   assessmentId: string
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission();
-    if (!hasPermission) return { success: false, error: "권한이 없습니다" };
+  return withStaffPermission(async () => {
+    try {
 
-    const supabase = createAdminClient();
-    const { error } = await (supabase as any)
-      .from("domain_assessments")
-      .delete()
-      .eq("id", assessmentId);
+      const supabase = createAdminClient();
+      const { error } = await (supabase as any)
+        .from("domain_assessments")
+        .delete()
+        .eq("id", assessmentId);
 
-    if (error) {
-      console.error("deleteDomainAssessment:", error);
-      return { success: false, error: "삭제에 실패했습니다" };
+      if (error) {
+        console.error("deleteDomainAssessment:", error);
+        return { success: false, error: "삭제에 실패했습니다" };
+      }
+
+      revalidatePath("/clients");
+      revalidatePath("/assessments");
+      return { success: true };
+    } catch (e) {
+      console.error("deleteDomainAssessment:", e);
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" };
     }
-
-    revalidatePath("/clients");
-    revalidatePath("/assessments");
-    return { success: true };
-  } catch (e) {
-    console.error("deleteDomainAssessment:", e);
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" };
-  }
+  })
 }
 
 export async function updateDomainAssessment(
   assessmentId: string,
   updates: Partial<DomainAssessmentInput>
 ): Promise<{ success: boolean; assessment?: DomainAssessmentFull; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission();
-    if (!hasPermission) return { success: false, error: "권한이 없습니다" };
+  return withStaffPermission(async () => {
+    try {
 
-    const supabase = createAdminClient();
+      const supabase = createAdminClient();
 
-    const updateData: Record<string, unknown> = {
-      updated_at: new Date().toISOString(),
-    };
+      const updateData: Record<string, unknown> = {
+        updated_at: new Date().toISOString(),
+      };
 
-    if (updates.evaluation_date) updateData.evaluation_date = updates.evaluation_date;
-    if (updates.evaluation_data !== undefined) updateData.evaluation_data = updates.evaluation_data;
-    if (updates.measurements !== undefined) updateData.measurements = updates.measurements;
-    if (updates.evaluator_opinion !== undefined) updateData.evaluator_opinion = updates.evaluator_opinion;
-    if (updates.recommended_device !== undefined) updateData.recommended_device = updates.recommended_device;
-    if (updates.future_plan !== undefined) updateData.future_plan = updates.future_plan;
+      if (updates.evaluation_date) updateData.evaluation_date = updates.evaluation_date;
+      if (updates.evaluation_data !== undefined) updateData.evaluation_data = updates.evaluation_data;
+      if (updates.measurements !== undefined) updateData.measurements = updates.measurements;
+      if (updates.evaluator_opinion !== undefined) updateData.evaluator_opinion = updates.evaluator_opinion;
+      if (updates.recommended_device !== undefined) updateData.recommended_device = updates.recommended_device;
+      if (updates.future_plan !== undefined) updateData.future_plan = updates.future_plan;
 
-    const { data, error } = await (supabase as any)
-      .from("domain_assessments")
-      .update(updateData)
-      .eq("id", assessmentId)
-      .select()
-      .single();
+      const { data, error } = await (supabase as any)
+        .from("domain_assessments")
+        .update(updateData)
+        .eq("id", assessmentId)
+        .select()
+        .single();
 
-    if (error) {
-      console.error("updateDomainAssessment:", error);
-      return { success: false, error: "평가 수정에 실패했습니다" };
+      if (error) {
+        console.error("updateDomainAssessment:", error);
+        return { success: false, error: "평가 수정에 실패했습니다" };
+      }
+
+      revalidatePath("/clients");
+      return { success: true, assessment: data as DomainAssessmentFull };
+    } catch (e) {
+      console.error("updateDomainAssessment:", e);
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" };
     }
-
-    revalidatePath("/clients");
-    return { success: true, assessment: data as DomainAssessmentFull };
-  } catch (e) {
-    console.error("updateDomainAssessment:", e);
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" };
-  }
+  })
 }
 
 export interface AssessmentListItem {
@@ -304,60 +304,60 @@ export async function getAssessmentSessions(): Promise<{
   sessions?: AssessmentSession[];
   error?: string;
 }> {
-  const hasPermission = await hasAdminOrStaffPermission();
-  if (!hasPermission) return { success: false, error: "권한이 없습니다" };
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient();
+    const supabase = createAdminClient();
 
-  // Step 1: all consultation records ordered by date
-  const { data: records, error: recErr } = await (supabase as any)
-    .from("eval_consultation_records")
-    .select("id,client_id,consultation_date,consultation_type,consultant")
-    .order("consultation_date", { ascending: false })
-    .limit(300);
+    // Step 1: all consultation records ordered by date
+    const { data: records, error: recErr } = await (supabase as any)
+      .from("eval_consultation_records")
+      .select("id,client_id,consultation_date,consultation_type,consultant")
+      .order("consultation_date", { ascending: false })
+      .limit(300);
 
-  if (recErr) {
-    console.error("getAssessmentSessions:", recErr);
-    return { success: false, error: "세션 목록 조회에 실패했습니다" };
-  }
-  if (!records || records.length === 0) return { success: true, sessions: [] };
+    if (recErr) {
+      console.error("getAssessmentSessions:", recErr);
+      return { success: false, error: "세션 목록 조회에 실패했습니다" };
+    }
+    if (!records || records.length === 0) return { success: true, sessions: [] };
 
-  const recordIds = (records as Record<string, unknown>[]).map(r => r.id as string);
-  const clientIds = [...new Set<string>((records as Record<string, unknown>[]).map(r => r.client_id as string))];
+    const recordIds = (records as Record<string, unknown>[]).map(r => r.id as string);
+    const clientIds = [...new Set<string>((records as Record<string, unknown>[]).map(r => r.client_id as string))];
 
-  // Step 2: domain types per consultation record
-  const { data: domainRows } = await (supabase as any)
-    .from("domain_assessments")
-    .select("consultation_record_id,domain_type")
-    .in("consultation_record_id", recordIds);
+    // Step 2: domain types per consultation record
+    const { data: domainRows } = await (supabase as any)
+      .from("domain_assessments")
+      .select("consultation_record_id,domain_type")
+      .in("consultation_record_id", recordIds);
 
-  const domainMap = new Map<string, string[]>();
-  for (const row of domainRows ?? []) {
-    const key = row.consultation_record_id as string;
-    if (!domainMap.has(key)) domainMap.set(key, []);
-    domainMap.get(key)!.push(row.domain_type as string);
-  }
+    const domainMap = new Map<string, string[]>();
+    for (const row of domainRows ?? []) {
+      const key = row.consultation_record_id as string;
+      if (!domainMap.has(key)) domainMap.set(key, []);
+      domainMap.get(key)!.push(row.domain_type as string);
+    }
 
-  // Step 3: client names
-  const { data: clients } = await (supabase as any)
-    .from("clients")
-    .select("id,name")
-    .in("id", clientIds);
+    // Step 3: client names
+    const { data: clients } = await (supabase as any)
+      .from("clients")
+      .select("id,name")
+      .in("id", clientIds);
 
-  const clientNameMap = new Map<string, string>();
-  for (const c of clients ?? []) clientNameMap.set(c.id as string, c.name as string);
+    const clientNameMap = new Map<string, string>();
+    for (const c of clients ?? []) clientNameMap.set(c.id as string, c.name as string);
 
-  const sessions: AssessmentSession[] = (records as Record<string, unknown>[]).map(r => ({
-    id: r.id as string,
-    client_id: r.client_id as string,
-    client_name: clientNameMap.get(r.client_id as string) ?? "—",
-    consultation_date: r.consultation_date as string,
-    consultation_type: r.consultation_type as string,
-    consultant: (r.consultant as string | null) ?? null,
-    domain_types: domainMap.get(r.id as string) ?? [],
-  }));
+    const sessions: AssessmentSession[] = (records as Record<string, unknown>[]).map(r => ({
+      id: r.id as string,
+      client_id: r.client_id as string,
+      client_name: clientNameMap.get(r.client_id as string) ?? "—",
+      consultation_date: r.consultation_date as string,
+      consultation_type: r.consultation_type as string,
+      consultant: (r.consultant as string | null) ?? null,
+      domain_types: domainMap.get(r.id as string) ?? [],
+    }));
 
-  return { success: true, sessions };
+    return { success: true, sessions };
+  })
 }
 
 export async function getAllDomainAssessments(): Promise<{
@@ -365,75 +365,75 @@ export async function getAllDomainAssessments(): Promise<{
   assessments?: AssessmentListItem[];
   error?: string;
 }> {
-  const hasPermission = await hasAdminOrStaffPermission();
-  if (!hasPermission) return { success: false, error: "권한이 없습니다" };
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient();
+    const supabase = createAdminClient();
 
-  // Step 1: raw domain assessments
-  const { data: rows, error } = await (supabase as any)
-    .from("domain_assessments")
-    .select("id,domain_type,evaluation_date,application_id,consultation_record_id,client_id")
-    .order("evaluation_date", { ascending: false })
-    .limit(500);
+    // Step 1: raw domain assessments
+    const { data: rows, error } = await (supabase as any)
+      .from("domain_assessments")
+      .select("id,domain_type,evaluation_date,application_id,consultation_record_id,client_id")
+      .order("evaluation_date", { ascending: false })
+      .limit(500);
 
-  if (error) {
-    console.error("getAllDomainAssessments:", error);
-    return { success: false, error: "평가 목록 조회에 실패했습니다" };
-  }
+    if (error) {
+      console.error("getAllDomainAssessments:", error);
+      return { success: false, error: "평가 목록 조회에 실패했습니다" };
+    }
 
-  // Step 2: collect unique IDs for batch lookups
-  const directClientIds = [...new Set<string>(
-    (rows as Record<string, unknown>[]).filter(r => r.client_id).map(r => r.client_id as string)
-  )];
-  const appIds = [...new Set<string>(
-    (rows as Record<string, unknown>[]).filter(r => r.application_id && !r.client_id).map(r => r.application_id as string)
-  )];
+    // Step 2: collect unique IDs for batch lookups
+    const directClientIds = [...new Set<string>(
+      (rows as Record<string, unknown>[]).filter(r => r.client_id).map(r => r.client_id as string)
+    )];
+    const appIds = [...new Set<string>(
+      (rows as Record<string, unknown>[]).filter(r => r.application_id && !r.client_id).map(r => r.application_id as string)
+    )];
 
-  interface ClientRow { id: string; name: string; birth_date: string | null; disability_type: string | null }
-  const clientMap = new Map<string, ClientRow>();
+    interface ClientRow { id: string; name: string; birth_date: string | null; disability_type: string | null }
+    const clientMap = new Map<string, ClientRow>();
 
-  // Step 3: direct client lookup
-  if (directClientIds.length > 0) {
-    const { data: clients } = await (supabase as any)
-      .from("clients")
-      .select("id,name,birth_date,disability_type")
-      .in("id", directClientIds);
-    for (const c of clients ?? []) clientMap.set(c.id, c as ClientRow);
-  }
+    // Step 3: direct client lookup
+    if (directClientIds.length > 0) {
+      const { data: clients } = await (supabase as any)
+        .from("clients")
+        .select("id,name,birth_date,disability_type")
+        .in("id", directClientIds);
+      for (const c of clients ?? []) clientMap.set(c.id, c as ClientRow);
+    }
 
-  // Step 4: application-linked client lookup
-  const appClientMap = new Map<string, { clientId: string } & ClientRow>();
-  if (appIds.length > 0) {
-    const { data: apps } = await (supabase as any)
-      .from("applications")
-      .select("id,client_id,clients!inner(id,name,birth_date,disability_type)")
-      .in("id", appIds);
-    for (const a of apps ?? []) {
-      if (a.clients) {
-        appClientMap.set(a.id as string, { clientId: a.client_id as string, ...a.clients as ClientRow });
+    // Step 4: application-linked client lookup
+    const appClientMap = new Map<string, { clientId: string } & ClientRow>();
+    if (appIds.length > 0) {
+      const { data: apps } = await (supabase as any)
+        .from("applications")
+        .select("id,client_id,clients!inner(id,name,birth_date,disability_type)")
+        .in("id", appIds);
+      for (const a of apps ?? []) {
+        if (a.clients) {
+          appClientMap.set(a.id as string, { clientId: a.client_id as string, ...a.clients as ClientRow });
+        }
       }
     }
-  }
 
-  // Step 5: assemble results
-  const assessments: AssessmentListItem[] = (rows as Record<string, unknown>[]).map(row => {
-    const clientId = (row.client_id as string | null);
-    const appId = (row.application_id as string | null);
-    const clientInfo = clientId ? clientMap.get(clientId) : appId ? appClientMap.get(appId) : undefined;
-    const resolvedClientId = clientId ?? (appId ? appClientMap.get(appId)?.clientId ?? null : null);
-    return {
-      id: row.id as string,
-      domain_type: row.domain_type as string,
-      evaluation_date: row.evaluation_date as string,
-      application_id: appId,
-      consultation_record_id: (row.consultation_record_id as string | null) ?? null,
-      client_id: resolvedClientId,
-      client_name: clientInfo?.name ?? "—",
-      birth_date: clientInfo?.birth_date ?? null,
-      disability_type: clientInfo?.disability_type ?? null,
-    };
-  });
+    // Step 5: assemble results
+    const assessments: AssessmentListItem[] = (rows as Record<string, unknown>[]).map(row => {
+      const clientId = (row.client_id as string | null);
+      const appId = (row.application_id as string | null);
+      const clientInfo = clientId ? clientMap.get(clientId) : appId ? appClientMap.get(appId) : undefined;
+      const resolvedClientId = clientId ?? (appId ? appClientMap.get(appId)?.clientId ?? null : null);
+      return {
+        id: row.id as string,
+        domain_type: row.domain_type as string,
+        evaluation_date: row.evaluation_date as string,
+        application_id: appId,
+        consultation_record_id: (row.consultation_record_id as string | null) ?? null,
+        client_id: resolvedClientId,
+        client_name: clientInfo?.name ?? "—",
+        birth_date: clientInfo?.birth_date ?? null,
+        disability_type: clientInfo?.disability_type ?? null,
+      };
+    });
 
-  return { success: true, assessments };
+    return { success: true, assessments };
+  })
 }

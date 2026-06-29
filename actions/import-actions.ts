@@ -3,7 +3,7 @@
 import * as XLSX from 'xlsx'
 import { revalidatePath } from 'next/cache'
 import { createAdminClient } from "@/lib/supabase/admin"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 
 export interface ImportResult {
   success: boolean
@@ -185,147 +185,147 @@ const SR_COL = {
 // ── Server Actions ──────────────────────────────────────────────────────────────
 
 export async function importClientsFile(formData: FormData): Promise<ImportResult> {
-  if (!await hasAdminOrStaffPermission())
-    return { success: false, rowsAdded: 0, rowsSkipped: 0, rowsFailed: 0, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  try {
-    const file = formData.get('file') as File | null
-    if (!file) throw new Error('파일이 없습니다')
+    try {
+      const file = formData.get('file') as File | null
+      if (!file) throw new Error('파일이 없습니다')
 
-    const wb = parseWorkbook(await file.arrayBuffer())
-    const basicSheetName = findSheet(wb, '기초정보', '대상자기초', '기본정보') ?? wb.SheetNames[0]
-    const disSheetName   = findSheet(wb, '장애정보', '대상자장애')
+      const wb = parseWorkbook(await file.arrayBuffer())
+      const basicSheetName = findSheet(wb, '기초정보', '대상자기초', '기본정보') ?? wb.SheetNames[0]
+      const disSheetName   = findSheet(wb, '장애정보', '대상자장애')
 
-    const basicRows = getRows(wb, basicSheetName).slice(1)
-    const disRows   = disSheetName ? getRows(wb, disSheetName).slice(1) : []
+      const basicRows = getRows(wb, basicSheetName).slice(1)
+      const disRows   = disSheetName ? getRows(wb, disSheetName).slice(1) : []
 
-    const disMap = new Map<string, {
-      disability_type: string | null; disability_grade: string | null
-      disability_cause: string | null; disability_onset_date: string | null
-    }>()
-    for (const row of disRows) {
-      const regNo = toStr(row[CLIENT_DISABILITY_COL.registrationNo])
-      if (!regNo) continue
-      disMap.set(regNo, {
-        disability_type:      normalizeDisabilityType(row[CLIENT_DISABILITY_COL.disabilityType]),
-        disability_grade:     toStr(row[CLIENT_DISABILITY_COL.disabilityGrade]),
-        disability_cause:     toStr(row[CLIENT_DISABILITY_COL.disabilityCause]),
-        disability_onset_date: toStr(row[CLIENT_DISABILITY_COL.disabilityOnset]),
-      })
-    }
-
-    const supabase = createAdminClient()
-    let added = 0, skipped = 0, failed = 0
-
-    for (const row of basicRows) {
-      const name = toStr(row[CLIENT_BASIC_COL.name])
-      if (!name) continue
-
-      const registrationNo = toStr(row[CLIENT_BASIC_COL.registrationNo])
-      const birthDate      = parseClientBirthDate(row[CLIENT_BASIC_COL.birthDate])
-
-      let existing = null
-      if (registrationNo) {
-        const { data } = await supabase.from('clients').select('id').eq('registration_number', registrationNo).maybeSingle()
-        existing = data
-      } else {
-        const { data } = await supabase.from('clients').select('id').eq('name', name).eq('birth_date', birthDate ?? '').maybeSingle()
-        existing = data
+      const disMap = new Map<string, {
+        disability_type: string | null; disability_grade: string | null
+        disability_cause: string | null; disability_onset_date: string | null
+      }>()
+      for (const row of disRows) {
+        const regNo = toStr(row[CLIENT_DISABILITY_COL.registrationNo])
+        if (!regNo) continue
+        disMap.set(regNo, {
+          disability_type:      normalizeDisabilityType(row[CLIENT_DISABILITY_COL.disabilityType]),
+          disability_grade:     toStr(row[CLIENT_DISABILITY_COL.disabilityGrade]),
+          disability_cause:     toStr(row[CLIENT_DISABILITY_COL.disabilityCause]),
+          disability_onset_date: toStr(row[CLIENT_DISABILITY_COL.disabilityOnset]),
+        })
       }
-      if (existing) { skipped++; continue }
 
-      const address = [toStr(row[CLIENT_BASIC_COL.regionSi]), toStr(row[CLIENT_BASIC_COL.addressDetail])].filter(Boolean).join(' ') || null
-      const dis     = registrationNo ? disMap.get(registrationNo) : undefined
+      const supabase = createAdminClient()
+      let added = 0, skipped = 0, failed = 0
 
-      const { error } = await supabase.from('clients').insert({
-        registration_number:   registrationNo,
-        name, birth_date: birthDate,
-        gender:                normalizeGender(row[CLIENT_BASIC_COL.gender]),
-        address,
-        contact:               toStr(row[CLIENT_BASIC_COL.contact]),
-        guardian_contact:      toStr(row[CLIENT_BASIC_COL.guardianContact]),
-        economic_status:       toStr(row[CLIENT_BASIC_COL.economicStatus]),
-        housing_type:          toStr(row[CLIENT_BASIC_COL.housingType]),
-        has_elevator:          toBoolKorean(row[CLIENT_BASIC_COL.hasElevator]),
-        obstacles:             toStr(row[CLIENT_BASIC_COL.obstacles]),
-        disability_type:       dis?.disability_type ?? null,
-        disability_grade:      dis?.disability_grade ?? null,
-        disability_cause:      dis?.disability_cause ?? null,
-        disability_onset_date: dis?.disability_onset_date ?? null,
-      })
-      if (!error) added++; else failed++
-    }
+      for (const row of basicRows) {
+        const name = toStr(row[CLIENT_BASIC_COL.name])
+        if (!name) continue
 
-    await supabase.from('eval_sync_logs').insert({
-      sheet_type: 'client', status: 'success', rows_added: added, rows_skipped: skipped,
-    })
-    revalidatePath('/migration')
-    return { success: true, rowsAdded: added, rowsSkipped: skipped, rowsFailed: failed }
-  } catch (err) {
-    return { success: false, rowsAdded: 0, rowsSkipped: 0, rowsFailed: 0, error: err instanceof Error ? err.message : String(err) }
-  }
-}
+        const registrationNo = toStr(row[CLIENT_BASIC_COL.registrationNo])
+        const birthDate      = parseClientBirthDate(row[CLIENT_BASIC_COL.birthDate])
 
-export async function importCallLogsFile(formData: FormData): Promise<ImportResult> {
-  if (!await hasAdminOrStaffPermission())
-    return { success: false, rowsAdded: 0, rowsSkipped: 0, rowsFailed: 0, error: '권한이 없습니다' }
-
-  try {
-    const file = formData.get('file') as File | null
-    if (!file) throw new Error('파일이 없습니다')
-
-    const wb = parseWorkbook(await file.arrayBuffer())
-    const yearSheets = wb.SheetNames.filter(n => /^\d{4}$/.test(n))
-    const sheets = yearSheets.length > 0 ? yearSheets : wb.SheetNames
-
-    const supabase = createAdminClient()
-    let added = 0, skipped = 0, failed = 0
-
-    for (const sheetName of sheets) {
-      for (const row of getRows(wb, sheetName).slice(8)) {
-        if (!row[1]) continue
-        const logDate = parseDate(row[CALL_COL.date])
-        if (!logDate) continue
-
-        const staffName      = toStr(row[CALL_COL.staffName])
-        const questionContent = toStr(row[CALL_COL.questionContent])
-
-        const { data: existing } = await supabase.from('call_logs').select('id')
-          .eq('log_date', logDate).eq('staff_name', staffName ?? '').eq('question_content', questionContent ?? '').maybeSingle()
+        let existing = null
+        if (registrationNo) {
+          const { data } = await supabase.from('clients').select('id').eq('registration_number', registrationNo).maybeSingle()
+          existing = data
+        } else {
+          const { data } = await supabase.from('clients').select('id').eq('name', name).eq('birth_date', birthDate ?? '').maybeSingle()
+          existing = data
+        }
         if (existing) { skipped++; continue }
 
-        const { error } = await supabase.from('call_logs').insert({
-          log_date:                   logDate,
-          requester_name:             toStr(row[CALL_COL.requesterName]),
-          requester_region:           toStr(row[CALL_COL.requesterRegion]),
-          requester_contact:          toStr(row[CALL_COL.requesterContact]),
-          requester_type:             normalizeRequesterType(row[CALL_COL.requesterType]),
-          target_name:                toStr(row[CALL_COL.targetName]),
-          target_gender:              toStr(row[CALL_COL.targetGender]),
-          target_disability_type:     toStr(row[CALL_COL.disabilityType]),
-          target_disability_severity: toStr(row[CALL_COL.disabilitySeverity]),
-          target_economic_status:     toStr(row[CALL_COL.economicStatus]),
-          q_public_benefit:           toBool(row[CALL_COL.qPublic]),
-          q_private_benefit:          toBool(row[CALL_COL.qPrivate]),
-          q_device:                   toBool(row[CALL_COL.qDevice]),
-          q_case_management:          toBool(row[CALL_COL.qCase]),
-          q_other:                    toBool(row[CALL_COL.qOther]),
-          question_content:           questionContent,
-          answer:                     toStr(row[CALL_COL.answer]),
-          staff_name:                 staffName,
+        const address = [toStr(row[CLIENT_BASIC_COL.regionSi]), toStr(row[CLIENT_BASIC_COL.addressDetail])].filter(Boolean).join(' ') || null
+        const dis     = registrationNo ? disMap.get(registrationNo) : undefined
+
+        const { error } = await supabase.from('clients').insert({
+          registration_number:   registrationNo,
+          name, birth_date: birthDate,
+          gender:                normalizeGender(row[CLIENT_BASIC_COL.gender]),
+          address,
+          contact:               toStr(row[CLIENT_BASIC_COL.contact]),
+          guardian_contact:      toStr(row[CLIENT_BASIC_COL.guardianContact]),
+          economic_status:       toStr(row[CLIENT_BASIC_COL.economicStatus]),
+          housing_type:          toStr(row[CLIENT_BASIC_COL.housingType]),
+          has_elevator:          toBoolKorean(row[CLIENT_BASIC_COL.hasElevator]),
+          obstacles:             toStr(row[CLIENT_BASIC_COL.obstacles]),
+          disability_type:       dis?.disability_type ?? null,
+          disability_grade:      dis?.disability_grade ?? null,
+          disability_cause:      dis?.disability_cause ?? null,
+          disability_onset_date: dis?.disability_onset_date ?? null,
         })
         if (!error) added++; else failed++
       }
-    }
 
-    await supabase.from('eval_sync_logs').insert({
-      sheet_type: 'call_log', status: 'success', rows_added: added, rows_skipped: skipped,
-    })
-    revalidatePath('/migration')
-    return { success: true, rowsAdded: added, rowsSkipped: skipped, rowsFailed: failed }
-  } catch (err) {
-    return { success: false, rowsAdded: 0, rowsSkipped: 0, rowsFailed: 0, error: err instanceof Error ? err.message : String(err) }
-  }
+      await supabase.from('eval_sync_logs').insert({
+        sheet_type: 'client', status: 'success', rows_added: added, rows_skipped: skipped,
+      })
+      revalidatePath('/migration')
+      return { success: true, rowsAdded: added, rowsSkipped: skipped, rowsFailed: failed }
+    } catch (err) {
+      return { success: false, rowsAdded: 0, rowsSkipped: 0, rowsFailed: 0, error: err instanceof Error ? err.message : String(err) }
+    }
+  })
+}
+
+export async function importCallLogsFile(formData: FormData): Promise<ImportResult> {
+  return withStaffPermission(async () => {
+
+    try {
+      const file = formData.get('file') as File | null
+      if (!file) throw new Error('파일이 없습니다')
+
+      const wb = parseWorkbook(await file.arrayBuffer())
+      const yearSheets = wb.SheetNames.filter(n => /^\d{4}$/.test(n))
+      const sheets = yearSheets.length > 0 ? yearSheets : wb.SheetNames
+
+      const supabase = createAdminClient()
+      let added = 0, skipped = 0, failed = 0
+
+      for (const sheetName of sheets) {
+        for (const row of getRows(wb, sheetName).slice(8)) {
+          if (!row[1]) continue
+          const logDate = parseDate(row[CALL_COL.date])
+          if (!logDate) continue
+
+          const staffName      = toStr(row[CALL_COL.staffName])
+          const questionContent = toStr(row[CALL_COL.questionContent])
+
+          const { data: existing } = await supabase.from('call_logs').select('id')
+            .eq('log_date', logDate).eq('staff_name', staffName ?? '').eq('question_content', questionContent ?? '').maybeSingle()
+          if (existing) { skipped++; continue }
+
+          const { error } = await supabase.from('call_logs').insert({
+            log_date:                   logDate,
+            requester_name:             toStr(row[CALL_COL.requesterName]),
+            requester_region:           toStr(row[CALL_COL.requesterRegion]),
+            requester_contact:          toStr(row[CALL_COL.requesterContact]),
+            requester_type:             normalizeRequesterType(row[CALL_COL.requesterType]),
+            target_name:                toStr(row[CALL_COL.targetName]),
+            target_gender:              toStr(row[CALL_COL.targetGender]),
+            target_disability_type:     toStr(row[CALL_COL.disabilityType]),
+            target_disability_severity: toStr(row[CALL_COL.disabilitySeverity]),
+            target_economic_status:     toStr(row[CALL_COL.economicStatus]),
+            q_public_benefit:           toBool(row[CALL_COL.qPublic]),
+            q_private_benefit:          toBool(row[CALL_COL.qPrivate]),
+            q_device:                   toBool(row[CALL_COL.qDevice]),
+            q_case_management:          toBool(row[CALL_COL.qCase]),
+            q_other:                    toBool(row[CALL_COL.qOther]),
+            question_content:           questionContent,
+            answer:                     toStr(row[CALL_COL.answer]),
+            staff_name:                 staffName,
+          })
+          if (!error) added++; else failed++
+        }
+      }
+
+      await supabase.from('eval_sync_logs').insert({
+        sheet_type: 'call_log', status: 'success', rows_added: added, rows_skipped: skipped,
+      })
+      revalidatePath('/migration')
+      return { success: true, rowsAdded: added, rowsSkipped: skipped, rowsFailed: failed }
+    } catch (err) {
+      return { success: false, rowsAdded: 0, rowsSkipped: 0, rowsFailed: 0, error: err instanceof Error ? err.message : String(err) }
+    }
+  })
 }
 
 function deriveServiceFlags(cat: string | null): {
@@ -352,78 +352,78 @@ function deriveServiceFlags(cat: string | null): {
 }
 
 export async function importServiceRecordsFile(formData: FormData): Promise<ImportResult> {
-  if (!await hasAdminOrStaffPermission())
-    return { success: false, rowsAdded: 0, rowsSkipped: 0, rowsFailed: 0, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  try {
-    const file = formData.get('file') as File | null
-    if (!file) throw new Error('파일이 없습니다')
+    try {
+      const file = formData.get('file') as File | null
+      if (!file) throw new Error('파일이 없습니다')
 
-    const wb = parseWorkbook(await file.arrayBuffer())
-    const sheetName = findSheet(wb, '서비스 상세', '서비스상세', '보조기기 서비스') ?? wb.SheetNames[0]
-    const rows = getRows(wb, sheetName).slice(9)
+      const wb = parseWorkbook(await file.arrayBuffer())
+      const sheetName = findSheet(wb, '서비스 상세', '서비스상세', '보조기기 서비스') ?? wb.SheetNames[0]
+      const rows = getRows(wb, sheetName).slice(9)
 
-    const supabase = createAdminClient()
-    let added = 0, skipped = 0, failed = 0
+      const supabase = createAdminClient()
+      let added = 0, skipped = 0, failed = 0
 
-    for (const row of rows) {
-      if (!row[SR_COL.seq]) continue
-      const receivedAt = parseServiceDate(row[SR_COL.date])
-      const name       = toStr(row[SR_COL.name])
-      const birthDate  = parseBirthDate(row[SR_COL.birthDate])
-      if (!name) continue
+      for (const row of rows) {
+        if (!row[SR_COL.seq]) continue
+        const receivedAt = parseServiceDate(row[SR_COL.date])
+        const name       = toStr(row[SR_COL.name])
+        const birthDate  = parseBirthDate(row[SR_COL.birthDate])
+        if (!name) continue
 
-      const { data: existing } = await supabase.from('eval_service_records').select('id')
-        .eq('received_at', receivedAt ?? '').eq('name', name).eq('birth_date', birthDate ?? '').maybeSingle()
-      if (existing) { skipped++; continue }
+        const { data: existing } = await supabase.from('eval_service_records').select('id')
+          .eq('received_at', receivedAt ?? '').eq('name', name).eq('birth_date', birthDate ?? '').maybeSingle()
+        if (existing) { skipped++; continue }
 
-      const serviceCategory = toStr(row[SR_COL.serviceCategory])
-      const flags = deriveServiceFlags(serviceCategory)
-      const closedStatus = toStr(row[SR_COL.isClosed])
-      const isClosed = closedStatus === '종결'
-      const rawArea = toStr(row[SR_COL.serviceArea])
-      const serviceArea = rawArea === '#N/A' ? null : rawArea
+        const serviceCategory = toStr(row[SR_COL.serviceCategory])
+        const flags = deriveServiceFlags(serviceCategory)
+        const closedStatus = toStr(row[SR_COL.isClosed])
+        const isClosed = closedStatus === '종결'
+        const rawArea = toStr(row[SR_COL.serviceArea])
+        const serviceArea = rawArea === '#N/A' ? null : rawArea
 
-      const { error } = await supabase.from('eval_service_records').insert({
-        received_at:       receivedAt,
-        application_year:  receivedAt ? parseInt(receivedAt.split('-')[0]) : null,
-        application_no:    row[SR_COL.appNo]    ? parseInt(String(row[SR_COL.appNo]))    : null,
-        is_re_application: toBool(row[SR_COL.isReApplication]),
-        name, birth_date: birthDate,
-        gender:            toStr(row[SR_COL.gender]),
-        region:            toStr(row[SR_COL.region]),
-        disability_type:   toStr(row[SR_COL.disabilityType]),
-        service_category:  serviceCategory,
-        product_name:      toStr(row[SR_COL.productName]),
-        item_category:     toStr(row[SR_COL.itemCategory]),
-        service_content:   toStr(row[SR_COL.serviceContent]),
-        service_area:      serviceArea,
-        ...flags,
-        is_public_funding: toBool(row[SR_COL.isPublicFunding]),
-        is_private_funding: toBool(row[SR_COL.isPrivateFunding]),
-        is_self_pay:       toBool(row[SR_COL.isSelfPay]),
-        is_funding_secured: toBool(row[SR_COL.isFundingSecured]),
-        referral_type:     toStr(row[SR_COL.referralType]),
-        is_phone:          toBool(row[SR_COL.isPhone]),
-        is_visit_in:       toBool(row[SR_COL.isVisitIn]),
-        is_visit_out:      toBool(row[SR_COL.isVisitOut]),
-        is_closed:         isClosed,
-        staff_name:        toStr(row[SR_COL.staffName]),
-        contact:           toStr(row[SR_COL.contact]),
-        address:           toStr(row[SR_COL.address]),
-        source:            'csv',
-        application_month: receivedAt ? parseInt(receivedAt.split('-')[1]) : null,
-        record_status:     isClosed ? '완료' : (closedStatus === '취소' ? '취소' : '미정'),
+        const { error } = await supabase.from('eval_service_records').insert({
+          received_at:       receivedAt,
+          application_year:  receivedAt ? parseInt(receivedAt.split('-')[0]) : null,
+          application_no:    row[SR_COL.appNo]    ? parseInt(String(row[SR_COL.appNo]))    : null,
+          is_re_application: toBool(row[SR_COL.isReApplication]),
+          name, birth_date: birthDate,
+          gender:            toStr(row[SR_COL.gender]),
+          region:            toStr(row[SR_COL.region]),
+          disability_type:   toStr(row[SR_COL.disabilityType]),
+          service_category:  serviceCategory,
+          product_name:      toStr(row[SR_COL.productName]),
+          item_category:     toStr(row[SR_COL.itemCategory]),
+          service_content:   toStr(row[SR_COL.serviceContent]),
+          service_area:      serviceArea,
+          ...flags,
+          is_public_funding: toBool(row[SR_COL.isPublicFunding]),
+          is_private_funding: toBool(row[SR_COL.isPrivateFunding]),
+          is_self_pay:       toBool(row[SR_COL.isSelfPay]),
+          is_funding_secured: toBool(row[SR_COL.isFundingSecured]),
+          referral_type:     toStr(row[SR_COL.referralType]),
+          is_phone:          toBool(row[SR_COL.isPhone]),
+          is_visit_in:       toBool(row[SR_COL.isVisitIn]),
+          is_visit_out:      toBool(row[SR_COL.isVisitOut]),
+          is_closed:         isClosed,
+          staff_name:        toStr(row[SR_COL.staffName]),
+          contact:           toStr(row[SR_COL.contact]),
+          address:           toStr(row[SR_COL.address]),
+          source:            'csv',
+          application_month: receivedAt ? parseInt(receivedAt.split('-')[1]) : null,
+          record_status:     isClosed ? '완료' : (closedStatus === '취소' ? '취소' : '미정'),
+        })
+        if (!error) added++; else failed++
+      }
+
+      await supabase.from('eval_sync_logs').insert({
+        sheet_type: 'service_record', status: 'success', rows_added: added, rows_skipped: skipped,
       })
-      if (!error) added++; else failed++
+      revalidatePath('/migration')
+      return { success: true, rowsAdded: added, rowsSkipped: skipped, rowsFailed: failed }
+    } catch (err) {
+      return { success: false, rowsAdded: 0, rowsSkipped: 0, rowsFailed: 0, error: err instanceof Error ? err.message : String(err) }
     }
-
-    await supabase.from('eval_sync_logs').insert({
-      sheet_type: 'service_record', status: 'success', rows_added: added, rows_skipped: skipped,
-    })
-    revalidatePath('/migration')
-    return { success: true, rowsAdded: added, rowsSkipped: skipped, rowsFailed: failed }
-  } catch (err) {
-    return { success: false, rowsAdded: 0, rowsSkipped: 0, rowsFailed: 0, error: err instanceof Error ? err.message : String(err) }
-  }
+  })
 }

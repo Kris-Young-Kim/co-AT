@@ -1,7 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
-import { hasAdminOrStaffPermission } from '@/lib/utils/permissions'
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from 'next/cache'
 import type { InventoryMaintenanceLog, CreateMaintenanceLogInput } from '@co-at/types'
 import { auth } from '@clerk/nextjs/server'
@@ -35,46 +35,46 @@ export async function getMaintenanceLogs(filters?: {
 export async function createMaintenanceLog(
   input: CreateMaintenanceLogInput
 ): Promise<{ success: boolean; error?: string }> {
-  const ok = await hasAdminOrStaffPermission()
-  if (!ok) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const { userId } = await auth()
+    const { userId } = await auth()
 
-  const { error } = await supabase()
-    .from('inventory_maintenance_logs')
-    .insert({
-      device_id: input.device_id,
-      type: input.type,
-      status: input.status ?? 'pending',
-      performed_at: input.performed_at ?? null,
-      technician: input.technician ?? null,
-      cost: input.cost ?? 0,
-      notes: input.notes ?? null,
-      created_by: userId,
-    })
+    const { error } = await supabase()
+      .from('inventory_maintenance_logs')
+      .insert({
+        device_id: input.device_id,
+        type: input.type,
+        status: input.status ?? 'pending',
+        performed_at: input.performed_at ?? null,
+        technician: input.technician ?? null,
+        cost: input.cost ?? 0,
+        notes: input.notes ?? null,
+        created_by: userId,
+      })
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath(`/devices/${input.device_id}`)
-  revalidatePath('/maintenance')
-  return { success: true }
+    if (error) return { success: false, error: error.message }
+    revalidatePath(`/devices/${input.device_id}`)
+    revalidatePath('/maintenance')
+    return { success: true }
+  })
 }
 
 export async function updateMaintenanceLogStatus(
   id: string,
   status: 'pending' | 'in_progress' | 'done'
 ): Promise<{ success: boolean; error?: string }> {
-  const ok = await hasAdminOrStaffPermission()
-  if (!ok) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const updates: Record<string, unknown> = { status }
-  if (status === 'done') updates.performed_at = new Date().toISOString()
+    const updates: Record<string, unknown> = { status }
+    if (status === 'done') updates.performed_at = new Date().toISOString()
 
-  const { error } = await supabase()
-    .from('inventory_maintenance_logs')
-    .update(updates)
-    .eq('id', id)
+    const { error } = await supabase()
+      .from('inventory_maintenance_logs')
+      .update(updates)
+      .eq('id', id)
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath('/maintenance')
-  return { success: true }
+    if (error) return { success: false, error: error.message }
+    revalidatePath('/maintenance')
+    return { success: true }
+  })
 }

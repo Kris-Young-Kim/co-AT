@@ -1,7 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
-import { hasAdminOrStaffPermission } from '@/lib/utils/permissions'
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from 'next/cache'
 import type {
   InventoryCustomOrderWithDetails,
@@ -67,18 +67,18 @@ export async function getCustomOrderById(id: string): Promise<{
 export async function createCustomOrder(
   input: CreateCustomOrderInput
 ): Promise<{ success: boolean; id?: string; error?: string }> {
-  const ok = await hasAdminOrStaffPermission()
-  if (!ok) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const { data, error } = await supabase()
-    .from('inventory_custom_orders')
-    .insert({ client_id: input.client_id, approval_id: input.approval_id ?? null, notes: input.notes ?? null })
-    .select('id')
-    .single()
+    const { data, error } = await supabase()
+      .from('inventory_custom_orders')
+      .insert({ client_id: input.client_id, approval_id: input.approval_id ?? null, notes: input.notes ?? null })
+      .select('id')
+      .single()
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath('/custom-orders')
-  return { success: true, id: data.id }
+    if (error) return { success: false, error: error.message }
+    revalidatePath('/custom-orders')
+    return { success: true, id: data.id }
+  })
 }
 
 export async function updateCustomOrderStatus(
@@ -86,76 +86,76 @@ export async function updateCustomOrderStatus(
   status: CustomOrderStatus,
   extra?: { device_id?: string; delivered_at?: string }
 ): Promise<{ success: boolean; error?: string }> {
-  const ok = await hasAdminOrStaffPermission()
-  if (!ok) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const updates: Record<string, unknown> = { status, updated_at: new Date().toISOString() }
-  if (extra?.device_id) updates.device_id = extra.device_id
-  if (status === 'delivered') updates.delivered_at = extra?.delivered_at ?? new Date().toISOString()
+    const updates: Record<string, unknown> = { status, updated_at: new Date().toISOString() }
+    if (extra?.device_id) updates.device_id = extra.device_id
+    if (status === 'delivered') updates.delivered_at = extra?.delivered_at ?? new Date().toISOString()
 
-  const { error } = await supabase()
-    .from('inventory_custom_orders')
-    .update(updates)
-    .eq('id', id)
+    const { error } = await supabase()
+      .from('inventory_custom_orders')
+      .update(updates)
+      .eq('id', id)
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath('/custom-orders')
-  revalidatePath(`/custom-orders/${id}`)
-  return { success: true }
+    if (error) return { success: false, error: error.message }
+    revalidatePath('/custom-orders')
+    revalidatePath(`/custom-orders/${id}`)
+    return { success: true }
+  })
 }
 
 export async function assignEquipmentToOrder(
   customOrderId: string,
   equipmentId: string
 ): Promise<{ success: boolean; error?: string }> {
-  const ok = await hasAdminOrStaffPermission()
-  if (!ok) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const { error } = await supabase()
-    .from('inventory_custom_order_equipment')
-    .upsert({ custom_order_id: customOrderId, equipment_id: equipmentId, started_at: new Date().toISOString() })
+    const { error } = await supabase()
+      .from('inventory_custom_order_equipment')
+      .upsert({ custom_order_id: customOrderId, equipment_id: equipmentId, started_at: new Date().toISOString() })
 
-  if (error) return { success: false, error: error.message }
+    if (error) return { success: false, error: error.message }
 
-  await supabase()
-    .from('inventory_fab_equipment')
-    .update({ status: 'in_use', updated_at: new Date().toISOString() })
-    .eq('id', equipmentId)
+    await supabase()
+      .from('inventory_fab_equipment')
+      .update({ status: 'in_use', updated_at: new Date().toISOString() })
+      .eq('id', equipmentId)
 
-  revalidatePath(`/custom-orders/${customOrderId}`)
-  revalidatePath('/fab-equipment')
-  return { success: true }
+    revalidatePath(`/custom-orders/${customOrderId}`)
+    revalidatePath('/fab-equipment')
+    return { success: true }
+  })
 }
 
 export async function finishEquipmentUsage(
   customOrderId: string,
   equipmentId: string
 ): Promise<{ success: boolean; error?: string }> {
-  const ok = await hasAdminOrStaffPermission()
-  if (!ok) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  await supabase()
-    .from('inventory_custom_order_equipment')
-    .update({ finished_at: new Date().toISOString() })
-    .eq('custom_order_id', customOrderId)
-    .eq('equipment_id', equipmentId)
-
-  const { data: activeAssignments } = await supabase()
-    .from('inventory_custom_order_equipment')
-    .select('id')
-    .eq('equipment_id', equipmentId)
-    .is('finished_at', null)
-
-  if (!activeAssignments || activeAssignments.length === 0) {
     await supabase()
-      .from('inventory_fab_equipment')
-      .update({ status: 'available', updated_at: new Date().toISOString() })
-      .eq('id', equipmentId)
-  }
+      .from('inventory_custom_order_equipment')
+      .update({ finished_at: new Date().toISOString() })
+      .eq('custom_order_id', customOrderId)
+      .eq('equipment_id', equipmentId)
 
-  revalidatePath(`/custom-orders/${customOrderId}`)
-  revalidatePath('/fab-equipment')
-  return { success: true }
+    const { data: activeAssignments } = await supabase()
+      .from('inventory_custom_order_equipment')
+      .select('id')
+      .eq('equipment_id', equipmentId)
+      .is('finished_at', null)
+
+    if (!activeAssignments || activeAssignments.length === 0) {
+      await supabase()
+        .from('inventory_fab_equipment')
+        .update({ status: 'available', updated_at: new Date().toISOString() })
+        .eq('id', equipmentId)
+    }
+
+    revalidatePath(`/custom-orders/${customOrderId}`)
+    revalidatePath('/fab-equipment')
+    return { success: true }
+  })
 }
 
 export async function createCustomOrderFromApproval(

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createAdminClient } from "@/lib/supabase/admin"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { getSheetValues, getSheetNames } from "@/apps/eval/lib/google-sheets"
 
 // ────────────────────────────────────────────
@@ -54,93 +54,93 @@ export async function syncCallLogs(): Promise<{
   rowsSkipped: number
   error?: string
 }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, rowsAdded: 0, rowsSkipped: 0, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const sheetId = process.env.GOOGLE_CALL_LOG_SHEET_ID
-  if (!sheetId) return { success: false, rowsAdded: 0, rowsSkipped: 0, error: 'GOOGLE_CALL_LOG_SHEET_ID 환경변수가 없습니다' }
+    const sheetId = process.env.GOOGLE_CALL_LOG_SHEET_ID
+    if (!sheetId) return { success: false, rowsAdded: 0, rowsSkipped: 0, error: 'GOOGLE_CALL_LOG_SHEET_ID 환경변수가 없습니다' }
 
-  try {
-    const supabase = createAdminClient()
-    const sheetNames = await getSheetNames(sheetId)
-    const yearSheets = sheetNames.filter((n: string) => /^\d{4}$/.test(n))
+    try {
+      const supabase = createAdminClient()
+      const sheetNames = await getSheetNames(sheetId)
+      const yearSheets = sheetNames.filter((n: string) => /^\d{4}$/.test(n))
 
-    let totalAdded = 0
-    let totalSkipped = 0
+      let totalAdded = 0
+      let totalSkipped = 0
 
-    for (const sheet of yearSheets) {
-      const rows = await getSheetValues(sheetId, `${sheet}!A:X`)
-      const dataRows = rows.slice(8)
+      for (const sheet of yearSheets) {
+        const rows = await getSheetValues(sheetId, `${sheet}!A:X`)
+        const dataRows = rows.slice(8)
 
-      for (const row of dataRows) {
-        if (!row[1]) continue
+        for (const row of dataRows) {
+          if (!row[1]) continue
 
-        const logDate = parseDate(row[CALL_COL.date])
-        if (!logDate) continue
+          const logDate = parseDate(row[CALL_COL.date])
+          if (!logDate) continue
 
-        const staffName = toStr(row[CALL_COL.staffName])
-        const questionContent = toStr(row[CALL_COL.questionContent])
+          const staffName = toStr(row[CALL_COL.staffName])
+          const questionContent = toStr(row[CALL_COL.questionContent])
 
-        const { data: existing } = await supabase
-          .from('call_logs')
-          .select('id')
-          .eq('log_date', logDate)
-          .eq('staff_name', staffName ?? '')
-          .eq('question_content', questionContent ?? '')
-          .maybeSingle()
+          const { data: existing } = await supabase
+            .from('call_logs')
+            .select('id')
+            .eq('log_date', logDate)
+            .eq('staff_name', staffName ?? '')
+            .eq('question_content', questionContent ?? '')
+            .maybeSingle()
 
-        if (existing) {
-          totalSkipped++
-          continue
-        }
+          if (existing) {
+            totalSkipped++
+            continue
+          }
 
-        const { error: insertError } = await supabase.from('call_logs').insert({
-          log_date: logDate,
-          requester_name: toStr(row[CALL_COL.requesterName]),
-          requester_region: toStr(row[CALL_COL.requesterRegion]),
-          requester_contact: toStr(row[CALL_COL.requesterContact]),
-          requester_type: toStr(row[CALL_COL.requesterType]),
-          target_name: toStr(row[CALL_COL.targetName]),
-          target_gender: toStr(row[CALL_COL.targetGender]),
-          target_disability_type: toStr(row[CALL_COL.disabilityType]),
-          target_disability_severity: toStr(row[CALL_COL.disabilitySeverity]),
-          target_economic_status: toStr(row[CALL_COL.economicStatus]),
-          q_public_benefit: toBool(row[CALL_COL.qPublic]),
-          q_private_benefit: toBool(row[CALL_COL.qPrivate]),
-          q_device: toBool(row[CALL_COL.qDevice]),
-          q_case_management: toBool(row[CALL_COL.qCase]),
-          q_other: toBool(row[CALL_COL.qOther]),
-          question_content: questionContent,
-          answer: toStr(row[CALL_COL.answer]),
-          staff_name: staffName,
-        })
-        if (!insertError) {
-          totalAdded++
+          const { error: insertError } = await supabase.from('call_logs').insert({
+            log_date: logDate,
+            requester_name: toStr(row[CALL_COL.requesterName]),
+            requester_region: toStr(row[CALL_COL.requesterRegion]),
+            requester_contact: toStr(row[CALL_COL.requesterContact]),
+            requester_type: toStr(row[CALL_COL.requesterType]),
+            target_name: toStr(row[CALL_COL.targetName]),
+            target_gender: toStr(row[CALL_COL.targetGender]),
+            target_disability_type: toStr(row[CALL_COL.disabilityType]),
+            target_disability_severity: toStr(row[CALL_COL.disabilitySeverity]),
+            target_economic_status: toStr(row[CALL_COL.economicStatus]),
+            q_public_benefit: toBool(row[CALL_COL.qPublic]),
+            q_private_benefit: toBool(row[CALL_COL.qPrivate]),
+            q_device: toBool(row[CALL_COL.qDevice]),
+            q_case_management: toBool(row[CALL_COL.qCase]),
+            q_other: toBool(row[CALL_COL.qOther]),
+            question_content: questionContent,
+            answer: toStr(row[CALL_COL.answer]),
+            staff_name: staffName,
+          })
+          if (!insertError) {
+            totalAdded++
+          }
         }
       }
+
+      await supabase.from('eval_sync_logs').insert({
+        sheet_type: 'call_log',
+        status: 'success',
+        rows_added: totalAdded,
+        rows_skipped: totalSkipped,
+      })
+      revalidatePath('/migration')
+
+      return { success: true, rowsAdded: totalAdded, rowsSkipped: totalSkipped }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      const supabase = createAdminClient()
+      await supabase.from('eval_sync_logs').insert({
+        sheet_type: 'call_log',
+        status: 'error',
+        rows_added: 0,
+        rows_skipped: 0,
+        error_msg: msg,
+      })
+      return { success: false, rowsAdded: 0, rowsSkipped: 0, error: msg }
     }
-
-    await supabase.from('eval_sync_logs').insert({
-      sheet_type: 'call_log',
-      status: 'success',
-      rows_added: totalAdded,
-      rows_skipped: totalSkipped,
-    })
-    revalidatePath('/migration')
-
-    return { success: true, rowsAdded: totalAdded, rowsSkipped: totalSkipped }
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
-    const supabase = createAdminClient()
-    await supabase.from('eval_sync_logs').insert({
-      sheet_type: 'call_log',
-      status: 'error',
-      rows_added: 0,
-      rows_skipped: 0,
-      error_msg: msg,
-    })
-    return { success: false, rowsAdded: 0, rowsSkipped: 0, error: msg }
-  }
+  })
 }
 
 // ────────────────────────────────────────────
@@ -219,114 +219,114 @@ export async function syncServiceRecords(): Promise<{
   rowsSkipped: number
   error?: string
 }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, rowsAdded: 0, rowsSkipped: 0, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const sheetIds = (process.env.GOOGLE_SERVICE_RECORD_SHEET_IDS ?? '').split(',').map(s => s.trim()).filter(Boolean)
-  if (sheetIds.length === 0) return { success: false, rowsAdded: 0, rowsSkipped: 0, error: 'GOOGLE_SERVICE_RECORD_SHEET_IDS 환경변수가 없습니다' }
+    const sheetIds = (process.env.GOOGLE_SERVICE_RECORD_SHEET_IDS ?? '').split(',').map(s => s.trim()).filter(Boolean)
+    if (sheetIds.length === 0) return { success: false, rowsAdded: 0, rowsSkipped: 0, error: 'GOOGLE_SERVICE_RECORD_SHEET_IDS 환경변수가 없습니다' }
 
-  try {
-    const supabase = createAdminClient()
-    let totalAdded = 0
-    let totalSkipped = 0
+    try {
+      const supabase = createAdminClient()
+      let totalAdded = 0
+      let totalSkipped = 0
 
-    for (const sheetId of sheetIds) {
-      const rows = await getSheetValues(sheetId, '보조기기 서비스 상세!A:AQ')
-      const dataRows = rows.slice(9)
+      for (const sheetId of sheetIds) {
+        const rows = await getSheetValues(sheetId, '보조기기 서비스 상세!A:AQ')
+        const dataRows = rows.slice(9)
 
-      for (const row of dataRows) {
-        if (!row[SR_COL.seq]) continue
+        for (const row of dataRows) {
+          if (!row[SR_COL.seq]) continue
 
-        const receivedAt = parseServiceDate(row[SR_COL.date])
-        const name = toStr(row[SR_COL.name])
-        const birthDate = parseBirthDate(row[SR_COL.birthDate])
+          const receivedAt = parseServiceDate(row[SR_COL.date])
+          const name = toStr(row[SR_COL.name])
+          const birthDate = parseBirthDate(row[SR_COL.birthDate])
 
-        if (!name) continue
+          if (!name) continue
 
-        const { data: existing } = await supabase
-          .from('eval_service_records')
-          .select('id')
-          .eq('received_at', receivedAt ?? '')
-          .eq('name', name)
-          .eq('birth_date', birthDate ?? '')
-          .maybeSingle()
+          const { data: existing } = await supabase
+            .from('eval_service_records')
+            .select('id')
+            .eq('received_at', receivedAt ?? '')
+            .eq('name', name)
+            .eq('birth_date', birthDate ?? '')
+            .maybeSingle()
 
-        if (existing) {
-          totalSkipped++
-          continue
-        }
+          if (existing) {
+            totalSkipped++
+            continue
+          }
 
-        const { error: insertError } = await supabase.from('eval_service_records').insert({
-          received_at: receivedAt,
-          application_year: row[SR_COL.appYear] ? parseInt(String(row[SR_COL.appYear])) : null,
-          application_no: row[SR_COL.appNo] ? parseInt(String(row[SR_COL.appNo])) : null,
-          is_re_application: toBool(row[SR_COL.isReApplication]),
-          name,
-          birth_date: birthDate,
-          gender: toStr(row[SR_COL.gender]),
-          region: toStr(row[SR_COL.region]),
-          disability_type: toStr(row[SR_COL.disabilityType]),
-          service_category: toStr(row[SR_COL.serviceCategory]),
-          product_name: toStr(row[SR_COL.productName]),
-          item_category: toStr(row[SR_COL.itemCategory]),
-          service_content: toStr(row[SR_COL.serviceContent]),
-          service_area: toStr(row[SR_COL.serviceArea]),
-          is_consult: toBool(row[SR_COL.isConsult]),
-          is_assessment: toBool(row[SR_COL.isAssessment]),
-          is_trial: toBool(row[SR_COL.isTrial]),
-          is_rental: toBool(row[SR_COL.isRental]),
-          is_custom_make: toBool(row[SR_COL.isCustomMake]),
-          is_grant: toBool(row[SR_COL.isGrant]),
-          is_education: toBool(row[SR_COL.isEducation]),
-          is_other_business: toBool(row[SR_COL.isOtherBusiness]),
-          is_info_provision: toBool(row[SR_COL.isInfoProvision]),
-          is_public_funding: toBool(row[SR_COL.isPublicFunding]),
-          is_private_funding: toBool(row[SR_COL.isPrivateFunding]),
-          is_self_pay: toBool(row[SR_COL.isSelfPay]),
-          is_funding_secured: toBool(row[SR_COL.isFundingSecured]),
-          is_repair: toBool(row[SR_COL.isRepair]),
-          is_cleaning: toBool(row[SR_COL.isCleaning]),
-          is_reuse: toBool(row[SR_COL.isReuse]),
-          is_monitoring: toBool(row[SR_COL.isMonitoring]),
-          referral_type: toStr(row[SR_COL.referralType]),
-          is_phone: toBool(row[SR_COL.isPhone]),
-          is_visit_in: toBool(row[SR_COL.isVisitIn]),
-          is_visit_out: toBool(row[SR_COL.isVisitOut]),
-          is_closed: toBool(row[SR_COL.isClosed]),
-          staff_name: toStr(row[SR_COL.staffName]),
-          contact: toStr(row[SR_COL.contact]),
-          address: toStr(row[SR_COL.address]),
-          source: 'sheets',
-          application_month: receivedAt ? parseInt(receivedAt.split('-')[1]) : null,
-          record_status: toBool(row[SR_COL.isClosed]) ? '완료' : '미정',
-        })
-        if (!insertError) {
-          totalAdded++
+          const { error: insertError } = await supabase.from('eval_service_records').insert({
+            received_at: receivedAt,
+            application_year: row[SR_COL.appYear] ? parseInt(String(row[SR_COL.appYear])) : null,
+            application_no: row[SR_COL.appNo] ? parseInt(String(row[SR_COL.appNo])) : null,
+            is_re_application: toBool(row[SR_COL.isReApplication]),
+            name,
+            birth_date: birthDate,
+            gender: toStr(row[SR_COL.gender]),
+            region: toStr(row[SR_COL.region]),
+            disability_type: toStr(row[SR_COL.disabilityType]),
+            service_category: toStr(row[SR_COL.serviceCategory]),
+            product_name: toStr(row[SR_COL.productName]),
+            item_category: toStr(row[SR_COL.itemCategory]),
+            service_content: toStr(row[SR_COL.serviceContent]),
+            service_area: toStr(row[SR_COL.serviceArea]),
+            is_consult: toBool(row[SR_COL.isConsult]),
+            is_assessment: toBool(row[SR_COL.isAssessment]),
+            is_trial: toBool(row[SR_COL.isTrial]),
+            is_rental: toBool(row[SR_COL.isRental]),
+            is_custom_make: toBool(row[SR_COL.isCustomMake]),
+            is_grant: toBool(row[SR_COL.isGrant]),
+            is_education: toBool(row[SR_COL.isEducation]),
+            is_other_business: toBool(row[SR_COL.isOtherBusiness]),
+            is_info_provision: toBool(row[SR_COL.isInfoProvision]),
+            is_public_funding: toBool(row[SR_COL.isPublicFunding]),
+            is_private_funding: toBool(row[SR_COL.isPrivateFunding]),
+            is_self_pay: toBool(row[SR_COL.isSelfPay]),
+            is_funding_secured: toBool(row[SR_COL.isFundingSecured]),
+            is_repair: toBool(row[SR_COL.isRepair]),
+            is_cleaning: toBool(row[SR_COL.isCleaning]),
+            is_reuse: toBool(row[SR_COL.isReuse]),
+            is_monitoring: toBool(row[SR_COL.isMonitoring]),
+            referral_type: toStr(row[SR_COL.referralType]),
+            is_phone: toBool(row[SR_COL.isPhone]),
+            is_visit_in: toBool(row[SR_COL.isVisitIn]),
+            is_visit_out: toBool(row[SR_COL.isVisitOut]),
+            is_closed: toBool(row[SR_COL.isClosed]),
+            staff_name: toStr(row[SR_COL.staffName]),
+            contact: toStr(row[SR_COL.contact]),
+            address: toStr(row[SR_COL.address]),
+            source: 'sheets',
+            application_month: receivedAt ? parseInt(receivedAt.split('-')[1]) : null,
+            record_status: toBool(row[SR_COL.isClosed]) ? '완료' : '미정',
+          })
+          if (!insertError) {
+            totalAdded++
+          }
         }
       }
+
+      await supabase.from('eval_sync_logs').insert({
+        sheet_type: 'service_record',
+        status: 'success',
+        rows_added: totalAdded,
+        rows_skipped: totalSkipped,
+      })
+      revalidatePath('/migration')
+
+      return { success: true, rowsAdded: totalAdded, rowsSkipped: totalSkipped }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      const supabase = createAdminClient()
+      await supabase.from('eval_sync_logs').insert({
+        sheet_type: 'service_record',
+        status: 'error',
+        rows_added: 0,
+        rows_skipped: 0,
+        error_msg: msg,
+      })
+      return { success: false, rowsAdded: 0, rowsSkipped: 0, error: msg }
     }
-
-    await supabase.from('eval_sync_logs').insert({
-      sheet_type: 'service_record',
-      status: 'success',
-      rows_added: totalAdded,
-      rows_skipped: totalSkipped,
-    })
-    revalidatePath('/migration')
-
-    return { success: true, rowsAdded: totalAdded, rowsSkipped: totalSkipped }
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
-    const supabase = createAdminClient()
-    await supabase.from('eval_sync_logs').insert({
-      sheet_type: 'service_record',
-      status: 'error',
-      rows_added: 0,
-      rows_skipped: 0,
-      error_msg: msg,
-    })
-    return { success: false, rowsAdded: 0, rowsSkipped: 0, error: msg }
-  }
+  })
 }
 
 // ────────────────────────────────────────────
@@ -410,113 +410,113 @@ export async function syncClients(): Promise<{
   rowsSkipped: number
   error?: string
 }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, rowsAdded: 0, rowsSkipped: 0, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const sheetId = process.env.GOOGLE_CLIENT_SHEET_ID
-  if (!sheetId) return { success: false, rowsAdded: 0, rowsSkipped: 0, error: 'GOOGLE_CLIENT_SHEET_ID 환경변수가 없습니다' }
+    const sheetId = process.env.GOOGLE_CLIENT_SHEET_ID
+    if (!sheetId) return { success: false, rowsAdded: 0, rowsSkipped: 0, error: 'GOOGLE_CLIENT_SHEET_ID 환경변수가 없습니다' }
 
-  try {
-    const supabase = createAdminClient()
+    try {
+      const supabase = createAdminClient()
 
-    const [basicRows, disabilityRows] = await Promise.all([
-      getSheetValues(sheetId, '대상자기초정보!A:R'),
-      getSheetValues(sheetId, '대상자장애정보!A:G'),
-    ])
+      const [basicRows, disabilityRows] = await Promise.all([
+        getSheetValues(sheetId, '대상자기초정보!A:R'),
+        getSheetValues(sheetId, '대상자장애정보!A:G'),
+      ])
 
-    // Build disability lookup keyed by registration_number
-    const disabilityMap = new Map<string, {
-      disability_type: string | null
-      disability_grade: string | null
-      disability_cause: string | null
-      disability_onset_date: string | null
-    }>()
-    for (const row of disabilityRows.slice(1)) {
-      const regNo = toStr(row[CLIENT_DISABILITY_COL.registrationNo])
-      if (!regNo) continue
-      disabilityMap.set(regNo, {
-        disability_type:     normalizeDisabilityType(row[CLIENT_DISABILITY_COL.disabilityType]),
-        disability_grade:    toStr(row[CLIENT_DISABILITY_COL.disabilityGrade]),
-        disability_cause:    toStr(row[CLIENT_DISABILITY_COL.disabilityCause]),
-        disability_onset_date: toStr(row[CLIENT_DISABILITY_COL.disabilityOnset]),
-      })
-    }
-
-    let totalAdded = 0
-    let totalSkipped = 0
-
-    for (const row of basicRows.slice(1)) {
-      const name = toStr(row[CLIENT_BASIC_COL.name])
-      if (!name) continue
-
-      const registrationNo = toStr(row[CLIENT_BASIC_COL.registrationNo])
-
-      // Deduplicate by registration_number (or name+birth_date fallback)
-      const birthDate = parseClientBirthDate(row[CLIENT_BASIC_COL.birthDate])
-      let existing = null
-      if (registrationNo) {
-        const { data } = await supabase
-          .from('clients')
-          .select('id')
-          .eq('registration_number', registrationNo)
-          .maybeSingle()
-        existing = data
-      } else {
-        const { data } = await supabase
-          .from('clients')
-          .select('id')
-          .eq('name', name)
-          .eq('birth_date', birthDate ?? '')
-          .maybeSingle()
-        existing = data
+      // Build disability lookup keyed by registration_number
+      const disabilityMap = new Map<string, {
+        disability_type: string | null
+        disability_grade: string | null
+        disability_cause: string | null
+        disability_onset_date: string | null
+      }>()
+      for (const row of disabilityRows.slice(1)) {
+        const regNo = toStr(row[CLIENT_DISABILITY_COL.registrationNo])
+        if (!regNo) continue
+        disabilityMap.set(regNo, {
+          disability_type:     normalizeDisabilityType(row[CLIENT_DISABILITY_COL.disabilityType]),
+          disability_grade:    toStr(row[CLIENT_DISABILITY_COL.disabilityGrade]),
+          disability_cause:    toStr(row[CLIENT_DISABILITY_COL.disabilityCause]),
+          disability_onset_date: toStr(row[CLIENT_DISABILITY_COL.disabilityOnset]),
+        })
       }
 
-      if (existing) { totalSkipped++; continue }
+      let totalAdded = 0
+      let totalSkipped = 0
 
-      const region  = toStr(row[CLIENT_BASIC_COL.regionSi])
-      const detail  = toStr(row[CLIENT_BASIC_COL.addressDetail])
-      const address = [region, detail].filter(Boolean).join(' ') || null
-      const dis     = registrationNo ? disabilityMap.get(registrationNo) : undefined
+      for (const row of basicRows.slice(1)) {
+        const name = toStr(row[CLIENT_BASIC_COL.name])
+        if (!name) continue
 
-      const { error: insertError } = await supabase.from('clients').insert({
-        registration_number:  registrationNo,
-        name,
-        birth_date:           birthDate,
-        gender:               normalizeGender(row[CLIENT_BASIC_COL.gender]),
-        address,
-        contact:              toStr(row[CLIENT_BASIC_COL.contact]),
-        guardian_contact:     toStr(row[CLIENT_BASIC_COL.guardianContact]),
-        economic_status:      toStr(row[CLIENT_BASIC_COL.economicStatus]),
-        housing_type:         toStr(row[CLIENT_BASIC_COL.housingType]),
-        has_elevator:         toBoolKorean(row[CLIENT_BASIC_COL.hasElevator]),
-        obstacles:            toStr(row[CLIENT_BASIC_COL.obstacles]),
-        disability_type:      dis?.disability_type ?? null,
-        disability_grade:     dis?.disability_grade ?? null,
-        disability_cause:     dis?.disability_cause ?? null,
-        disability_onset_date: dis?.disability_onset_date ?? null,
+        const registrationNo = toStr(row[CLIENT_BASIC_COL.registrationNo])
+
+        // Deduplicate by registration_number (or name+birth_date fallback)
+        const birthDate = parseClientBirthDate(row[CLIENT_BASIC_COL.birthDate])
+        let existing = null
+        if (registrationNo) {
+          const { data } = await supabase
+            .from('clients')
+            .select('id')
+            .eq('registration_number', registrationNo)
+            .maybeSingle()
+          existing = data
+        } else {
+          const { data } = await supabase
+            .from('clients')
+            .select('id')
+            .eq('name', name)
+            .eq('birth_date', birthDate ?? '')
+            .maybeSingle()
+          existing = data
+        }
+
+        if (existing) { totalSkipped++; continue }
+
+        const region  = toStr(row[CLIENT_BASIC_COL.regionSi])
+        const detail  = toStr(row[CLIENT_BASIC_COL.addressDetail])
+        const address = [region, detail].filter(Boolean).join(' ') || null
+        const dis     = registrationNo ? disabilityMap.get(registrationNo) : undefined
+
+        const { error: insertError } = await supabase.from('clients').insert({
+          registration_number:  registrationNo,
+          name,
+          birth_date:           birthDate,
+          gender:               normalizeGender(row[CLIENT_BASIC_COL.gender]),
+          address,
+          contact:              toStr(row[CLIENT_BASIC_COL.contact]),
+          guardian_contact:     toStr(row[CLIENT_BASIC_COL.guardianContact]),
+          economic_status:      toStr(row[CLIENT_BASIC_COL.economicStatus]),
+          housing_type:         toStr(row[CLIENT_BASIC_COL.housingType]),
+          has_elevator:         toBoolKorean(row[CLIENT_BASIC_COL.hasElevator]),
+          obstacles:            toStr(row[CLIENT_BASIC_COL.obstacles]),
+          disability_type:      dis?.disability_type ?? null,
+          disability_grade:     dis?.disability_grade ?? null,
+          disability_cause:     dis?.disability_cause ?? null,
+          disability_onset_date: dis?.disability_onset_date ?? null,
+        })
+
+        if (!insertError) totalAdded++
+      }
+
+      await supabase.from('eval_sync_logs').insert({
+        sheet_type:   'client',
+        status:       'success',
+        rows_added:   totalAdded,
+        rows_skipped: totalSkipped,
       })
+      revalidatePath('/migration')
 
-      if (!insertError) totalAdded++
+      return { success: true, rowsAdded: totalAdded, rowsSkipped: totalSkipped }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      const supabase = createAdminClient()
+      await supabase.from('eval_sync_logs').insert({
+        sheet_type: 'client', status: 'error',
+        rows_added: 0, rows_skipped: 0, error_msg: msg,
+      })
+      return { success: false, rowsAdded: 0, rowsSkipped: 0, error: msg }
     }
-
-    await supabase.from('eval_sync_logs').insert({
-      sheet_type:   'client',
-      status:       'success',
-      rows_added:   totalAdded,
-      rows_skipped: totalSkipped,
-    })
-    revalidatePath('/migration')
-
-    return { success: true, rowsAdded: totalAdded, rowsSkipped: totalSkipped }
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err)
-    const supabase = createAdminClient()
-    await supabase.from('eval_sync_logs').insert({
-      sheet_type: 'client', status: 'error',
-      rows_added: 0, rows_skipped: 0, error_msg: msg,
-    })
-    return { success: false, rowsAdded: 0, rowsSkipped: 0, error: msg }
-  }
+  })
 }
 
 // ────────────────────────────────────────────
@@ -538,18 +538,18 @@ export async function getSyncLogs(limit = 20): Promise<{
   logs?: SyncLog[]
   error?: string
 }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('eval_sync_logs')
-    .select('*')
-    .order('synced_at', { ascending: false })
-    .limit(limit)
+    const supabase = createAdminClient()
+    const { data, error } = await supabase
+      .from('eval_sync_logs')
+      .select('*')
+      .order('synced_at', { ascending: false })
+      .limit(limit)
 
-  if (error) return { success: false, error: error.message }
-  return { success: true, logs: data as SyncLog[] }
+    if (error) return { success: false, error: error.message }
+    return { success: true, logs: data as SyncLog[] }
+  })
 }
 
 export async function getSyncStats(): Promise<{
@@ -562,39 +562,39 @@ export async function getSyncStats(): Promise<{
   lastClientSync?: string | null
   error?: string
 }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
+    const supabase = createAdminClient()
 
-  const [callResult, srResult, clientResult, logsResult] = await Promise.all([
-    supabase.from('call_logs').select('*', { count: 'exact', head: true }),
-    supabase.from('eval_service_records').select('*', { count: 'exact', head: true }),
-    supabase.from('clients').select('*', { count: 'exact', head: true }),
-    supabase.from('eval_sync_logs')
-      .select('sheet_type, synced_at, status')
-      .eq('status', 'success')
-      .order('synced_at', { ascending: false })
-      .limit(15),
-  ])
+    const [callResult, srResult, clientResult, logsResult] = await Promise.all([
+      supabase.from('call_logs').select('*', { count: 'exact', head: true }),
+      supabase.from('eval_service_records').select('*', { count: 'exact', head: true }),
+      supabase.from('clients').select('*', { count: 'exact', head: true }),
+      supabase.from('eval_sync_logs')
+        .select('sheet_type, synced_at, status')
+        .eq('status', 'success')
+        .order('synced_at', { ascending: false })
+        .limit(15),
+    ])
 
-  if (callResult.error || srResult.error || clientResult.error) {
-    return { success: false, error: callResult.error?.message ?? srResult.error?.message ?? clientResult.error?.message }
-  }
+    if (callResult.error || srResult.error || clientResult.error) {
+      return { success: false, error: callResult.error?.message ?? srResult.error?.message ?? clientResult.error?.message }
+    }
 
-  type SyncLogRow = { sheet_type: string; synced_at: string | null }
-  const logs = logsResult.data as SyncLogRow[] ?? []
-  const lastCallLog = logs.find(l => l.sheet_type === 'call_log')?.synced_at ?? null
-  const lastSR      = logs.find(l => l.sheet_type === 'service_record')?.synced_at ?? null
-  const lastClient  = logs.find(l => l.sheet_type === 'client')?.synced_at ?? null
+    type SyncLogRow = { sheet_type: string; synced_at: string | null }
+    const logs = logsResult.data as SyncLogRow[] ?? []
+    const lastCallLog = logs.find(l => l.sheet_type === 'call_log')?.synced_at ?? null
+    const lastSR      = logs.find(l => l.sheet_type === 'service_record')?.synced_at ?? null
+    const lastClient  = logs.find(l => l.sheet_type === 'client')?.synced_at ?? null
 
-  return {
-    success: true,
-    callLogCount:        callResult.count ?? 0,
-    serviceRecordCount:  srResult.count ?? 0,
-    clientCount:         clientResult.count ?? 0,
-    lastCallLogSync:     lastCallLog,
-    lastServiceRecordSync: lastSR,
-    lastClientSync:      lastClient,
-  }
+    return {
+      success: true,
+      callLogCount:        callResult.count ?? 0,
+      serviceRecordCount:  srResult.count ?? 0,
+      clientCount:         clientResult.count ?? 0,
+      lastCallLogSync:     lastCallLog,
+      lastServiceRecordSync: lastSR,
+      lastClientSync:      lastClient,
+    }
+  })
 }

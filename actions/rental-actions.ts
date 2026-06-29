@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from "next/cache"
 import { updateInventoryStatus } from "./inventory-actions"
 import { differenceInDays, isPast, isToday, addDays, format } from "date-fns"
@@ -56,102 +56,99 @@ export async function createRental(
   rental?: RentalItem
   error?: string
 }> {
-  try {
-    console.log("[Rental Actions] 대여 생성 시작:", input)
+  return withStaffPermission(async () => {
+    try {
+      console.log("[Rental Actions] 대여 생성 시작:", input)
 
-    // 권한 확인
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return { success: false, error: "권한이 없습니다" }
-    }
+      // 권한 확인
+      const supabase = await createClient()
 
-    const supabase = await createClient()
+      // 재고 상태 확인 (대여 가능한지 확인)
+      const { data: inventory, error: inventoryError } = await supabase
+        .from("inventory")
+        .select("id, status, is_rental_available")
+        .eq("id", input.inventory_id)
+        .single()
 
-    // 재고 상태 확인 (대여 가능한지 확인)
-    const { data: inventory, error: inventoryError } = await supabase
-      .from("inventory")
-      .select("id, status, is_rental_available")
-      .eq("id", input.inventory_id)
-      .single()
+      if (inventoryError || !inventory) {
+        console.error("[Rental Actions] 재고 조회 실패:", inventoryError)
+        return { success: false, error: "재고 정보를 찾을 수 없습니다" }
+      }
 
-    if (inventoryError || !inventory) {
-      console.error("[Rental Actions] 재고 조회 실패:", inventoryError)
-      return { success: false, error: "재고 정보를 찾을 수 없습니다" }
-    }
+      const inventoryTyped = inventory as { status?: string; is_rental_available?: boolean } | null;
+      if (!inventoryTyped || inventoryTyped.status !== "보관") {
+        return {
+          success: false,
+          error: `해당 기기는 현재 ${inventoryTyped?.status || "알 수 없음"} 상태로 대여할 수 없습니다`,
+        }
+      }
 
-    const inventoryTyped = inventory as { status?: string; is_rental_available?: boolean } | null;
-    if (!inventoryTyped || inventoryTyped.status !== "보관") {
+      if (!inventoryTyped.is_rental_available) {
+        return { success: false, error: "해당 기기는 대여 불가능합니다" }
+      }
+
+      // 대여 기록 생성
+      const { data: rental, error: rentalError } = await supabase
+        .from("rentals")
+        // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
+        .insert({
+          application_id: input.application_id,
+          inventory_id: input.inventory_id,
+          client_id: input.client_id,
+          rental_start_date: input.rental_start_date,
+          rental_end_date: input.rental_end_date,
+          status: "rented",
+          extension_count: 0,
+        })
+        .select()
+        .single()
+
+      if (rentalError) {
+        console.error("[Rental Actions] 대여 생성 실패:", rentalError)
+        return { success: false, error: "대여 생성에 실패했습니다" }
+      }
+
+      // 재고 상태를 '대여중'으로 변경
+      const statusResult = await updateInventoryStatus(input.inventory_id, "대여중")
+      if (!statusResult.success) {
+        console.error("[Rental Actions] 재고 상태 변경 실패:", statusResult.error)
+        // 대여는 생성되었지만 상태 변경 실패 - 경고만 표시
+      }
+
+      const rentalTyped = rental as { id: string } | null;
+      console.log("[Rental Actions] 대여 생성 성공:", rentalTyped?.id)
+
+      // 경로 무효화
+      revalidatePath("/clients")
+      revalidatePath(`/clients/${input.client_id}`)
+      revalidatePath("/clients")
+      revalidatePath(`/clients/${input.client_id}`)
+      revalidatePath("/inventory")
+      revalidatePath("/mypage")
+
+      // C-1: 신규 대여 확정 알림 (fire-and-forget)
+      const clientData = await createAdminClient()
+        .from('clients')
+        .select('email')
+        .eq('id', input.client_id)
+        .single()
+      notifyRentalCreated({
+        clientId: input.client_id,
+        clientEmail: (clientData.data as any)?.email ?? null,
+        deviceName: (inventory as any)?.name ?? '보조기기',
+        rentalStartDate: input.rental_start_date,
+        rentalEndDate: input.rental_end_date,
+      }).catch(() => {})
+
+      return { success: true, rental }
+    } catch (error) {
+      console.error("[Rental Actions] 대여 생성 중 오류:", error)
       return {
         success: false,
-        error: `해당 기기는 현재 ${inventoryTyped?.status || "알 수 없음"} 상태로 대여할 수 없습니다`,
+        error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
       }
     }
-
-    if (!inventoryTyped.is_rental_available) {
-      return { success: false, error: "해당 기기는 대여 불가능합니다" }
-    }
-
-    // 대여 기록 생성
-    const { data: rental, error: rentalError } = await supabase
-      .from("rentals")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableInsert 타입이 insert 메서드와 완전히 호환되지 않음
-      .insert({
-        application_id: input.application_id,
-        inventory_id: input.inventory_id,
-        client_id: input.client_id,
-        rental_start_date: input.rental_start_date,
-        rental_end_date: input.rental_end_date,
-        status: "rented",
-        extension_count: 0,
-      })
-      .select()
-      .single()
-
-    if (rentalError) {
-      console.error("[Rental Actions] 대여 생성 실패:", rentalError)
-      return { success: false, error: "대여 생성에 실패했습니다" }
-    }
-
-    // 재고 상태를 '대여중'으로 변경
-    const statusResult = await updateInventoryStatus(input.inventory_id, "대여중")
-    if (!statusResult.success) {
-      console.error("[Rental Actions] 재고 상태 변경 실패:", statusResult.error)
-      // 대여는 생성되었지만 상태 변경 실패 - 경고만 표시
-    }
-
-    const rentalTyped = rental as { id: string } | null;
-    console.log("[Rental Actions] 대여 생성 성공:", rentalTyped?.id)
-
-    // 경로 무효화
-    revalidatePath("/clients")
-    revalidatePath(`/clients/${input.client_id}`)
-    revalidatePath("/clients")
-    revalidatePath(`/clients/${input.client_id}`)
-    revalidatePath("/inventory")
-    revalidatePath("/mypage")
-
-    // C-1: 신규 대여 확정 알림 (fire-and-forget)
-    const clientData = await createAdminClient()
-      .from('clients')
-      .select('email')
-      .eq('id', input.client_id)
-      .single()
-    notifyRentalCreated({
-      clientId: input.client_id,
-      clientEmail: (clientData.data as any)?.email ?? null,
-      deviceName: (inventory as any)?.name ?? '보조기기',
-      rentalStartDate: input.rental_start_date,
-      rentalEndDate: input.rental_end_date,
-    }).catch(() => {})
-
-    return { success: true, rental }
-  } catch (error) {
-    console.error("[Rental Actions] 대여 생성 중 오류:", error)
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
-    }
-  }
+  })
 }
 
 /**
@@ -168,102 +165,99 @@ export async function returnRental(
   rental?: RentalItem
   error?: string
 }> {
-  try {
-    console.log("[Rental Actions] 대여 반납 시작:", { rentalId, returnDate })
+  return withStaffPermission(async () => {
+    try {
+      console.log("[Rental Actions] 대여 반납 시작:", { rentalId, returnDate })
 
-    // 권한 확인
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return { success: false, error: "권한이 없습니다" }
-    }
+      // 권한 확인
+      const supabase = await createClient()
 
-    const supabase = await createClient()
-
-    // 대여 정보 조회
-    const { data: rental, error: rentalError } = await supabase
-      .from("rentals")
-      .select("*")
-      .eq("id", rentalId)
-      .single()
-
-    if (rentalError || !rental) {
-      console.error("[Rental Actions] 대여 조회 실패:", rentalError)
-      return { success: false, error: "대여 정보를 찾을 수 없습니다" }
-    }
-
-    const rentalTyped = rental as { status?: string } | null;
-    if (rentalTyped?.status === "returned") {
-      return { success: false, error: "이미 반납된 대여입니다" }
-    }
-
-    // 반납일 설정 (지정되지 않으면 오늘)
-    const actualReturnDate = returnDate || format(new Date(), "yyyy-MM-dd")
-
-    // 대여 상태 업데이트
-    const { data: updatedRental, error: updateError } = await supabase
-      .from("rentals")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
-      .update({
-        status: "returned",
-        return_date: actualReturnDate,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", rentalId)
-      .select()
-      .single()
-
-    if (updateError) {
-      console.error("[Rental Actions] 대여 반납 실패:", updateError)
-      return { success: false, error: "대여 반납에 실패했습니다" }
-    }
-
-    // 재고 상태를 '보관'으로 변경
-    const rentalWithIds = rentalTyped as { inventory_id?: string; client_id?: string } | null;
-    const statusResult = await updateInventoryStatus(rentalWithIds?.inventory_id || "", "보관")
-    if (!statusResult.success) {
-      console.error("[Rental Actions] 재고 상태 변경 실패:", statusResult.error)
-      // 반납은 완료되었지만 상태 변경 실패 - 경고만 표시
-    }
-
-    console.log("[Rental Actions] 대여 반납 성공:", rentalId)
-
-    // 경로 무효화
-    const rentalClientId = rentalWithIds?.client_id || "";
-    revalidatePath("/clients")
-    revalidatePath(`/clients/${rentalClientId}`)
-    revalidatePath("/clients")
-    revalidatePath(`/clients/${rentalClientId}`)
-    revalidatePath("/inventory")
-    revalidatePath("/mypage")
-
-    // C-2: 대여 반납 완료 알림 (fire-and-forget)
-    if (rentalClientId) {
-      const clientData = await createAdminClient()
-        .from('clients')
-        .select('email')
-        .eq('id', rentalClientId)
+      // 대여 정보 조회
+      const { data: rental, error: rentalError } = await supabase
+        .from("rentals")
+        .select("*")
+        .eq("id", rentalId)
         .single()
-      const inventoryData = await createAdminClient()
-        .from('inventory')
-        .select('name')
-        .eq('id', (rentalWithIds as any)?.inventory_id ?? '')
-        .single()
-      notifyRentalReturned({
-        clientId: rentalClientId,
-        clientEmail: (clientData.data as any)?.email ?? null,
-        deviceName: (inventoryData.data as any)?.name ?? '보조기기',
-        returnDate: actualReturnDate,
-      }).catch(() => {})
-    }
 
-    return { success: true, rental: updatedRental }
-  } catch (error) {
-    console.error("[Rental Actions] 대여 반납 중 오류:", error)
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
+      if (rentalError || !rental) {
+        console.error("[Rental Actions] 대여 조회 실패:", rentalError)
+        return { success: false, error: "대여 정보를 찾을 수 없습니다" }
+      }
+
+      const rentalTyped = rental as { status?: string } | null;
+      if (rentalTyped?.status === "returned") {
+        return { success: false, error: "이미 반납된 대여입니다" }
+      }
+
+      // 반납일 설정 (지정되지 않으면 오늘)
+      const actualReturnDate = returnDate || format(new Date(), "yyyy-MM-dd")
+
+      // 대여 상태 업데이트
+      const { data: updatedRental, error: updateError } = await supabase
+        .from("rentals")
+        // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
+        .update({
+          status: "returned",
+          return_date: actualReturnDate,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", rentalId)
+        .select()
+        .single()
+
+      if (updateError) {
+        console.error("[Rental Actions] 대여 반납 실패:", updateError)
+        return { success: false, error: "대여 반납에 실패했습니다" }
+      }
+
+      // 재고 상태를 '보관'으로 변경
+      const rentalWithIds = rentalTyped as { inventory_id?: string; client_id?: string } | null;
+      const statusResult = await updateInventoryStatus(rentalWithIds?.inventory_id || "", "보관")
+      if (!statusResult.success) {
+        console.error("[Rental Actions] 재고 상태 변경 실패:", statusResult.error)
+        // 반납은 완료되었지만 상태 변경 실패 - 경고만 표시
+      }
+
+      console.log("[Rental Actions] 대여 반납 성공:", rentalId)
+
+      // 경로 무효화
+      const rentalClientId = rentalWithIds?.client_id || "";
+      revalidatePath("/clients")
+      revalidatePath(`/clients/${rentalClientId}`)
+      revalidatePath("/clients")
+      revalidatePath(`/clients/${rentalClientId}`)
+      revalidatePath("/inventory")
+      revalidatePath("/mypage")
+
+      // C-2: 대여 반납 완료 알림 (fire-and-forget)
+      if (rentalClientId) {
+        const clientData = await createAdminClient()
+          .from('clients')
+          .select('email')
+          .eq('id', rentalClientId)
+          .single()
+        const inventoryData = await createAdminClient()
+          .from('inventory')
+          .select('name')
+          .eq('id', (rentalWithIds as any)?.inventory_id ?? '')
+          .single()
+        notifyRentalReturned({
+          clientId: rentalClientId,
+          clientEmail: (clientData.data as any)?.email ?? null,
+          deviceName: (inventoryData.data as any)?.name ?? '보조기기',
+          returnDate: actualReturnDate,
+        }).catch(() => {})
+      }
+
+      return { success: true, rental: updatedRental }
+    } catch (error) {
+      console.error("[Rental Actions] 대여 반납 중 오류:", error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
+      }
     }
-  }
+  })
 }
 
 /**
@@ -277,98 +271,95 @@ export async function extendRental(
   rental?: RentalItem
   error?: string
 }> {
-  try {
-    console.log("[Rental Actions] 대여 연장 시작:", { rentalId, newEndDate })
+  return withStaffPermission(async () => {
+    try {
+      console.log("[Rental Actions] 대여 연장 시작:", { rentalId, newEndDate })
 
-    // 권한 확인
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return { success: false, error: "권한이 없습니다" }
-    }
+      // 권한 확인
+      const supabase = await createClient()
 
-    const supabase = await createClient()
-
-    // 대여 정보 조회
-    const { data: rental, error: rentalError } = await supabase
-      .from("rentals")
-      .select("*")
-      .eq("id", rentalId)
-      .single()
-
-    if (rentalError || !rental) {
-      console.error("[Rental Actions] 대여 조회 실패:", rentalError)
-      return { success: false, error: "대여 정보를 찾을 수 없습니다" }
-    }
-
-    const rentalTypedForExtension = rental as { status?: string } | null;
-    if (rentalTypedForExtension?.status !== "rented") {
-      return { success: false, error: "대여 중인 항목만 연장할 수 있습니다" }
-    }
-
-    // 연장 횟수 증가
-    const rentalForExtension = rentalTypedForExtension as { extension_count?: number } | null;
-
-    if ((rentalForExtension?.extension_count ?? 0) >= 1) {
-      return { success: false, error: '이미 1회 연장하여 추가 연장이 불가합니다' }
-    }
-    const newExtensionCount = (rentalForExtension?.extension_count || 0) + 1
-
-    // 대여 기간 업데이트
-    const { data: updatedRental, error: updateError } = await supabase
-      .from("rentals")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
-      .update({
-        rental_end_date: newEndDate,
-        extension_count: newExtensionCount,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", rentalId)
-      .select()
-      .single()
-
-    if (updateError) {
-      console.error("[Rental Actions] 대여 연장 실패:", updateError)
-      return { success: false, error: "대여 연장에 실패했습니다" }
-    }
-
-    console.log("[Rental Actions] 대여 연장 성공:", rentalId)
-
-    // 경로 무효화
-    const rentalClientIdForExtension = (rentalForExtension as { client_id?: string })?.client_id || "";
-    revalidatePath("/clients")
-    revalidatePath(`/clients/${rentalClientIdForExtension}`)
-    revalidatePath("/clients")
-    revalidatePath(`/clients/${rentalClientIdForExtension}`)
-    revalidatePath("/mypage")
-
-    // C-3: 대여 기간 연장 알림 (fire-and-forget)
-    if (rentalClientIdForExtension) {
-      const clientData = await createAdminClient()
-        .from('clients')
-        .select('email')
-        .eq('id', rentalClientIdForExtension)
+      // 대여 정보 조회
+      const { data: rental, error: rentalError } = await supabase
+        .from("rentals")
+        .select("*")
+        .eq("id", rentalId)
         .single()
-      const inventoryData = await createAdminClient()
-        .from('inventory')
-        .select('name')
-        .eq('id', (rentalForExtension as any)?.inventory_id ?? '')
-        .single()
-      notifyRentalExtended({
-        clientId: rentalClientIdForExtension,
-        clientEmail: (clientData.data as any)?.email ?? null,
-        deviceName: (inventoryData.data as any)?.name ?? '보조기기',
-        newEndDate: newEndDate,
-      }).catch(() => {})
-    }
 
-    return { success: true, rental: updatedRental }
-  } catch (error) {
-    console.error("[Rental Actions] 대여 연장 중 오류:", error)
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
+      if (rentalError || !rental) {
+        console.error("[Rental Actions] 대여 조회 실패:", rentalError)
+        return { success: false, error: "대여 정보를 찾을 수 없습니다" }
+      }
+
+      const rentalTypedForExtension = rental as { status?: string } | null;
+      if (rentalTypedForExtension?.status !== "rented") {
+        return { success: false, error: "대여 중인 항목만 연장할 수 있습니다" }
+      }
+
+      // 연장 횟수 증가
+      const rentalForExtension = rentalTypedForExtension as { extension_count?: number } | null;
+
+      if ((rentalForExtension?.extension_count ?? 0) >= 1) {
+        return { success: false, error: '이미 1회 연장하여 추가 연장이 불가합니다' }
+      }
+      const newExtensionCount = (rentalForExtension?.extension_count || 0) + 1
+
+      // 대여 기간 업데이트
+      const { data: updatedRental, error: updateError } = await supabase
+        .from("rentals")
+        // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
+        .update({
+          rental_end_date: newEndDate,
+          extension_count: newExtensionCount,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", rentalId)
+        .select()
+        .single()
+
+      if (updateError) {
+        console.error("[Rental Actions] 대여 연장 실패:", updateError)
+        return { success: false, error: "대여 연장에 실패했습니다" }
+      }
+
+      console.log("[Rental Actions] 대여 연장 성공:", rentalId)
+
+      // 경로 무효화
+      const rentalClientIdForExtension = (rentalForExtension as { client_id?: string })?.client_id || "";
+      revalidatePath("/clients")
+      revalidatePath(`/clients/${rentalClientIdForExtension}`)
+      revalidatePath("/clients")
+      revalidatePath(`/clients/${rentalClientIdForExtension}`)
+      revalidatePath("/mypage")
+
+      // C-3: 대여 기간 연장 알림 (fire-and-forget)
+      if (rentalClientIdForExtension) {
+        const clientData = await createAdminClient()
+          .from('clients')
+          .select('email')
+          .eq('id', rentalClientIdForExtension)
+          .single()
+        const inventoryData = await createAdminClient()
+          .from('inventory')
+          .select('name')
+          .eq('id', (rentalForExtension as any)?.inventory_id ?? '')
+          .single()
+        notifyRentalExtended({
+          clientId: rentalClientIdForExtension,
+          clientEmail: (clientData.data as any)?.email ?? null,
+          deviceName: (inventoryData.data as any)?.name ?? '보조기기',
+          newEndDate: newEndDate,
+        }).catch(() => {})
+      }
+
+      return { success: true, rental: updatedRental }
+    } catch (error) {
+      console.error("[Rental Actions] 대여 연장 중 오류:", error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
+      }
     }
-  }
+  })
 }
 
 /**
@@ -386,86 +377,83 @@ export async function getRentals(params?: {
   total?: number
   error?: string
 }> {
-  try {
-    console.log("[Rental Actions] 대여 목록 조회 시작:", params)
+  return withStaffPermission(async () => {
+    try {
+      console.log("[Rental Actions] 대여 목록 조회 시작:", params)
 
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return { success: false, error: "권한이 없습니다" }
+      const supabase = await createClient()
+
+      let query = supabase
+        .from("rentals")
+        .select(
+          `
+          *,
+          inventory:inventory_id (name, model),
+          clients:client_id (name)
+        `,
+          { count: "exact" }
+        )
+
+      // 필터링
+      if (params?.status) {
+        query = query.eq("status", params.status)
+      }
+      if (params?.client_id) {
+        query = query.eq("client_id", params.client_id)
+      }
+      if (params?.inventory_id) {
+        query = query.eq("inventory_id", params.inventory_id)
+      }
+
+      // 정렬 (최신순)
+      query = query.order("created_at", { ascending: false })
+
+      // 페이지네이션
+      const limit = params?.limit || 50
+      const offset = params?.offset || 0
+      query = query.range(offset, offset + limit - 1)
+
+      const { data, error, count } = await query
+
+      if (error) {
+        console.error("[Rental Actions] 대여 목록 조회 실패:", error)
+        return { success: false, error: "대여 목록 조회에 실패했습니다" }
+      }
+
+      // 데이터 변환 및 D-Day 계산
+      const rentals: RentalWithDetails[] =
+        data?.map((rental: any) => {
+          const endDate = new Date(rental.rental_end_date)
+          const daysRemaining = differenceInDays(endDate, new Date())
+          const isOverdue = isPast(endDate) && !isToday(endDate) && rental.status === "rented"
+          const isDueToday = isToday(endDate) && rental.status === "rented"
+
+          return {
+            ...rental,
+            inventory_name: rental.inventory?.name || null,
+            inventory_model: rental.inventory?.model || null,
+            client_name: rental.clients?.name || null,
+            days_remaining: daysRemaining,
+            is_overdue: isOverdue,
+            is_due_today: isDueToday,
+          }
+        }) || []
+
+      console.log("[Rental Actions] 대여 목록 조회 성공:", { count: rentals.length, total: count })
+
+      return {
+        success: true,
+        rentals,
+        total: count || 0,
+      }
+    } catch (error) {
+      console.error("[Rental Actions] 대여 목록 조회 중 오류:", error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
+      }
     }
-
-    const supabase = await createClient()
-
-    let query = supabase
-      .from("rentals")
-      .select(
-        `
-        *,
-        inventory:inventory_id (name, model),
-        clients:client_id (name)
-      `,
-        { count: "exact" }
-      )
-
-    // 필터링
-    if (params?.status) {
-      query = query.eq("status", params.status)
-    }
-    if (params?.client_id) {
-      query = query.eq("client_id", params.client_id)
-    }
-    if (params?.inventory_id) {
-      query = query.eq("inventory_id", params.inventory_id)
-    }
-
-    // 정렬 (최신순)
-    query = query.order("created_at", { ascending: false })
-
-    // 페이지네이션
-    const limit = params?.limit || 50
-    const offset = params?.offset || 0
-    query = query.range(offset, offset + limit - 1)
-
-    const { data, error, count } = await query
-
-    if (error) {
-      console.error("[Rental Actions] 대여 목록 조회 실패:", error)
-      return { success: false, error: "대여 목록 조회에 실패했습니다" }
-    }
-
-    // 데이터 변환 및 D-Day 계산
-    const rentals: RentalWithDetails[] =
-      data?.map((rental: any) => {
-        const endDate = new Date(rental.rental_end_date)
-        const daysRemaining = differenceInDays(endDate, new Date())
-        const isOverdue = isPast(endDate) && !isToday(endDate) && rental.status === "rented"
-        const isDueToday = isToday(endDate) && rental.status === "rented"
-
-        return {
-          ...rental,
-          inventory_name: rental.inventory?.name || null,
-          inventory_model: rental.inventory?.model || null,
-          client_name: rental.clients?.name || null,
-          days_remaining: daysRemaining,
-          is_overdue: isOverdue,
-          is_due_today: isDueToday,
-        }
-      }) || []
-
-    console.log("[Rental Actions] 대여 목록 조회 성공:", { count: rentals.length, total: count })
-
-    return {
-      success: true,
-      rentals,
-      total: count || 0,
-    }
-  } catch (error) {
-    console.error("[Rental Actions] 대여 목록 조회 중 오류:", error)
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
-    }
-  }
+  })
 }
 
 /**
@@ -476,61 +464,58 @@ export async function getRentalById(rentalId: string): Promise<{
   rental?: RentalWithDetails
   error?: string
 }> {
-  try {
-    console.log("[Rental Actions] 대여 상세 조회:", rentalId)
+  return withStaffPermission(async () => {
+    try {
+      console.log("[Rental Actions] 대여 상세 조회:", rentalId)
 
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return { success: false, error: "권한이 없습니다" }
-    }
+      const supabase = await createClient()
 
-    const supabase = await createClient()
-
-    const { data, error } = await supabase
-      .from("rentals")
-      .select(
+      const { data, error } = await supabase
+        .from("rentals")
+        .select(
+          `
+          *,
+          inventory:inventory_id (name, model),
+          clients:client_id (id, name, birth_date, contact, disability_type)
         `
-        *,
-        inventory:inventory_id (name, model),
-        clients:client_id (id, name, birth_date, contact, disability_type)
-      `
-      )
-      .eq("id", rentalId)
-      .single()
+        )
+        .eq("id", rentalId)
+        .single()
 
-    if (error) {
-      console.error("[Rental Actions] 대여 상세 조회 실패:", error)
-      return { success: false, error: "대여 정보를 찾을 수 없습니다" }
+      if (error) {
+        console.error("[Rental Actions] 대여 상세 조회 실패:", error)
+        return { success: false, error: "대여 정보를 찾을 수 없습니다" }
+      }
+
+      // D-Day 계산
+      const rentalData = data as { rental_end_date?: string; status?: string } | null;
+      const endDate = new Date(rentalData?.rental_end_date || "")
+      const daysRemaining = differenceInDays(endDate, new Date())
+      const isOverdue = isPast(endDate) && !isToday(endDate) && rentalData?.status === "rented"
+      const isDueToday = isToday(endDate) && rentalData?.status === "rented"
+
+      const rental: RentalWithDetails = {
+        ...(data as unknown as RentalWithDetails),
+        inventory_name: (data as any).inventory?.name || null,
+        inventory_model: (data as any).inventory?.model || null,
+        client_name: (data as any).clients?.name || null,
+        client_birth_date: (data as any).clients?.birth_date || null,
+        client_contact: (data as any).clients?.contact || null,
+        client_disability_type: (data as any).clients?.disability_type || null,
+        days_remaining: daysRemaining,
+        is_overdue: isOverdue,
+        is_due_today: isDueToday,
+      }
+
+      return { success: true, rental }
+    } catch (error) {
+      console.error("[Rental Actions] 대여 상세 조회 중 오류:", error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
+      }
     }
-
-    // D-Day 계산
-    const rentalData = data as { rental_end_date?: string; status?: string } | null;
-    const endDate = new Date(rentalData?.rental_end_date || "")
-    const daysRemaining = differenceInDays(endDate, new Date())
-    const isOverdue = isPast(endDate) && !isToday(endDate) && rentalData?.status === "rented"
-    const isDueToday = isToday(endDate) && rentalData?.status === "rented"
-
-    const rental: RentalWithDetails = {
-      ...(data as unknown as RentalWithDetails),
-      inventory_name: (data as any).inventory?.name || null,
-      inventory_model: (data as any).inventory?.model || null,
-      client_name: (data as any).clients?.name || null,
-      client_birth_date: (data as any).clients?.birth_date || null,
-      client_contact: (data as any).clients?.contact || null,
-      client_disability_type: (data as any).clients?.disability_type || null,
-      days_remaining: daysRemaining,
-      is_overdue: isOverdue,
-      is_due_today: isDueToday,
-    }
-
-    return { success: true, rental }
-  } catch (error) {
-    console.error("[Rental Actions] 대여 상세 조회 중 오류:", error)
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
-    }
-  }
+  })
 }
 
 /**
@@ -541,65 +526,62 @@ export async function getOverdueRentals(): Promise<{
   rentals?: RentalWithDetails[]
   error?: string
 }> {
-  try {
-    console.log("[Rental Actions] 연체 대여 목록 조회 시작")
+  return withStaffPermission(async () => {
+    try {
+      console.log("[Rental Actions] 연체 대여 목록 조회 시작")
 
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return { success: false, error: "권한이 없습니다" }
-    }
+      const supabase = await createClient()
 
-    const supabase = await createClient()
+      // 오늘 날짜
+      const today = format(new Date(), "yyyy-MM-dd")
 
-    // 오늘 날짜
-    const today = format(new Date(), "yyyy-MM-dd")
-
-    // 연체된 대여 조회 (rental_end_date가 오늘보다 이전이고 status가 'rented')
-    const { data, error } = await supabase
-      .from("rentals")
-      .select(
+      // 연체된 대여 조회 (rental_end_date가 오늘보다 이전이고 status가 'rented')
+      const { data, error } = await supabase
+        .from("rentals")
+        .select(
+          `
+          *,
+          inventory:inventory_id (name, model),
+          clients:client_id (name)
         `
-        *,
-        inventory:inventory_id (name, model),
-        clients:client_id (name)
-      `
-      )
-      .eq("status", "rented")
-      .lt("rental_end_date", today)
-      .order("rental_end_date", { ascending: true })
+        )
+        .eq("status", "rented")
+        .lt("rental_end_date", today)
+        .order("rental_end_date", { ascending: true })
 
-    if (error) {
-      console.error("[Rental Actions] 연체 대여 목록 조회 실패:", error)
-      return { success: false, error: "연체 대여 목록 조회에 실패했습니다" }
+      if (error) {
+        console.error("[Rental Actions] 연체 대여 목록 조회 실패:", error)
+        return { success: false, error: "연체 대여 목록 조회에 실패했습니다" }
+      }
+
+      // 데이터 변환 및 D-Day 계산
+      const rentals: RentalWithDetails[] =
+        data?.map((rental: any) => {
+          const endDate = new Date(rental.rental_end_date)
+          const daysRemaining = differenceInDays(endDate, new Date())
+
+          return {
+            ...rental,
+            inventory_name: rental.inventory?.name || null,
+            inventory_model: rental.inventory?.model || null,
+            client_name: rental.clients?.name || null,
+            days_remaining: daysRemaining,
+            is_overdue: true,
+            is_due_today: false,
+          }
+        }) || []
+
+      console.log("[Rental Actions] 연체 대여 목록 조회 성공:", { count: rentals.length })
+
+      return { success: true, rentals }
+    } catch (error) {
+      console.error("[Rental Actions] 연체 대여 목록 조회 중 오류:", error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
+      }
     }
-
-    // 데이터 변환 및 D-Day 계산
-    const rentals: RentalWithDetails[] =
-      data?.map((rental: any) => {
-        const endDate = new Date(rental.rental_end_date)
-        const daysRemaining = differenceInDays(endDate, new Date())
-
-        return {
-          ...rental,
-          inventory_name: rental.inventory?.name || null,
-          inventory_model: rental.inventory?.model || null,
-          client_name: rental.clients?.name || null,
-          days_remaining: daysRemaining,
-          is_overdue: true,
-          is_due_today: false,
-        }
-      }) || []
-
-    console.log("[Rental Actions] 연체 대여 목록 조회 성공:", { count: rentals.length })
-
-    return { success: true, rentals }
-  } catch (error) {
-    console.error("[Rental Actions] 연체 대여 목록 조회 중 오류:", error)
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
-    }
-  }
+  })
 }
 
 /**
@@ -611,68 +593,65 @@ export async function getExpiringRentals(daysAhead: number = 7): Promise<{
   rentals?: RentalWithDetails[]
   error?: string
 }> {
-  try {
-    console.log("[Rental Actions] 만료 예정 대여 목록 조회 시작:", { daysAhead })
+  return withStaffPermission(async () => {
+    try {
+      console.log("[Rental Actions] 만료 예정 대여 목록 조회 시작:", { daysAhead })
 
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return { success: false, error: "권한이 없습니다" }
-    }
+      const supabase = await createClient()
 
-    const supabase = await createClient()
+      // 오늘과 N일 후 날짜
+      const today = format(new Date(), "yyyy-MM-dd")
+      const futureDate = format(addDays(new Date(), daysAhead), "yyyy-MM-dd")
 
-    // 오늘과 N일 후 날짜
-    const today = format(new Date(), "yyyy-MM-dd")
-    const futureDate = format(addDays(new Date(), daysAhead), "yyyy-MM-dd")
-
-    // 만료 예정 대여 조회
-    const { data, error } = await supabase
-      .from("rentals")
-      .select(
+      // 만료 예정 대여 조회
+      const { data, error } = await supabase
+        .from("rentals")
+        .select(
+          `
+          *,
+          inventory:inventory_id (name, model),
+          clients:client_id (name)
         `
-        *,
-        inventory:inventory_id (name, model),
-        clients:client_id (name)
-      `
-      )
-      .eq("status", "rented")
-      .gte("rental_end_date", today)
-      .lte("rental_end_date", futureDate)
-      .order("rental_end_date", { ascending: true })
+        )
+        .eq("status", "rented")
+        .gte("rental_end_date", today)
+        .lte("rental_end_date", futureDate)
+        .order("rental_end_date", { ascending: true })
 
-    if (error) {
-      console.error("[Rental Actions] 만료 예정 대여 목록 조회 실패:", error)
-      return { success: false, error: "만료 예정 대여 목록 조회에 실패했습니다" }
+      if (error) {
+        console.error("[Rental Actions] 만료 예정 대여 목록 조회 실패:", error)
+        return { success: false, error: "만료 예정 대여 목록 조회에 실패했습니다" }
+      }
+
+      // 데이터 변환 및 D-Day 계산
+      const rentals: RentalWithDetails[] =
+        data?.map((rental: any) => {
+          const endDate = new Date(rental.rental_end_date)
+          const daysRemaining = differenceInDays(endDate, new Date())
+          const isDueToday = isToday(endDate)
+
+          return {
+            ...rental,
+            inventory_name: rental.inventory?.name || null,
+            inventory_model: rental.inventory?.model || null,
+            client_name: rental.clients?.name || null,
+            days_remaining: daysRemaining,
+            is_overdue: false,
+            is_due_today: isDueToday,
+          }
+        }) || []
+
+      console.log("[Rental Actions] 만료 예정 대여 목록 조회 성공:", { count: rentals.length })
+
+      return { success: true, rentals }
+    } catch (error) {
+      console.error("[Rental Actions] 만료 예정 대여 목록 조회 중 오류:", error)
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
+      }
     }
-
-    // 데이터 변환 및 D-Day 계산
-    const rentals: RentalWithDetails[] =
-      data?.map((rental: any) => {
-        const endDate = new Date(rental.rental_end_date)
-        const daysRemaining = differenceInDays(endDate, new Date())
-        const isDueToday = isToday(endDate)
-
-        return {
-          ...rental,
-          inventory_name: rental.inventory?.name || null,
-          inventory_model: rental.inventory?.model || null,
-          client_name: rental.clients?.name || null,
-          days_remaining: daysRemaining,
-          is_overdue: false,
-          is_due_today: isDueToday,
-        }
-      }) || []
-
-    console.log("[Rental Actions] 만료 예정 대여 목록 조회 성공:", { count: rentals.length })
-
-    return { success: true, rentals }
-  } catch (error) {
-    console.error("[Rental Actions] 만료 예정 대여 목록 조회 중 오류:", error)
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "예상치 못한 오류가 발생했습니다",
-    }
-  }
+  })
 }
 
 // Called from approval app on final approval

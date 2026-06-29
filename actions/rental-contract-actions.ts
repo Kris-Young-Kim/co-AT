@@ -1,7 +1,7 @@
 "use server"
 
 import { createAdminClient } from '@/lib/supabase/admin'
-import { hasAdminOrStaffPermission } from '@/lib/utils/permissions'
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from 'next/cache'
 
 export interface RentalContract {
@@ -28,21 +28,21 @@ export async function createRentalContract(rentalId: string): Promise<{
   contract?: RentalContract
   error?: string
 }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
+    try {
 
-    const { data, error } = await db()
-      .from('rental_contracts')
-      .insert({ rental_id: rentalId })
-      .select()
-      .single()
+      const { data, error } = await db()
+        .from('rental_contracts')
+        .insert({ rental_id: rentalId })
+        .select()
+        .single()
 
-    if (error) return { success: false, error: error.message }
-    return { success: true, contract: data as RentalContract }
-  } catch (e) {
-    return { success: false, error: String(e) }
-  }
+      if (error) return { success: false, error: error.message }
+      return { success: true, contract: data as RentalContract }
+    } catch (e) {
+      return { success: false, error: String(e) }
+    }
+  })
 }
 
 export async function getContractByRentalId(rentalId: string): Promise<{
@@ -90,40 +90,40 @@ export async function sendContractLink(
   sentTo: string,
   sentVia: 'email' | 'sms' | 'manual'
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
+    try {
 
-    const { error } = await db()
-      .from('rental_contracts')
-      .update({ sent_to: sentTo, sent_via: sentVia, sent_at: new Date().toISOString() })
-      .eq('id', contractId)
+      const { error } = await db()
+        .from('rental_contracts')
+        .update({ sent_to: sentTo, sent_via: sentVia, sent_at: new Date().toISOString() })
+        .eq('id', contractId)
 
-    if (error) return { success: false, error: error.message }
-    revalidatePath('/rentals', 'layout')
-    return { success: true }
-  } catch (e) {
-    return { success: false, error: String(e) }
-  }
+      if (error) return { success: false, error: error.message }
+      revalidatePath('/rentals', 'layout')
+      return { success: true }
+    } catch (e) {
+      return { success: false, error: String(e) }
+    }
+  })
 }
 
 export async function cancelContract(contractId: string): Promise<{
   success: boolean
   error?: string
 }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
+    try {
 
-    const { error } = await db()
-      .from('rental_contracts')
-      .update({ status: 'cancelled' })
-      .eq('id', contractId)
+      const { error } = await db()
+        .from('rental_contracts')
+        .update({ status: 'cancelled' })
+        .eq('id', contractId)
 
-    if (error) return { success: false, error: error.message }
-    revalidatePath('/rentals', 'layout')
-    return { success: true }
-  } catch (e) {
-    return { success: false, error: String(e) }
-  }
+      if (error) return { success: false, error: error.message }
+      revalidatePath('/rentals', 'layout')
+      return { success: true }
+    } catch (e) {
+      return { success: false, error: String(e) }
+    }
+  })
 }

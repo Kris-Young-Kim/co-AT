@@ -6,7 +6,7 @@ import { type ApplicationForm } from "@/lib/validators"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { Database } from "@/types/database.types"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 
 type ClientInsert = Database["public"]["Tables"]["clients"]["Insert"]
 
@@ -17,18 +17,18 @@ export async function getApplicationsByClientId(clientId: string): Promise<{
   applications?: Application[]
   error?: string
 }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('applications')
-    .select('*')
-    .eq('client_id', clientId)
-    .order('created_at', { ascending: false })
+    const supabase = await createClient()
+    const { data, error } = await supabase
+      .from('applications')
+      .select('*')
+      .eq('client_id', clientId)
+      .order('created_at', { ascending: false })
 
-  if (error) return { success: false, error: '신청서 조회에 실패했습니다' }
-  return { success: true, applications: data ?? [] }
+    if (error) return { success: false, error: '신청서 조회에 실패했습니다' }
+    return { success: true, applications: data ?? [] }
+  })
 }
 
 export async function createApplication(
@@ -370,39 +370,39 @@ export interface ApplicationDetailsInput {
 export async function updateApplicationDetails(
   input: ApplicationDetailsInput
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
+    try {
 
-    const supabase = await createClient()
-    const { error } = await supabase
-      .from('applications')
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
-      .update({
-        referral_type: input.referral_type ?? null,
-        progress_type: input.progress_type ?? null,
-        category: input.category ?? null,
-        sub_category: input.sub_category ?? null,
-        requested_item: input.requested_item ?? null,
-        service_area: input.service_area ?? null,
-        status: input.status ?? null,
-        visit_type: input.visit_type ?? null,
-        notes: input.notes ?? null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', input.applicationId)
+      const supabase = await createClient()
+      const { error } = await supabase
+        .from('applications')
+        // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+        .update({
+          referral_type: input.referral_type ?? null,
+          progress_type: input.progress_type ?? null,
+          category: input.category ?? null,
+          sub_category: input.sub_category ?? null,
+          requested_item: input.requested_item ?? null,
+          service_area: input.service_area ?? null,
+          status: input.status ?? null,
+          visit_type: input.visit_type ?? null,
+          notes: input.notes ?? null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', input.applicationId)
 
-    if (error) {
-      console.error('updateApplicationDetails:', error)
-      return { success: false, error: '신청서 수정에 실패했습니다: ' + error.message }
+      if (error) {
+        console.error('updateApplicationDetails:', error)
+        return { success: false, error: '신청서 수정에 실패했습니다: ' + error.message }
+      }
+
+      revalidatePath(`/clients/${input.clientId}`)
+      revalidatePath(`/clients/${input.clientId}/applications/${input.applicationId}`)
+      return { success: true }
+    } catch (error) {
+      console.error('Unexpected error in updateApplicationDetails:', error)
+      return { success: false, error: '예상치 못한 오류가 발생했습니다' }
     }
-
-    revalidatePath(`/clients/${input.clientId}`)
-    revalidatePath(`/clients/${input.clientId}/applications/${input.applicationId}`)
-    return { success: true }
-  } catch (error) {
-    console.error('Unexpected error in updateApplicationDetails:', error)
-    return { success: false, error: '예상치 못한 오류가 발생했습니다' }
-  }
+  })
 }
 

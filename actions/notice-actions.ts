@@ -3,7 +3,8 @@
 import { auth } from "@clerk/nextjs/server"
 import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
-import { hasAdminOrStaffPermission, getCurrentUserProfileId } from "@/lib/utils/permissions"
+import {getCurrentUserProfileId } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from "next/cache"
 
 export interface Attachment {
@@ -136,65 +137,62 @@ export async function getNoticeById(id: string): Promise<Notice | null> {
 export async function createNotice(
   input: CreateNoticeInput
 ): Promise<{ success: boolean; noticeId?: string; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return { success: false, error: "권한이 없습니다" }
-    }
-
-    const profileId = await getCurrentUserProfileId()
-    if (!profileId) {
-      return { success: false, error: "사용자 정보를 찾을 수 없습니다" }
-    }
-
-    // RLS를 우회하기 위해 서비스 역할 사용
-    const supabase = createAdminClient()
-
-    // attachments 컬럼이 있는지 확인하고 선택적으로 저장
-    const insertData: any = {
-      title: input.title,
-      content: input.content,
-      category: input.category || null,
-      is_pinned: input.is_pinned || false,
-      created_by: profileId,
-    }
-
-    if (input.attachments && input.attachments.length > 0) {
-      insertData.attachments = input.attachments
-    }
-
-    const { data, error } = await supabase
-      .from("notices")
-      .insert(insertData as any)
-      .select("id")
-      .single()
-
-    if (error) {
-      console.error("[공지사항 생성] 실패:", {
-        error: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint,
-        insertData,
-        profileId,
-      })
-      return { 
-        success: false, 
-        error: `공지사항 생성에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
+  return withStaffPermission(async () => {
+    try {
+      const profileId = await getCurrentUserProfileId()
+      if (!profileId) {
+        return { success: false, error: "사용자 정보를 찾을 수 없습니다" }
       }
+
+      // RLS를 우회하기 위해 서비스 역할 사용
+      const supabase = createAdminClient()
+
+      // attachments 컬럼이 있는지 확인하고 선택적으로 저장
+      const insertData: any = {
+        title: input.title,
+        content: input.content,
+        category: input.category || null,
+        is_pinned: input.is_pinned || false,
+        created_by: profileId,
+      }
+
+      if (input.attachments && input.attachments.length > 0) {
+        insertData.attachments = input.attachments
+      }
+
+      const { data, error } = await supabase
+        .from("notices")
+        .insert(insertData as any)
+        .select("id")
+        .single()
+
+      if (error) {
+        console.error("[공지사항 생성] 실패:", {
+          error: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+          insertData,
+          profileId,
+        })
+        return { 
+          success: false, 
+          error: `공지사항 생성에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}` 
+        }
+      }
+
+      revalidatePath("/notices")
+      revalidatePath("/notices/support")
+      revalidatePath("/community/gallery")
+      revalidatePath("/community/cases")
+      revalidatePath("/notices-management")
+
+      return { success: true, noticeId: (data as { id: string }).id }
+    } catch (error) {
+      console.error("Unexpected error in createNotice:", error)
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" }
     }
-
-    revalidatePath("/notices")
-    revalidatePath("/notices/support")
-    revalidatePath("/community/gallery")
-    revalidatePath("/community/cases")
-    revalidatePath("/notices-management")
-
-    return { success: true, noticeId: (data as { id: string }).id }
-  } catch (error) {
-    console.error("Unexpected error in createNotice:", error)
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
-  }
+  })
 }
 
 /**
@@ -203,54 +201,51 @@ export async function createNotice(
 export async function updateNotice(
   input: UpdateNoticeInput
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return { success: false, error: "권한이 없습니다" }
+  return withStaffPermission(async () => {
+    try {
+      const supabase = createAdminClient()
+
+      const updateData: {
+        title?: string
+        content?: string
+        category?: string | null
+        is_pinned?: boolean
+        attachments?: Attachment[] | null
+        updated_at?: string
+      } = {
+        updated_at: new Date().toISOString(),
+      }
+
+      if (input.title !== undefined) updateData.title = input.title
+      if (input.content !== undefined) updateData.content = input.content
+      if (input.category !== undefined) updateData.category = input.category
+      if (input.is_pinned !== undefined) updateData.is_pinned = input.is_pinned
+      if (input.attachments !== undefined) {
+        updateData.attachments = input.attachments.length > 0 ? input.attachments : null
+      }
+
+      const { error } = await supabase
+        .from("notices")
+        .update(updateData as any)
+        .eq("id", input.id)
+
+      if (error) {
+        console.error("공지사항 수정 실패:", error)
+        return { success: false, error: "공지사항 수정에 실패했습니다" }
+      }
+
+      revalidatePath("/notices-management")
+      revalidatePath("/notices", "layout")
+      revalidatePath(`/notices/${input.id}`)
+      revalidatePath("/community/gallery")
+      revalidatePath("/community/cases")
+
+      return { success: true }
+    } catch (error) {
+      console.error("Unexpected error in updateNotice:", error)
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" }
     }
-
-    const supabase = createAdminClient()
-
-    const updateData: {
-      title?: string
-      content?: string
-      category?: string | null
-      is_pinned?: boolean
-      attachments?: Attachment[] | null
-      updated_at?: string
-    } = {
-      updated_at: new Date().toISOString(),
-    }
-
-    if (input.title !== undefined) updateData.title = input.title
-    if (input.content !== undefined) updateData.content = input.content
-    if (input.category !== undefined) updateData.category = input.category
-    if (input.is_pinned !== undefined) updateData.is_pinned = input.is_pinned
-    if (input.attachments !== undefined) {
-      updateData.attachments = input.attachments.length > 0 ? input.attachments : null
-    }
-
-    const { error } = await supabase
-      .from("notices")
-      .update(updateData as any)
-      .eq("id", input.id)
-
-    if (error) {
-      console.error("공지사항 수정 실패:", error)
-      return { success: false, error: "공지사항 수정에 실패했습니다" }
-    }
-
-    revalidatePath("/notices-management")
-    revalidatePath("/notices", "layout")
-    revalidatePath(`/notices/${input.id}`)
-    revalidatePath("/community/gallery")
-    revalidatePath("/community/cases")
-
-    return { success: true }
-  } catch (error) {
-    console.error("Unexpected error in updateNotice:", error)
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
-  }
+  })
 }
 
 /**
@@ -259,32 +254,29 @@ export async function updateNotice(
 export async function deleteNotice(
   id: string
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return { success: false, error: "권한이 없습니다" }
+  return withStaffPermission(async () => {
+    try {
+      const supabase = createAdminClient()
+
+      const { error } = await supabase.from("notices").delete().eq("id", id)
+
+      if (error) {
+        console.error("공지사항 삭제 실패:", error)
+        return { success: false, error: "공지사항 삭제에 실패했습니다" }
+      }
+
+      revalidatePath("/notices")
+      revalidatePath("/notices/support")
+      revalidatePath("/community/gallery")
+      revalidatePath("/community/cases")
+      revalidatePath("/notices-management")
+
+      return { success: true }
+    } catch (error) {
+      console.error("Unexpected error in deleteNotice:", error)
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" }
     }
-
-    const supabase = createAdminClient()
-
-    const { error } = await supabase.from("notices").delete().eq("id", id)
-
-    if (error) {
-      console.error("공지사항 삭제 실패:", error)
-      return { success: false, error: "공지사항 삭제에 실패했습니다" }
-    }
-
-    revalidatePath("/notices")
-    revalidatePath("/notices/support")
-    revalidatePath("/community/gallery")
-    revalidatePath("/community/cases")
-    revalidatePath("/notices-management")
-
-    return { success: true }
-  } catch (error) {
-    console.error("Unexpected error in deleteNotice:", error)
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
-  }
+  })
 }
 
 /**
@@ -295,41 +287,38 @@ export async function getAllNotices(): Promise<{
   notices?: Notice[]
   error?: string
 }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return { success: false, error: "권한이 없습니다" }
-    }
+  return withStaffPermission(async () => {
+    try {
+      const supabase = createAdminClient()
 
-    const supabase = createAdminClient()
+      const { data, error } = await supabase
+        .from("notices")
+        .select(NOTICE_FIELDS)
+        .order("is_pinned", { ascending: false })
+        .order("created_at", { ascending: false })
 
-    const { data, error } = await supabase
-      .from("notices")
-      .select(NOTICE_FIELDS)
-      .order("is_pinned", { ascending: false })
-      .order("created_at", { ascending: false })
-
-    if (error) {
-      console.error("[공지사항 조회] 실패:", {
-        error: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint,
-      })
-      return {
-        success: false,
-        error: `공지사항 조회에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}`
+      if (error) {
+        console.error("[공지사항 조회] 실패:", {
+          error: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        })
+        return {
+          success: false,
+          error: `공지사항 조회에 실패했습니다: ${error.message || error.code || "알 수 없는 오류"}`
+        }
       }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const notices = (data || []).map((n: any) => ({ ...n, attachments: parseAttachments(n.attachments) }))
+
+      return { success: true, notices: notices as Notice[] }
+    } catch (error) {
+      console.error("Unexpected error in getAllNotices:", error)
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" }
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const notices = (data || []).map((n: any) => ({ ...n, attachments: parseAttachments(n.attachments) }))
-
-    return { success: true, notices: notices as Notice[] }
-  } catch (error) {
-    console.error("Unexpected error in getAllNotices:", error)
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
-  }
+  })
 }
 
 // ─── 공지 읽음 확인 ───────────────────────────────────────────

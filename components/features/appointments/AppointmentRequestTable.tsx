@@ -8,9 +8,9 @@ import { AppointmentStatusBadge } from './AppointmentStatusBadge'
 import {
   confirmAppointmentRequest,
   rejectAppointmentRequest,
-  SERVICE_TYPE_LABELS,
   type AppointmentRequestWithDetails,
 } from '@/actions/appointment-actions'
+import { APPOINTMENT_SERVICE_LABELS } from '@/lib/constants/mappings'
 import { ChevronDown, ChevronUp, CalendarDays, Clock, User, MessageSquare } from 'lucide-react'
 import { format } from 'date-fns'
 import { ko } from 'date-fns/locale'
@@ -97,7 +97,7 @@ export function AppointmentRequestTable({ requests }: AppointmentRequestTablePro
                   ) : '—'}
                 </td>
                 <td className="px-4 py-3 text-gray-700">
-                  {SERVICE_TYPE_LABELS[r.service_type] ?? r.service_type}
+                  {APPOINTMENT_SERVICE_LABELS[r.service_type] ?? r.service_type}
                 </td>
                 <td className="px-4 py-3 text-gray-600">
                   <span className="flex items-center gap-1">

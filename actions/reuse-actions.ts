@@ -1,7 +1,7 @@
 'use server'
 
 import { createAdminClient } from '@/lib/supabase/admin'
-import { hasAdminOrStaffPermission } from '@/lib/utils/permissions'
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from 'next/cache'
 import type {
   InventoryReuseDispatchWithDetails,
@@ -61,50 +61,50 @@ export async function getReuseDispatchById(id: string): Promise<{
 export async function createReuseDispatch(
   input: CreateReuseDispatchInput
 ): Promise<{ success: boolean; id?: string; error?: string }> {
-  const ok = await hasAdminOrStaffPermission()
-  if (!ok) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const { data, error } = await supabase()
-    .from('inventory_reuse_dispatches')
-    .insert({
-      device_id: input.device_id,
-      client_id: input.client_id,
-      approval_id: input.approval_id ?? null,
-      notes: input.notes ?? null,
-    })
-    .select('id')
-    .single()
+    const { data, error } = await supabase()
+      .from('inventory_reuse_dispatches')
+      .insert({
+        device_id: input.device_id,
+        client_id: input.client_id,
+        approval_id: input.approval_id ?? null,
+        notes: input.notes ?? null,
+      })
+      .select('id')
+      .single()
 
-  if (error) return { success: false, error: error.message }
+    if (error) return { success: false, error: error.message }
 
-  await supabase()
-    .from('inventory')
-    .update({ status: '대여중', updated_at: new Date().toISOString() })
-    .eq('id', input.device_id)
+    await supabase()
+      .from('inventory')
+      .update({ status: '대여중', updated_at: new Date().toISOString() })
+      .eq('id', input.device_id)
 
-  revalidatePath('/reuse')
-  return { success: true, id: data.id }
+    revalidatePath('/reuse')
+    return { success: true, id: data.id }
+  })
 }
 
 export async function updateReuseStatus(
   id: string,
   status: ReuseDispatchStatus
 ): Promise<{ success: boolean; error?: string }> {
-  const ok = await hasAdminOrStaffPermission()
-  if (!ok) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const updates: Record<string, unknown> = { status, updated_at: new Date().toISOString() }
-  if (status === 'delivered') updates.dispatched_at = new Date().toISOString()
+    const updates: Record<string, unknown> = { status, updated_at: new Date().toISOString() }
+    if (status === 'delivered') updates.dispatched_at = new Date().toISOString()
 
-  const { error } = await supabase()
-    .from('inventory_reuse_dispatches')
-    .update(updates)
-    .eq('id', id)
+    const { error } = await supabase()
+      .from('inventory_reuse_dispatches')
+      .update(updates)
+      .eq('id', id)
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath('/reuse')
-  revalidatePath(`/reuse/${id}`)
-  return { success: true }
+    if (error) return { success: false, error: error.message }
+    revalidatePath('/reuse')
+    revalidatePath(`/reuse/${id}`)
+    return { success: true }
+  })
 }
 
 export async function createReuseFromApproval(

@@ -1,7 +1,7 @@
 "use server"
 
 import { createAdminClient } from "@/lib/supabase/admin"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from "next/cache"
 
 export interface CaseService {
@@ -40,42 +40,42 @@ export async function getClientCases(clientId: string): Promise<{
   cases?: EvalCase[]
   error?: string
 }> {
-  const allowed = await hasAdminOrStaffPermission()
-  if (!allowed) return { success: false, error: "Permission denied" }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
-  const { data, error } = await (supabase as any)
-    .from("eval_cases")
-    .select("*")
-    .eq("client_id", clientId)
-    .order("created_at", { ascending: false })
+    const supabase = createAdminClient()
+    const { data, error } = await (supabase as any)
+      .from("eval_cases")
+      .select("*")
+      .eq("client_id", clientId)
+      .order("created_at", { ascending: false })
 
-  if (error) return { success: false, error: error.message }
-  return { success: true, cases: data as EvalCase[] }
+    if (error) return { success: false, error: error.message }
+    return { success: true, cases: data as EvalCase[] }
+  })
 }
 
 export async function createCase(
   clientId: string,
   input: CreateCaseInput
 ): Promise<{ success: boolean; id?: string; error?: string }> {
-  const allowed = await hasAdminOrStaffPermission()
-  if (!allowed) return { success: false, error: "Permission denied" }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
-  const { data, error } = await (supabase as any)
-    .from("eval_cases")
-    .insert({
-      client_id: clientId,
-      title: input.title,
-      case_type: input.case_type ?? "multi",
-      notes: input.notes ?? null,
-    })
-    .select("id")
-    .single()
+    const supabase = createAdminClient()
+    const { data, error } = await (supabase as any)
+      .from("eval_cases")
+      .insert({
+        client_id: clientId,
+        title: input.title,
+        case_type: input.case_type ?? "multi",
+        notes: input.notes ?? null,
+      })
+      .select("id")
+      .single()
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath("/clients/" + clientId)
-  return { success: true, id: data.id }
+    if (error) return { success: false, error: error.message }
+    revalidatePath("/clients/" + clientId)
+    return { success: true, id: data.id }
+  })
 }
 
 export async function updateCase(
@@ -83,38 +83,38 @@ export async function updateCase(
   clientId: string,
   updates: UpdateCaseInput
 ): Promise<{ success: boolean; error?: string }> {
-  const allowed = await hasAdminOrStaffPermission()
-  if (!allowed) return { success: false, error: "Permission denied" }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
-  const { error } = await (supabase as any)
-    .from("eval_cases")
-    .update(updates)
-    .eq("id", caseId)
-    .eq("client_id", clientId)
+    const supabase = createAdminClient()
+    const { error } = await (supabase as any)
+      .from("eval_cases")
+      .update(updates)
+      .eq("id", caseId)
+      .eq("client_id", clientId)
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath("/clients/" + clientId)
-  return { success: true }
+    if (error) return { success: false, error: error.message }
+    revalidatePath("/clients/" + clientId)
+    return { success: true }
+  })
 }
 
 export async function deleteCase(
   caseId: string,
   clientId: string
 ): Promise<{ success: boolean; error?: string }> {
-  const allowed = await hasAdminOrStaffPermission()
-  if (!allowed) return { success: false, error: "Permission denied" }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
-  const { error } = await (supabase as any)
-    .from("eval_cases")
-    .delete()
-    .eq("id", caseId)
-    .eq("client_id", clientId)
+    const supabase = createAdminClient()
+    const { error } = await (supabase as any)
+      .from("eval_cases")
+      .delete()
+      .eq("id", caseId)
+      .eq("client_id", clientId)
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath("/clients/" + clientId)
-  return { success: true }
+    if (error) return { success: false, error: error.message }
+    revalidatePath("/clients/" + clientId)
+    return { success: true }
+  })
 }
 
 export async function updateCaseServices(
@@ -122,17 +122,17 @@ export async function updateCaseServices(
   clientId: string,
   services: CaseService[]
 ): Promise<{ success: boolean; error?: string }> {
-  const allowed = await hasAdminOrStaffPermission()
-  if (!allowed) return { success: false, error: "Permission denied" }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
-  const { error } = await (supabase as any)
-    .from("eval_cases")
-    .update({ services })
-    .eq("id", caseId)
-    .eq("client_id", clientId)
+    const supabase = createAdminClient()
+    const { error } = await (supabase as any)
+      .from("eval_cases")
+      .update({ services })
+      .eq("id", caseId)
+      .eq("client_id", clientId)
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath("/clients/" + clientId)
-  return { success: true }
+    if (error) return { success: false, error: error.message }
+    revalidatePath("/clients/" + clientId)
+    return { success: true }
+  })
 }

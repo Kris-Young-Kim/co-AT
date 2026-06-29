@@ -1,7 +1,7 @@
 "use server"
 
 import { createAdminClient } from "@/lib/supabase/admin"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from "next/cache"
 
 export interface GrantItemInput {
@@ -35,55 +35,55 @@ export async function upsertGrantItem(
   itemOrder: number,
   input: GrantItemInput
 ): Promise<{ success: boolean; id?: string; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+  return withStaffPermission(async () => {
+    try {
 
-    const supabase = createAdminClient()
+      const supabase = createAdminClient()
 
-    const { data, error } = await (supabase as any)
-      .from("eval_grant_items")
-      .upsert(
-        { assessment_id: assessmentId, item_order: itemOrder, ...input },
-        { onConflict: "assessment_id,item_order" }
-      )
-      .select("id")
-      .single()
+      const { data, error } = await (supabase as any)
+        .from("eval_grant_items")
+        .upsert(
+          { assessment_id: assessmentId, item_order: itemOrder, ...input },
+          { onConflict: "assessment_id,item_order" }
+        )
+        .select("id")
+        .single()
 
-    if (error) {
-      console.error("upsertGrantItem:", error)
-      return { success: false, error: error.message ?? "품목 저장에 실패했습니다" }
+      if (error) {
+        console.error("upsertGrantItem:", error)
+        return { success: false, error: error.message ?? "품목 저장에 실패했습니다" }
+      }
+
+      revalidatePath(`/grant-eval/${assessmentId}`)
+      return { success: true, id: (data as { id: string }).id }
+    } catch (e) {
+      console.error("upsertGrantItem unexpected:", e)
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" }
     }
-
-    revalidatePath(`/grant-eval/${assessmentId}`)
-    return { success: true, id: (data as { id: string }).id }
-  } catch (e) {
-    console.error("upsertGrantItem unexpected:", e)
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
-  }
+  })
 }
 
 export async function deleteGrantItem(
   assessmentId: string,
   itemOrder: number
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+  return withStaffPermission(async () => {
+    try {
 
-    const supabase = createAdminClient()
-    const { error } = await (supabase as any)
-      .from("eval_grant_items")
-      .delete()
-      .eq("assessment_id", assessmentId)
-      .eq("item_order", itemOrder)
+      const supabase = createAdminClient()
+      const { error } = await (supabase as any)
+        .from("eval_grant_items")
+        .delete()
+        .eq("assessment_id", assessmentId)
+        .eq("item_order", itemOrder)
 
-    if (error) return { success: false, error: "품목 삭제에 실패했습니다" }
+      if (error) return { success: false, error: "품목 삭제에 실패했습니다" }
 
-    revalidatePath(`/grant-eval/${assessmentId}`)
-    return { success: true }
-  } catch (e) {
-    console.error("deleteGrantItem:", e)
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
-  }
+      revalidatePath(`/grant-eval/${assessmentId}`)
+      return { success: true }
+    } catch (e) {
+      console.error("deleteGrantItem:", e)
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" }
+    }
+  })
 }

@@ -1,7 +1,7 @@
 "use server"
 
 import { createAdminClient } from "@/lib/supabase/admin"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from "next/cache"
 
 export interface AnnualTarget {
@@ -27,34 +27,34 @@ export async function getAnnualTarget(year: number): Promise<{
   target?: AnnualTarget
   error?: string
 }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('annual_targets')
-    .select('*')
-    .eq('year', year)
-    .maybeSingle()
+    const supabase = createAdminClient()
+    const { data, error } = await supabase
+      .from('annual_targets')
+      .select('*')
+      .eq('year', year)
+      .maybeSingle()
 
-  if (error) return { success: false, error: error.message }
-  return { success: true, target: data as AnnualTarget | undefined }
+    if (error) return { success: false, error: error.message }
+    return { success: true, target: data as AnnualTarget | undefined }
+  })
 }
 
 export async function upsertAnnualTarget(
   input: UpsertTargetInput
 ): Promise<{ success: boolean; target?: AnnualTarget; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('annual_targets')
-    .upsert({ ...input, updated_at: new Date().toISOString() }, { onConflict: 'year' })
-    .select()
-    .single()
+    const supabase = createAdminClient()
+    const { data, error } = await supabase
+      .from('annual_targets')
+      .upsert({ ...input, updated_at: new Date().toISOString() }, { onConflict: 'year' })
+      .select()
+      .single()
 
-  if (error) return { success: false, error: error.message }
-  revalidatePath('/targets')
-  return { success: true, target: data as AnnualTarget }
+    if (error) return { success: false, error: error.message }
+    revalidatePath('/targets')
+    return { success: true, target: data as AnnualTarget }
+  })
 }

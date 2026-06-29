@@ -1,7 +1,8 @@
 "use server"
 
 import { createAdminClient } from "@/lib/supabase/admin"
-import { hasAdminOrStaffPermission, getCurrentUserProfileId } from "@/lib/utils/permissions"
+import {getCurrentUserProfileId } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { revalidatePath } from "next/cache"
 
 export interface Resource {
@@ -84,65 +85,65 @@ export async function getResourceById(id: string): Promise<Resource | null> {
 export async function createResource(
   input: CreateResourceInput
 ): Promise<{ success: boolean; id?: string; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+  return withStaffPermission(async () => {
 
-  const profileId = await getCurrentUserProfileId()
-  const supabase = createAdminClient()
+    const profileId = await getCurrentUserProfileId()
+    const supabase = createAdminClient()
 
-  const { data, error } = await supabase
-    .from("resources")
-    .insert({ ...input, created_by: profileId })
-    .select("id")
-    .single()
+    const { data, error } = await supabase
+      .from("resources")
+      .insert({ ...input, created_by: profileId })
+      .select("id")
+      .single()
 
-  if (error) {
-    console.error("[Resource Actions] 자료 생성 실패:", error)
-    return { success: false, error: error.message }
-  }
+    if (error) {
+      console.error("[Resource Actions] 자료 생성 실패:", error)
+      return { success: false, error: error.message }
+    }
 
-  revalidatePath("/info/resources")
-  return { success: true, id: (data as { id: string }).id }
+    revalidatePath("/info/resources")
+    return { success: true, id: (data as { id: string }).id }
+  })
 }
 
 export async function updateResource(
   input: UpdateResourceInput
 ): Promise<{ success: boolean; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+  return withStaffPermission(async () => {
 
-  const { id, ...updateData } = input
-  const supabase = createAdminClient()
+    const { id, ...updateData } = input
+    const supabase = createAdminClient()
 
-  const { error } = await supabase
-    .from("resources")
-    .update({ ...updateData, updated_at: new Date().toISOString() })
-    .eq("id", id)
+    const { error } = await supabase
+      .from("resources")
+      .update({ ...updateData, updated_at: new Date().toISOString() })
+      .eq("id", id)
 
-  if (error) {
-    console.error("[Resource Actions] 자료 수정 실패:", error)
-    return { success: false, error: error.message }
-  }
+    if (error) {
+      console.error("[Resource Actions] 자료 수정 실패:", error)
+      return { success: false, error: error.message }
+    }
 
-  revalidatePath("/info/resources")
-  return { success: true }
+    revalidatePath("/info/resources")
+    return { success: true }
+  })
 }
 
 export async function deleteResource(
   id: string
 ): Promise<{ success: boolean; error?: string }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: "권한이 없습니다" }
+  return withStaffPermission(async () => {
 
-  const supabase = createAdminClient()
+    const supabase = createAdminClient()
 
-  const { error } = await supabase.from("resources").delete().eq("id", id)
+    const { error } = await supabase.from("resources").delete().eq("id", id)
 
-  if (error) {
-    console.error("[Resource Actions] 자료 삭제 실패:", error)
-    return { success: false, error: error.message }
-  }
+    if (error) {
+      console.error("[Resource Actions] 자료 삭제 실패:", error)
+      return { success: false, error: error.message }
+    }
 
-  revalidatePath("/info/resources")
-  return { success: true }
+    revalidatePath("/info/resources")
+    return { success: true }
+  })
 }

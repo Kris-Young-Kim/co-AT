@@ -1,7 +1,7 @@
 "use server"
 
 import { createClient } from "@/lib/supabase/server"
-import { hasAdminOrStaffPermission } from "@/lib/utils/permissions"
+import { withStaffPermission } from "@/lib/utils/with-permission"
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 
@@ -34,88 +34,85 @@ export async function createIntakeRecord(
   intakeRecordId?: string
   error?: string
 }> {
-  try {
-    const hasPermission = await hasAdminOrStaffPermission()
-    if (!hasPermission) {
-      return { success: false, error: "권한이 없습니다" }
-    }
-
-    const { userId } = await auth()
-    if (!userId) {
-      return { success: false, error: "로그인이 필요합니다" }
-    }
-
-    const supabase = await createClient()
-
-    // 상담자 ID 조회
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("clerk_user_id", userId)
-      .single()
-
-    const profileId = profile ? (profile as { id: string }).id : null
-
-    const { data, error } = await supabase
-      .from("intake_records")
-      // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
-      .insert({
-        application_id: input.application_id,
-        consultant_id: profileId,
-        consult_date: input.consult_date,
-        body_function_data: input.body_function_data || null,
-        cognitive_sensory_check: input.cognitive_sensory_check || null,
-        current_devices: input.current_devices || null,
-        consultation_content: input.consultation_content || null,
-        main_activity_place: input.main_activity_place || null,
-        activity_posture: input.activity_posture || null,
-        main_supporter: input.main_supporter || null,
-        environment_limitations: input.environment_limitations || null,
-      })
-      .select("id")
-      .single()
-
-    if (error) {
-      console.error("상담 기록 생성 실패:", error)
-      return {
-        success: false,
-        error: "상담 기록 생성에 실패했습니다: " + (error.message || "알 수 없는 오류"),
+  return withStaffPermission(async () => {
+    try {
+      const { userId } = await auth()
+      if (!userId) {
+        return { success: false, error: "로그인이 필요합니다" }
       }
-    }
 
-    // 워크플로우 자동화: 상담 완료 시 신청서 상태를 "배정"으로 자동 전환
-    const { data: application, error: appError } = await supabase
-      .from("applications")
-      .select("id, status")
-      .eq("id", input.application_id)
-      .single()
+      const supabase = await createClient()
 
-    const applicationTyped = application as { status?: string } | null;
-    if (!appError && applicationTyped && applicationTyped.status === "접수") {
-      const { error: updateError } = await supabase
+      // 상담자 ID 조회
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("clerk_user_id", userId)
+        .single()
+
+      const profileId = profile ? (profile as { id: string }).id : null
+
+      const { data, error } = await supabase
+        .from("intake_records")
+        // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16)
+        .insert({
+          application_id: input.application_id,
+          consultant_id: profileId,
+          consult_date: input.consult_date,
+          body_function_data: input.body_function_data || null,
+          cognitive_sensory_check: input.cognitive_sensory_check || null,
+          current_devices: input.current_devices || null,
+          consultation_content: input.consultation_content || null,
+          main_activity_place: input.main_activity_place || null,
+          activity_posture: input.activity_posture || null,
+          main_supporter: input.main_supporter || null,
+          environment_limitations: input.environment_limitations || null,
+        })
+        .select("id")
+        .single()
+
+      if (error) {
+        console.error("상담 기록 생성 실패:", error)
+        return {
+          success: false,
+          error: "상담 기록 생성에 실패했습니다: " + (error.message || "알 수 없는 오류"),
+        }
+      }
+
+      // 워크플로우 자동화: 상담 완료 시 신청서 상태를 "배정"으로 자동 전환
+      const { data: application, error: appError } = await supabase
         .from("applications")
-        // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
-        .update({ status: "배정" })
+        .select("id, status")
         .eq("id", input.application_id)
+        .single()
 
-      if (updateError) {
-        console.error("[워크플로우 자동화] 신청서 상태 전환 실패:", updateError)
-      } else {
-        console.log("[워크플로우 자동화] 상담 완료 → 배정 상태 자동 전환:", input.application_id)
+      const applicationTyped = application as { status?: string } | null;
+      if (!appError && applicationTyped && applicationTyped.status === "접수") {
+        const { error: updateError } = await supabase
+          .from("applications")
+          // @ts-expect-error - Supabase 타입 추론 이슈 (Next.js 16): TableUpdate 타입이 update 메서드와 완전히 호환되지 않음
+          .update({ status: "배정" })
+          .eq("id", input.application_id)
+
+        if (updateError) {
+          console.error("[워크플로우 자동화] 신청서 상태 전환 실패:", updateError)
+        } else {
+          console.log("[워크플로우 자동화] 상담 완료 → 배정 상태 자동 전환:", input.application_id)
+        }
       }
+
+      revalidatePath("/clients")
+      revalidatePath(`/clients/${input.client_id}`)
+      revalidatePath("/clients")
+      revalidatePath(`/clients/${input.client_id}`)
+      revalidatePath("/dashboard")
+
+      return { success: true, intakeRecordId: (data as { id: string }).id }
+    } catch (error) {
+      console.error("Unexpected error in createIntakeRecord:", error)
+      return { success: false, error: "예상치 못한 오류가 발생했습니다" }
     }
-
-    revalidatePath("/clients")
-    revalidatePath(`/clients/${input.client_id}`)
-    revalidatePath("/clients")
-    revalidatePath(`/clients/${input.client_id}`)
-    revalidatePath("/dashboard")
-
-    return { success: true, intakeRecordId: (data as { id: string }).id }
-  } catch (error) {
-    console.error("Unexpected error in createIntakeRecord:", error)
-    return { success: false, error: "예상치 못한 오류가 발생했습니다" }
-  }
+  })
 }
 
 export interface IntakeRecord {
@@ -139,16 +136,16 @@ export async function getIntakeRecordsByApplication(applicationId: string): Prom
   records?: IntakeRecord[]
   error?: string
 }> {
-  const hasPermission = await hasAdminOrStaffPermission()
-  if (!hasPermission) return { success: false, error: '권한이 없습니다' }
+  return withStaffPermission(async () => {
 
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from('intake_records')
-    .select('*')
-    .eq('application_id', applicationId)
-    .order('consult_date', { ascending: false })
+    const supabase = await createClient()
+    const { data, error } = await supabase
+      .from('intake_records')
+      .select('*')
+      .eq('application_id', applicationId)
+      .order('consult_date', { ascending: false })
 
-  if (error) return { success: false, error: '상담 기록 조회에 실패했습니다' }
-  return { success: true, records: (data ?? []) as IntakeRecord[] }
+    if (error) return { success: false, error: '상담 기록 조회에 실패했습니다' }
+    return { success: true, records: (data ?? []) as IntakeRecord[] }
+  })
 }
