@@ -4201,6 +4201,51 @@ export type Database = {
           },
         ]
       }
+      partner_centers: {
+        Row: {
+          address: string | null
+          created_at: string
+          district: string
+          email: string | null
+          fax: string | null
+          id: string
+          memo: string | null
+          name: string
+          phone: string
+          region: string
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          district: string
+          email?: string | null
+          fax?: string | null
+          id?: string
+          memo?: string | null
+          name: string
+          phone: string
+          region: string
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          district?: string
+          email?: string | null
+          fax?: string | null
+          id?: string
+          memo?: string | null
+          name?: string
+          phone?: string
+          region?: string
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       process_logs: {
         Row: {
           application_id: string
