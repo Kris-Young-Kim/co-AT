@@ -1,0 +1,105 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - heading "GWATC 평가툴" [level=1] [ref=e5]
+      - navigation [ref=e6]:
+        - link "대시보드" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img [ref=e8]
+          - text: 대시보드
+        - link "서비스 진행 현황" [ref=e10] [cursor=pointer]:
+          - /url: /pipeline
+          - img [ref=e11]
+          - text: 서비스 진행 현황
+        - paragraph [ref=e12]: 대상자
+        - link "대상자 목록" [ref=e13] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e14]
+          - text: 대상자 목록
+        - link "신규 접수 대기" [ref=e19] [cursor=pointer]:
+          - /url: /clients/pending
+          - img [ref=e20]
+          - text: 신규 접수 대기
+        - link "QR 라벨 인쇄" [ref=e23] [cursor=pointer]:
+          - /url: /print/client-labels
+          - img [ref=e24]
+          - text: QR 라벨 인쇄
+        - paragraph [ref=e30]: 상담·서비스
+        - link "콜센터 상담" [ref=e31] [cursor=pointer]:
+          - /url: /call-logs
+          - img [ref=e32]
+          - text: 콜센터 상담
+        - link "서비스 기록" [ref=e34] [cursor=pointer]:
+          - /url: /service-records
+          - img [ref=e35]
+          - text: 서비스 기록
+        - link "교육 이력" [ref=e39] [cursor=pointer]:
+          - /url: /education
+          - img [ref=e40]
+          - text: 교육 이력
+        - paragraph [ref=e43]: 영역별 평가
+        - link "평가 목록" [ref=e44] [cursor=pointer]:
+          - /url: /assessments
+          - img [ref=e45]
+          - text: 평가 목록
+        - paragraph [ref=e48]: 교부사업 평가
+        - link "교부사업 평가" [ref=e49] [cursor=pointer]:
+          - /url: /grant-eval
+          - img [ref=e50]
+          - text: 교부사업 평가
+        - link "접수공문 관리" [ref=e54] [cursor=pointer]:
+          - /url: /grant-eval/referrals
+          - img [ref=e55]
+          - text: 접수공문 관리
+        - link "교부사업 통계" [ref=e58] [cursor=pointer]:
+          - /url: /grant-eval/statistics
+          - img [ref=e59]
+          - text: 교부사업 통계
+        - paragraph [ref=e60]: 지식·관리
+        - link "보조기기 결과 이력" [ref=e61] [cursor=pointer]:
+          - /url: /knowledge
+          - img [ref=e62]
+          - text: 보조기기 결과 이력
+        - link "Sheets 동기화" [ref=e65] [cursor=pointer]:
+          - /url: /migration
+          - img [ref=e66]
+          - text: Sheets 동기화
+      - button "로그아웃" [ref=e71] [cursor=pointer]:
+        - img [ref=e72]
+        - text: 로그아웃
+    - main [ref=e75]:
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - heading "클라이언트" [level=1] [ref=e78]
+          - paragraph [ref=e79]: 이름 또는 생년월일로 검색하세요
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - img [ref=e84]
+            - textbox "이름 또는 생년월일(YYYY-MM-DD) 검색" [ref=e87]: 정진관
+          - button "검색" [ref=e88] [cursor=pointer]
+          - button "QR 스캔으로 검색" [ref=e89] [cursor=pointer]:
+            - img [ref=e90]
+        - generic [ref=e95]:
+          - paragraph [ref=e96]: 총 1명
+          - table [ref=e98]:
+            - rowgroup [ref=e99]:
+              - row "이름 생년월일 장애유형 신청건수 진행 중 서비스 등록일" [ref=e100]:
+                - columnheader "이름" [ref=e101]
+                - columnheader "생년월일" [ref=e102]
+                - columnheader "장애유형" [ref=e103]
+                - columnheader "신청건수" [ref=e104]
+                - columnheader "진행 중 서비스" [ref=e105]
+                - columnheader "등록일" [ref=e106]
+                - columnheader [ref=e107]
+            - rowgroup [ref=e108]:
+              - row "정진관 1971-10-10 뇌병변 0건 2026. 05. 13. 상세보기" [ref=e109]:
+                - cell "정진관" [ref=e110]
+                - cell "1971-10-10" [ref=e111]
+                - cell "뇌병변" [ref=e112]
+                - cell "0건" [ref=e113]
+                - cell [ref=e114]
+                - cell "2026. 05. 13." [ref=e115]
+                - cell "상세보기" [ref=e116]:
+                  - link "상세보기" [ref=e117] [cursor=pointer]:
+                    - /url: /clients/76eb272d-1382-4adc-8d09-b806ac64e958
+  - alert [ref=e118]

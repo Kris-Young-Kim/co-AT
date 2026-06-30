@@ -1,0 +1,124 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - heading "GWATC 평가툴" [level=1] [ref=e5]
+      - navigation [ref=e6]:
+        - link "대시보드" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img [ref=e8]
+          - text: 대시보드
+        - link "서비스 진행 현황" [ref=e10] [cursor=pointer]:
+          - /url: /pipeline
+          - img [ref=e11]
+          - text: 서비스 진행 현황
+        - paragraph [ref=e12]: 대상자
+        - link "대상자 목록" [ref=e13] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e14]
+          - text: 대상자 목록
+        - link "신규 접수 대기" [ref=e19] [cursor=pointer]:
+          - /url: /clients/pending
+          - img [ref=e20]
+          - text: 신규 접수 대기
+        - link "QR 라벨 인쇄" [ref=e23] [cursor=pointer]:
+          - /url: /print/client-labels
+          - img [ref=e24]
+          - text: QR 라벨 인쇄
+        - paragraph [ref=e30]: 상담·서비스
+        - link "콜센터 상담" [ref=e31] [cursor=pointer]:
+          - /url: /call-logs
+          - img [ref=e32]
+          - text: 콜센터 상담
+        - link "서비스 기록" [ref=e34] [cursor=pointer]:
+          - /url: /service-records
+          - img [ref=e35]
+          - text: 서비스 기록
+        - link "교육 이력" [ref=e39] [cursor=pointer]:
+          - /url: /education
+          - img [ref=e40]
+          - text: 교육 이력
+        - paragraph [ref=e43]: 영역별 평가
+        - link "평가 목록" [ref=e44] [cursor=pointer]:
+          - /url: /assessments
+          - img [ref=e45]
+          - text: 평가 목록
+        - paragraph [ref=e48]: 교부사업 평가
+        - link "교부사업 평가" [ref=e49] [cursor=pointer]:
+          - /url: /grant-eval
+          - img [ref=e50]
+          - text: 교부사업 평가
+        - link "접수공문 관리" [ref=e54] [cursor=pointer]:
+          - /url: /grant-eval/referrals
+          - img [ref=e55]
+          - text: 접수공문 관리
+        - link "교부사업 통계" [ref=e58] [cursor=pointer]:
+          - /url: /grant-eval/statistics
+          - img [ref=e59]
+          - text: 교부사업 통계
+        - paragraph [ref=e60]: 지식·관리
+        - link "보조기기 결과 이력" [ref=e61] [cursor=pointer]:
+          - /url: /knowledge
+          - img [ref=e62]
+          - text: 보조기기 결과 이력
+        - link "Sheets 동기화" [ref=e65] [cursor=pointer]:
+          - /url: /migration
+          - img [ref=e66]
+          - text: Sheets 동기화
+      - button "로그아웃" [ref=e71] [cursor=pointer]:
+        - img [ref=e72]
+        - text: 로그아웃
+    - main [ref=e75]:
+      - generic [ref=e76]:
+        - generic [ref=e77]:
+          - generic [ref=e78]:
+            - heading "교부사업 적합성 평가" [level=1] [ref=e79]
+            - paragraph [ref=e80]: 총 1건
+          - link "새 평가 등록" [ref=e81] [cursor=pointer]:
+            - /url: /grant-eval/new
+            - img [ref=e82]
+            - text: 새 평가 등록
+        - generic [ref=e83]:
+          - combobox [ref=e84]:
+            - option "2026년" [selected]
+            - option "2025년"
+            - option "2024년"
+            - option "2023년"
+            - option "2022년"
+          - textbox "의뢰기관 검색" [ref=e85]
+          - combobox [ref=e86]:
+            - option "전체 상태" [selected]
+            - option "작성중"
+            - option "제출됨"
+            - option "완료"
+          - button "검색" [ref=e87] [cursor=pointer]
+        - generic [ref=e88]:
+          - link "목록" [ref=e89] [cursor=pointer]:
+            - /url: /grant-eval?year=2026&view=list
+          - link "보드" [ref=e90] [cursor=pointer]:
+            - /url: /grant-eval?year=2026&view=board
+        - table [ref=e92]:
+          - rowgroup [ref=e93]:
+            - row "대상자 생년월일 의뢰기관 평가일 신청품목 결과 상태 진행 중 서비스" [ref=e94]:
+              - columnheader "대상자" [ref=e95]
+              - columnheader "생년월일" [ref=e96]
+              - columnheader "의뢰기관" [ref=e97]
+              - columnheader "평가일" [ref=e98]
+              - columnheader "신청품목" [ref=e99]
+              - columnheader "결과" [ref=e100]
+              - columnheader "상태" [ref=e101]
+              - columnheader "진행 중 서비스" [ref=e102]
+          - rowgroup [ref=e103]:
+            - row "박정숙 1952-11-03 — — 소변수집장치 적합 완료" [ref=e104]:
+              - cell "박정숙" [ref=e105]:
+                - link "박정숙" [ref=e106] [cursor=pointer]:
+                  - /url: /grant-eval/9f706c53-d2c4-4b86-922f-d9503810a255
+              - cell "1952-11-03" [ref=e107]
+              - cell "—" [ref=e108]
+              - cell "—" [ref=e109]
+              - cell "소변수집장치" [ref=e110]:
+                - generic [ref=e112]: 소변수집장치
+              - cell "적합" [ref=e113]:
+                - generic [ref=e114]: 적합
+              - cell "완료" [ref=e115]
+              - cell [ref=e116]
+  - alert [ref=e117]

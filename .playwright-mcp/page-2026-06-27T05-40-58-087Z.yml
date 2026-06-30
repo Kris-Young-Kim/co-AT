@@ -1,0 +1,123 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - heading "GWATC 평가툴" [level=1] [ref=e5]
+      - navigation [ref=e6]:
+        - link "대시보드" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img [ref=e8]
+          - text: 대시보드
+        - link "서비스 진행 현황" [ref=e10] [cursor=pointer]:
+          - /url: /pipeline
+          - img [ref=e11]
+          - text: 서비스 진행 현황
+        - paragraph [ref=e12]: 대상자
+        - link "대상자 목록" [ref=e13] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e14]
+          - text: 대상자 목록
+        - link "신규 접수 대기" [ref=e19] [cursor=pointer]:
+          - /url: /clients/pending
+          - img [ref=e20]
+          - text: 신규 접수 대기
+        - link "QR 라벨 인쇄" [ref=e23] [cursor=pointer]:
+          - /url: /print/client-labels
+          - img [ref=e24]
+          - text: QR 라벨 인쇄
+        - paragraph [ref=e30]: 상담·서비스
+        - link "콜센터 상담" [ref=e31] [cursor=pointer]:
+          - /url: /call-logs
+          - img [ref=e32]
+          - text: 콜센터 상담
+        - link "서비스 기록" [ref=e34] [cursor=pointer]:
+          - /url: /service-records
+          - img [ref=e35]
+          - text: 서비스 기록
+        - link "교육 이력" [ref=e39] [cursor=pointer]:
+          - /url: /education
+          - img [ref=e40]
+          - text: 교육 이력
+        - paragraph [ref=e43]: 영역별 평가
+        - link "평가 목록" [ref=e44] [cursor=pointer]:
+          - /url: /assessments
+          - img [ref=e45]
+          - text: 평가 목록
+        - paragraph [ref=e48]: 교부사업 평가
+        - link "교부사업 평가" [ref=e49] [cursor=pointer]:
+          - /url: /grant-eval
+          - img [ref=e50]
+          - text: 교부사업 평가
+        - link "접수공문 관리" [ref=e54] [cursor=pointer]:
+          - /url: /grant-eval/referrals
+          - img [ref=e55]
+          - text: 접수공문 관리
+        - link "교부사업 통계" [ref=e58] [cursor=pointer]:
+          - /url: /grant-eval/statistics
+          - img [ref=e59]
+          - text: 교부사업 통계
+        - paragraph [ref=e60]: 의뢰처 관리
+        - link "의뢰처 CRM" [ref=e61] [cursor=pointer]:
+          - /url: /referrers
+          - img [ref=e62]
+          - text: 의뢰처 CRM
+        - link "대상자 세그먼트" [ref=e66] [cursor=pointer]:
+          - /url: /segments
+          - img [ref=e67]
+          - text: 대상자 세그먼트
+        - paragraph [ref=e69]: 지식·관리
+        - link "보조기기 결과 이력" [ref=e70] [cursor=pointer]:
+          - /url: /knowledge
+          - img [ref=e71]
+          - text: 보조기기 결과 이력
+        - link "Sheets 동기화" [ref=e74] [cursor=pointer]:
+          - /url: /migration
+          - img [ref=e75]
+          - text: Sheets 동기화
+      - button "로그아웃" [ref=e80] [cursor=pointer]:
+        - img [ref=e81]
+        - text: 로그아웃
+    - main [ref=e84]:
+      - generic [ref=e85]:
+        - link "클라이언트 목록" [ref=e86] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e87]
+          - text: 클라이언트 목록
+        - generic [ref=e89]:
+          - generic [ref=e90]:
+            - heading "신규 접수 대기" [level=1] [ref=e91]
+            - paragraph [ref=e92]: 총 2건의 미등록 클라이언트가 있습니다
+          - link "직접 접수" [ref=e93] [cursor=pointer]:
+            - /url: /clients/new
+            - img [ref=e94]
+            - text: 직접 접수
+        - table [ref=e96]:
+          - rowgroup [ref=e97]:
+            - row "이름 생년월일 연락처 출처 접수일" [ref=e98]:
+              - columnheader "이름" [ref=e99]
+              - columnheader "생년월일" [ref=e100]
+              - columnheader "연락처" [ref=e101]
+              - columnheader "출처" [ref=e102]
+              - columnheader "접수일" [ref=e103]
+              - columnheader [ref=e104]
+          - rowgroup [ref=e105]:
+            - row "테스트 홍길동 1985-03-15 010-1234-5678 직원입력 2026. 06. 27. 등록 처리" [ref=e106]:
+              - cell "테스트 홍길동" [ref=e107]
+              - cell "1985-03-15" [ref=e108]
+              - cell "010-1234-5678" [ref=e109]
+              - cell "직원입력" [ref=e110]:
+                - generic [ref=e111]: 직원입력
+              - cell "2026. 06. 27." [ref=e112]
+              - cell "등록 처리" [ref=e113]:
+                - link "등록 처리" [ref=e114] [cursor=pointer]:
+                  - /url: /clients/ede60325-63ea-45e5-ade1-1d4e5502fc61/register
+            - row "테스트 홍길동 1985-03-15 010-1234-5678 직원입력 2026. 06. 27. 등록 처리" [ref=e115]:
+              - cell "테스트 홍길동" [ref=e116]
+              - cell "1985-03-15" [ref=e117]
+              - cell "010-1234-5678" [ref=e118]
+              - cell "직원입력" [ref=e119]:
+                - generic [ref=e120]: 직원입력
+              - cell "2026. 06. 27." [ref=e121]
+              - cell "등록 처리" [ref=e122]:
+                - link "등록 처리" [ref=e123] [cursor=pointer]:
+                  - /url: /clients/7e7f9b4e-e4b5-4c40-88e3-13ce555b8bcf/register
+  - alert [ref=e124]

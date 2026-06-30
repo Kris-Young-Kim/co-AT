@@ -1,0 +1,236 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - heading "GWATC 평가툴" [level=1] [ref=e5]
+      - navigation [ref=e6]:
+        - link "대시보드" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img [ref=e8]
+          - text: 대시보드
+        - link "서비스 진행 현황" [ref=e10] [cursor=pointer]:
+          - /url: /pipeline
+          - img [ref=e11]
+          - text: 서비스 진행 현황
+        - paragraph [ref=e12]: 대상자
+        - link "대상자 목록" [ref=e13] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e14]
+          - text: 대상자 목록
+        - link "신규 접수 대기" [ref=e19] [cursor=pointer]:
+          - /url: /clients/pending
+          - img [ref=e20]
+          - text: 신규 접수 대기
+        - link "QR 라벨 인쇄" [ref=e23] [cursor=pointer]:
+          - /url: /print/client-labels
+          - img [ref=e24]
+          - text: QR 라벨 인쇄
+        - paragraph [ref=e30]: 상담·서비스
+        - link "콜센터 상담" [ref=e31] [cursor=pointer]:
+          - /url: /call-logs
+          - img [ref=e32]
+          - text: 콜센터 상담
+        - link "서비스 기록" [ref=e34] [cursor=pointer]:
+          - /url: /service-records
+          - img [ref=e35]
+          - text: 서비스 기록
+        - link "교육 이력" [ref=e39] [cursor=pointer]:
+          - /url: /education
+          - img [ref=e40]
+          - text: 교육 이력
+        - paragraph [ref=e43]: 영역별 평가
+        - link "평가 목록" [ref=e44] [cursor=pointer]:
+          - /url: /assessments
+          - img [ref=e45]
+          - text: 평가 목록
+        - paragraph [ref=e48]: 교부사업 평가
+        - link "교부사업 평가" [ref=e49] [cursor=pointer]:
+          - /url: /grant-eval
+          - img [ref=e50]
+          - text: 교부사업 평가
+        - link "접수공문 관리" [ref=e54] [cursor=pointer]:
+          - /url: /grant-eval/referrals
+          - img [ref=e55]
+          - text: 접수공문 관리
+        - link "교부사업 통계" [ref=e58] [cursor=pointer]:
+          - /url: /grant-eval/statistics
+          - img [ref=e59]
+          - text: 교부사업 통계
+        - paragraph [ref=e60]: 지식·관리
+        - link "보조기기 결과 이력" [ref=e61] [cursor=pointer]:
+          - /url: /knowledge
+          - img [ref=e62]
+          - text: 보조기기 결과 이력
+        - link "Sheets 동기화" [ref=e65] [cursor=pointer]:
+          - /url: /migration
+          - img [ref=e66]
+          - text: Sheets 동기화
+      - button "로그아웃" [ref=e71] [cursor=pointer]:
+        - img [ref=e72]
+        - text: 로그아웃
+    - main [ref=e75]:
+      - generic [ref=e76]:
+        - link "목록으로" [ref=e77] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e78]
+          - text: 목록으로
+        - generic [ref=e80]:
+          - heading "정진관" [level=1] [ref=e81]
+          - generic [ref=e82]:
+            - generic [ref=e83]:
+              - term [ref=e84]: 생년월일
+              - definition [ref=e85]: 1971-10-10
+            - generic [ref=e86]:
+              - term [ref=e87]: 연락처
+              - definition [ref=e88]: 010-3354-4799
+            - generic [ref=e89]:
+              - term [ref=e90]: 장애유형
+              - definition [ref=e91]: 뇌병변
+            - generic [ref=e92]:
+              - term [ref=e93]: 등록일
+              - definition [ref=e94]: 2026. 5. 13.
+        - generic [ref=e96]:
+          - generic [ref=e97]:
+            - heading "포털 계정 연결" [level=2] [ref=e98]
+            - generic [ref=e99]:
+              - img [ref=e100]
+              - text: 미연결
+          - generic [ref=e104]:
+            - paragraph [ref=e105]: 대상자의 포털(gwatc.cloud) 계정을 연결하면 마이페이지에서 본인 서비스 이력을 확인할 수 있습니다.
+            - generic [ref=e106]:
+              - button "이메일" [ref=e107] [cursor=pointer]
+              - button "휴대전화" [ref=e108] [cursor=pointer]
+              - button "이름+생년월일" [ref=e109] [cursor=pointer]
+            - generic [ref=e110]:
+              - textbox "이메일 주소" [ref=e111]
+              - button "연결" [disabled] [ref=e112]:
+                - img [ref=e113]
+                - text: 연결
+        - generic [ref=e117]:
+          - heading "대상자 QR 코드" [level=3] [ref=e118]:
+            - img [ref=e119]
+            - text: 대상자 QR 코드
+          - generic [ref=e125]:
+            - img "대상자 QR 코드" [ref=e127]
+            - generic [ref=e128]:
+              - paragraph [ref=e129]: 보조기기 대여 시 스캔
+              - paragraph [ref=e130]: inventory 앱 > 스캔 매칭에서 사용
+              - paragraph [ref=e131]: fa33acb0-f444-45e9-8572-8a16f05dc11c
+          - generic [ref=e132]:
+            - link "개별 라벨 인쇄" [ref=e133] [cursor=pointer]:
+              - /url: /print/client-label/76eb272d-1382-4adc-8d09-b806ac64e958
+              - img [ref=e134]
+              - text: 개별 라벨 인쇄
+            - link "일괄 라벨 인쇄" [ref=e138] [cursor=pointer]:
+              - /url: /print/client-labels
+        - generic [ref=e139]:
+          - heading "진행 중 서비스" [level=2] [ref=e141]
+          - generic [ref=e142]: 현재 진행 중인 서비스가 없습니다
+        - generic [ref=e144]:
+          - generic [ref=e145]:
+            - heading "케이스 관리(1건)" [level=2] [ref=e276]:
+              - text: 케이스 관리
+              - generic [ref=e277]: (1건)
+            - button "+ 케이스 추가" [ref=e278] [cursor=pointer]
+          - generic [ref=e281]:
+            - generic [ref=e282]:
+              - generic [ref=e283]:
+                - generic [ref=e284]: 테스트 케이스 - 널리 데스크 교부
+                - generic [ref=e285]: 진행중
+                - generic [ref=e286]: 다중 서비스
+              - paragraph [ref=e287]: 2026. 6. 27.
+            - button "삭제" [ref=e288] [cursor=pointer]
+        - generic [ref=e149]:
+          - heading "상담기록지 · 평가지" [level=2] [ref=e150]
+          - generic [ref=e151]:
+            - generic [ref=e152]:
+              - generic [ref=e153]:
+                - button "상담기록지" [ref=e154] [cursor=pointer]:
+                  - img [ref=e155]
+                  - text: 상담기록지
+                - button "평가지" [ref=e158] [cursor=pointer]:
+                  - img [ref=e159]
+                  - text: 평가지
+              - button "새 상담기록지" [ref=e164] [cursor=pointer]:
+                - img [ref=e165]
+                - text: 새 상담기록지
+            - generic [ref=e166]: 작성된 상담기록지가 없습니다.
+        - generic [ref=e167]:
+          - heading "STT 대화록 이력" [level=2] [ref=e168]
+          - generic [ref=e169]:
+            - img [ref=e170]
+            - text: 저장된 대화록이 없습니다
+        - generic [ref=e173]:
+          - generic [ref=e174]:
+            - generic [ref=e175]:
+              - heading "K-IPPA 기능성과 측정" [level=2] [ref=e176]
+              - paragraph [ref=e177]: 활동 문제 3~5개 · 사전/사후 5점 척도 · 성과점수 자동 계산
+            - button "+ 사전 측정 등록" [ref=e178] [cursor=pointer]
+          - paragraph [ref=e179]: K-IPPA 측정 내역이 없습니다
+        - generic [ref=e181]:
+          - generic [ref=e182]:
+            - generic [ref=e183]:
+              - img [ref=e185]
+              - generic [ref=e188]:
+                - heading "AI 보조기기 추천" [level=3] [ref=e189]
+                - paragraph [ref=e190]: 뇌병변 · K-IPPA + 기관 실적 기반 추천
+            - button "추천 생성" [ref=e192] [cursor=pointer]:
+              - img [ref=e193]
+              - text: 추천 생성
+          - generic [ref=e195]:
+            - img [ref=e196]
+            - paragraph [ref=e199]: "\"추천 생성\" 버튼을 클릭하면 대상자의 장애유형·K-IPPA 활동 문제·기관 지원 실적을 분석해 최적 보조기기를 추천합니다."
+        - generic [ref=e201]:
+          - generic [ref=e202]:
+            - generic [ref=e203]:
+              - img [ref=e205]
+              - generic [ref=e208]:
+                - heading "AI 종합 평가 보고서" [level=3] [ref=e209]
+                - paragraph [ref=e210]: K-IPPA + 영역 평가 + 서비스 이력 기반 자동 초안
+            - button "초안 생성" [ref=e212] [cursor=pointer]:
+              - img [ref=e213]
+              - text: 초안 생성
+          - generic [ref=e215]:
+            - img [ref=e216]
+            - paragraph [ref=e218]: "\"초안 생성\" 버튼을 클릭하면 대상자의 K-IPPA, 영역 평가, 서비스 이력을 분석해 종합 평가 보고서 초안을 자동으로 작성합니다."
+        - generic [ref=e219]:
+          - heading "신청 이력 (0건)" [level=2] [ref=e220]
+          - generic [ref=e221]: 신청서가 없습니다
+        - generic [ref=e222]:
+          - heading "전체 이력 타임라인" [level=2] [ref=e223]
+          - generic [ref=e224]: 이력이 없습니다
+        - generic [ref=e225]:
+          - heading "유사 대상자(뇌병변 · 최대 5명)" [level=2] [ref=e226]:
+            - text: 유사 대상자
+            - generic [ref=e227]: (뇌병변 · 최대 5명)
+          - generic [ref=e228]:
+            - link "우이서 중증급 · 2020-07-09 서비스 0건" [ref=e229] [cursor=pointer]:
+              - /url: /clients/a138d7db-d624-4124-b4db-571539046305
+              - generic [ref=e231]:
+                - paragraph [ref=e232]: 우이서
+                - paragraph [ref=e233]: 중증급 · 2020-07-09
+              - generic [ref=e234]: 서비스 0건
+            - link "한지율 중증급 · 2024-06-12 서비스 0건" [ref=e235] [cursor=pointer]:
+              - /url: /clients/84441385-c98b-4927-8ab4-08353ba26d05
+              - generic [ref=e237]:
+                - paragraph [ref=e238]: 한지율
+                - paragraph [ref=e239]: 중증급 · 2024-06-12
+              - generic [ref=e240]: 서비스 0건
+            - link "심재진 중증급 · 1970-03-21 서비스 0건" [ref=e241] [cursor=pointer]:
+              - /url: /clients/cec8d52d-d97c-412f-97a2-882afc00c4c5
+              - generic [ref=e243]:
+                - paragraph [ref=e244]: 심재진
+                - paragraph [ref=e245]: 중증급 · 1970-03-21
+              - generic [ref=e246]: 서비스 0건
+            - link "전민서 중증급 · 2012-07-11 서비스 0건" [ref=e247] [cursor=pointer]:
+              - /url: /clients/43c1b95b-4bd3-4281-9a1b-22c6385c17b0
+              - generic [ref=e249]:
+                - paragraph [ref=e250]: 전민서
+                - paragraph [ref=e251]: 중증급 · 2012-07-11
+              - generic [ref=e252]: 서비스 0건
+            - link "유은성 중증급 · 2015-06-22 서비스 0건" [ref=e253] [cursor=pointer]:
+              - /url: /clients/3dc2170c-b6af-4043-8e0c-a34ce5b7d699
+              - generic [ref=e255]:
+                - paragraph [ref=e256]: 유은성
+                - paragraph [ref=e257]: 중증급 · 2015-06-22
+              - generic [ref=e258]: 서비스 0건
+  - alert [ref=e259]

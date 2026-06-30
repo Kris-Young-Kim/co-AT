@@ -1,0 +1,480 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - heading "GWATC 평가툴" [level=1] [ref=e5]
+      - navigation [ref=e6]:
+        - link "대시보드" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img [ref=e8]
+          - text: 대시보드
+        - link "서비스 진행 현황" [ref=e10] [cursor=pointer]:
+          - /url: /pipeline
+          - img [ref=e11]
+          - text: 서비스 진행 현황
+        - paragraph [ref=e12]: 대상자
+        - link "대상자 목록" [ref=e13] [cursor=pointer]:
+          - /url: /clients
+          - img [ref=e14]
+          - text: 대상자 목록
+        - link "신규 접수 대기" [ref=e19] [cursor=pointer]:
+          - /url: /clients/pending
+          - img [ref=e20]
+          - text: 신규 접수 대기
+        - link "QR 라벨 인쇄" [ref=e23] [cursor=pointer]:
+          - /url: /print/client-labels
+          - img [ref=e24]
+          - text: QR 라벨 인쇄
+        - paragraph [ref=e30]: 상담·서비스
+        - link "콜센터 상담" [ref=e31] [cursor=pointer]:
+          - /url: /call-logs
+          - img [ref=e32]
+          - text: 콜센터 상담
+        - link "서비스 기록" [ref=e34] [cursor=pointer]:
+          - /url: /service-records
+          - img [ref=e35]
+          - text: 서비스 기록
+        - link "교육 이력" [ref=e39] [cursor=pointer]:
+          - /url: /education
+          - img [ref=e40]
+          - text: 교육 이력
+        - paragraph [ref=e43]: 영역별 평가
+        - link "평가 목록" [ref=e44] [cursor=pointer]:
+          - /url: /assessments
+          - img [ref=e45]
+          - text: 평가 목록
+        - paragraph [ref=e48]: 교부사업 평가
+        - link "교부사업 평가" [ref=e49] [cursor=pointer]:
+          - /url: /grant-eval
+          - img [ref=e50]
+          - text: 교부사업 평가
+        - link "접수공문 관리" [ref=e54] [cursor=pointer]:
+          - /url: /grant-eval/referrals
+          - img [ref=e55]
+          - text: 접수공문 관리
+        - link "교부사업 통계" [ref=e58] [cursor=pointer]:
+          - /url: /grant-eval/statistics
+          - img [ref=e59]
+          - text: 교부사업 통계
+        - paragraph [ref=e60]: 의뢰처 관리
+        - link "의뢰처 CRM" [ref=e61] [cursor=pointer]:
+          - /url: /referrers
+          - img [ref=e62]
+          - text: 의뢰처 CRM
+        - link "대상자 세그먼트" [ref=e66] [cursor=pointer]:
+          - /url: /segments
+          - img [ref=e67]
+          - text: 대상자 세그먼트
+        - paragraph [ref=e69]: 지식·관리
+        - link "보조기기 결과 이력" [ref=e70] [cursor=pointer]:
+          - /url: /knowledge
+          - img [ref=e71]
+          - text: 보조기기 결과 이력
+        - link "Sheets 동기화" [ref=e74] [cursor=pointer]:
+          - /url: /migration
+          - img [ref=e75]
+          - text: Sheets 동기화
+      - button "로그아웃" [ref=e80] [cursor=pointer]:
+        - img [ref=e81]
+        - text: 로그아웃
+    - main [ref=e84]:
+      - generic [ref=e85]:
+        - generic [ref=e86]:
+          - heading "클라이언트" [level=1] [ref=e87]
+          - paragraph [ref=e88]: 이름 또는 생년월일로 검색하세요
+        - link "신규 접수 대기 2건 — 등록 처리가 필요합니다" [ref=e89] [cursor=pointer]:
+          - /url: /clients/pending
+          - img [ref=e90]
+          - generic [ref=e92]: 신규 접수 대기 2건 — 등록 처리가 필요합니다
+        - generic [ref=e95]:
+          - generic [ref=e96]:
+            - img [ref=e97]
+            - textbox "이름 또는 생년월일(YYYY-MM-DD) 검색" [ref=e100]
+          - button "검색" [ref=e101] [cursor=pointer]
+          - button "QR 스캔으로 검색" [ref=e102] [cursor=pointer]:
+            - img [ref=e103]
+        - generic [ref=e108]:
+          - link "전체" [ref=e109] [cursor=pointer]:
+            - /url: /clients
+          - link "활성" [ref=e110] [cursor=pointer]:
+            - /url: /clients?lifecycle=active
+          - link "장기미접촉" [ref=e111] [cursor=pointer]:
+            - /url: /clients?lifecycle=inactive
+          - link "종결" [ref=e112] [cursor=pointer]:
+            - /url: /clients?lifecycle=closed
+          - link "재접수" [ref=e113] [cursor=pointer]:
+            - /url: /clients?lifecycle=readmit
+        - generic [ref=e114]:
+          - paragraph [ref=e115]: 총 1590명
+          - table [ref=e117]:
+            - rowgroup [ref=e118]:
+              - row "이름 상태 생년월일 장애유형 신청건수 진행 중 서비스 등록일" [ref=e119]:
+                - columnheader "이름" [ref=e120]
+                - columnheader "상태" [ref=e121]
+                - columnheader "생년월일" [ref=e122]
+                - columnheader "장애유형" [ref=e123]
+                - columnheader "신청건수" [ref=e124]
+                - columnheader "진행 중 서비스" [ref=e125]
+                - columnheader "등록일" [ref=e126]
+                - columnheader [ref=e127]
+            - rowgroup [ref=e128]:
+              - row "문선경 활성 — — 0건 2026. 06. 22. 상세보기" [ref=e129]:
+                - cell "문선경" [ref=e130]:
+                  - paragraph [ref=e131]: 문선경
+                - cell "활성" [ref=e132]
+                - cell "—" [ref=e133]
+                - cell "—" [ref=e134]
+                - cell "0건" [ref=e135]
+                - cell [ref=e136]
+                - cell "2026. 06. 22." [ref=e137]
+                - cell "상세보기" [ref=e138]:
+                  - link "상세보기" [ref=e139] [cursor=pointer]:
+                    - /url: /clients/0e029f59-f010-4143-af22-f388052b0669
+              - row "문선경 활성 — — 0건 2026. 06. 22. 상세보기" [ref=e140]:
+                - cell "문선경" [ref=e141]:
+                  - paragraph [ref=e142]: 문선경
+                - cell "활성" [ref=e143]
+                - cell "—" [ref=e144]
+                - cell "—" [ref=e145]
+                - cell "0건" [ref=e146]
+                - cell [ref=e147]
+                - cell "2026. 06. 22." [ref=e148]
+                - cell "상세보기" [ref=e149]:
+                  - link "상세보기" [ref=e150] [cursor=pointer]:
+                    - /url: /clients/6264ec6a-fc7a-425b-8c26-16de7a0a5aa5
+              - row "최병춘 활성 1938-06-05 — 0건 2026. 05. 13. 상세보기" [ref=e151]:
+                - cell "최병춘" [ref=e152]:
+                  - paragraph [ref=e153]: 최병춘
+                - cell "활성" [ref=e154]
+                - cell "1938-06-05" [ref=e155]
+                - cell "—" [ref=e156]
+                - cell "0건" [ref=e157]
+                - cell [ref=e158]
+                - cell "2026. 05. 13." [ref=e159]
+                - cell "상세보기" [ref=e160]:
+                  - link "상세보기" [ref=e161] [cursor=pointer]:
+                    - /url: /clients/dd56761b-79de-48ad-bfe9-f1f57ffecfe7
+              - row "최규상 활성 1960-03-26 — 0건 2026. 05. 13. 상세보기" [ref=e162]:
+                - cell "최규상" [ref=e163]:
+                  - paragraph [ref=e164]: 최규상
+                - cell "활성" [ref=e165]
+                - cell "1960-03-26" [ref=e166]
+                - cell "—" [ref=e167]
+                - cell "0건" [ref=e168]
+                - cell [ref=e169]
+                - cell "2026. 05. 13." [ref=e170]
+                - cell "상세보기" [ref=e171]:
+                  - link "상세보기" [ref=e172] [cursor=pointer]:
+                    - /url: /clients/b9cf3167-0219-4448-9899-da2179a95d22
+              - row "전제우 활성 1963-04-02 — 0건 2026. 05. 13. 상세보기" [ref=e173]:
+                - cell "전제우" [ref=e174]:
+                  - paragraph [ref=e175]: 전제우
+                - cell "활성" [ref=e176]
+                - cell "1963-04-02" [ref=e177]
+                - cell "—" [ref=e178]
+                - cell "0건" [ref=e179]
+                - cell [ref=e180]
+                - cell "2026. 05. 13." [ref=e181]
+                - cell "상세보기" [ref=e182]:
+                  - link "상세보기" [ref=e183] [cursor=pointer]:
+                    - /url: /clients/c5acaaa8-eea4-43de-8dc4-5f9af71e8c17
+              - row "지옥춘 활성 1937-06-09 — 0건 2026. 05. 13. 상세보기" [ref=e184]:
+                - cell "지옥춘" [ref=e185]:
+                  - paragraph [ref=e186]: 지옥춘
+                - cell "활성" [ref=e187]
+                - cell "1937-06-09" [ref=e188]
+                - cell "—" [ref=e189]
+                - cell "0건" [ref=e190]
+                - cell [ref=e191]
+                - cell "2026. 05. 13." [ref=e192]
+                - cell "상세보기" [ref=e193]:
+                  - link "상세보기" [ref=e194] [cursor=pointer]:
+                    - /url: /clients/8a5d0cb9-2bc6-4be7-8478-ba1e1ed1e49b
+              - row "윤옥연 활성 1936-01-29 — 0건 2026. 05. 13. 상세보기" [ref=e195]:
+                - cell "윤옥연" [ref=e196]:
+                  - paragraph [ref=e197]: 윤옥연
+                - cell "활성" [ref=e198]
+                - cell "1936-01-29" [ref=e199]
+                - cell "—" [ref=e200]
+                - cell "0건" [ref=e201]
+                - cell [ref=e202]
+                - cell "2026. 05. 13." [ref=e203]
+                - cell "상세보기" [ref=e204]:
+                  - link "상세보기" [ref=e205] [cursor=pointer]:
+                    - /url: /clients/112a64bc-aab6-4f45-92e0-f1861ae2505e
+              - row "김성용 활성 1975-01-06 — 0건 2026. 05. 13. 상세보기" [ref=e206]:
+                - cell "김성용" [ref=e207]:
+                  - paragraph [ref=e208]: 김성용
+                - cell "활성" [ref=e209]
+                - cell "1975-01-06" [ref=e210]
+                - cell "—" [ref=e211]
+                - cell "0건" [ref=e212]
+                - cell [ref=e213]
+                - cell "2026. 05. 13." [ref=e214]
+                - cell "상세보기" [ref=e215]:
+                  - link "상세보기" [ref=e216] [cursor=pointer]:
+                    - /url: /clients/a0c1f710-18cb-4302-b6de-09c7036af535
+              - row "이재은 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e217]:
+                - cell "이재은" [ref=e218]:
+                  - paragraph [ref=e219]: 이재은
+                - cell "활성" [ref=e220]
+                - cell "—" [ref=e221]
+                - cell "—" [ref=e222]
+                - cell "0건" [ref=e223]
+                - cell [ref=e224]
+                - cell "2026. 05. 13." [ref=e225]
+                - cell "상세보기" [ref=e226]:
+                  - link "상세보기" [ref=e227] [cursor=pointer]:
+                    - /url: /clients/73b68828-8d18-4ab0-a415-c3cfc82f70aa
+              - row "박옥순 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e228]:
+                - cell "박옥순" [ref=e229]:
+                  - paragraph [ref=e230]: 박옥순
+                - cell "활성" [ref=e231]
+                - cell "—" [ref=e232]
+                - cell "—" [ref=e233]
+                - cell "0건" [ref=e234]
+                - cell [ref=e235]
+                - cell "2026. 05. 13." [ref=e236]
+                - cell "상세보기" [ref=e237]:
+                  - link "상세보기" [ref=e238] [cursor=pointer]:
+                    - /url: /clients/bc8077f5-1cf7-439a-8e5b-56151e613d0d
+              - row "전용주 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e239]:
+                - cell "전용주" [ref=e240]:
+                  - paragraph [ref=e241]: 전용주
+                - cell "활성" [ref=e242]
+                - cell "—" [ref=e243]
+                - cell "—" [ref=e244]
+                - cell "0건" [ref=e245]
+                - cell [ref=e246]
+                - cell "2026. 05. 13." [ref=e247]
+                - cell "상세보기" [ref=e248]:
+                  - link "상세보기" [ref=e249] [cursor=pointer]:
+                    - /url: /clients/bf963342-8204-4e21-af88-ff020288c7a9
+              - row "진아영 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e250]:
+                - cell "진아영" [ref=e251]:
+                  - paragraph [ref=e252]: 진아영
+                - cell "활성" [ref=e253]
+                - cell "—" [ref=e254]
+                - cell "—" [ref=e255]
+                - cell "0건" [ref=e256]
+                - cell [ref=e257]
+                - cell "2026. 05. 13." [ref=e258]
+                - cell "상세보기" [ref=e259]:
+                  - link "상세보기" [ref=e260] [cursor=pointer]:
+                    - /url: /clients/f3cd9fd0-c237-4954-9437-003771e24695
+              - row "김의서 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e261]:
+                - cell "김의서" [ref=e262]:
+                  - paragraph [ref=e263]: 김의서
+                - cell "활성" [ref=e264]
+                - cell "—" [ref=e265]
+                - cell "—" [ref=e266]
+                - cell "0건" [ref=e267]
+                - cell [ref=e268]
+                - cell "2026. 05. 13." [ref=e269]
+                - cell "상세보기" [ref=e270]:
+                  - link "상세보기" [ref=e271] [cursor=pointer]:
+                    - /url: /clients/e8699ff1-7124-4051-8df1-d1e6b8f9c84c
+              - row "김승아 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e272]:
+                - cell "김승아" [ref=e273]:
+                  - paragraph [ref=e274]: 김승아
+                - cell "활성" [ref=e275]
+                - cell "—" [ref=e276]
+                - cell "—" [ref=e277]
+                - cell "0건" [ref=e278]
+                - cell [ref=e279]
+                - cell "2026. 05. 13." [ref=e280]
+                - cell "상세보기" [ref=e281]:
+                  - link "상세보기" [ref=e282] [cursor=pointer]:
+                    - /url: /clients/2eb02f53-162c-4245-ac19-4e817d033788
+              - row "곽수언 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e283]:
+                - cell "곽수언" [ref=e284]:
+                  - paragraph [ref=e285]: 곽수언
+                - cell "활성" [ref=e286]
+                - cell "—" [ref=e287]
+                - cell "—" [ref=e288]
+                - cell "0건" [ref=e289]
+                - cell [ref=e290]
+                - cell "2026. 05. 13." [ref=e291]
+                - cell "상세보기" [ref=e292]:
+                  - link "상세보기" [ref=e293] [cursor=pointer]:
+                    - /url: /clients/f7fb3446-ea56-460d-af83-cea4c244ff70
+              - row "김의서 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e294]:
+                - cell "김의서" [ref=e295]:
+                  - paragraph [ref=e296]: 김의서
+                - cell "활성" [ref=e297]
+                - cell "—" [ref=e298]
+                - cell "—" [ref=e299]
+                - cell "0건" [ref=e300]
+                - cell [ref=e301]
+                - cell "2026. 05. 13." [ref=e302]
+                - cell "상세보기" [ref=e303]:
+                  - link "상세보기" [ref=e304] [cursor=pointer]:
+                    - /url: /clients/9382b3e0-2b81-4716-a984-103b61d756a4
+              - row "문선경 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e305]:
+                - cell "문선경" [ref=e306]:
+                  - paragraph [ref=e307]: 문선경
+                - cell "활성" [ref=e308]
+                - cell "—" [ref=e309]
+                - cell "—" [ref=e310]
+                - cell "0건" [ref=e311]
+                - cell [ref=e312]
+                - cell "2026. 05. 13." [ref=e313]
+                - cell "상세보기" [ref=e314]:
+                  - link "상세보기" [ref=e315] [cursor=pointer]:
+                    - /url: /clients/1e704812-e122-4ca9-ac7c-c9330aec677f
+              - row "신중범 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e316]:
+                - cell "신중범" [ref=e317]:
+                  - paragraph [ref=e318]: 신중범
+                - cell "활성" [ref=e319]
+                - cell "—" [ref=e320]
+                - cell "—" [ref=e321]
+                - cell "0건" [ref=e322]
+                - cell [ref=e323]
+                - cell "2026. 05. 13." [ref=e324]
+                - cell "상세보기" [ref=e325]:
+                  - link "상세보기" [ref=e326] [cursor=pointer]:
+                    - /url: /clients/3aa2e85a-57e2-420b-908d-b74c324f619e
+              - row "박서인 활성 2022-10-15 — 0건 2026. 05. 13. 상세보기" [ref=e327]:
+                - cell "박서인" [ref=e328]:
+                  - paragraph [ref=e329]: 박서인
+                - cell "활성" [ref=e330]
+                - cell "2022-10-15" [ref=e331]
+                - cell "—" [ref=e332]
+                - cell "0건" [ref=e333]
+                - cell [ref=e334]
+                - cell "2026. 05. 13." [ref=e335]
+                - cell "상세보기" [ref=e336]:
+                  - link "상세보기" [ref=e337] [cursor=pointer]:
+                    - /url: /clients/c288aa40-a8cd-4c31-9792-43290d271293
+              - row "김동수 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e338]:
+                - cell "김동수" [ref=e339]:
+                  - paragraph [ref=e340]: 김동수
+                - cell "활성" [ref=e341]
+                - cell "—" [ref=e342]
+                - cell "—" [ref=e343]
+                - cell "0건" [ref=e344]
+                - cell [ref=e345]
+                - cell "2026. 05. 13." [ref=e346]
+                - cell "상세보기" [ref=e347]:
+                  - link "상세보기" [ref=e348] [cursor=pointer]:
+                    - /url: /clients/2e4741bd-33dc-4a5b-9055-5cd830a63227
+              - row "송영복 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e349]:
+                - cell "송영복" [ref=e350]:
+                  - paragraph [ref=e351]: 송영복
+                - cell "활성" [ref=e352]
+                - cell "—" [ref=e353]
+                - cell "—" [ref=e354]
+                - cell "0건" [ref=e355]
+                - cell [ref=e356]
+                - cell "2026. 05. 13." [ref=e357]
+                - cell "상세보기" [ref=e358]:
+                  - link "상세보기" [ref=e359] [cursor=pointer]:
+                    - /url: /clients/e75427f9-98c1-403e-b7f6-9ba3d5fbfecb
+              - row "오봉순 활성 — — 0건 2026. 05. 13. 상세보기" [ref=e360]:
+                - cell "오봉순" [ref=e361]:
+                  - paragraph [ref=e362]: 오봉순
+                - cell "활성" [ref=e363]
+                - cell "—" [ref=e364]
+                - cell "—" [ref=e365]
+                - cell "0건" [ref=e366]
+                - cell [ref=e367]
+                - cell "2026. 05. 13." [ref=e368]
+                - cell "상세보기" [ref=e369]:
+                  - link "상세보기" [ref=e370] [cursor=pointer]:
+                    - /url: /clients/22ccdf06-5f78-46fd-9712-8b3343818f89
+              - row "심재진 활성 1970-03-21 뇌병변 0건 2026. 05. 13. 상세보기" [ref=e371]:
+                - cell "심재진" [ref=e372]:
+                  - paragraph [ref=e373]: 심재진
+                - cell "활성" [ref=e374]
+                - cell "1970-03-21" [ref=e375]
+                - cell "뇌병변" [ref=e376]
+                - cell "0건" [ref=e377]
+                - cell [ref=e378]
+                - cell "2026. 05. 13." [ref=e379]
+                - cell "상세보기" [ref=e380]:
+                  - link "상세보기" [ref=e381] [cursor=pointer]:
+                    - /url: /clients/cec8d52d-d97c-412f-97a2-882afc00c4c5
+              - row "장둘남 활성 1967-11-01 — 0건 2026. 05. 13. 상세보기" [ref=e382]:
+                - cell "장둘남" [ref=e383]:
+                  - paragraph [ref=e384]: 장둘남
+                - cell "활성" [ref=e385]
+                - cell "1967-11-01" [ref=e386]
+                - cell "—" [ref=e387]
+                - cell "0건" [ref=e388]
+                - cell [ref=e389]
+                - cell "2026. 05. 13." [ref=e390]
+                - cell "상세보기" [ref=e391]:
+                  - link "상세보기" [ref=e392] [cursor=pointer]:
+                    - /url: /clients/ad865378-0d94-44f0-9a2e-22dead4bafae
+              - row "한지율 활성 2024-06-12 뇌병변 0건 2026. 05. 13. 상세보기" [ref=e393]:
+                - cell "한지율" [ref=e394]:
+                  - paragraph [ref=e395]: 한지율
+                - cell "활성" [ref=e396]
+                - cell "2024-06-12" [ref=e397]
+                - cell "뇌병변" [ref=e398]
+                - cell "0건" [ref=e399]
+                - cell [ref=e400]
+                - cell "2026. 05. 13." [ref=e401]
+                - cell "상세보기" [ref=e402]:
+                  - link "상세보기" [ref=e403] [cursor=pointer]:
+                    - /url: /clients/84441385-c98b-4927-8ab4-08353ba26d05
+              - row "최현철 활성 1939-03-05 장기요양 0건 2026. 05. 13. 상세보기" [ref=e404]:
+                - cell "최현철" [ref=e405]:
+                  - paragraph [ref=e406]: 최현철
+                - cell "활성" [ref=e407]
+                - cell "1939-03-05" [ref=e408]
+                - cell "장기요양" [ref=e409]
+                - cell "0건" [ref=e410]
+                - cell [ref=e411]
+                - cell "2026. 05. 13." [ref=e412]
+                - cell "상세보기" [ref=e413]:
+                  - link "상세보기" [ref=e414] [cursor=pointer]:
+                    - /url: /clients/77c99665-1dff-4090-a40c-84d8616bc0ce
+              - row "이시훈 활성 2007-12-04 — 0건 2026. 05. 13. 상세보기" [ref=e415]:
+                - cell "이시훈" [ref=e416]:
+                  - paragraph [ref=e417]: 이시훈
+                - cell "활성" [ref=e418]
+                - cell "2007-12-04" [ref=e419]
+                - cell "—" [ref=e420]
+                - cell "0건" [ref=e421]
+                - cell [ref=e422]
+                - cell "2026. 05. 13." [ref=e423]
+                - cell "상세보기" [ref=e424]:
+                  - link "상세보기" [ref=e425] [cursor=pointer]:
+                    - /url: /clients/8656ba01-d778-470e-b347-30693b82c0b0
+              - row "우이서 활성 2020-07-09 뇌병변 0건 2026. 05. 13. 상세보기" [ref=e426]:
+                - cell "우이서" [ref=e427]:
+                  - paragraph [ref=e428]: 우이서
+                - cell "활성" [ref=e429]
+                - cell "2020-07-09" [ref=e430]
+                - cell "뇌병변" [ref=e431]
+                - cell "0건" [ref=e432]
+                - cell [ref=e433]
+                - cell "2026. 05. 13." [ref=e434]
+                - cell "상세보기" [ref=e435]:
+                  - link "상세보기" [ref=e436] [cursor=pointer]:
+                    - /url: /clients/a138d7db-d624-4124-b4db-571539046305
+              - row "이지숙 활성 1973-06-09 — 0건 2026. 05. 13. 상세보기" [ref=e437]:
+                - cell "이지숙" [ref=e438]:
+                  - paragraph [ref=e439]: 이지숙
+                - cell "활성" [ref=e440]
+                - cell "1973-06-09" [ref=e441]
+                - cell "—" [ref=e442]
+                - cell "0건" [ref=e443]
+                - cell [ref=e444]
+                - cell "2026. 05. 13." [ref=e445]
+                - cell "상세보기" [ref=e446]:
+                  - link "상세보기" [ref=e447] [cursor=pointer]:
+                    - /url: /clients/d0b1ee5d-112e-4f81-b920-f836dcf98a92
+              - row "이칠홍 활성 1937-07-16 — 0건 2026. 05. 13. 상세보기" [ref=e448]:
+                - cell "이칠홍" [ref=e449]:
+                  - paragraph [ref=e450]: 이칠홍
+                - cell "활성" [ref=e451]
+                - cell "1937-07-16" [ref=e452]
+                - cell "—" [ref=e453]
+                - cell "0건" [ref=e454]
+                - cell [ref=e455]
+                - cell "2026. 05. 13." [ref=e456]
+                - cell "상세보기" [ref=e457]:
+                  - link "상세보기" [ref=e458] [cursor=pointer]:
+                    - /url: /clients/f8c78b21-7b31-4627-81b7-0cedfd9c36d0
+  - alert [ref=e459]
