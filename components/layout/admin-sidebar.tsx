@@ -14,6 +14,7 @@ import {
   MessageSquare,
   Bot,
   ClipboardList,
+  Building2,
 } from "lucide-react";
 
 type NavItem = {
@@ -38,6 +39,7 @@ const NAV_ENTRIES: NavEntry[] = [
   { type: "item", href: "/notices-management", label: "웹 관리", icon: Globe },
   { type: "item", href: "/schedule", label: "일정 관리", icon: Calendar },
   { type: "item", href: "/appointments", label: "예약 관리", icon: CalendarCheck },
+  { type: "item", href: "/partner-centers", label: "협력기관 연락망", icon: Building2 },
 
   { type: "section", label: "업무" },
   { type: "item", href: "/work-tasks", label: "업무 관리", icon: ClipboardList },
