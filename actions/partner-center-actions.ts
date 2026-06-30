@@ -39,7 +39,7 @@ export async function listPartnerCenters(): Promise<{
   return withStaffPermission(async () => {
     try {
       const supabase = createAdminClient()
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("partner_centers")
         .select("*")
         .order("region")
@@ -62,7 +62,7 @@ export async function createPartnerCenter(input: PartnerCenterInput): Promise<{
   return withStaffPermission(async () => {
     try {
       const supabase = createAdminClient()
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("partner_centers")
         .insert(input)
         .select("id")
@@ -71,7 +71,7 @@ export async function createPartnerCenter(input: PartnerCenterInput): Promise<{
       if (error || !data) return { success: false, error: "협력기관 추가에 실패했습니다" }
 
       revalidatePath("/partner-centers")
-      return { success: true, id: (data as { id: string }).id }
+      return { success: true, id: data.id }
     } catch (e) {
       console.error("createPartnerCenter:", e)
       return { success: false, error: "예상치 못한 오류가 발생했습니다" }
@@ -86,7 +86,7 @@ export async function updatePartnerCenter(
   return withStaffPermission(async () => {
     try {
       const supabase = createAdminClient()
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from("partner_centers")
         .update({ ...input, updated_at: new Date().toISOString() })
         .eq("id", id)
@@ -109,7 +109,7 @@ export async function deletePartnerCenter(id: string): Promise<{
   return withStaffPermission(async () => {
     try {
       const supabase = createAdminClient()
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from("partner_centers")
         .delete()
         .eq("id", id)
