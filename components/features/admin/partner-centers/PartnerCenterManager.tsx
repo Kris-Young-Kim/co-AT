@@ -144,8 +144,11 @@ export function PartnerCenterManager({ initialCenters }: Props) {
     const res = await deletePartnerCenter(deleteTarget.id)
     if (res.success) {
       setCenters((prev) => prev.filter((c) => c.id !== deleteTarget.id))
+      setDeleteTarget(null)
+    } else {
+      setError(res.error ?? "삭제에 실패했습니다")
+      setDeleteTarget(null)
     }
-    setDeleteTarget(null)
   }
 
   return (
