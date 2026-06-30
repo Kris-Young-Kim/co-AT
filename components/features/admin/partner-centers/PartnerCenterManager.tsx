@@ -245,40 +245,41 @@ export function PartnerCenterManager({ initialCenters }: Props) {
           <div className="space-y-4 py-2">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2 space-y-1">
-                <Label>기관명 *</Label>
-                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                <Label htmlFor="pc-name">기관명 *</Label>
+                <Input id="pc-name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
               </div>
               <div className="space-y-1">
-                <Label>광역시도 *</Label>
-                <Input value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })} />
+                <Label htmlFor="pc-region">광역시도 *</Label>
+                <Input id="pc-region" value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })} />
               </div>
               <div className="space-y-1">
-                <Label>시군구 *</Label>
-                <Input value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
+                <Label htmlFor="pc-district">시군구 *</Label>
+                <Input id="pc-district" value={form.district} onChange={(e) => setForm({ ...form, district: e.target.value })} />
               </div>
               <div className="space-y-1">
-                <Label>전화번호 *</Label>
-                <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                <Label htmlFor="pc-phone">전화번호 *</Label>
+                <Input id="pc-phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
               </div>
               <div className="space-y-1">
-                <Label>팩스</Label>
-                <Input value={form.fax ?? ""} onChange={(e) => setForm({ ...form, fax: e.target.value })} />
+                <Label htmlFor="pc-fax">팩스</Label>
+                <Input id="pc-fax" value={form.fax ?? ""} onChange={(e) => setForm({ ...form, fax: e.target.value })} />
               </div>
               <div className="col-span-2 space-y-1">
-                <Label>이메일</Label>
-                <Input value={form.email ?? ""} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                <Label htmlFor="pc-email">이메일</Label>
+                <Input id="pc-email" value={form.email ?? ""} onChange={(e) => setForm({ ...form, email: e.target.value })} />
               </div>
               <div className="col-span-2 space-y-1">
-                <Label>주소</Label>
-                <Input value={form.address ?? ""} onChange={(e) => setForm({ ...form, address: e.target.value })} />
+                <Label htmlFor="pc-address">주소</Label>
+                <Input id="pc-address" value={form.address ?? ""} onChange={(e) => setForm({ ...form, address: e.target.value })} />
               </div>
               <div className="col-span-2 space-y-1">
-                <Label>홈페이지</Label>
-                <Input value={form.website ?? ""} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="www.example.or.kr" />
+                <Label htmlFor="pc-website">홈페이지</Label>
+                <Input id="pc-website" value={form.website ?? ""} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="www.example.or.kr" />
               </div>
               <div className="col-span-2 space-y-1">
-                <Label>협력 메모</Label>
+                <Label htmlFor="pc-memo">협력 메모</Label>
                 <Textarea
+                  id="pc-memo"
                   value={form.memo ?? ""}
                   onChange={(e) => setForm({ ...form, memo: e.target.value })}
                   rows={3}
