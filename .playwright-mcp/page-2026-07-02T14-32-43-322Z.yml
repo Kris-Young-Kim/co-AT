@@ -1,0 +1,48 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - img [ref=e5]
+        - generic [ref=e8]: 전자결재
+      - navigation [ref=e9]:
+        - link "결재함" [ref=e10] [cursor=pointer]:
+          - /url: /
+          - img [ref=e11]
+          - text: 결재함
+        - link "기안하기" [ref=e16] [cursor=pointer]:
+          - /url: /new
+          - img [ref=e17]
+          - text: 기안하기
+        - link "보관함" [ref=e20] [cursor=pointer]:
+          - /url: /archive
+          - img [ref=e21]
+          - text: 보관함
+        - link "서명 등록" [ref=e24] [cursor=pointer]:
+          - /url: /settings/signature
+          - img [ref=e25]
+          - text: 서명 등록
+        - link "위임 결재" [ref=e28] [cursor=pointer]:
+          - /url: /settings/delegation
+          - img [ref=e29]
+          - text: 위임 결재
+    - main [ref=e33]:
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - heading "결재함" [level=1] [ref=e36]
+          - link "기안하기" [ref=e37] [cursor=pointer]:
+            - /url: /new
+            - img [ref=e38]
+            - text: 기안하기
+        - generic [ref=e41]:
+          - heading "내 기안 문서" [level=2] [ref=e42]
+          - table [ref=e44]:
+            - rowgroup [ref=e45]:
+              - row "문서명 유형 상태 기안일" [ref=e46]:
+                - columnheader "문서명" [ref=e47]
+                - columnheader "유형" [ref=e48]
+                - columnheader "상태" [ref=e49]
+                - columnheader "기안일" [ref=e50]
+            - rowgroup [ref=e51]:
+              - row "기안 문서가 없습니다." [ref=e52]:
+                - cell "기안 문서가 없습니다." [ref=e53]
+  - alert [ref=e54]
