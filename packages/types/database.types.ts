@@ -2469,6 +2469,93 @@ export type Database = {
           },
         ]
       }
+      finance_budget_transfers: {
+        Row: {
+          amount: number
+          created_at: string | null
+          created_by: string | null
+          from_category_id: string
+          id: string
+          reason: string
+          to_category_id: string
+          year: number
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          created_by?: string | null
+          from_category_id: string
+          id?: string
+          reason: string
+          to_category_id: string
+          year: number
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          created_by?: string | null
+          from_category_id?: string
+          id?: string
+          reason?: string
+          to_category_id?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "finance_budget_transfers_from_category_id_fkey"
+            columns: ["from_category_id"]
+            isOneToOne: false
+            referencedRelation: "finance_budget_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "finance_budget_transfers_to_category_id_fkey"
+            columns: ["to_category_id"]
+            isOneToOne: false
+            referencedRelation: "finance_budget_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      finance_income: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          income_date: string
+          note: string | null
+          source: string
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          category?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          income_date: string
+          note?: string | null
+          source: string
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          income_date?: string
+          note?: string | null
+          source?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       hr_allowance_types: {
         Row: {
           created_at: string
