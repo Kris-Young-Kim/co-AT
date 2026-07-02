@@ -122,6 +122,16 @@ export default function ReportsPage() {
                 인쇄 페이지 열기
               </Link>
             </ReportCard>
+
+            <ReportCard title="세입·세출 결산서" desc={`${year}년도 세입 내역 + 세출 예산 대비 집행 현황 인쇄`}>
+              <Link
+                href={`/reports/settlement?year=${year}`}
+                target="_blank"
+                className="block w-full text-center bg-emerald-600 text-white px-4 py-2 rounded-md text-sm hover:bg-emerald-700"
+              >
+                결산서 인쇄
+              </Link>
+            </ReportCard>
           </div>
         </>
       )}

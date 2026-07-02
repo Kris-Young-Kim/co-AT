@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { requireRole } from '@co-at/auth'
 import { ROLES } from '@co-at/types'
 import { getExpenditures, getCategories } from '@/actions/finance-actions'
-import type { FinanceExpenditureWithCategory, FinanceBudgetCategoryWithChildren } from '@co-at/types'
+import { ExpenditureList } from '@/components/ExpenditureList'
 import { PlusCircle } from 'lucide-react'
 
 function fmt(n: number) { return n.toLocaleString('ko-KR') + '원' }
@@ -73,35 +73,13 @@ export default async function ExpendituresPage({ searchParams }: Props) {
         <table className="w-full text-sm">
           <thead className="bg-gray-50 border-b">
             <tr>
-              {['지출일', '카테고리', '내용', '금액', '유형', ''].map((h, i) => (
+              {['지출일', '카테고리', '내용', '금액', '유형', '첨부', ''].map((h, i) => (
                 <th key={i} className={`px-4 py-3 font-medium text-gray-600 ${h === '금액' ? 'text-right' : 'text-left'}`}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody className="divide-y">
-            {rows.map(row => (
-              <tr key={row.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 text-gray-500 text-xs">{row.spend_date}</td>
-                <td className="px-4 py-3 text-gray-500 text-xs">{row.finance_budget_categories?.name ?? <span className="text-amber-600">미분류</span>}</td>
-                <td className="px-4 py-3">{row.description}</td>
-                <td className="px-4 py-3 text-right font-medium">{fmt(row.amount)}</td>
-                <td className="px-4 py-3">
-                  {row.is_manual ? (
-                    <span className="inline-flex px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-600">수동</span>
-                  ) : (
-                    <span className="inline-flex px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-700">결재</span>
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  {row.source_approval_id && (
-                    <a href={`${process.env.NEXT_PUBLIC_APPROVAL_URL ?? '/'}/${row.source_approval_id}`} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline">결재 보기</a>
-                  )}
-                </td>
-              </tr>
-            ))}
-            {rows.length === 0 && (
-              <tr><td colSpan={6} className="px-4 py-10 text-center text-gray-400">지출 내역이 없습니다.</td></tr>
-            )}
+            <ExpenditureList initialRows={rows} categories={categories} canWrite={canWrite} />
           </tbody>
         </table>
       </div>
