@@ -68,6 +68,8 @@ const CATEGORIES: NavCategory[] = [
       { href: '/employees',             label: '인사정보',      icon: UserCog      },
       { href: '/employees/status',      label: '인사정보현황',  icon: BarChart3    },
       { href: '/certificates',          label: '증명서 발급',   icon: FileText     },
+      { href: '/careers',               label: '경력 관리',     icon: Briefcase    },
+      { href: '/severance',             label: '퇴직금 정산',   icon: HandCoins    },
     ],
   },
   {
@@ -103,16 +105,14 @@ const CATEGORIES: NavCategory[] = [
       { href: '/leave',               label: '연차·휴가',      icon: CalendarDays },
       { href: '/leave/balance',       label: '연차 잔여',      icon: Wallet       },
       { href: '/leave/calendar',      label: '휴가 캘린더',    icon: CalendarDays },
-      { href: '/careers',             label: '경력 관리',      icon: Briefcase    },
     ],
   },
   {
     key: 'business',
-    label: '출장·퇴직',
+    label: '출장',
     icon: Plane,
     items: [
-      { href: '/business-trip', label: '출장 관리',   icon: Plane      },
-      { href: '/severance',     label: '퇴직금 정산', icon: HandCoins  },
+      { href: '/business-trip', label: '출장 관리', icon: Plane },
     ],
   },
   {
