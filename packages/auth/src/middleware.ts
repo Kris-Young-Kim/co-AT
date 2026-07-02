@@ -2,15 +2,16 @@ import { clerkMiddleware, createRouteMatcher, clerkClient } from '@clerk/nextjs/
 import { NextResponse } from 'next/server'
 import type { AppKey } from '@co-at/types'
 
-const isPublicRoute = createRouteMatcher([
+const BASE_PUBLIC_ROUTES = [
   '/sign-in(.*)',
   '/sign-up(.*)',
   '/api/webhooks(.*)',
-])
+]
 
 const VALID_ROLES = ['admin', 'manager', 'staff']
 
-export function createAppMiddleware(appKey?: AppKey) {
+export function createAppMiddleware(appKey?: AppKey, extraPublicRoutes: string[] = []) {
+  const isPublicRoute = createRouteMatcher([...BASE_PUBLIC_ROUTES, ...extraPublicRoutes])
   return clerkMiddleware(async (auth, req) => {
     if (isPublicRoute(req)) return
 

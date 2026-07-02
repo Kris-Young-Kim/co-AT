@@ -1,6 +1,7 @@
 import { getGrantAssessmentById } from '@/actions/grant-assessment-actions'
 import { getClientById } from '@/actions/client-actions'
 import { getChecklistTemplates } from '@/actions/checklist-template-actions'
+import { listReferrers } from '@/actions/referrer-actions'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Printer } from 'lucide-react'
@@ -42,8 +43,12 @@ export default async function GrantAssessmentDetailPage({ params, searchParams }
   if (!result.success || !result.assessment) notFound()
 
   const assessment = result.assessment
-  const clientResult = await getClientById(assessment.client_id)
+  const [clientResult, referrersResult] = await Promise.all([
+    getClientById(assessment.client_id),
+    tab === 'basic' ? listReferrers({ is_active: true }) : null,
+  ])
   const client = clientResult.success ? clientResult.client : null
+  const referrers = (referrersResult?.referrers ?? []).map(({ id, name, type }) => ({ id, name, type }))
 
   let checklistMap: Record<string, ChecklistItem[]> = {}
   if (tab === 'opinion') {
@@ -110,7 +115,7 @@ export default async function GrantAssessmentDetailPage({ params, searchParams }
 
       {/* 탭 콘텐츠 */}
       {tab === 'basic' && (
-        <GrantAssessmentBasicForm assessmentId={id} assessment={assessment} />
+        <GrantAssessmentBasicForm assessmentId={id} assessment={assessment} referrers={referrers} />
       )}
       {tab === 'items' && (
         <GrantItemsForm assessmentId={id} items={assessment.items} />

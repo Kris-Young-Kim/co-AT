@@ -2645,13 +2645,21 @@ export type Database = {
           created_at: string
           department: string
           employee_id: string
+          employee_signature_data: string | null
+          employee_signed_at: string | null
+          employee_token: string
+          employer_signature_data: string | null
+          employer_signed_at: string | null
           employment_type: string
           end_date: string | null
           id: string
           note: string | null
           position: string
+          sent_at: string | null
+          sent_to: string | null
           signed_at: string | null
           start_date: string
+          status: string
           work_hours: number
         }
         Insert: {
@@ -2660,13 +2668,21 @@ export type Database = {
           created_at?: string
           department: string
           employee_id: string
+          employee_signature_data?: string | null
+          employee_signed_at?: string | null
+          employee_token?: string
+          employer_signature_data?: string | null
+          employer_signed_at?: string | null
           employment_type?: string
           end_date?: string | null
           id?: string
           note?: string | null
           position: string
+          sent_at?: string | null
+          sent_to?: string | null
           signed_at?: string | null
           start_date: string
+          status?: string
           work_hours?: number
         }
         Update: {
@@ -2675,13 +2691,21 @@ export type Database = {
           created_at?: string
           department?: string
           employee_id?: string
+          employee_signature_data?: string | null
+          employee_signed_at?: string | null
+          employee_token?: string
+          employer_signature_data?: string | null
+          employer_signed_at?: string | null
           employment_type?: string
           end_date?: string | null
           id?: string
           note?: string | null
           position?: string
+          sent_at?: string | null
+          sent_to?: string | null
           signed_at?: string | null
           start_date?: string
+          status?: string
           work_hours?: number
         }
         Relationships: [
@@ -3549,6 +3573,95 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      hr_year_end_tax: {
+        Row: {
+          calculated_income_tax: number | null
+          created_at: string | null
+          dependents_count: number
+          disabled_count: number
+          earned_income_deduction: number | null
+          earned_income_tax_credit: number | null
+          education_expenses: number
+          elderly_count: number
+          employee_id: string
+          final_income_tax: number | null
+          final_local_tax: number | null
+          gross_income: number
+          housing_rent: number
+          id: string
+          medical_expenses: number
+          note: string | null
+          personal_deduction: number | null
+          prepaid_income_tax: number
+          prepaid_local_tax: number
+          refund_income_tax: number | null
+          refund_local_tax: number | null
+          special_tax_credit: number | null
+          tax_year: number
+          updated_at: string | null
+        }
+        Insert: {
+          calculated_income_tax?: number | null
+          created_at?: string | null
+          dependents_count?: number
+          disabled_count?: number
+          earned_income_deduction?: number | null
+          earned_income_tax_credit?: number | null
+          education_expenses?: number
+          elderly_count?: number
+          employee_id: string
+          final_income_tax?: number | null
+          final_local_tax?: number | null
+          gross_income?: number
+          housing_rent?: number
+          id?: string
+          medical_expenses?: number
+          note?: string | null
+          personal_deduction?: number | null
+          prepaid_income_tax?: number
+          prepaid_local_tax?: number
+          refund_income_tax?: number | null
+          refund_local_tax?: number | null
+          special_tax_credit?: number | null
+          tax_year: number
+          updated_at?: string | null
+        }
+        Update: {
+          calculated_income_tax?: number | null
+          created_at?: string | null
+          dependents_count?: number
+          disabled_count?: number
+          earned_income_deduction?: number | null
+          earned_income_tax_credit?: number | null
+          education_expenses?: number
+          elderly_count?: number
+          employee_id?: string
+          final_income_tax?: number | null
+          final_local_tax?: number | null
+          gross_income?: number
+          housing_rent?: number
+          id?: string
+          medical_expenses?: number
+          note?: string | null
+          personal_deduction?: number | null
+          prepaid_income_tax?: number
+          prepaid_local_tax?: number
+          refund_income_tax?: number | null
+          refund_local_tax?: number | null
+          special_tax_credit?: number | null
+          tax_year?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hr_year_end_tax_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "hr_employees"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       intake_records: {
         Row: {

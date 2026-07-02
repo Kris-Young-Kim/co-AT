@@ -1,4 +1,5 @@
 import { getClientById } from '@/actions/client-actions'
+import { listReferrers } from '@/actions/referrer-actions'
 import { ServiceRecordForm } from '@/eval/components/eval/ServiceRecordForm'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
@@ -11,10 +12,18 @@ interface Props {
 export default async function ServiceRecordPage({ params }: Props) {
   const { clientId, appId } = await params
 
-  const clientResult = await getClientById(clientId)
+  const [clientResult, referrersResult] = await Promise.all([
+    getClientById(clientId),
+    listReferrers({ is_active: true }),
+  ])
   if (!clientResult.success || !clientResult.client) notFound()
 
   const client = clientResult.client
+  const referrers = (referrersResult.referrers ?? []).map((r) => ({
+    id: r.id,
+    name: r.name,
+    type: r.type,
+  }))
   const clientData = {
     name: client.name,
     birth_date: client.birth_date ?? null,
@@ -41,6 +50,7 @@ export default async function ServiceRecordPage({ params }: Props) {
         applicationId={appId}
         clientData={clientData}
         redirectTo={`/clients/${clientId}/applications/${appId}`}
+        referrers={referrers}
       />
     </div>
   )

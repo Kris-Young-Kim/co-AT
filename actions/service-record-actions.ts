@@ -62,6 +62,7 @@ export interface ServiceRecordInput {
   staff_name?: string | null
   satisfaction_score?: number | null
   satisfaction_comment?: string | null
+  referrer_id?: string | null
 }
 
 export interface ServiceRecord extends ServiceRecordInput {

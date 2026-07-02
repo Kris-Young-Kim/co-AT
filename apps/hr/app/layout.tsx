@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
-import { AppSidebar } from '@/components/AppSidebar'
+import { AppShell } from '@/components/AppShell'
 import './globals.css'
 
 export const viewport: Viewport = {
@@ -23,10 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           signInUrl="/sign-in"
           signUpUrl="https://gwatc.cloud/sign-up"
         >
-          <div className="flex min-h-screen bg-gray-50">
-            <AppSidebar />
-            <main className="flex-1 overflow-auto">{children}</main>
-          </div>
+          <AppShell>{children}</AppShell>
         </ClerkProvider>
       </body>
     </html>

@@ -37,6 +37,8 @@ import {
   GraduationCap,
   FilePen,
   LineChart,
+  Shield,
+  FileCheck2,
 } from 'lucide-react'
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -79,9 +81,12 @@ const CATEGORIES: NavCategory[] = [
       { href: '/salary/slips',           label: '급여명세서',        icon: ScrollText     },
       { href: '/salary/payment-status',  label: '급여지급현황',      icon: BarChart3      },
       { href: '/salary/transfer-list',   label: '계좌이체명세서',    icon: CreditCard     },
-      { href: '/salary/withholding-tax', label: '원천징수부',        icon: FileSpreadsheet},
-      { href: '/salary',                 label: '급여 기초자료',     icon: Banknote       },
-      { href: '/daily-wages',            label: '일용급여',          icon: Receipt        },
+      { href: '/salary/withholding-tax',      label: '원천징수부',        icon: FileSpreadsheet},
+      { href: '/salary/insurance',           label: '4대보험 현황',      icon: Shield         },
+      { href: '/salary/year-end-tax',        label: '연말정산',          icon: FileCheck2     },
+      { href: '/salary/simplified-statement',label: '간이지급명세서',    icon: FileText       },
+      { href: '/salary',                     label: '급여 기초자료',     icon: Banknote       },
+      { href: '/daily-wages',                label: '일용급여',          icon: Receipt        },
     ],
   },
   {

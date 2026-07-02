@@ -2,13 +2,13 @@
 
 import { useState, useTransition } from 'react'
 import type {
-  ContractWithEmployee,
   HrEmployee,
   CreateContractInput,
   ContractType,
   EmploymentType,
 } from '@co-at/types'
-import { createContract, updateContract, deleteContract } from '@/actions/contract-actions'
+import { createContract, updateContract, deleteContract, type ContractWithSign } from '@/actions/contract-actions'
+import { ContractSignaturePanel } from './ContractSignaturePanel'
 
 const CONTRACT_LABEL: Record<ContractType, string> = {
   initial:   '최초 계약',
@@ -28,7 +28,7 @@ const EMPLOYMENT_LABEL: Record<string, string> = {
 }
 
 type Props = {
-  initialContracts: ContractWithEmployee[]
+  initialContracts: ContractWithSign[]
   employees: Pick<HrEmployee, 'id' | 'name' | 'department' | 'position'>[]
 }
 
@@ -50,10 +50,26 @@ function getDaysUntilExpiry(endDate: string | null): number | null {
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
 }
 
+const SIGN_STATUS_BADGE: Record<string, string> = {
+  draft:            'bg-gray-100 text-gray-500',
+  pending_employee: 'bg-orange-100 text-orange-700',
+  employee_signed:  'bg-blue-100 text-blue-700',
+  completed:        'bg-green-100 text-green-700',
+  cancelled:        'bg-gray-100 text-gray-400',
+}
+const SIGN_STATUS_LABEL: Record<string, string> = {
+  draft:            '서명 전',
+  pending_employee: '서명 대기',
+  employee_signed:  '직원 서명 완료',
+  completed:        '서명 완료',
+  cancelled:        '취소',
+}
+
 export function ContractManager({ initialContracts, employees }: Props) {
-  const [contracts, setContracts]  = useState(initialContracts)
-  const [showForm, setShowForm]     = useState(false)
-  const [editing, setEditing]       = useState<ContractWithEmployee | null>(null)
+  const [contracts, setContracts]       = useState(initialContracts)
+  const [showForm, setShowForm]         = useState(false)
+  const [editing, setEditing]           = useState<ContractWithSign | null>(null)
+  const [signingContract, setSigningContract] = useState<ContractWithSign | null>(null)
   const [form, setForm]             = useState<FormState>(EMPTY_FORM)
   const [error, setError]           = useState('')
   const [isPending, startTrans]     = useTransition()
@@ -62,7 +78,7 @@ export function ContractManager({ initialContracts, employees }: Props) {
   function openCreate() {
     setEditing(null); setForm(EMPTY_FORM); setError(''); setShowForm(true)
   }
-  function openEdit(c: ContractWithEmployee) {
+  function openEdit(c: ContractWithSign) {
     setEditing(c)
     setForm({
       employee_id:     c.employee_id,
@@ -115,8 +131,16 @@ export function ContractManager({ initialContracts, employees }: Props) {
         const res = await createContract(input)
         if (!res.success) { setError(res.error); return }
         const emp = employees.find(e => e.id === form.employee_id)
-        const newContract: ContractWithEmployee = {
+        const newContract: ContractWithSign = {
           ...res.data,
+          status: 'draft',
+          employee_token: (res.data as { employee_token?: string }).employee_token ?? '',
+          employee_signature_data: null,
+          employer_signature_data: null,
+          employee_signed_at: null,
+          employer_signed_at: null,
+          sent_to: null,
+          sent_at: null,
           employee: emp ? { name: emp.name, department: emp.department } : null,
         }
         setContracts(prev => [newContract, ...prev])
@@ -182,7 +206,7 @@ export function ContractManager({ initialContracts, employees }: Props) {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b">
               <tr>
-                {['직원', '부서', '계약 유형', '고용형태', '시작일', '종료일', '기본급', '관리'].map(h => (
+                {['직원', '부서', '계약 유형', '고용형태', '시작일', '종료일', '기본급', '서명', '관리'].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-medium text-gray-500">{h}</th>
                 ))}
               </tr>
@@ -213,7 +237,13 @@ export function ContractManager({ initialContracts, employees }: Props) {
                       {c.base_salary > 0 ? `${c.base_salary.toLocaleString()}원` : '-'}
                     </td>
                     <td className="px-4 py-3">
+                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${SIGN_STATUS_BADGE[c.status] ?? 'bg-gray-100 text-gray-500'}`}>
+                        {SIGN_STATUS_LABEL[c.status] ?? c.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
+                        <button onClick={() => setSigningContract(c)} className="text-xs text-blue-600 hover:underline">서명</button>
                         <button onClick={() => openEdit(c)} className="text-xs text-violet-600 hover:underline">수정</button>
                         <button onClick={() => handleDelete(c.id)} className="text-xs text-red-500 hover:underline">삭제</button>
                       </div>
@@ -223,6 +253,26 @@ export function ContractManager({ initialContracts, employees }: Props) {
               })}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Signature Modal */}
+      {signingContract && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
+            <div className="px-6 py-4 border-b flex items-center justify-between">
+              <h2 className="font-semibold text-gray-900">
+                전자서명 관리 — {signingContract.employee?.name ?? ''}
+              </h2>
+              <button onClick={() => setSigningContract(null)} className="text-gray-400 hover:text-gray-600">✕</button>
+            </div>
+            <div className="px-6 py-4">
+              <ContractSignaturePanel
+                contract={signingContract}
+                employeeName={signingContract.employee?.name ?? ''}
+              />
+            </div>
+          </div>
         </div>
       )}
 

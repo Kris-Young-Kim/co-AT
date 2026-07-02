@@ -61,6 +61,7 @@ export interface GrantAssessmentDetail {
   assessment_month: number | null
   referral_org: string | null
   referral_doc_id: string | null
+  referrer_id: string | null
   evaluator_name: string | null
   evaluator_staff_id: string | null
   evaluation_date: string | null
@@ -90,6 +91,7 @@ export interface UpdateGrantAssessmentInput {
   assessment_month?: number | null
   referral_org?: string | null
   referral_doc_id?: string | null
+  referrer_id?: string | null
   evaluator_name?: string | null
   evaluator_staff_id?: string | null
   evaluation_date?: string | null
@@ -151,7 +153,7 @@ export async function getGrantAssessmentById(id: string): Promise<{
 
       const { data: a, error: aErr } = await (supabase as any)
         .from("eval_grant_assessments")
-        .select("id,client_id,application_id,assessment_year,assessment_month,referral_org,referral_doc_id,evaluator_name,evaluator_staff_id,evaluation_date,prior_grant_records,disability_cause_1,disability_onset_1,disability_cause_2,disability_onset_2,disability_progression,disability_status_desc,general_opinion,change_cancel_reason,final_result,status")
+        .select("id,client_id,application_id,assessment_year,assessment_month,referral_org,referral_doc_id,referrer_id,evaluator_name,evaluator_staff_id,evaluation_date,prior_grant_records,disability_cause_1,disability_onset_1,disability_cause_2,disability_onset_2,disability_progression,disability_status_desc,general_opinion,change_cancel_reason,final_result,status")
         .eq("id", id)
         .single()
 

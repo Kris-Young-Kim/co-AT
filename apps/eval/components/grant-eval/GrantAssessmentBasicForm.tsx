@@ -9,9 +9,16 @@ const GANGWON_SIGUN = [
   '홍천군', '횡성군', '영월군', '평창군', '정선군', '철원군', '화천군', '양구군', '인제군', '고성군', '양양군',
 ]
 
+interface ReferrerOption {
+  id: string
+  name: string
+  type: string
+}
+
 interface Props {
   assessmentId: string
   assessment: GrantAssessmentDetail
+  referrers?: ReferrerOption[]
 }
 
 interface PriorRecord {
@@ -32,7 +39,7 @@ function parsePriorRecords(raw: unknown): PriorRecord[] {
   }))
 }
 
-export function GrantAssessmentBasicForm({ assessmentId, assessment }: Props) {
+export function GrantAssessmentBasicForm({ assessmentId, assessment, referrers = [] }: Props) {
   const [isPending, startTransition] = useTransition()
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -41,6 +48,7 @@ export function GrantAssessmentBasicForm({ assessmentId, assessment }: Props) {
     evaluation_date: assessment.evaluation_date ?? '',
     assessment_month: assessment.assessment_month ? String(assessment.assessment_month) : '',
     referral_org: assessment.referral_org ?? '',
+    referrer_id: assessment.referrer_id ?? '',
     evaluator_name: assessment.evaluator_name ?? '',
     disability_cause_1: assessment.disability_cause_1 ?? '',
     disability_onset_1: assessment.disability_onset_1 ?? '',
@@ -85,6 +93,7 @@ export function GrantAssessmentBasicForm({ assessmentId, assessment }: Props) {
         evaluation_date: form.evaluation_date || null,
         assessment_month: form.assessment_month ? parseInt(form.assessment_month) : null,
         referral_org: form.referral_org || null,
+        referrer_id: form.referrer_id || null,
         evaluator_name: form.evaluator_name || null,
         prior_grant_records: prior.length > 0 ? prior : null,
         disability_cause_1: form.disability_cause_1 || null,
@@ -126,7 +135,7 @@ export function GrantAssessmentBasicForm({ assessmentId, assessment }: Props) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">의뢰기관</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">의뢰기관 (시군)</label>
         <select
           value={form.referral_org}
           onChange={(e) => setField('referral_org', e.target.value)}
@@ -138,6 +147,25 @@ export function GrantAssessmentBasicForm({ assessmentId, assessment }: Props) {
           ))}
         </select>
       </div>
+
+      {(referrers.length > 0 || form.referrer_id) && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">의뢰처</label>
+          <select
+            value={form.referrer_id}
+            onChange={(e) => setField('referrer_id', e.target.value)}
+            className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">선택 안 함</option>
+            {referrers.map((r) => (
+              <option key={r.id} value={r.id}>{r.name}</option>
+            ))}
+            {referrers.length === 0 && form.referrer_id && (
+              <option value={form.referrer_id}>{form.referrer_id}</option>
+            )}
+          </select>
+        </div>
+      )}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">평가자</label>

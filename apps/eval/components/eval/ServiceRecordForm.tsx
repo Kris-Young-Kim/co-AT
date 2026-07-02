@@ -30,11 +30,18 @@ interface ClientData {
   contact: string | null
 }
 
+interface ReferrerOption {
+  id: string
+  name: string
+  type: string
+}
+
 interface ServiceRecordFormProps {
   clientId: string
   applicationId: string
   clientData?: ClientData
   redirectTo: string
+  referrers?: ReferrerOption[]
 }
 
 type CheckKey =
@@ -124,6 +131,7 @@ export function ServiceRecordForm({
   applicationId,
   clientData,
   redirectTo,
+  referrers = [],
 }: ServiceRecordFormProps) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
@@ -140,6 +148,7 @@ export function ServiceRecordForm({
   const [productName, setProductName] = useState('')
   const [itemCategory, setItemCategory] = useState('')
   const [referralType, setReferralType] = useState('')
+  const [referrerId, setReferrerId] = useState('')
   const [checks, setChecks] = useState<Record<CheckKey, boolean>>(INITIAL_CHECKS)
 
   function toggleCheck(key: CheckKey) {
@@ -198,6 +207,7 @@ export function ServiceRecordForm({
       service_area: serviceArea || null,
       service_content: serviceContent || null,
       referral_type: referralType || null,
+      referrer_id: referrerId || null,
       consultation_date: str('consultation_date'),
       performance_date: str('performance_date'),
       closed_at: str('closed_at'),
@@ -360,6 +370,17 @@ export function ServiceRecordForm({
               {REFERRAL_TYPES.map(r => <option key={r} value={r}>{r}</option>)}
             </select>
           </div>
+          {referrers.length > 0 && (
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">의뢰처</label>
+              <select value={referrerId} onChange={e => setReferrerId(e.target.value)} className={SELECT}>
+                <option value="">선택 안 함</option>
+                {referrers.map(r => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">서비스 내용</label>
