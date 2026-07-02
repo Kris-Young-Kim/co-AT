@@ -1,4 +1,5 @@
-import { getDashboardData, getIncome, INCOME_CATEGORY_LABEL } from '@/actions/finance-actions'
+import { getDashboardData, getIncome } from '@/actions/finance-actions'
+import { INCOME_CATEGORY_LABEL } from '@/lib/constants'
 import type { FinanceCategoryStats } from '@co-at/types'
 
 function fmt(n: number) { return n.toLocaleString('ko-KR') }

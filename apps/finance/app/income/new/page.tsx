@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { createIncome, INCOME_CATEGORY_LABEL } from '@/actions/finance-actions'
+import { createIncome } from '@/actions/finance-actions'
+import { INCOME_CATEGORY_LABEL } from '@/lib/constants'
 import type { FinanceIncome } from '@/actions/finance-actions'
 
 const CATEGORY_ENTRIES = Object.entries(INCOME_CATEGORY_LABEL)

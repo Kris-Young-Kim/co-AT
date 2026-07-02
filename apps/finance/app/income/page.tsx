@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useTransition } from 'react'
 import Link from 'next/link'
-import { getIncome, updateIncome, deleteIncome, INCOME_CATEGORY_LABEL } from '@/actions/finance-actions'
+import { getIncome, updateIncome, deleteIncome } from '@/actions/finance-actions'
+import { INCOME_CATEGORY_LABEL } from '@/lib/constants'
 import type { FinanceIncome } from '@/actions/finance-actions'
 import { PlusCircle, Pencil, Trash2, Check, X } from 'lucide-react'
 
