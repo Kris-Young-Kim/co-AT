@@ -5,13 +5,9 @@ import { revalidatePath } from 'next/cache'
 import { createAdminClient } from "@/lib/supabase/admin"
 import { withStaffPermission } from "@/lib/utils/with-permission"
 
-export interface ImportResult {
-  success: boolean
-  rowsAdded: number
-  rowsSkipped: number
-  rowsFailed: number
-  error?: string
-}
+export type ImportResult =
+  | { success: true;  rowsAdded: number; rowsSkipped: number; rowsFailed: number; error?: undefined }
+  | { success: false; rowsAdded?: number; rowsSkipped?: number; rowsFailed?: number; error?: string }
 
 // ── file parsing ────────────────────────────────────────────────────────────────
 

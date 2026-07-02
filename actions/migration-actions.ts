@@ -50,8 +50,8 @@ function parseDate(v: unknown): string | null {
 
 export async function syncCallLogs(): Promise<{
   success: boolean
-  rowsAdded: number
-  rowsSkipped: number
+  rowsAdded?: number
+  rowsSkipped?: number
   error?: string
 }> {
   return withStaffPermission(async () => {
@@ -215,8 +215,8 @@ function parseBirthDate(v: unknown): string | null {
 
 export async function syncServiceRecords(): Promise<{
   success: boolean
-  rowsAdded: number
-  rowsSkipped: number
+  rowsAdded?: number
+  rowsSkipped?: number
   error?: string
 }> {
   return withStaffPermission(async () => {
@@ -406,8 +406,8 @@ function parseClientBirthDate(v: unknown): string | null {
 
 export async function syncClients(): Promise<{
   success: boolean
-  rowsAdded: number
-  rowsSkipped: number
+  rowsAdded?: number
+  rowsSkipped?: number
   error?: string
 }> {
   return withStaffPermission(async () => {
