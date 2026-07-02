@@ -14,6 +14,8 @@ import type {
   CreateDocumentInput,
   ApprovalDelegation,
   DelegationWithNames,
+  ApprovalVehicle,
+  VehicleLogContent,
 } from '@co-at/types'
 
 // ── Helpers ───────────────────────────────────────────────
@@ -455,6 +457,91 @@ export async function getPendingApprovals(
   const ownIds = new Set(own.map(d => d.id))
   const merged = [...own, ...delegated.filter(d => !ownIds.has(d.id))]
   return merged
+}
+
+// ── Vehicles ──────────────────────────────────────────────
+
+export async function getVehicles(): Promise<ApprovalVehicle[]> {
+  const supabase = createSupabaseAdmin()
+  const { data, error } = await supabase
+    .from('approval_vehicles')
+    .select('*')
+    .eq('is_active', true)
+    .order('created_at')
+  if (error) { console.error('[getVehicles]', error); return [] }
+  return (data ?? []) as ApprovalVehicle[]
+}
+
+export interface VehicleLogReportRow {
+  id: string
+  title: string
+  status: string
+  created_at: string
+  content: VehicleLogContent
+}
+
+export interface VehicleLogReport {
+  vehicle_id: string
+  vehicle_number: string
+  vehicle_name: string
+  logs: VehicleLogReportRow[]
+  total_distance: number
+  total_fuel_cost: number
+  total_toll_fee: number
+  total_parking_fee: number
+}
+
+export async function getVehicleLogReport(
+  year: number,
+  month: number
+): Promise<VehicleLogReport[]> {
+  await assertRole(ROLES.STAFF)
+  const supabase = createSupabaseAdmin()
+
+  const from = `${year}-${String(month).padStart(2, '0')}-01`
+  const toDate = new Date(year, month, 1)
+  const to = toDate.toISOString().split('T')[0]
+
+  const { data, error } = await supabase
+    .from('approval_documents')
+    .select('id, title, status, created_at, content')
+    .eq('type', 'vehicle_log')
+    .eq('status', 'approved')
+    .gte('created_at', from)
+    .lt('created_at', to)
+    .order('created_at')
+  if (error) { console.error('[getVehicleLogReport]', error); return [] }
+
+  const vehicles = await getVehicles()
+  const reportMap = new Map<string, VehicleLogReport>()
+
+  for (const v of vehicles) {
+    reportMap.set(v.id, {
+      vehicle_id: v.id,
+      vehicle_number: v.number,
+      vehicle_name: v.name,
+      logs: [],
+      total_distance: 0,
+      total_fuel_cost: 0,
+      total_toll_fee: 0,
+      total_parking_fee: 0,
+    })
+  }
+
+  for (const row of data ?? []) {
+    const c = row.content as VehicleLogContent
+    if (!c?.vehicle_id) continue
+    let entry = reportMap.get(c.vehicle_id)
+    if (!entry) continue
+    const distance = c.end_odometer - c.start_odometer
+    entry.logs.push({ id: row.id, title: row.title, status: row.status, created_at: row.created_at, content: c })
+    entry.total_distance    += distance
+    entry.total_fuel_cost   += c.fuel_cost   ?? 0
+    entry.total_toll_fee    += c.toll_fee    ?? 0
+    entry.total_parking_fee += c.parking_fee ?? 0
+  }
+
+  return [...reportMap.values()]
 }
 
 export async function getDocument(id: string): Promise<ApprovalDocumentWithSteps | null> {

@@ -1,4 +1,4 @@
-export type ApprovalDocumentType = 'expenditure' | 'leave' | 'business_report' | 'rental' | 'custom_make' | 'reuse' | 'grant_referral'
+export type ApprovalDocumentType = 'expenditure' | 'leave' | 'business_report' | 'rental' | 'custom_make' | 'reuse' | 'grant_referral' | 'vehicle_log'
 export type ApprovalDocumentStatus = 'draft' | 'pending' | 'approved' | 'rejected'
 export type ApprovalStepStatus = 'pending' | 'approved' | 'rejected'
 export type ApprovalStepRole = 'manager' | 'admin'
@@ -53,6 +53,31 @@ export interface GrantReferralContent {
   note?: string
 }
 
+export interface VehicleLogContent {
+  vehicle_id: string
+  vehicle_number: string   // denormalized for display
+  driver_name: string
+  purpose: string          // 업무 목적
+  departure: string        // 출발지
+  destination: string      // 도착지
+  depart_at: string        // ISO datetime
+  arrive_at: string        // ISO datetime
+  start_odometer: number   // km
+  end_odometer: number     // km
+  fuel_cost?: number       // 주유비 (원)
+  toll_fee?: number        // 통행료 (원)
+  parking_fee?: number     // 주차비 (원)
+  note?: string
+}
+
+export interface ApprovalVehicle {
+  id: string
+  number: string
+  name: string
+  is_active: boolean
+  created_at: string
+}
+
 export type ApprovalDocumentContent =
   | ExpenditureContent
   | LeaveContent
@@ -61,6 +86,7 @@ export type ApprovalDocumentContent =
   | CustomMakeApprovalContent
   | ReuseApprovalContent
   | GrantReferralContent
+  | VehicleLogContent
 
 // ── Core entities ─────────────────────────────────────────
 

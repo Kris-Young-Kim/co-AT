@@ -389,6 +389,30 @@ export type Database = {
           },
         ]
       }
+      approval_vehicles: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          number: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          number: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          number?: string
+        }
+        Relationships: []
+      }
       automation_channels: {
         Row: {
           channel_type: string

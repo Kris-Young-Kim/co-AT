@@ -14,9 +14,11 @@ const STATUS_LABELS: Record<string, { label: string; className: string }> = {
 }
 
 const TYPE_LABELS: Record<string, string> = {
+  vehicle_log:     '차량운행일지',
   expenditure:     '지출 결의서',
   leave:           '휴가/출장',
   business_report: '업무 보고',
+  grant_referral:  '교부사업 접수공문',
 }
 
 function StatusBadge({ status }: { status: string }) {

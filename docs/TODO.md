@@ -570,6 +570,7 @@
 | PDF 출력 (`@react-pdf/renderer`) | ✅ |
 | 위임 결재 | ✅ |
 | notifications 타입 버그 (`'approval'` CHECK 제약 미등록) | ✅ |
+| 차량운행일지 (`vehicle_log` 결재 타입) — 2대 차량, 월별 집계 리포트 | ✅ |
 
 ---
 
